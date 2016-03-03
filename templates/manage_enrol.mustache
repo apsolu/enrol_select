@@ -1,0 +1,33 @@
+<form method="post" action="{{ action }}">
+    <dl>
+        <div>
+            <dt>Rôle</dt>
+            <dd>
+                <select name="role">
+                    {{# roles}}
+                    <option value="{{ id }}">{{ name }}</option>
+                    {{/ roles}}
+                </select>
+            </dd>
+        </div>
+        <div>
+            <dt>Liste</dt>
+            <dd>
+                <select name="status">
+                    {{# status}}
+                    <option value="{{ id }}">{{ name }}</option>
+                    {{/ status}}
+                </select>
+            </dd>
+        </div>
+    </dl>
+
+    <div>
+        <label for="addselect">{{# str}}users, moodle{{/ str}}</label>
+        {{{ potential_users_selector }}}
+    </div>
+
+    <p>
+        <input class="btn btn-default" type="submit" value="Inscrire les utilisateurs" />
+    </p>
+</form>

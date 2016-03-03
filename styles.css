@@ -1,0 +1,141 @@
+.select2-container{
+	margin: 0 .2em !important;
+}
+
+#apsolu-activities-table td {
+	vertical-align: middle;
+}
+
+.filters {
+	width: 90%;
+}
+
+button.checkall,
+button.uncheckall {
+	margin: 0;
+	padding: 0;
+}
+
+#page-enrol-apsolu-overview .navbar-fixed-top{
+	display: none;
+}
+
+.apsolu-collapsible,
+.apsolu-expandable {
+	background-position: left;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	padding-left: 21px !important;
+}
+
+.apsolu-expandable {
+	background-image: url([[pix:t/collapsed]]);
+}
+
+.apsolu-collapsible {
+	background-image: url([[pix:t/expanded]]);
+}
+
+.apsolu-loading{
+	background-image: url([[pix:i/loading_small]]);
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.apsolu-list-rows-div {
+	padding: 1em;
+	margin: 1em 0;
+}
+
+.apsolu-manage-users-tab-li {
+    cursor: pointer;
+}
+
+.apsolu-sports-description-help-img {
+	padding-left: .5em;
+}
+
+.apsolu-sports-description {
+	display: none;
+}
+
+#apsolu-enrol-form {
+    background-color: #FFFFFF;
+    padding: 1.5em;
+}
+
+#page-enrol-select-overview .block_navigation {
+    display: none;
+}
+
+.block_overview_enrolments ul {
+    margin: 0;
+}
+
+.block_overview_enrolments li {
+    padding: 0 .5em !important;
+}
+
+.block_overview_enrolments li:nth-child(even) {
+    background-color: #F0F0FF;
+}
+
+.block_overview_remaining_choices ul {
+    margin: 0;
+    text-align: justify;
+}
+
+#apsolu-activities-table dt {
+    font-weight: normal;
+    text-align: left;
+    width: auto;
+}
+
+#apsolu-activities-table dt:after{
+    content: ' : ';
+}
+
+#apsolu-activities-table dd {
+    margin-left: 0;
+}
+
+@keyframes fadeIn{
+    0% {
+        display: none;
+        opacity: 0;
+    }
+    1% {
+        display: block;
+    }
+    100% {
+        display: block;
+        opacity: 1;
+    }
+}
+
+#apsolu-activities-div,
+#apsolu-complements-div,
+#apsolu-select-enrolments-ajax,
+#apsolu-select-remaining-ajax,
+#apsolu-wishes-filters {
+    animation: 0.4s ease-in-out 0s normal none 1 running fadeIn;
+}
+
+.apsolu-roles {
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+}
+
+.apsolu-roles-option {
+    background-image: url('[[pix:enrol_select|i/grade_option]]');
+}
+
+.apsolu-roles-bonification {
+    background-image: url('[[pix:enrol_select|i/grade_bonification]]');
+}
+
+.apsolu-roles-libre {
+    background-image: url('[[pix:enrol_select|i/grade_libre]]');
+}

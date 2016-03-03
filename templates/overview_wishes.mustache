@@ -1,0 +1,69 @@
+<div id="apsolu-wishes-div">
+	<h3>Je souhaite m'inscrire à...</h3>
+
+	{{^wishes}}<p class="alert alert-warning text-center">Vous n'êtes inscrit à aucune activité.</p>{{/wishes}}
+
+	{{#count_wishes}}
+	<table id="apsolu-wishes-table" class="table tablesorted">
+		<thead>
+			<tr>
+				<th>{{#str}}sport, local_apsolu_courses{{/str}}</th>
+				<th>{{#str}}weekday, local_apsolu_courses{{/str}}</th>
+				<th>{{#str}}starttime, local_apsolu_courses{{/str}}</th>
+				<th>{{#str}}endtime, local_apsolu_courses{{/str}}</th>
+				<th>{{#str}}skill, local_apsolu_courses{{/str}}</th>
+				<th>{{#str}}location, local_apsolu_courses{{/str}}</th>
+				<th>Inscription</th>
+				<th>Information</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#wishes}}
+			<tr>
+				<td>{{ sport }}</td>
+				<td>{{ weekday_locale }}</td>
+				<td>{{ starttime }}</td>
+				<td>{{ endtime }}</td>
+				<td>{{ skill }}</td>
+				<td>{{ location }}</td>
+				<td>{{ role }}</td>
+				{{#user_main_list}}
+				<td class="success">{{#str}}main_list_registered,enrol_select{{/str}}</td>
+				{{/user_main_list}}
+				{{#user_wait_list}}
+				<td class="warning">{{#str}}wait_list_registered,enrol_select{{/str}}</td>
+				{{/user_wait_list}}
+				{{#user_no_list}}
+				<td class="success">Inscrit</td>
+				{{/user_no_list}}
+			</tr>
+			{{/wishes}}
+		</tbody>
+	</table>
+	{{/count_wishes}}
+
+	<h3>Rappel des règles d'inscription...</h3>
+
+	{{#count_wishes_rules}}
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Type d'inscription</th>
+				<th>Nombre de voeux maximum</th>
+        		<th>Nombre d'inscription minimum</th>
+        		<th>Nombre d'inscription maximum</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#wishes_rules}}
+			<tr>
+				<td>{{name}}</td>
+				<td>{{maxwish}}</td>
+				<td>{{minregister}}</td>
+				<td>{{maxregister}}</td>
+			</tr>
+			{{/wishes_rules}}
+		</tbody>
+	</table>
+	{{/count_wishes_rules}}
+</div>

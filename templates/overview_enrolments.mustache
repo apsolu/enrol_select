@@ -1,0 +1,83 @@
+<div id="apsolu-select-enrolments-ajax">
+
+	{{^count_activity_enrolments}}
+		{{^count_complement_enrolments}}
+			<p class="text-center">Vous n'êtes inscrit à aucune activité.</p>
+		{{/count_complement_enrolments}}
+	{{/count_activity_enrolments}}
+
+	{{! et dieu inventa le "else"...}}
+	{{#count_activity_enrolments}}
+		{{^count_complement_enrolments}}
+		<ul class="list list-unstyled">
+		{{/count_complement_enrolments}}
+	{{/count_activity_enrolments}}
+
+	{{#count_complement_enrolments}}
+	<ul class="list list-unstyled">
+	{{/count_complement_enrolments}}
+	{{! /et dieu inventa le "else"...}}
+
+	{{! complements }}
+	{{#complement_enrolments}}
+	<li>
+		<a class="apsolu-enrol-a" data-enrolid="{{enrolid}}" href="{{wwwroot}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">
+			{{#pix}}i/completion-manual-y,core,{{#quote}}{{#str}}edit{{/str}}{{/quote}}{{/pix}}
+		</a>
+		{{fullname}}
+	</li>
+	{{/complement_enrolments}}
+
+	{{! activities }}
+	{{#activity_enrolments}}
+	<li>
+		<a class="apsolu-enrol-a" data-enrolid="{{enrolid}}" href="{{wwwroot}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">
+			{{#pix}}i/completion-manual-y,core,{{#quote}}{{#str}}edit{{/str}}{{/quote}}{{/pix}}
+		</a>
+		{{fullname}} - {{role}}
+	</li>
+	{{/activity_enrolments}}
+
+	{{! et dieu inventa le "else"...}}
+	{{#count_activity_enrolments}}
+		{{^count_complement_enrolments}}
+		</ul>
+		{{/count_complement_enrolments}}
+	{{/count_activity_enrolments}}
+
+	{{#count_complement_enrolments}}
+	</ul>
+	{{/count_complement_enrolments}}
+	{{! /et dieu inventa le "else"...}}
+
+
+	<!-- <p class="text-right">Voir le détail</p> -->
+	<!--
+	<table id="apsolu-enrolments-table" class="table tablesorted">
+		<thead>
+			<tr>
+				<th>{{#str}}sport, local_apsolu_courses{{/str}}</th>
+				<th>{{#str}}weekday, local_apsolu_courses{{/str}}</th>
+				<th>{{#str}}starttime, local_apsolu_courses{{/str}}</th>
+				<th>{{#str}}endtime, local_apsolu_courses{{/str}}</th>
+				<th>{{#str}}skill, local_apsolu_courses{{/str}}</th>
+				<th>{{#str}}location, local_apsolu_courses{{/str}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#enrolments}}
+			<tr>
+				<td>{{ sport }}</td>
+				<td>{{ weekday_locale }}</td>
+				<td>{{ starttime }}</td>
+				<td>{{ endtime }}</td>
+				<td>{{ skill }}</td>
+				<td>{{ location }}</td>
+				<td>{{ role }}</td>
+			</tr>
+			{{/enrolments}}
+		</tbody>
+	</table>
+	-->
+
+</div>

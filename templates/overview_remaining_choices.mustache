@@ -1,0 +1,14 @@
+<div id="apsolu-select-remaining-ajax">
+
+	{{^choices}}<p class="alert alert-warning text-center">Vous n'êtes inscrit à aucune activité.</p>{{/choices}}
+
+	{{#count_choices}}
+	<ul class="list list-unstyled">
+		{{#choices}}
+		<li>{{{str}}}</li>
+		{{/choices}}
+	</ul>
+	{{/count_choices}}
+
+	{{{summary}}}
+</div>

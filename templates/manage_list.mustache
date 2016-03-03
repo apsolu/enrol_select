@@ -1,0 +1,69 @@
+<div class="apsolu-list-rows-div">
+	<h3 class="apsolu-manage-users-h3">{{ name }}</h3>
+
+	<div class="apsolu-manage-users-content-div">
+		<div class="alert alert-info">{{description}}</div>
+		<!-- <p class="text-right"><a class="btn btn-default" href="{{ enrol_user_link }}">{{# str }}enrolusers, enrol{{/ str }}</a></p> -->
+
+		{{^ users }}<p class="alert alert-warning text-center">Aucun utilisateur dans cette liste</p>{{/ users }}
+
+		{{# count_users }}
+		<form action="{{ form_action }}" method="post" id="participantsform">
+			<table class="table table-striped table-sortable">
+				<thead>
+					<tr>
+						<th>Sélectionner<br />(<button type="button" class="btn btn-link checkall">Tout</button> / <button type="button" class="btn btn-link uncheckall">Aucun</button>)</th>
+						<!-- <th>Action</th> -->
+						<th>Photo</th>
+						<th>Nom prénom</th>
+						<th>Age</th>
+						<th>Type d'inscription</th>
+						<th>Établissement</th>
+						<th>Département</th>
+						<!-- <th>Niveau d'étude</th> -->
+						<th>Autres inscriptions</th>
+						<th>Date d'inscription</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{# users }}
+					<tr>
+						<td><input type="checkbox" class="apsolu-select-manage-users-input-checkbox" name="users[]" value="{{ id }}" /></td>
+						<!-- <td>
+							<ul class="list-inline">
+							{{# users_actions }}
+								<li style="display:inline;"><a href="{{ link }}{{ id }}"><img src="{{ picture }}" alt="{{ alternative }} "/></a></li>
+							{{/ users_actions }}
+							</ul>
+						</td> -->
+						<td>{{{ picture }}}</td>
+						<td>{{ firstname }} {{ lastname }}</td>
+						<td>{{ age }}</td>
+						<td>{{ role }}</td>
+						<td>{{ institution }}</td>
+						<td>{{ department }}</td>
+						<!-- <td>{{ level }}</td> -->
+						<td class="{{count_enrolments}}">
+							{{#count_enrolments}}
+							<ul class="list-unstyled">
+								{{#enrolments}}
+								<li><abbr title="{{fullname}}">{{sport}}</abbr> ({{state}}/{{role}})</li>
+								{{/enrolments}}
+							</ul>
+							{{/count_enrolments}}
+						</td>
+						<td>{{ timecreated }}</td>
+					</tr>
+					{{/ users }}
+				</tbody>
+			</table>
+
+			<p>{{{ actions }}}</p>
+			<!-- 
+			<input type="hidden" name="id" value="course->id" />
+			<input type="hidden" name="sesskey" value="sesskey()" />
+			-->
+		</form>
+		{{/ count_users }}
+	</div>
+</div>
