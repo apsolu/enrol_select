@@ -1,7 +1,6 @@
 define(["jquery", "enrol_select/jquery.popupoverlay"], function($) {
     return {
         initialise : function(){
-            console.log("overview");
             function apsolu_overview_set_expandable_icons(th_element){
                 if ($(th_element).hasClass("apsolu-expandable")) {
                     $(th_element).attr("class", "apsolu-collapsible");

@@ -9,7 +9,7 @@
  * Since: March 2008
  * Date: @DATE 
  */
-console.log('overlay');
+
 // Ajout julien
 (function (factory) {
 	// UMD start
