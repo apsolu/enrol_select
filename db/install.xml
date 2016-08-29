@@ -1,86 +1,60 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <XMLDB PATH="enrol/select/db" VERSION="2016011215" COMMENT="XMLDB file for apsolu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../lib/xmldb/xmldb.xsd">
 <TABLES>
-	<TABLE NAME="enrol_select_roles" COMMENT="Extend courses data">
+    <TABLE NAME="apsolu_colleges">
+        <FIELDS>
+            <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" NEXT="event" />
+            <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" PREVIOUS="id" NEXT="maxwish" />
+            <FIELD NAME="maxwish" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="name" NEXT="minregister" />
+            <FIELD NAME="minregister" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="maxwish" NEXT="maxregister" />
+            <FIELD NAME="maxregister" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="minregister" NEXT="userprice" />
+            <FIELD NAME="userprice" TYPE="float" LENGTH="10" NOTNULL="true" PREVIOUS="maxregister" NEXT="institutionprice" />
+            <FIELD NAME="institutionprice" TYPE="float" LENGTH="10" NOTNULL="true" PREVIOUS="userprice" NEXT="roleid" />
+            <FIELD NAME="roleid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="institutionprice" />
+        </FIELDS>
+        <KEYS>
+            <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+        </KEYS>
+    </TABLE>
+
+	<TABLE NAME="apsolu_colleges_members">
+        <FIELDS>
+            <FIELD NAME="collegeid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true" />
+            <FIELD NAME="cohortid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true" />
+        </FIELDS>
+        <KEYS>
+            <KEY NAME="primary" TYPE="primary" FIELDS="collegeid,cohortid" COMMENT="Primary key for apsolu_colleges_members"/>
+        </KEYS>
+    </TABLE>
+
+	<TABLE NAME="enrol_select_roles">
         <FIELDS>
             <FIELD NAME="enrolid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true" />
             <FIELD NAME="roleid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true" />
         </FIELDS>
         <KEYS>
-            <KEY NAME="primary" TYPE="primary" FIELDS="enrolid,roleid" COMMENT="Primary key for apsolu_courses"/>
+            <KEY NAME="primary" TYPE="primary" FIELDS="enrolid,roleid" />
         </KEYS>
     </TABLE>
 
-	<TABLE NAME="enrol_select_cohorts" COMMENT="Extend courses data">
+	<TABLE NAME="enrol_select_cohorts">
         <FIELDS>
             <FIELD NAME="enrolid" TYPE="int" LENGTH="10" NOTNULL="true" />
             <FIELD NAME="cohortid" TYPE="int" LENGTH="10" NOTNULL="true" />
         </FIELDS>
         <KEYS>
-            <KEY NAME="primary" TYPE="primary" FIELDS="enrolid,cohortid" COMMENT="Primary key for apsolu_courses"/>
+            <KEY NAME="primary" TYPE="primary" FIELDS="enrolid,cohortid" />
         </KEYS>
     </TABLE>
 
-
-	<TABLE NAME="enrol_select_cohorts_roles" COMMENT="Extend table">
+	<TABLE NAME="enrol_select_cohorts_roles">
         <FIELDS>
             <FIELD NAME="roleid" TYPE="int" LENGTH="10" NOTNULL="true" />
             <FIELD NAME="cohortid" TYPE="int" LENGTH="10" NOTNULL="true" />
         </FIELDS>
         <KEYS>
-            <KEY NAME="primary" TYPE="primary" FIELDS="roleid,cohortid" COMMENT="Primary key for apsolu_courses"/>
+            <KEY NAME="primary" TYPE="primary" FIELDS="roleid,cohortid" />
         </KEYS>
 	</TABLE>
-	<!-- REGISTER TYPES -->
-	<!-- TODO: RM ??? -->
-	<!--
-    <TABLE NAME="enrol_apsolu_types" COMMENT="Extend courses data">
-        <FIELDS>
-            <FIELD NAME="id" TYPE="int" LENGTH="10" SEQUENCE="true" />
-            <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" />
-            <FIELD NAME="description" TYPE="char" LENGTH="255" NOTNULL="false" />
-            <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="true" />
-        </FIELDS>
-        <KEYS>
-            <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for apsolu_courses"/>
-        </KEYS>
-		<INDEXES>
-			<INDEX NAME="unique_name" UNIQUE="true" FIELDS="name" />
-		</INDEXES>
-    </TABLE>
-	-->
-
-	<!-- REGISTER GROUPINGS -->
-	<!-- TODO: rename en apsolu_cohort_groupings -->
-	<!-- TODO: RM ??? -->
-	<!--
-    <TABLE NAME="enrol_apsolu_groupings" COMMENT="Extend courses data">
-        <FIELDS>
-            <FIELD NAME="id" TYPE="int" LENGTH="10" SEQUENCE="true" />
-            <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" />
-            <FIELD NAME="typeid" TYPE="int" LENGTH="10" NOTNULL="true" />
-        </FIELDS>
-        <KEYS>
-            <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for apsolu_categories" />
-        </KEYS>
-		<INDEXES>
-			<INDEX NAME="unique_name" UNIQUE="true" FIELDS="name" />
-		</INDEXES>
-    </TABLE>
-	-->
-	<!-- REGISTER GROUPING COHORTS -->
-	<!-- TODO: rename en apsolu_cohort_groupings_items -->
-	<!-- TODO: RM ??? -->
-	<!--
-    <TABLE NAME="enrol_apsolu_grp_cohorts" COMMENT="Extend courses data">
-        <FIELDS>
-            <FIELD NAME="groupingid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true" />
-            <FIELD NAME="cohortid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true" />
-        </FIELDS>
-        <KEYS>
-            <KEY NAME="primary" TYPE="primary" FIELDS="groupingid,cohortid" COMMENT="Primary key for apsolu_skills"/>
-        </KEYS>
-    </TABLE>
-	-->
 </TABLES>
 </XMLDB>
