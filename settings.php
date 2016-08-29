@@ -24,8 +24,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$capabilities = array(
+    'moodle/category:manage',
+    'moodle/course:create',
+);
+
 // Needs this condition or there is error on login page.
-if ($hassiteconfig) {
+if ($hassiteconfig or has_any_capability($capabilities, context_system::instance())) {
     if (empty($ADMIN->locate('apsolu'))) {
         $ADMIN->add('root', new admin_category('apsolu', 'Gestion du SIUAPS'), 'users');
     }
