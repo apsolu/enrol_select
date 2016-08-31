@@ -122,6 +122,14 @@ $string['enrolcoursesubject'] = '[{$a->fullname}] Situation de votre inscription
 $string['eula'] = 'Certificat d\'aptitude au sport';
 $string['eula_help'] = 'Texte présenté à tous les étudiants avant toute inscription à une activité sportive et nécessitant une acceptation de leur part.';
 
+// Variables pour l'export csv des listes étudiantes.
+$string['age'] = 'Âge';
+$string['birthday'] = 'Date de naissance';
+$string['sex'] = 'Sexe';
+$string['register_type'] = 'Type d\'inscription';
+$string['paid'] = 'Carte sport payée';
+$string['list'] = 'Liste';
+
 $string['error_no_left_slot'] = 'Il n\'y a pas plus de place disponible pour ce cours.';
 $string['error_reach_wishes_limit'] = 'Vous avez atteint le nombre maximum de voeux de type {$a}.';
 $string['error_cannot_enrol'] = 'Vous ne pouvez pas vous inscrire à ce cours.';
