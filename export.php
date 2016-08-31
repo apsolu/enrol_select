@@ -51,10 +51,11 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 
 $roles = role_fix_names($DB->get_records('role'));
 
-$sql = 'SELECT u.*, ra.roleid, ue.timecreated, ue.status'.
+$sql = 'SELECT DISTINCT u.*, ra.roleid, ue.timecreated, ue.status'.
     ' FROM {user} u'.
     ' JOIN {user_enrolments} ue ON u.id = ue.userid'.
     ' JOIN {role_assignments} ra ON u.id = ra.userid'.
+    ' JOIN {role} r ON r.id = ra.roleid AND r.archetype = "student"'.
     ' JOIN {context} ctx ON ctx.id = ra.contextid'.
     ' WHERE ue.enrolid = :enrolid'.
     ' AND ctx.instanceid = :courseid'.
