@@ -287,8 +287,8 @@ function get_potential_user_activities() {
         // Check cohorts.
         " AND c.visible=1".
         " AND cc.visible=1".
-        " ORDER BY cc.name, c.fullname, ac.weekday, ac.starttime, ac.endtime";
-    $courses = $DB->get_records_sql($sql, array($now, $now, $USER->id));
+        " ORDER BY cc.name, ac.numweekday, ac.starttime, ac.endtime";
+    $courses = $DB->get_records_sql($sql);
 
     // Récupère toutes les méthodes d'inscription valides concernant l'utilisateur courant.
     $sql = "SELECT DISTINCT e.*".
