@@ -38,8 +38,14 @@ $string['enrolstartdate'] = 'Date d\'ouverture des inscriptions';
 $string['enrolenddate'] = 'Date de fermeture des inscriptions';
 
 $string['max_places'] = 'Nombre de places sur liste principale';
+$string['free_places'] = 'Places disponibles';
 
 $string['overviewtitle'] = 'Inscription aux activités';
+
+
+// Bloc filtres.
+$string['filters'] = 'Filtres';
+$string['reset_filters'] = 'Réinitialiser les filtres';
 
 $string['activities_list'] = 'Liste des créneaux par activité';
 $string['activities'] = 'Activités sportives';

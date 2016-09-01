@@ -6,46 +6,38 @@
 	{{/complements}}
 
 	{{#count_complements}}
-	<table id="apsolu-complements-table" class="table tablesorted">
-		<caption class="sr-only">{{#str}}complements_list,enrol_select{{/str}}</caption>
-		<thead>
-			<tr>
-				<th>Actions</th>
-				<th>{{#str}}complements,local_apsolu_courses{{/str}}</th>
-				<th>{{#str}}description{{/str}}</th>
-				<th>{{#str}}prices,local_apsolu_courses{{/str}}</th>
-				{{#is_courses_creator}}
-				<th>Paramètres</th>
-				{{/is_courses_creator}}
-			</tr>
-		</thead>
-		<tbody>
-			{{#complements}}
-			<tr{{#enroled}} class="info"{{/enroled}} >
-				<td>
-					<a class="apsolu-enrol-a {{#enroled}}apsolu-enroled-a{{/enroled}}{{^enroled}}apsolu-not-enroled-a{{/enroled}}" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">
-                        {{#pix}}i/enrolusers,core,{{#quote}}{{#str}}edit{{/str}}{{/quote}}{{/pix}}
-                    </a>
-				<!--
-					<form action="">
-						<p>
-							<label for="">S'incrire</label>
-							<input type="checkbox" />
-						</p>
-						<p>
-							<input type="submit" />
-						</p>
-					</form>
-				</td> -->
-				<td>{{fullname}}</td>
-				<td>{{summary}}</td>
-				<td>{{price}} €</td>
-				{{#is_courses_creator}}
-				<td><a href="{{www_url}}/enrol/instances.php?id={{id}}">{{#pix}}t/edit,core,paramétrage des inscriptions{{/pix}}</a></td>
-				{{/is_courses_creator}}
-			</tr>
-			{{/complements}}
-		</tbody>
-	</table>
-	{{/ count_complements }}
+	<div class="table-responsive">
+		<table id="apsolu-complements-table" class="table tablesorted">
+			<caption class="sr-only">{{#str}}complements_list,enrol_select{{/str}}</caption>
+			<thead>
+				<tr>
+					<th>{{#str}}actions{{/str}}</th>
+					<th>{{#str}}complements,local_apsolu_courses{{/str}}</th>
+					<th>{{#str}}description{{/str}}</th>
+					<th>{{#str}}prices,local_apsolu_courses{{/str}}</th>
+					{{#is_courses_creator}}
+					<th>{{#str}}editsettings{{/str}}</th>
+					{{/is_courses_creator}}
+				</tr>
+			</thead>
+			<tbody>
+				{{#complements}}
+				<tr{{#enroled}} class="info"{{/enroled}} >
+					<td>
+						<a class="apsolu-enrol-a {{#enroled}}apsolu-enroled-a{{/enroled}}{{^enroled}}apsolu-not-enroled-a{{/enroled}}" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">
+							{{#pix}}i/enrolusers,core,{{#quote}}{{#str}}edit{{/str}}{{/quote}}{{/pix}}
+						</a>
+					</td>
+					<td>{{fullname}}</td>
+					<td>{{summary}}</td>
+					<td>{{price}} €</td>
+					{{#is_courses_creator}}
+					<td><a href="{{www_url}}/enrol/instances.php?id={{id}}">{{#pix}}t/edit,core,{{#str}}editenrolment,enrol{{/str}}{{/pix}}</a></td>
+					{{/is_courses_creator}}
+				</tr>
+				{{/complements}}
+			</tbody>
+		</table>
+	</div>
+	{{/count_complements}}
 </div>

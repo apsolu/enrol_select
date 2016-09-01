@@ -1,19 +1,15 @@
-<!--<div id="apsolu-filters-div">
-	<h3 class="sr-only">Filtres</h3>-->
+<form action="{{form.action}}" method="post" class="alertx alert-infox" id="apsolu-wishes-filters">
+	<fieldset class="clearfix collapsible collapsed containsadvancedelements">
+		<legend class="sr-only">{{#str}}filters,enrol_select{{/str}}</legend>
+		<div class="row">
+			{{#filters}}
+				<p class="col-md-12">{{{.}}}</p>
+			{{/filters}}
+		</div>
+	</fieldset>
 
-	<form action="{{ form.action}}" method="post" class="alertx alert-infox" id="apsolu-wishes-filters">
-		<fieldset class="clearfix collapsible collapsed containsadvancedelements">
-			<legend class="sr-only">Filtres</legend>
-			<div class="row">
-				{{# filters}}
-					<p class="col-md-12">{{{.}}}</p>
-				{{/ filters}}
-			</div>
-		</fieldset>
-
-		<p class="text-right">
-			<input type="submit" value="Filtrer" id="filters-submit" />
-			<span id="filters-reset" class="btn btn-default">Réinitialiser les filtres</span>
-		</p>
-	</form>
-<!-- </div> -->
+	<p class="text-right">
+		<input type="submit" value="Filtrer" id="filters-submit" />
+		<span id="filters-reset" class="btn btn-default">{{#str}}reset_filters,enrol_select{{/str}}</span>
+	</p>
+</form>
