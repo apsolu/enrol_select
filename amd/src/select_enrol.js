@@ -43,7 +43,7 @@ define(['jquery'], function($) {
 
             // Lorsqu'on clique sur le bouton "s'inscrire/se désinscrire"...
             function set_edit_actions() {
-                $('#apsolu-enrol-form #id_enrolbutton, #apsolu-enrol-form #id_unenrolbutton').click(function(event) {
+                $('#apsolu-enrol-form #id_enrolbutton, #apsolu-enrol-form #id_unenrolbutton, #apsolu-enrol-form #id_editenrol').click(function(event) {
                     event.preventDefault();
 
                     console.log('click sur un bouton');
@@ -57,6 +57,8 @@ define(['jquery'], function($) {
 
                     if ($(this).attr('id') == 'id_unenrolbutton') {
                         var actions = {_qf__enrol_select_form: 1, sesskey: sesskey, enrolid: enrolid, unenrolbutton: 1};
+                    } else if ($(this).attr('id') == 'id_editenrol') {
+                        var actions = {_qf__enrol_select_form: 1, sesskey: sesskey, enrolid: enrolid, editenrol: 1};
                     } else {
                         var federation = $('#apsolu-enrol-form form select[name=federation] option:selected').val();
                         if (federation) {
