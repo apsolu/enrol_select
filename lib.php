@@ -241,7 +241,7 @@ class enrol_select_plugin extends enrol_plugin {
 
         // Dirty hack pour les activités complémentaires !
         // À virer, et mettre des auto-inscriptions à la place.
-        if ($roleid === 5) {
+        if ($roleid == 5) {
             return true;
         }
 
@@ -259,8 +259,8 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         if ($available === false) {
-            $role = current(role_fix_names(array($roleid => $DB->get_record('role', array('id' => $roleid)))));
-            debugging(get_string('error_reach_wishes_limit', 'enrol_select', $role->localname));
+            // $role = current(role_fix_names(array($roleid => $DB->get_record('role', array('id' => $roleid)))));
+            // debugging(get_string('error_reach_wishes_limit', 'enrol_select', $role->localname));
             return false;
         }
 

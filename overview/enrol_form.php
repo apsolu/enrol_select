@@ -32,7 +32,7 @@ class enrol_select_form extends moodleform {
         global $CFG, $DB;
 
         $mform = $this->_form;
-        list($instance, $roles) = $this->_customdata;
+        list($instance, $roles, $federations, $federationrequirement) = $this->_customdata;
 
         // Course field.
         $mform->addElement('text', 'fullname', get_string('course'), array('readonly' => 1, 'size' => '48'));
@@ -40,6 +40,7 @@ class enrol_select_form extends moodleform {
 
         // Roles field.
         if (empty($instance->role) || isset($instance->edit)) {
+            // Inscription ou modification d'inscription.
             if (count($roles) === 1) {
                 $attributes = array('disabled' => 1, 'size' => '48');
                 $mform->addElement('text', 'fakerole', get_string('role', 'local_apsolu_courses'), $attributes);
@@ -53,7 +54,27 @@ class enrol_select_form extends moodleform {
                 $mform->addRule('role', get_string('required'), 'required', null, 'client');
             }
             $mform->setType('role', PARAM_INT);
+
+            // Federations fields.
+            if ($federations !== array()) {
+                $mform->addElement('select', 'federation', get_string('federation', 'local_apsolu_courses'), $federations);
+                $mform->setType('federation', PARAM_INT);
+            }
+
+            if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_TRUE) {
+                $attributes = array('disabled' => 1, 'size' => '48');
+                $mform->addElement('text', 'fakefederation', get_string('federation_required', 'enrol_select'), $attributes);
+                $mform->setType('fakefederation', PARAM_TEXT);
+                $mform->setDefault('fakefederation', get_string('yes'));
+
+                $mform->addElement('hidden', 'federation', '1');
+                $mform->setType('federation', PARAM_INT);
+            } else if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_OPTIONAL) {
+                $mform->addElement('selectyesno', 'federation', get_string('federation_optional', 'enrol_select'));
+                $mform->setType('federation', PARAM_INT);
+            }
         } else {
+            // Désinscription.
             $mform->addElement('text', 'role', get_string('role', 'local_apsolu_courses'), array('readonly' => 1, 'size' => '48'));
             $mform->setType('role', PARAM_TEXT);
             $instance->role = $roles[$instance->role];
@@ -88,8 +109,7 @@ class enrol_select_form extends moodleform {
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
 
         // Static text about roles.
-        $mform->addElement('html', '<div class="alert alert-info"><p>Seule la première inscription par type de voeux est payante. Les inscriptions suivantes sont gratuites.</p>'.
-            '<p>Example: 1 inscription en libre est également à 30€. 2 inscriptions en libre sont égales aussi à 30€ (et non 60€).</p></div>');
+        $mform->addElement('html', get_string('html_role_notifications', 'enrol_select'));
 
         // Hidden fields.
         $mform->addElement('hidden', 'enrolid', $instance->enrolid);

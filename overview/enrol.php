@@ -22,9 +22,14 @@
 
 use UniversiteRennes2\Apsolu as apsolu;
 
+define('APSOLU_FEDERATION_REQUIREMENT_FALSE', 0);
+define('APSOLU_FEDERATION_REQUIREMENT_TRUE', 1);
+define('APSOLU_FEDERATION_REQUIREMENT_OPTIONAL', 2);
+
 require(__DIR__.'/../../../config.php');
 require(__DIR__.'/enrol_form.php');
 require(__DIR__.'/../locallib.php');
+require_once($CFG->dirroot.'/group/lib.php');
 require_once($CFG->dirroot.'/lib/enrollib.php');
 require_once($CFG->dirroot.'/enrol/select/lib.php');
 
@@ -53,12 +58,30 @@ foreach (apsolu\get_potential_user_roles($userid = null, $enrol->courseid) as $r
     $instance->role = $role->id;
 }
 
-$iscomplement = $DB->get_record('apsolu_complements', array('id' => $enrol->courseid));
+$federations = array();
+$federationrequirement = APSOLU_FEDERATION_REQUIREMENT_FALSE;
+$complement = $DB->get_record('apsolu_complements', array('id' => $enrol->courseid));
 
 // Vérifie que le cours est ouvert à cet utilisateur.
-if ($instance->role === '') {
+if ($complement !== false) {
+    if ($complement->federation === '1') {
+        $sql = "SELECT cc.id, cc.name".
+            " FROM {course_categories} cc".
+            " JOIN {apsolu_courses_categories} acc ON cc.id = acc.id".
+            " WHERE acc.federation = 1".
+            " ORDER BY cc.name";
+
+        $federations = array();
+        foreach ($DB->get_records_sql($sql) as $federation) {
+            $federations[$federation->id] = $federation->name;
+        }
+    }
+
+    // Génère un tableau de type array(5 => 'Étudiant').
+    $roles = array(5 => current(role_fix_names(array(5 => $DB->get_record('role', array('id' => 5)))))->localname);
+} else {
     // L'utilisateur n'est pas inscrit à ce cours...
-    if (!$iscomplement) {
+    if ($instance->role === '') {
         // Est-ce que le cours est plein ?
         $sql = "SELECT userid FROM {user_enrolments} WHERE enrolid = ? AND status IN (0, 2)";
         $mainlistenrolements = $DB->get_records_sql($sql, array($enrol->id));
@@ -115,13 +138,7 @@ if ($instance->role === '') {
             print_error('error_reach_wishes_limit', 'enrol_select', '', $role->name);
         }
     } else {
-        // Génère un tableau de type array(5 => 'Étudiant').
-        $roles = array(5 => current(role_fix_names(array(5 => $DB->get_record('role', array('id' => 5)))))->localname);
-    }
-} else {
-    // Si l'utilisateur est déjà inscrit à ce cours.
-
-    if (!$iscomplement) {
+        // Si l'utilisateur est déjà inscrit à ce cours.
         $roles = apsolu\get_potential_user_roles();
 
         foreach ($roles as $roleid => $role) {
@@ -136,9 +153,23 @@ if ($instance->role === '') {
                 $roles[$roleid] = $role->localname;
             }
         }
+    }
+
+    // Détermine si il possible/obligatoire de s'inscrire à la FFSU.
+    $apsolucourse = $DB->get_record('apsolu_courses', array('id' => $enrol->courseid));
+    if ($apsolucourse->license === '1') {
+        // FFSU obligatoire.
+        $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_TRUE;
+        $instance->federation = 1;
     } else {
-        // Génère un tableau de type array(5 => 'Étudiant').
-        $roles = array(5 => current(role_fix_names(array(5 => $DB->get_record('role', array('id' => 5)))))->localname);
+        $category = $DB->get_record('apsolu_courses_categories', array('id' => $course->category, 'federation' => 1));
+        if ($category === false) {
+            // FFSU non disponible.
+            $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_FALSE;
+        } else {
+            // FFSU facultatif.
+            $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_OPTIONAL;
+        }
     }
 }
 
@@ -147,7 +178,7 @@ if (isset($edit)) {
 }
 
 // Build form.
-$customdata = array($instance, $roles);
+$customdata = array($instance, $roles, $federations, $federationrequirement);
 $actionurl = $CFG->wwwroot.'/enrol/select/overview/enrol.php?enrolid='.$enrolid;
 $mform = new enrol_select_form($actionurl, $customdata);
 
@@ -167,23 +198,88 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
 
         echo $OUTPUT->notification(get_string('changessaved'), 'notifysuccess');
         if (defined('AJAX_SCRIPT')) {
-            echo '<div class="alert alert-success"><p>'.get_string('changessaved').'</p></div>';
+            echo '<div class="alert alert-success"><p>ajax script: '.get_string('changessaved').'</p></div>';
         }
 
         $href = $CFG->wwwroot.'/enrol/select/overview.php';
         echo '<p class="text-center"><a class="btn btn-default apsolu-cancel-a" href="'.$href.'">Continuer</a></p>';
     } else {
         // Enrol.
-        if ($enrolselectplugin->can_enrol($instance, $USER, $data->role)) {
+        if (ctype_digit((string) $data->role) === false) {
+            print_error('error_cannot_enrol', 'enrol_select');
+        } else if ($enrolselectplugin->can_enrol($instance, $USER, $data->role)) {
             $timestart = time();
             $timeend = 0;
             $status = current($enrolselectplugin->available_status);
             $recovergrades = null;
             $enrolselectplugin->enrol_user($instance, $USER->id, $data->role, $timestart, $timeend, $status, $recovergrades);
 
+            if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_TRUE ||
+                ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_OPTIONAL &&
+                isset($data->federation) && $data->federation === '1')) {
+
+                $data->federation = $course->category;
+
+                $sql = "SELECT cc.id, cc.name".
+                    " FROM {course_categories} cc".
+                    " JOIN {apsolu_courses_categories} acc ON cc.id = acc.id".
+                    " WHERE acc.federation = 1".
+                    " ORDER BY cc.name";
+
+                $federations = array();
+                foreach ($DB->get_records_sql($sql) as $federation) {
+                    $federations[$federation->id] = $federation->name;
+                }
+
+                $federationcourse = $DB->get_record('apsolu_complements', array('federation' => 1));
+                $conditions = array('enrol' => 'select', 'status' => 0, 'courseid' => $federationcourse->id);
+                $federationinstance = $DB->get_record('enrol', $conditions);
+                if ($federationcourse === false || $federationinstance === false) {
+                    // Do not process.
+                    unset($data->federation);
+                } else {
+                    $federationcourseid = $federationcourse->id;
+                    $federationrole = 5; // Student.
+                    $enrolselectplugin->enrol_user($federationinstance, $USER->id, $federationrole, $timestart, $timeend, $status, $recovergrades);
+                }
+            } else if (isset($data->federation)) {
+                $federationcourseid = $enrol->courseid;
+            }
+
+            if (isset($data->federation, $federations[$data->federation])) {
+                // Inscrire dans le groupe de FFSU.
+                $group = new stdClass();
+                $group->name = $federations[$data->federation];
+                $group->courseid = $federationcourseid;
+                $group->id = groups_get_group_by_name($group->courseid, $federations[$data->federation]);
+                if ($group->id === false) {
+                    $group->id = groups_create_group($group);
+                }
+
+                $ismember = false;
+                $ismembersomewhere = false;
+                $groups = groups_get_user_groups($federationcourseid, $USER->id);
+                foreach ($groups as $groupsid) {
+                    foreach ($groupsid as $groupid) {
+                        if ($groupid === $group->id) {
+                            $ismember = true;
+                        } else if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_FALSE) {
+                            // On désinscrit uniquement du groupe, si on modifie via le formulaire de la licence FFSU.
+                            groups_delete_group_members($group->courseid, $USER->id);
+                        } else {
+                            $ismembersomewhere = true;
+                        }
+                    }
+                }
+
+                if ($ismember === false && $ismembersomewhere === false) {
+                    groups_add_member($group->id, $USER->id);
+                }
+            }
+
             echo $OUTPUT->notification(get_string('changessaved'), 'notifysuccess');
             if (defined('AJAX_SCRIPT')) {
-                echo '<div class="alert alert-success"><p>'.get_string('changessaved').'</p></div>';
+                echo '<div class="alert alert-success"><p>ajax_script: '.get_string('changessaved').'</p></div>';
             }
 
             $href = $CFG->wwwroot.'/enrol/select/overview.php';

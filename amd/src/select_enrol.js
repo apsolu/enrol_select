@@ -48,17 +48,22 @@ define(['jquery'], function($) {
 
                     console.log('click sur un bouton');
 
-                    var role = $('#apsolu-enrol-form form option:selected').val();
+                    var role = $('#apsolu-enrol-form form select[name=role] option:selected').val();
+                    if (role == undefined) {
+                       var role = $('#apsolu-enrol-form form input[name=role]').val();
+                    }
                     var enrolid = $('#apsolu-enrol-form form input[name=enrolid]').val();
                     var sesskey = $('#apsolu-enrol-form form input[name=sesskey]').val();
-                    console.log(role);
-                    console.log(enrolid);
-                    console.log(sesskey);
 
                     if ($(this).attr('id') == 'id_unenrolbutton') {
                         var actions = {_qf__enrol_select_form: 1, sesskey: sesskey, enrolid: enrolid, unenrolbutton: 1};
                     } else {
-                        var actions = {fullname: '1', enrolid: enrolid, role: role, enrolbutton: 1, _qf__enrol_select_form: 1, sesskey: sesskey};
+                        var federation = $('#apsolu-enrol-form form select[name=federation] option:selected').val();
+                        if (federation) {
+                            var actions = {fullname: '1', enrolid: enrolid, role: role, federation: federation, enrolbutton: 1, _qf__enrol_select_form: 1, sesskey: sesskey};
+                        } else {
+                            var actions = {fullname: '1', enrolid: enrolid, role: role, enrolbutton: 1, _qf__enrol_select_form: 1, sesskey: sesskey};
+                        }
                     }
 
                     console.log(actions);

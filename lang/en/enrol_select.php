@@ -42,9 +42,11 @@ $string['max_places'] = 'Nombre de places sur liste principale';
 $string['overviewtitle'] = 'Inscription aux activités';
 
 $string['activities_list'] = 'Liste des créneaux par activité';
+$string['activities'] = 'Activités sportives';
 $string['no_activities'] = 'Aucune activité ouverte aux inscriptions.';
 
 $string['complements_list'] = 'Liste des activités complémentaires';
+$string['complements'] = 'Activités complémentaires';
 $string['no_complements'] = 'Aucune activité complémentaire ouverte aux inscriptions.';
 
 $string['max_waiting_places'] = 'Nombre de places sur liste complémentaire';
@@ -129,6 +131,13 @@ $string['sex'] = 'Sexe';
 $string['register_type'] = 'Type d\'inscription';
 $string['paid'] = 'Carte sport payée';
 $string['list'] = 'Liste';
+
+// Licence FFSU.
+$string['federation_required'] = 'FFSU (obligatoire)';
+$string['federation_optional'] = 'FFSU (facultatif)';
+
+$string['html_role_notifications'] = '<div class="alert alert-info"><p>Seule la première inscription par type de voeux est payante. Les inscriptions suivantes sont gratuites.</p>'.
+    '<p>Example: 1 inscription en libre est également à 30€. 2 inscriptions en libre sont égales aussi à 30€ (et non 60€).</p></div>';
 
 $string['error_no_left_slot'] = 'Il n\'y a pas plus de place disponible pour ce cours.';
 $string['error_reach_wishes_limit'] = 'Vous avez atteint le nombre maximum de voeux de type {$a}.';
