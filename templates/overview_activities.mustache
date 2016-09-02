@@ -72,7 +72,10 @@
 							{{/enroled}}
 						</td>
 						<td class="apsolu-categories-col">{{grouping}}</td>
-						<td>{{sport}}</td>
+						<td>
+							<div>{{sport}}</div>
+							{{#event}}<div><i>{{event}}</i></div>{{/event}}
+						</td>
 						<td>{{weekday_locale}}</td>
 						<td>{{starttime}}</td>
 						<td>{{endtime}}</td>

@@ -43,7 +43,7 @@ define(['jquery', 'enrol_select/select2'], function($) {
                                             found = row.children().eq(colnum).html().indexOf(text) > -1;
                                         } else if (colname == 'starttime' || colname == 'endtime') {
                                             found = row.children().eq(colnum).text().substr(0, 3) == text.substr(0, 2)+':';
-                                        } else if (colname == 'area') {
+                                        } else if (colname == 'sport' || colname == 'area') {
                                             // console.log('area: '+row.children().eq(colnum).children().eq(0).text()+'=='+text);
                                             found = row.children().eq(colnum).children().eq(0).text() == text;
                                         } else {
