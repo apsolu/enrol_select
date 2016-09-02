@@ -139,3 +139,8 @@ button.uncheckall {
 .apsolu-roles-libre {
     background-image: url('[[pix:enrol_select|i/grade_libre]]');
 }
+
+#page-enrol-select-overview .moodle-dialogue,
+#page-enrol-select-overview .moodle-dialogue-base {
+    z-index: 100002 !important;
+}

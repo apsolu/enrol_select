@@ -64,6 +64,7 @@ class enrol_select_form extends moodleform {
             if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_TRUE) {
                 $attributes = array('disabled' => 1, 'size' => '48');
                 $mform->addElement('text', 'fakefederation', get_string('federation_required', 'enrol_select'), $attributes);
+                $mform->addHelpButton('fakefederation', 'federation_required', 'enrol_select');
                 $mform->setType('fakefederation', PARAM_TEXT);
                 $mform->setDefault('fakefederation', get_string('yes'));
 
@@ -71,6 +72,7 @@ class enrol_select_form extends moodleform {
                 $mform->setType('federation', PARAM_INT);
             } else if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_OPTIONAL) {
                 $mform->addElement('selectyesno', 'federation', get_string('federation_optional', 'enrol_select'));
+                $mform->addHelpButton('federation', 'federation_optional', 'enrol_select');
                 $mform->setType('federation', PARAM_INT);
             }
         } else {

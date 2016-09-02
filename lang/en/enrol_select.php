@@ -139,8 +139,10 @@ $string['paid'] = 'Carte sport payée';
 $string['list'] = 'Liste';
 
 // Licence FFSU.
-$string['federation_required'] = 'FFSU (obligatoire)';
-$string['federation_optional'] = 'FFSU (facultatif)';
+$string['federation_required'] = 'Adhésion à l\'association sportive (obligatoire)';
+$string['federation_required_help'] = 'L\'adhésion à l\'association sportive permet de faire des compétitions en dehors des heures de cours. Elle coûte 15€ et vous fait adhérer automatiquement à la Fédération Française des Sports Universitaires (FFSU)';
+$string['federation_optional'] = 'Adhésion à l\'association sportive (facultatif)';
+$string['federation_optional_help'] = $string['federation_required_help'];
 
 $string['html_role_notifications'] = '<div class="alert alert-info"><p>Seule la première inscription par type de voeux est payante. Les inscriptions suivantes sont gratuites.</p>'.
     '<p>Example: La 1ère inscription en libre (non évaluée) est égale à 40€. La 2nd inscription en libre est gratuite. Vous payerez au total 40€ (et non 80€).</p></div>';
