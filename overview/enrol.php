@@ -198,7 +198,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
 
         echo $OUTPUT->notification(get_string('changessaved'), 'notifysuccess');
         if (defined('AJAX_SCRIPT')) {
-            echo '<div class="alert alert-success"><p>ajax script: '.get_string('changessaved').'</p></div>';
+            echo '<div class="alert alert-success"><p>'.get_string('changessaved').'</p></div>';
         }
 
         $href = $CFG->wwwroot.'/enrol/select/overview.php';
@@ -279,7 +279,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
 
             echo $OUTPUT->notification(get_string('changessaved'), 'notifysuccess');
             if (defined('AJAX_SCRIPT')) {
-                echo '<div class="alert alert-success"><p>ajax_script: '.get_string('changessaved').'</p></div>';
+                echo '<div class="alert alert-success"><p>'.get_string('changessaved').'</p></div>';
             }
 
             $href = $CFG->wwwroot.'/enrol/select/overview.php';
