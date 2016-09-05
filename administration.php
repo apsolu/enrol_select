@@ -26,8 +26,6 @@ require_once($CFG->libdir.'/adminlib.php');
 $tab = optional_param('tab', 'register_types', PARAM_TEXT);
 $action = optional_param('action', 'view', PARAM_ALPHA);
 
-$context = context_user::instance($USER->id);
-
 $tabslist = array('colleges');
 
 $tabsbar = array();
@@ -41,14 +39,6 @@ if (!in_array($tab, $tabslist, true)) {
 }
 
 admin_externalpage_setup('enrol_select_'.$tab);
-
-$PAGE->set_url('/enrol/apsolu/administration.php');
-$PAGE->set_pagelayout('admin');
-
-$PAGE->set_context($context);
-
-$PAGE->set_heading(get_string('wishes', 'enrol_select'));
-$PAGE->set_title(get_string('pluginname', 'enrol_select'));
 
 echo $OUTPUT->header();
 
