@@ -41,7 +41,7 @@ $string['max_places'] = 'Nombre de places sur liste principale';
 $string['free_places'] = 'Places disponibles';
 
 $string['overviewtitle'] = 'Inscription aux activités';
-
+$string['back_to_dashboard'] = 'Revenir à mon tableau de bord';
 
 // Bloc filtres.
 $string['filters'] = 'Filtres';
