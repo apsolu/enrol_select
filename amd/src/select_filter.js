@@ -9,7 +9,7 @@ define(['jquery', 'enrol_select/select2'], function($) {
                 rows.css("display", "table-row");
 
                 var selections = $("#apsolu-wishes-filters .select2-selection__clear");
-                console.log('selection__clear: '+selections.length);
+                // console.log('selection__clear: '+selections.length);
                 if (selections.length != 0) {
                     rows.each(function(){
                         var row = $(this);

@@ -8,7 +8,7 @@ define(['jquery'], function($) {
             $('.apsolu-enrol-a').click(function(event){
                 event.preventDefault();
 
-                console.log('call popup');
+                // console.log('call popup');
 
                 var enrolid = $(this).data('enrolid');
 
@@ -46,7 +46,7 @@ define(['jquery'], function($) {
                 $('#apsolu-enrol-form #id_enrolbutton, #apsolu-enrol-form #id_unenrolbutton, #apsolu-enrol-form #id_editenrol').click(function(event) {
                     event.preventDefault();
 
-                    console.log('click sur un bouton');
+                    // console.log('click sur un bouton');
 
                     var role = $('#apsolu-enrol-form form select[name=role] option:selected').val();
                     if (role == undefined) {
@@ -68,7 +68,7 @@ define(['jquery'], function($) {
                         }
                     }
 
-                    console.log(actions);
+                    // console.log(actions);
                     $.ajax({
                             url: wwwroot+"/enrol/select/ajax/enrol.php",
                             type: 'POST',
@@ -108,7 +108,7 @@ define(['jquery'], function($) {
                 $('.apsolu-cancel-a').click(function(event){
                     event.preventDefault();
 
-                    console.log('call cancel');
+                    // console.log('call cancel');
 
                     $('#apsolu-enrol-form').popup('hide');
                     // $('#apsolu-enrol-form').remove();
