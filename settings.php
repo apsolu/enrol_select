@@ -38,5 +38,5 @@ if ($hassiteconfig or has_any_capability($capabilities, context_system::instance
     $ADMIN->add('apsolu', new admin_category('enrol_select', 'Gestion des inscriptions'));
 
     $url = new moodle_url('/enrol/select/administration.php?tab=colleges');
-    $ADMIN->add('enrol_select', new admin_externalpage('enrol_select_colleges', get_string('colleges', 'enrol_select'), $url));
+    $ADMIN->add('enrol_select', new admin_externalpage('enrol_select_colleges', get_string('colleges', 'enrol_select'), $url, $capabilities));
 }
