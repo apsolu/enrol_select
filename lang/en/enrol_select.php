@@ -41,7 +41,9 @@ $string['max_places'] = 'Nombre de places sur liste principale';
 $string['free_places'] = 'Places disponibles';
 
 $string['overviewtitle'] = 'Inscription aux activités';
+$string['overviewtitlemanager'] = 'Inscription aux activités (vue gestionnaire)';
 $string['back_to_dashboard'] = 'Revenir à mon tableau de bord';
+$string['overview_manager_link'] = 'Voir la liste des cours en tant que gestionnaire';
 
 // Bloc filtres.
 $string['filters'] = 'Filtres';

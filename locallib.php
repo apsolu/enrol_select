@@ -254,7 +254,7 @@ function get_potential_user_roles($userid = null, $courseid = null) {
     return $roles;
 }
 
-function get_potential_user_activities() {
+function get_potential_user_activities($manager = false) {
     global $DB, $USER;
 
     $groupings = get_visible_activities_domains();
@@ -298,9 +298,15 @@ function get_potential_user_activities() {
         " WHERE e.enrol = 'select'".
         " AND e.status = 0".
         " AND (e.enrolstartdate = 0 OR e.enrolstartdate < ?)".
-        " AND (e.enrolenddate = 0 OR e.enrolenddate > ?)".
-        " AND cm.userid = ?";
-    $enrols = $DB->get_records_sql($sql, array($now, $now, $USER->id));
+        " AND (e.enrolenddate = 0 OR e.enrolenddate > ?)";
+    $params = array($now, $now);
+
+    if ($manager === false) {
+        $sql .= " AND cm.userid = ?";
+        $params[] = $USER->id;
+    }
+
+    $enrols = $DB->get_records_sql($sql, $params);
     foreach ($enrols as $enrol) {
         if (!isset($courses[$enrol->courseid])) {
             continue;
@@ -326,7 +332,7 @@ function get_potential_user_activities() {
         }
 
         // Il y a trop de méthodes !
-        if (isset($courses[$courseid]->enrols[1])) {
+        if (isset($courses[$courseid]->enrols[1]) && $manager === false) {
             debugging('Course #'.$course->id.': too much enrol ! (user #'.$USER->id.')');
             unset($courses[$courseid]);
             continue;
