@@ -214,13 +214,6 @@ class enrol_select_plugin extends enrol_plugin {
             return false;
         }
 
-        // Check available slots.
-        $this->set_available_status($instance, $user);
-        if ($this->available_status === array()) {
-            debugging($this->get_name().' have no free slot anymore.');
-            return false;
-        }
-
         // Check cohorts.
         if ($instance->customint3 === '1') {
             $usercohorts = $DB->get_records('cohort_members', array('userid' => $user->id));
@@ -243,6 +236,14 @@ class enrol_select_plugin extends enrol_plugin {
         // À virer, et mettre des auto-inscriptions à la place.
         if ($roleid == 5) {
             return true;
+        }
+
+        // Check available slots.
+        // TODO: la méthode set_available_status() ne gère pas correctement les no quotas.
+        $this->set_available_status($instance, $user);
+        if ($this->available_status === array()) {
+            debugging($this->get_name().' have no free slot anymore.');
+            return false;
         }
 
         // Check user limit.
