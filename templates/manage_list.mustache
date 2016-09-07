@@ -2,6 +2,10 @@
 	<h3 class="apsolu-manage-users-h3">{{name}}</h3>
 
 	<div class="apsolu-manage-users-content-div">
+		<ul class="list list-inline text-right">
+			<li><a class="btn btn-primary" href="{{wwwroot}}/enrol/select/export.php?enrolid={{enrolid}}&status={{status}}&format=xls">Exporter au format excel</a></li>
+		</ul>
+
 		<div class="alert alert-info">{{description}}</div>
 
 		{{^users}}<p class="alert alert-warning text-center">Aucun utilisateur dans cette liste</p>{{/users}}
@@ -18,7 +22,7 @@
 						<th>Type d'inscription</th>
 						<th>Établissement</th>
 						<th>Département</th>
-						<th>Autres inscriptions</th>
+						<th>Toutes les inscriptions</th>
 						<th>Date d'inscription</th>
 					</tr>
 				</thead>

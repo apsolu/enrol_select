@@ -24,9 +24,12 @@ use UniversiteRennes2\Apsolu as apsolu;
 
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/locallib.php');
-require_once($CFG->libdir . '/csvlib.class.php');
+require_once($CFG->libdir.'/csvlib.class.php');
+require_once($CFG->libdir.'/excellib.class.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
+$exportformat = optional_param('format', 'csv', PARAM_ALPHA);
+$exportstatus = optional_param('status', null, PARAM_INT);
 
 $instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
@@ -51,6 +54,14 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 
 $roles = role_fix_names($DB->get_records('role'));
 
+$params = array('enrolid' => $enrolid, 'courseid' => $course->id);
+if (isset($exportstatus)) {
+    $conditions = ' AND ue.status = :status';
+    $params['status'] = $exportstatus;
+} else {
+    $conditions = '';
+}
+
 $sql = 'SELECT DISTINCT u.*, ra.roleid, ue.timecreated, ue.status'.
     ' FROM {user} u'.
     ' JOIN {user_enrolments} ue ON u.id = ue.userid'.
@@ -59,30 +70,33 @@ $sql = 'SELECT DISTINCT u.*, ra.roleid, ue.timecreated, ue.status'.
     ' JOIN {context} ctx ON ctx.id = ra.contextid'.
     ' WHERE ue.enrolid = :enrolid'.
     ' AND ctx.instanceid = :courseid'.
-    ' AND ctx.contextlevel = 50'.
+    ' AND ctx.contextlevel = 50'.$conditions.
     ' ORDER BY ue.status, u.lastname, u.firstname, u.institution, u.department';
-$users = $DB->get_records_sql($sql, array('enrolid' => $enrolid, 'courseid' => $course->id));
+$users = $DB->get_records_sql($sql, $params);
 
 // Génération du fichier csv.
 $filename = str_replace(' ', '_', strtolower($course->fullname));
 
 $headers = array(
-    get_string('firstname'),
     get_string('lastname'),
-    get_string('age', 'enrol_select'),
-    get_string('birthday', 'enrol_select'),
-    get_string('sex', 'enrol_select'),
-    get_string('register_type', 'enrol_select'),
+    get_string('firstname'),
     get_string('institution'),
+    'UFR',
     get_string('department'),
+    'LMD',
+    get_string('register_type', 'enrol_select'),
     get_string('paid', 'enrol_select'),
-    get_string('list', 'enrol_select'),
 );
 
-$csvexport = new \csv_export_writer();
-$csvexport->set_filename($filename);
-$csvexport->add_data($headers);
+if (!isset($exportstatus)) {
+    $headers[] = get_string('list', 'enrol_select');
+}
 
+$headers[] = 'texte libre';
+$headers[] = 'texte libre';
+$headers[] = 'texte libre';
+
+$rows = array();
 foreach ($users as $user) {
     $sex = '';
     $birthday = '';
@@ -94,6 +108,8 @@ foreach ($users as $user) {
     $userfields = $DB->get_records('user_info_data', array('userid' => $user->id), $sort = '', $columns = 'fieldid, data');
     foreach ($fields as $fieldid => $field) {
         switch($field->shortname) {
+            case 'ufr':
+            case 'lmd':
             case 'sex':
             case 'birthday':
             case 'option_paid':
@@ -105,6 +121,8 @@ foreach ($users as $user) {
                 break;
         }
     }
+    $paid = $roles[$user->roleid]->shortname.'paid';
+
 
     try {
         $birthdayday = substr($birthday, 0, 2);
@@ -118,22 +136,61 @@ foreach ($users as $user) {
     }
 
     $row = array();
-    $row[] = $user->firstname;
     $row[] = $user->lastname;
-    $row[] = $age;
-    $row[] = $birthday;
-    $row[] = $sex;
-    $row[] = $roles[$user->roleid]->localname;
+    $row[] = $user->firstname;
     $row[] = $user->institution;
+    $row[] = (isset($user->ufr)) ? $user->ufr : '';
     $row[] = $user->department;
-    $paid = $roles[$user->roleid]->shortname.'paid';
+    $row[] = (isset($user->lmd)) ? $user->lmd : '';
+    $row[] = $roles[$user->roleid]->localname;
     $row[] = (${$paid} === '1') ? get_string('yes') : get_string('no');
-    $state = enrol_select_plugin::$states[$user->status];
-    $row[] = get_string($state.'_list', 'enrol_select');
+    if (!isset($exportstatus)) {
+        $state = enrol_select_plugin::$states[$user->status];
+        $row[] = get_string($state.'_list', 'enrol_select');
+    }
+    $row[] = '';
+    $row[] = '';
+    $row[] = '';
 
-    $csvexport->add_data($row);
+    $rows[] = $row;
 }
 
-$csvexport->download_file();
+
+switch ($exportformat) {
+    case 'xls':
+        // Creating a workbook.
+        $workbook = new MoodleExcelWorkbook("-");
+        // Sending HTTP headers.
+        $workbook->send($filename);
+        // Adding the worksheet.
+        $myxls = $workbook->add_worksheet();
+
+        $excelformat = new MoodleExcelFormat(array('border' => PHPExcel_Style_Border::BORDER_THIN));
+
+        // Set headers.
+        foreach ($headers as $column => $value) {
+            $myxls->write_string(0, $column, $value, $excelformat);
+        }
+
+        // Set data.
+        foreach ($rows as $line => $row) {
+            $line++;
+            foreach ($row as $column => $value) {
+                $myxls->write_string($line, $column, $value, $excelformat);
+            }
+        }
+        $workbook->close();
+        break;
+    case 'csv':
+    default:
+        $csvexport = new \csv_export_writer();
+        $csvexport->set_filename($filename);
+        $csvexport->add_data($headers);
+        foreach ($rows as $row) {
+            $csvexport->add_data($row);
+        }
+
+        $csvexport->download_file();
+}
 
 exit(0);

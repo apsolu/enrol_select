@@ -73,6 +73,8 @@ foreach (enrol_select_plugin::$states as $code => $state) {
 }
 
 $enrollinks = new stdClass();
+$enrollinks->wwwroot = $CFG->wwwroot;
+$enrollinks->enrolid = $enrolid;
 $enrollinks->enrol_user_link = $CFG->wwwroot.'/enrol/select/enrol.php?enrolid='.$enrolid;
 $enrollinks->unenrol_user_link = $CFG->wwwroot.'/enrol/select/unenrol.php?enrolid='.$enrolid;
 
@@ -85,6 +87,7 @@ foreach (enrol_select_plugin::$states as $code => $state) {
     $data->name = get_string($state.'_list', 'enrol_select');
     $data->description = get_string($state.'_description', 'enrol_select');
     $data->roles = $roles;
+    $data->status = $code;
     $data->form_action = $CFG->wwwroot.'/enrol/select/manage_notify.php?enrolid='.$enrolid;
     $data->enrol_user_link = $CFG->wwwroot.'/enrol/select/add.php?enrolid='.$enrolid.'&status='.$code;
     $data->users = array();
