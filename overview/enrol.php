@@ -75,10 +75,12 @@ if ($complement !== false) {
         foreach ($DB->get_records_sql($sql) as $federation) {
             $federations[$federation->id] = $federation->name;
         }
-    }
 
-    // Génère un tableau de type array(5 => 'Étudiant').
-    $roles = array(5 => current(role_fix_names(array(5 => $DB->get_record('role', array('id' => 5)))))->localname);
+        // Génère un tableau de type array(5 => 'Adhérent de l\'association').
+        $roles = array(5 => 'Adhérent de l\'association sportive');
+    } else {
+        $roles = array(5 => 'Libre accès');
+    }
 } else {
     // L'utilisateur n'est pas inscrit à ce cours...
     if ($instance->role === '') {
