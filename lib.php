@@ -27,6 +27,7 @@ class enrol_select_plugin extends enrol_plugin {
         0 => 'accepted',
         2 => 'main',
         3 => 'wait',
+        4 => 'deleted',
     );
 
     public function get_name() {

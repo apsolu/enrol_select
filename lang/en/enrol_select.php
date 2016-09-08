@@ -77,7 +77,8 @@ $string['main_list_registered'] = 'Inscrit sur liste principale';
 $string['wait_list'] = 'Liste complémentaire';
 $string['wait_description'] = 'Liste des étudiants sur liste complémentaire. Ils n\'ont accès ni aux forums, ni aux documents du cours. Seule la première session du cours est indiquée leur page d\'accueil.';
 $string['wait_list_registered'] = 'Inscrit sur liste complémentaire';
-$string['refused_list'] = 'Liste des étudiants refusés';
+$string['deleted_list'] = 'Liste des étudiants désinscrits';
+$string['deleted_description'] = 'Liste des étudiants désinscrits. Ils n\'ont accès ni aux forums, ni aux documents du cours. Ce cours n\'est pas référencé sur leur page d\'accueil.';
 $string['error:enrol'] = 'Impossible de vous inscrire à ce cours';
 
 $string['enrolment'] = 'Inscription';
@@ -107,12 +108,13 @@ $string['manage_notification_4'] = 'Vous avez été retiré de la liste des étu
 $string['move_to_accepted'] = 'Déplacer dans la liste des étudiants acceptés';
 $string['move_to_main'] = 'Déplacer dans la liste principale';
 $string['move_to_wait'] = 'Déplacer dans la liste complémentaire';
-$string['move_to_refused'] = 'Déplacer dans la liste des étudiants refusés';
+$string['move_to_deleted'] = 'Déplacer dans la liste des étudiants désinscrits';
 
 $string['goto'] = 'Déplacer de la liste {$a->from} vers la liste {$a->to}';
-$string['list_accepted'] = 'acceptée';
+$string['list_accepted'] = '"accepté"';
 $string['list_main'] = 'principale';
 $string['list_wait'] = 'complémentaire';
+$string['list_deleted'] = '"désinscrit"';
 
 $string['message_accepted_to_main'] = 'Bonjour,
 
@@ -120,10 +122,19 @@ Vous avez été déplacé de la liste des inscrits à la liste principale.
 
 Cordialement,';
 $string['message_accepted_to_wait'] = str_replace('principale', 'complémentaire', $string['message_accepted_to_main']);
+$string['message_accepted_to_deleted'] = str_replace('principale', 'déinscrit', $string['message_accepted_to_main']);
+
 $string['message_main_to_accepted'] = str_replace(array('des inscrits', 'complémentaire'), array('principale', 'des inscrits'), $string['message_accepted_to_main']);
 $string['message_main_to_wait'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_wait']);
+$string['message_main_to_deleted'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_deleted']);
+
 $string['message_wait_to_accepted'] = str_replace('principale', 'complémentaire', $string['message_main_to_accepted']);
 $string['message_wait_to_main'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_main']);
+$string['message_wait_to_deleted'] = str_replace('des inscrits', 'complémentaire', $string['message_accepted_to_deleted']);
+
+$string['message_deleted_to_accepted'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste des inscrits', $string['message_accepted_to_main']);
+$string['message_deleted_to_main'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste principale', $string['message_accepted_to_main']);
+$string['message_deleted_to_wait'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste complémentaire', $string['message_accepted_to_main']);
 
 $string['notifystudents'] = 'Notifier les étudiants';
 $string['message'] = 'Message';
