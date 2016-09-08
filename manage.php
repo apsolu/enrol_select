@@ -65,7 +65,8 @@ $sql = 'SELECT u.*, ra.roleid, ue.timecreated'.
     ' WHERE ue.enrolid = :enrolid'.
     ' AND ue.status = :status'.
     ' AND ctx.instanceid = :courseid'.
-    ' AND ctx.contextlevel = 50';
+    ' AND ctx.contextlevel = 50'.
+    ' ORDER BY u.lastname, u.firstname, ue.timecreated';
 
 $options = array();
 foreach (enrol_select_plugin::$states as $code => $state) {
