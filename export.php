@@ -85,6 +85,7 @@ $headers = array(
     get_string('department'),
     'LMD',
     get_string('register_type', 'enrol_select'),
+    'Date d\'inscription',
     get_string('paid', 'enrol_select'),
 );
 
@@ -143,6 +144,7 @@ foreach ($users as $user) {
     $row[] = $user->department;
     $row[] = (isset($user->lmd)) ? $user->lmd : '';
     $row[] = $roles[$user->roleid]->localname;
+    $row[] = userdate($user->timecreated);
     $row[] = (${$paid} === '1') ? get_string('yes') : get_string('no');
     if (!isset($exportstatus)) {
         $state = enrol_select_plugin::$states[$user->status];
