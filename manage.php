@@ -96,6 +96,14 @@ foreach (enrol_select_plugin::$states as $code => $state) {
     $data->enrol_user_link = $CFG->wwwroot.'/enrol/select/add.php?enrolid='.$enrolid.'&status='.$code;
     $data->users = array();
 
+    if ($code == 2) {
+        $data->max_users = $instance->customint1;
+    } else if ($code == 3) {
+        $data->max_users = $instance->customint2;
+    } else {
+        $data->max_users = false;
+    }
+
     $data->count_users = 0;
     foreach ($DB->get_recordset_sql($sql, array('enrolid' => $enrolid, 'status' => $code, 'courseid' => $course->id)) as $user) {
         if (!isset($roles[$user->roleid])) {
