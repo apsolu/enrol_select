@@ -1,6 +1,8 @@
 <ul class="list-inline text-right">
 	<li><a class="btn btn-default" href="{{enrol_user_link}}">{{#pix}}t/enrolusers, core{{/pix}} {{# str}}enrolusers, enrol_manual{{/ str}}</a></li>
+	{{#canunenrol}}
 	<li><a class="btn btn-default" href="{{unenrol_user_link}}">{{#pix}}t/removecontact, core{{/pix}} {{# str}}unenrolusers, enrol_manual{{/ str}}</a></li>
+	{{/canunenrol}}
 </ul>
 
 <div id="apsolu-manage-users">

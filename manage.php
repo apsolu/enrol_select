@@ -38,10 +38,9 @@ $canunenrol = has_capability('enrol/select:unenrol', $context);
 // Note: manage capability not used here because it is used for editing
 // of existing enrolments which is not possible here.
 
-if (!$canenrol and !$canunenrol) {
+if (!$canenrol) {
     // No need to invent new error strings here...
     require_capability('enrol/select:enrol', $context);
-    require_capability('enrol/select:unenrol', $context);
 }
 
 if (!$enrolselect = enrol_get_plugin('select')) {
@@ -78,6 +77,7 @@ $options['changecourse'] = get_string('change_course', 'enrol_select');
 
 $enrollinks = new stdClass();
 $enrollinks->wwwroot = $CFG->wwwroot;
+$enrollinks->canunenrol = $canunenrol;
 $enrollinks->enrolid = $enrolid;
 $enrollinks->enrol_user_link = $CFG->wwwroot.'/enrol/select/enrol.php?enrolid='.$enrolid;
 $enrollinks->unenrol_user_link = $CFG->wwwroot.'/enrol/select/unenrol.php?enrolid='.$enrolid;
