@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
-class enrol_select_manage_notify_form extends moodleform {
+class enrol_select_manage_move_form extends moodleform {
 
     public function definition() {
         global $CFG, $DB;
@@ -39,7 +39,10 @@ class enrol_select_manage_notify_form extends moodleform {
         $strto = enrol_select_plugin::$states[$to];
         $strfrom = enrol_select_plugin::$states[$from];
 
-        $label = get_string('users');
+        $lists = new stdClass();
+        $lists->to = get_string('list_'.$strto, 'enrol_select');
+        $lists->from = get_string('list_'.$strfrom, 'enrol_select');
+        $label = get_string('goto', 'enrol_select', $lists);
 
         $userslist = '<ul class="list list-unstyled">';
         foreach ($users as $user) {
@@ -59,8 +62,13 @@ class enrol_select_manage_notify_form extends moodleform {
         $userslist .= '</ul>';
         $mform->addElement('static', 'users', $label, $userslist);
 
+        $mform->addElement('selectyesno', 'notify', 'Envoyer une notification aux étudiants');
+        $mform->setType('notify', PARAM_INT);
+
         $mform->addElement('textarea', 'message', 'Envoyer un mesage', array('rows' => '15', 'cols' => '50'));
         $mform->setType('message', PARAM_TEXT);
+        $mform->setDefault('message', get_string('message_'.$strfrom.'_to_'.$strto, 'enrol_select'));
+        $mform->disabledIf('message', 'notify', 'eq', 0);
 
         $mform->addElement('hidden', 'actions', $to);
         $mform->setType('actions', PARAM_INT);

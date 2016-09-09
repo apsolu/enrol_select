@@ -27,14 +27,14 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
-class enrol_select_manage_notify_form extends moodleform {
+class enrol_select_manage_editenroltype_form extends moodleform {
 
     public function definition() {
         global $CFG, $DB;
 
         $mform = $this->_form;
 
-        list($instance, $users, $from, $to) = $this->_customdata;
+        list($instance, $users, $from, $to, $roles) = $this->_customdata;
 
         $strto = enrol_select_plugin::$states[$to];
         $strfrom = enrol_select_plugin::$states[$from];
@@ -59,8 +59,8 @@ class enrol_select_manage_notify_form extends moodleform {
         $userslist .= '</ul>';
         $mform->addElement('static', 'users', $label, $userslist);
 
-        $mform->addElement('textarea', 'message', 'Envoyer un mesage', array('rows' => '15', 'cols' => '50'));
-        $mform->setType('message', PARAM_TEXT);
+        $mform->addElement('select', 'roleid', get_string('register_type', 'enrol_select'), $roles);
+        $mform->setType('roleid', PARAM_INT);
 
         $mform->addElement('hidden', 'actions', $to);
         $mform->setType('actions', PARAM_INT);

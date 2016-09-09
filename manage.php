@@ -72,6 +72,9 @@ $options = array();
 foreach (enrol_select_plugin::$states as $code => $state) {
     $options[$code] = get_string('move_to_'.$state, 'enrol_select');
 }
+$options['notify'] = get_string('notify', 'enrol_select');
+$options['editenroltype'] = get_string('editenroltype', 'enrol_select');
+$options['changecourse'] = get_string('change_course', 'enrol_select');
 
 $enrollinks = new stdClass();
 $enrollinks->wwwroot = $CFG->wwwroot;
@@ -89,7 +92,7 @@ foreach (enrol_select_plugin::$states as $code => $state) {
     $data->description = get_string($state.'_description', 'enrol_select');
     $data->roles = $roles;
     $data->status = $code;
-    $data->form_action = $CFG->wwwroot.'/enrol/select/manage_notify.php?enrolid='.$enrolid;
+    $data->form_action = $CFG->wwwroot.'/enrol/select/manage_handler.php?enrolid='.$enrolid;
     $data->enrol_user_link = $CFG->wwwroot.'/enrol/select/add.php?enrolid='.$enrolid.'&status='.$code;
     $data->users = array();
 
@@ -127,7 +130,7 @@ foreach (enrol_select_plugin::$states as $code => $state) {
 
     $htmlselectattributes = array('id' => 'to-'.$state, 'class' => 'select_options');
     $data->actions = '<p>'.html_writer::tag('label', get_string("withselectedusers"), array('for' => 'to-'.$state)).
-        html_writer::select($selectoptions, 'to', '', array('' => 'choosedots'), $htmlselectattributes).
+        html_writer::select($selectoptions, 'actions', '', array('' => 'choosedots'), $htmlselectattributes).
         html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'from', 'value' => $code)).
         '</p>';
 

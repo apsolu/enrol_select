@@ -1,9 +1,7 @@
-// define(['jquery', 'local_apsolu_courses/jquery.tablesorter', 'enrol_select/jquery.popupoverlay'], function($) {
 define(['jquery', 'local_apsolu_courses/jquery.tablesorter'], function($) {
     return {
         initialise : function(){
             // Gère les onglets
-            // $('.apsolu-manage-users-content-div, .apsolu-manage-users-h3').css('display', 'none');
             $('.apsolu-list-rows-div').css('display', 'none');
 
             $('#apsolu-manage-users').prepend('<ul id="apsolu-manage-users-tab-ul" class="nav nav-tabs"></ul>');
@@ -12,7 +10,6 @@ define(['jquery', 'local_apsolu_courses/jquery.tablesorter'], function($) {
                 $(this).remove();
             });
 
-            // $('.apsolu-manage-users-content-div:eq(0), #apsolu-manage-users-tab-ul li:eq(0)').css('display', 'block');
             $('.apsolu-list-rows-div:eq(0), #apsolu-manage-users-tab-ul li:eq(0)').css('display', 'block');
             $('#apsolu-manage-users-tab-ul li:eq(0)').addClass('active');
 
@@ -22,12 +19,10 @@ define(['jquery', 'local_apsolu_courses/jquery.tablesorter'], function($) {
                 var index = $('#apsolu-manage-users-tab-ul li').index(current_tab);
 
                 current_tab.removeClass('active');
-                // $('.apsolu-manage-users-content-div:eq('+index+')').css('display', 'none');
                 $('.apsolu-list-rows-div:eq('+index+')').css('display', 'none');
 
                 $(this).addClass('active');
                 index = $('#apsolu-manage-users-tab-ul li').index($(this));
-                // $('.apsolu-manage-users-content-div:eq('+index+')').css('display', 'block');
                 $('.apsolu-list-rows-div:eq('+index+')').css('display', 'block');
             });
 
@@ -44,25 +39,25 @@ define(['jquery', 'local_apsolu_courses/jquery.tablesorter'], function($) {
             $('.checkall').click(function(){
                 var form = $(this).parents(':eq(5)');
                 form.find("input[type='checkbox']").prop('checked', true);
-                form.find('select[name="to"]').prop('disabled', false);
+                form.find('select[name="actions"]').prop('disabled', false);
             });
 
             $('.uncheckall').click(function(){
                 var form = $(this).parents(':eq(5)');
                 form.find("input[type='checkbox']").prop('checked', false);
-                form.find('select[name="to"]').prop('disabled', true);
+                form.find('select[name="actions"]').prop('disabled', true);
             });
 
             $('.apsolu-select-manage-users-input-checkbox').change(function(){
                 var form = $(this).parents(':eq(5)');
                 if (form.find(".apsolu-select-manage-users-input-checkbox:checked").length == 0) {
-                    form.find('select[name="to"],input[name="send_message"]').prop('disabled', true);
+                    form.find('select[name="actions"],input[name="send_message"]').prop('disabled', true);
                 } else {
-                    form.find('select[name="to"],input[name="send_message"]').prop('disabled', false);
+                    form.find('select[name="actions"],input[name="send_message"]').prop('disabled', false);
                 }
             });
 
-            $('select[name="to"]').prop('disabled', true);
+            $('select[name="actions"]').prop('disabled', true);
 
             // ajoute la possiblité de trier les tableaux
             $(".table-sortable").tablesorter({

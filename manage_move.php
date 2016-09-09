@@ -24,7 +24,7 @@ use UniversiteRennes2\Apsolu as apsolu;
 
 require_once(__DIR__.'/../../config.php');
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
-require_once($CFG->dirroot.'/enrol/select/manage_notify_form.php');
+require_once($CFG->dirroot.'/enrol/select/manage_move_form.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 $from = required_param('from', PARAM_INT);
@@ -56,7 +56,7 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 
 $instancename = $enrolselect->get_instance_name($instance);
 
-$url = new moodle_url('/enrol/select/manage_notify.php', array('enrolid' => $instance->id, 'from' => $from, 'to' => $to));
+$url = new moodle_url('/enrol/select/manage_move.php', array('enrolid' => $instance->id, 'from' => $from, 'to' => $to));
 
 $PAGE->set_url($url->out());
 $PAGE->set_pagelayout('admin');
@@ -77,27 +77,35 @@ foreach ($users as $userid => $user) {
     }
 }
 
-$mform = new enrol_select_manage_notify_form($url->out(false), array($instance, $users, $from, $to));
+$mform = new enrol_select_manage_move_form($url->out(false), array($instance, $users, $from, $to));
 
 if ($mform->is_cancelled()) {
     redirect($return);
 
 } else if ($data = $mform->get_data()) {
-    if (!empty($data->message)) {
+    if (isset(enrol_select_plugin::$states[$to])) {
         foreach ($data->users as $userid) {
-            $user = $DB->get_record('user', array('id' => $userid));
+            $sql = "UPDATE {user_enrolments} SET status=? WHERE userid=? AND enrolid=?";
+            $DB->execute($sql, array($to, $userid, $enrolid));
 
-            if ($user) {
+            $event = \enrol_select\event\user_moved::create(array(
+                'relateduserid' => $userid,
+                'other' => array('status' => $to),
+                'context' => $context
+            ));
+            $event->trigger();
+
+            if ($data->notify == 1 && !empty($data->message)) {
                 $eventdata = (object) array(
-                    'name' => 'select_notification',
-                    'component' => 'enrol_select',
-                    'userfrom' => $USER,
-                    'userto' => $user,
-                    'subject' => get_string('enrolcoursesubject', 'enrol_select', $course),
-                    'fullmessage' => $data->message,
-                    'fullmessageformat' => FORMAT_PLAIN,
-                    'fullmessagehtml' => null,
-                    'smallmessage' => ''
+                'name' => 'select_notification',
+                'component' => 'enrol_select',
+                'userfrom' => $USER,
+                'userto' => $DB->get_record('user', array('id' => $userid)),
+                'subject' => get_string('enrolcoursesubject', 'enrol_select', $course),
+                'fullmessage' => $data->message,
+                'fullmessageformat' => FORMAT_PLAIN,
+                'fullmessagehtml' => null,
+                'smallmessage' => ''
                 );
 
                 message_send($eventdata);
@@ -106,9 +114,6 @@ if ($mform->is_cancelled()) {
 
         $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
         redirect($url, 'Le ou les utilisateurs ont été correctement déplacés.', 5, \core\output\notification::NOTIFY_SUCCESS);
-    } else {
-        $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
-        redirect($url, 'Le message ne peut pas être vide.', 5, \core\output\notification::NOTIFY_ERROR);
     }
 }
 

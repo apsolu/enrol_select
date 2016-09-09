@@ -24,7 +24,7 @@ use UniversiteRennes2\Apsolu as apsolu;
 
 require_once(__DIR__.'/../../config.php');
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
-require_once($CFG->dirroot.'/enrol/select/manage_notify_form.php');
+require_once($CFG->dirroot.'/enrol/select/manage_editenroltype_form.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 $from = required_param('from', PARAM_INT);
@@ -56,7 +56,7 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 
 $instancename = $enrolselect->get_instance_name($instance);
 
-$url = new moodle_url('/enrol/select/manage_notify.php', array('enrolid' => $instance->id, 'from' => $from, 'to' => $to));
+$url = new moodle_url('/enrol/select/manage_editenroltype.php', array('enrolid' => $instance->id, 'from' => $from, 'to' => $to));
 
 $PAGE->set_url($url->out());
 $PAGE->set_pagelayout('admin');
@@ -77,38 +77,26 @@ foreach ($users as $userid => $user) {
     }
 }
 
-$mform = new enrol_select_manage_notify_form($url->out(false), array($instance, $users, $from, $to));
+$roles = array();
+foreach ($enrolselect->get_roles($instance, $context) as $role) {
+    $roles[$role->id] = $role->name;
+}
+$mform = new enrol_select_manage_editenroltype_form($url->out(false), array($instance, $users, $from, $to, $roles));
 
 if ($mform->is_cancelled()) {
     redirect($return);
 
 } else if ($data = $mform->get_data()) {
-    if (!empty($data->message)) {
+    if (isset($roles[$data->roleid])) {
         foreach ($data->users as $userid) {
-            $user = $DB->get_record('user', array('id' => $userid));
-
-            if ($user) {
-                $eventdata = (object) array(
-                    'name' => 'select_notification',
-                    'component' => 'enrol_select',
-                    'userfrom' => $USER,
-                    'userto' => $user,
-                    'subject' => get_string('enrolcoursesubject', 'enrol_select', $course),
-                    'fullmessage' => $data->message,
-                    'fullmessageformat' => FORMAT_PLAIN,
-                    'fullmessagehtml' => null,
-                    'smallmessage' => ''
-                );
-
-                message_send($eventdata);
-            }
+            $enrolselect->enrol_user($instance, $userid, $data->roleid, $timestart = 0, $timeend = 0);
         }
 
         $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
-        redirect($url, 'Le ou les utilisateurs ont été correctement déplacés.', 5, \core\output\notification::NOTIFY_SUCCESS);
+        redirect($url, 'Le ou les utilisateurs ont été correctement mis à jour.', 5, \core\output\notification::NOTIFY_SUCCESS);
     } else {
         $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
-        redirect($url, 'Le message ne peut pas être vide.', 5, \core\output\notification::NOTIFY_ERROR);
+        redirect($url, 'Ce rôle ne semble pas être valide pour cette méthode d\'inscription', 5, \core\output\notification::NOTIFY_ERROR);
     }
 }
 
