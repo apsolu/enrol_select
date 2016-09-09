@@ -28,7 +28,7 @@ require_once($CFG->libdir.'/csvlib.class.php');
 require_once($CFG->libdir.'/excellib.class.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
-$exportformat = optional_param('format', 'csv', PARAM_ALPHA);
+$exportformat = optional_param('format', 'xls', PARAM_ALPHA);
 $exportstatus = optional_param('status', null, PARAM_INT);
 
 $instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
