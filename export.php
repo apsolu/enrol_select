@@ -71,7 +71,7 @@ $sql = 'SELECT DISTINCT u.*, ra.roleid, ue.timecreated, ue.status'.
     ' WHERE ue.enrolid = :enrolid'.
     ' AND ctx.instanceid = :courseid'.
     ' AND ctx.contextlevel = 50'.$conditions.
-    ' ORDER BY ue.status, u.lastname, u.firstname, u.institution, u.department';
+    ' ORDER BY ue.status, ue.timecreated, u.lastname, u.firstname, u.institution, u.department';
 $users = $DB->get_records_sql($sql, $params);
 
 // Génération du fichier csv.
