@@ -32,6 +32,7 @@ $string['select:manage'] = 'Gérer les utilisateurs inscrits';
 $string['select:unenrol'] = 'Désinscrire du cours les utilisateurs';
 $string['select:unenrolself'] = 'Se désinscrire du cours';
 
+$string['enrolname'] = 'Nom de l\'instance d\'inscription';
 $string['cohortonly'] = 'Seulement les membres de la cohorte';
 $string['cohortnonmemberinfo'] = 'Only members of cohort \'{$a}\' can enrol.';
 $string['enrolstartdate'] = 'Date d\'ouverture des inscriptions';
