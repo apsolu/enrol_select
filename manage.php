@@ -124,7 +124,7 @@ foreach (enrol_select_plugin::$states as $code => $state) {
     $data->users = array_values($data->users);
 
     foreach ($data->users as $user) {
-        $enrolments = apsolu\get_user_activity_enrolments($user->id);
+        $enrolments = apsolu\get_real_user_activity_enrolments($user->id);
 
         $user->enrolments = array();
         $user->count_enrolments = 0;
