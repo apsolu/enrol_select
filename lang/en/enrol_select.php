@@ -129,11 +129,11 @@ Cordialement,';
 $string['message_accepted_to_wait'] = str_replace('principale', 'complémentaire', $string['message_accepted_to_main']);
 $string['message_accepted_to_deleted'] = str_replace('principale', 'déinscrit', $string['message_accepted_to_main']);
 
-$string['message_main_to_accepted'] = str_replace(array('des inscrits', 'complémentaire'), array('principale', 'des inscrits'), $string['message_accepted_to_main']);
+$string['message_main_to_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits à la liste principale', 'Votre pré-inscription a été confirmée', $string['message_accepted_to_main']);
 $string['message_main_to_wait'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_wait']);
 $string['message_main_to_deleted'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_deleted']);
 
-$string['message_wait_to_accepted'] = str_replace('principale', 'complémentaire', $string['message_main_to_accepted']);
+$string['message_wait_to_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits à la liste principale', 'Votre pré-inscription a été confirmée', $string['message_accepted_to_main']);
 $string['message_wait_to_main'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_main']);
 $string['message_wait_to_deleted'] = str_replace('des inscrits', 'complémentaire', $string['message_accepted_to_deleted']);
 
