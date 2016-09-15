@@ -23,11 +23,16 @@
  */
 
 class enrol_select_plugin extends enrol_plugin {
+    const ACCEPTED = '0';
+    const MAIN = '2';
+    const WAIT = '3';
+    const DELETED = '4';
+
     public static $states = array(
-        0 => 'accepted',
-        2 => 'main',
-        3 => 'wait',
-        4 => 'deleted',
+        self::ACCEPTED => 'accepted',
+        self::MAIN => 'main',
+        self::WAIT => 'wait',
+        self::DELETED => 'deleted',
     );
 
     public function get_name() {

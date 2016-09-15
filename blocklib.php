@@ -105,7 +105,11 @@ function get_enrolments_block() {
     $overviewenrolmentsdata = new \stdClass();
     $overviewenrolmentsdata->wwwroot = $CFG->wwwroot;
     $overviewenrolmentsdata->activity_enrolments = array();
-    foreach (get_user_activity_enrolments() as $enrolment) {
+    foreach (get_real_user_activity_enrolments() as $enrolment) {
+        if ($enrolment->status === \enrol_select_plugin::DELETED) {
+            continue;
+        }
+
         $enrolment->role = $roles[$enrolment->roleid]->localname;
         $overviewenrolmentsdata->activity_enrolments[] = $enrolment;
     }

@@ -115,6 +115,34 @@ function get_user_activity_enrolments($userid = null) {
 }
 
 /**
+ * Renvoie toutes les activités dans lesquelles un utilisateur est inscrit (sans vérifier les cohortes).
+ * @param int userid (si null, on prend l'id de l'utilisateur courant)
+ * @return array
+ */
+function get_real_user_activity_enrolments($userid = null) {
+    global $DB, $USER;
+
+    if ($userid === null) {
+        $userid = $USER->id;
+    }
+
+    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid".
+        " FROM {course} c".
+        " JOIN {course_categories} cc ON cc.id = c.category".
+        " JOIN {apsolu_courses} ac ON c.id = ac.id".
+        " JOIN {enrol} e ON c.id = e.courseid".
+        " JOIN {user_enrolments} ue ON e.id = ue.enrolid".
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid".
+        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id".
+        " WHERE e.enrol = 'select'".
+        " AND e.status = 0". // Active.
+        " AND ue.userid=?".
+        " AND c.visible=1".
+        " ORDER BY c.fullname";
+    return $DB->get_records_sql($sql, array($userid));
+}
+
+/**
  * Renvoie toutes les activités complémentaires dans lesquelles un utilisateur est inscrit et validé.
  * @param int userid (si null, on prend l'id de l'utilisateur courant)
  * @return array
