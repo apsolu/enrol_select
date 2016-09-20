@@ -35,9 +35,9 @@ function get_remaining_choices_block() {
             '<thead>'.
                 '<tr>'.
                     '<th>En tant que...</th>'.
-                    '<th>nombres de voeux maximum</th>'.
-                    '<th>nombres d\'inscription minimum</th>'.
-                    '<th>nombres d\'inscription maximum</th>'.
+                    '<th>nombre de voeux maximums</th>'.
+                    '<th>nombre d\'inscriptions minimums</th>'.
+                    '<th>nombre d\'inscriptions maximums</th>'.
                     '<th>tarif</th>'.
                 '</tr>'.
             '</thead>'.
