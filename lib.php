@@ -203,6 +203,15 @@ class enrol_select_plugin extends enrol_plugin {
         }
     }
 
+    public function is_enrol_period_active($instance) {
+        $today = time();
+
+        $opening = ($instance->enrolstartdate !== '0' && $instance->enrolstartdate > $today);
+        $closing = ($instance->enrolenddate !== '0' && $instance->enrolenddate < $today);
+
+        return ($opening && $closing);
+    }
+
     public function can_enrol($instance, $user, $roleid) {
         global $DB;
 
