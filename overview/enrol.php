@@ -32,6 +32,7 @@ require(__DIR__.'/../locallib.php');
 require_once($CFG->dirroot.'/group/lib.php');
 require_once($CFG->dirroot.'/lib/enrollib.php');
 require_once($CFG->dirroot.'/enrol/select/lib.php');
+require_once($CFG->dirroot.'/local/apsolu_payment/locallib.php');
 
 // Get params.
 $enrolid = required_param('enrolid', PARAM_INT);

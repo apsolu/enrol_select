@@ -25,6 +25,7 @@ use UniversiteRennes2\Apsolu as apsolu;
 require_once(__DIR__.'/../../config.php');
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
 require_once($CFG->dirroot.'/enrol/select/manage_move_form.php');
+require_once($CFG->dirroot.'/local/apsolu_payment/locallib.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 $from = required_param('from', PARAM_INT);
@@ -87,6 +88,15 @@ if ($mform->is_cancelled()) {
         foreach ($data->users as $userid) {
             $sql = "UPDATE {user_enrolments} SET status=? WHERE userid=? AND enrolid=?";
             $DB->execute($sql, array($to, $userid, $enrolid));
+
+            if ($to == 0) {
+                $role = $DB->get_record('role_assignments', array('userid' => $userid, 'itemid' => $enrolid, 'component' => 'enrol_select'));
+                if ($role) {
+                    UniversiteRennes2\Apsolu\update_payment_item($userid, $course->id, $role->roleid);
+                }
+            } else {
+                UniversiteRennes2\Apsolu\remove_payment_item($userid, $course->id);
+            }
 
             $event = \enrol_select\event\user_moved::create(array(
                 'relateduserid' => $userid,

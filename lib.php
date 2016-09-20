@@ -301,5 +301,26 @@ class enrol_select_plugin extends enrol_plugin {
             $sql = "UPDATE {role_assignments} SET roleid = ? WHERE component = 'enrol_select' AND userid = ? AND contextid = ?";
             $DB->execute($sql, array($roleid, $userid, $coursecontext->id));
         }
+
+        // Update payments.
+        if ($status == 0) {
+            UniversiteRennes2\Apsolu\update_payment_item($userid, $instance->courseid, $roleid);
+        } else {
+            UniversiteRennes2\Apsolu\remove_payment_item($userid, $instance->courseid);
+        }
+    }
+
+    /**
+     * Unenrol user from course,
+     * the last unenrolment removes all remaining roles.
+     *
+     * @param stdClass $instance
+     * @param int $userid
+     * @return void
+     */
+    public function unenrol_user(stdClass $instance, $userid) {
+        UniversiteRennes2\Apsolu\remove_payment_item($userid, $instance->courseid);
+
+        parent::unenrol_user($instance, $userid);
     }
 }
