@@ -111,7 +111,7 @@ class enrol_select_form extends moodleform {
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
 
         // Static text about roles.
-        if ($instance->complement === true) {
+        if ($instance->complement === false) {
             $mform->addElement('html', get_string('html_role_notifications', 'enrol_select'));
         }
 
