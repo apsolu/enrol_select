@@ -64,6 +64,8 @@ $complement = $DB->get_record('apsolu_complements', array('id' => $enrol->course
 
 // Vérifie que le cours est ouvert à cet utilisateur.
 if ($complement !== false) {
+    $instance->complement = true;
+
     if ($complement->federation === '1') {
         $sql = "SELECT cc.id, cc.name".
             " FROM {course_categories} cc".
@@ -82,6 +84,8 @@ if ($complement !== false) {
         $roles = array(5 => 'Libre accès');
     }
 } else {
+    $instance->complement = false;
+
     // L'utilisateur n'est pas inscrit à ce cours...
     if ($instance->role === '') {
         // Est-ce que le cours est plein ?
