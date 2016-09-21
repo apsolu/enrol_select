@@ -113,9 +113,9 @@ foreach ($users as $user) {
             case 'lmd':
             case 'sex':
             case 'birthday':
-            case 'option_paid':
-            case 'bonification_paid':
-            case 'libre_paid':
+            case 'optionpaid':
+            case 'bonificationpaid':
+            case 'librepaid':
                 if (isset($userfields[$fieldid])) {
                     ${$field->shortname} = $userfields[$fieldid]->data;
                 }
