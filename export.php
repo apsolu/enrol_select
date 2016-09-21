@@ -140,9 +140,9 @@ foreach ($users as $user) {
     $row[] = $user->lastname;
     $row[] = $user->firstname;
     $row[] = $user->institution;
-    $row[] = (isset($user->ufr)) ? $user->ufr : '';
+    $row[] = (isset($ufr)) ? $ufr : '';
     $row[] = $user->department;
-    $row[] = (isset($user->lmd)) ? $user->lmd : '';
+    $row[] = (isset($lmd)) ? $lmd : '';
     $row[] = $roles[$user->roleid]->localname;
     $row[] = userdate($user->timecreated);
     $row[] = (${$paid} === '1') ? get_string('yes') : get_string('no');
