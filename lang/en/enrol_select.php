@@ -148,6 +148,14 @@ $string['enrolcoursesubject'] = '[{$a->fullname}] Situation de votre inscription
 $string['eula'] = 'Certificat d\'aptitude au sport';
 $string['eula_help'] = 'Texte présenté à tous les étudiants avant toute inscription à une activité sportive et nécessitant une acceptation de leur part.';
 
+// Manage.
+$string['xls_export'] = 'Exporter au format Excel';
+$string['no_users'] = 'Aucun utilisateur dans cette liste';
+$string['select'] = 'Sélectionner';
+$string['lmd'] = 'LMD';
+$string['all_registers'] = 'Toutes les inscriptions';
+$string['register_date'] = 'Date d\'inscription';
+
 // Variables pour l'export csv des listes étudiantes.
 $string['age'] = 'Âge';
 $string['birthday'] = 'Date de naissance';
