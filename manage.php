@@ -24,6 +24,7 @@ use UniversiteRennes2\Apsolu as apsolu;
 
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/locallib.php');
+require_once($CFG->dirroot.'/user/profile/lib.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 
@@ -116,6 +117,7 @@ foreach (enrol_select_plugin::$states as $code => $state) {
             $user->picture = $OUTPUT->user_picture($user, array('size' => 30, 'courseid' => $course->id));
             $user->role = $roles[$user->roleid]->localname;
             $user->timecreated = strftime('%a %d %b à %T', $user->timecreated);
+            $user->customfields = profile_user_record($user->id);
 
             $data->users[$user->id] = $user;
             $data->count_users++;
