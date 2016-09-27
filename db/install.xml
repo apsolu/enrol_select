@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <XMLDB PATH="enrol/select/db" VERSION="2016011215" COMMENT="XMLDB file for apsolu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../lib/xmldb/xmldb.xsd">
 <TABLES>
-    <TABLE NAME="apsolu_colleges">
+    <TABLE NAME="apsolu_colleges" COMMENT="Table apsolu_colleges">
         <FIELDS>
             <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" NEXT="event" />
             <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" PREVIOUS="id" NEXT="maxwish" />
@@ -17,7 +17,7 @@
         </KEYS>
     </TABLE>
 
-	<TABLE NAME="apsolu_colleges_members">
+	<TABLE NAME="apsolu_colleges_members" COMMENT="Table apsolu_colleges_members">
         <FIELDS>
             <FIELD NAME="collegeid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true" />
             <FIELD NAME="cohortid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true" />
@@ -27,7 +27,7 @@
         </KEYS>
     </TABLE>
 
-	<TABLE NAME="enrol_select_roles">
+	<TABLE NAME="enrol_select_roles" COMMENT="Table enrol_select_roles">
         <FIELDS>
             <FIELD NAME="enrolid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true" />
             <FIELD NAME="roleid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true" />
@@ -37,7 +37,7 @@
         </KEYS>
     </TABLE>
 
-	<TABLE NAME="enrol_select_cohorts">
+	<TABLE NAME="enrol_select_cohorts" COMMENT="Table enrol_select_cohorts">
         <FIELDS>
             <FIELD NAME="enrolid" TYPE="int" LENGTH="10" NOTNULL="true" />
             <FIELD NAME="cohortid" TYPE="int" LENGTH="10" NOTNULL="true" />
@@ -47,7 +47,7 @@
         </KEYS>
     </TABLE>
 
-	<TABLE NAME="enrol_select_cohorts_roles">
+	<TABLE NAME="enrol_select_cohorts_roles" COMMENT="Table enrol_select_cohorts_roles">
         <FIELDS>
             <FIELD NAME="roleid" TYPE="int" LENGTH="10" NOTNULL="true" />
             <FIELD NAME="cohortid" TYPE="int" LENGTH="10" NOTNULL="true" />
