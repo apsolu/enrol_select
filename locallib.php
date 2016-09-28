@@ -299,6 +299,37 @@ function get_count_user_role_assignments($userid = null) {
 }
 
 /**
+ * Renvoie le rôle d'un utilisateur pour un cours donné.
+ * @param int courseid
+ * @param int userid : si null, on prend l'id de l'utilisateur courant
+ * @return object
+ */
+function get_user_role($courseid, $userid = null) {
+    global $DB, $USER;
+
+    if ($userid === null) {
+        $userid = $USER->id;
+    }
+
+    $sql = "SELECT r.*".
+        " FROM {role} r".
+        " JOIN {role_assignments} ra ON r.id = ra.roleid".
+        " JOIN {context} ctx ON ctx.id = ra.contextid".
+        " JOIN {enrol} e ON ctx.instanceid = e.courseid".
+        " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid".
+        " WHERE e.enrol = 'select'".
+        " AND e.status = 0". // Active.
+        " AND ue.userid = ?".
+        " AND ctx.instanceid = ?".
+        " AND ctx.contextlevel = 50";
+    $params = array($userid, $courseid);
+
+    $roles = role_fix_names($DB->get_records_sql($sql, $params));
+
+    return current($roles);
+}
+
+/**
  * Renvoie tous les rôles auxquels un utilisateur peut prétendre.
  * @param int userid : si null, on prend l'id de l'utilisateur courant
  * @param int courseid : si null, on prend tous les rôles possibles

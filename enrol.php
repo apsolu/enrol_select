@@ -22,6 +22,7 @@
 
 require(__DIR__.'/../../config.php');
 require_once($CFG->dirroot.'/enrol/manual/locallib.php');
+require_once($CFG->dirroot.'/local/apsolu_payment/locallib.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 
@@ -78,6 +79,7 @@ if (isset($_POST['role'], $_POST['status'], $_POST['addselect']) && ctype_digit(
     }
 }
 
+// TODO: créer une classe enrol_select_potential_participant.
 // Create the user selector objects.
 $options = array('enrolid' => $enrolid, 'accesscontext' => $context);
 $potentialuserselector = new enrol_manual_potential_participant('addselect', $options);
