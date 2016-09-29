@@ -126,7 +126,7 @@ function get_real_user_activity_enrolments($userid = null) {
         $userid = $USER->id;
     }
 
-    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid".
+    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, ac.paymentcenterid".
         " FROM {course} c".
         " JOIN {course_categories} cc ON cc.id = c.category".
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
