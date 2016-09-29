@@ -319,8 +319,8 @@ class enrol_select_plugin extends enrol_plugin {
      * @return void
      */
     public function unenrol_user(stdClass $instance, $userid) {
-        UniversiteRennes2\Apsolu\remove_payment_item($userid, $instance->courseid);
-
         parent::unenrol_user($instance, $userid);
+
+        UniversiteRennes2\Apsolu\remove_payment_item($userid, $instance->courseid);
     }
 }
