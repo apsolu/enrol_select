@@ -187,7 +187,7 @@ function get_user_complement_enrolments($userid = null) {
         $userid = $USER->id;
     }
 
-    $sql = "SELECT DISTINCT c.*, FORMAT(ac.price, 2) AS price, ac.paymentcenterid, e.id AS enrolid, ue.status".
+    $sql = "SELECT DISTINCT c.*, FORMAT(ac.price, 2) AS price, ac.federation, ac.paymentcenterid, e.id AS enrolid, ue.status".
         " FROM {course} c".
         " JOIN {apsolu_complements} ac ON c.id=ac.id".
         // Check cohorts.
@@ -218,7 +218,7 @@ function get_user_complement_enrolments_for_payment($userid = null) {
         $userid = $USER->id;
     }
 
-    $sql = "SELECT DISTINCT c.*, FORMAT(ac.price, 2) AS price, ac.paymentcenterid, e.id AS enrolid, ue.status, ra.roleid".
+    $sql = "SELECT DISTINCT c.*, FORMAT(ac.price, 2) AS price, ac.federation, ac.paymentcenterid, e.id AS enrolid, ue.status, ra.roleid".
         " FROM {course} c".
         " JOIN {apsolu_complements} ac ON c.id=ac.id".
         " JOIN {enrol} e ON c.id = e.courseid".
