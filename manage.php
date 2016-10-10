@@ -63,6 +63,7 @@ $sql = 'SELECT u.*, ra.roleid, ue.timecreated'.
     ' JOIN {role_assignments} ra ON u.id = ra.userid'.
     ' JOIN {context} ctx ON ctx.id = ra.contextid'.
     ' WHERE ue.enrolid = :enrolid'.
+    ' AND u.deleted = 0'.
     ' AND ue.status = :status'.
     ' AND ctx.instanceid = :courseid'.
     ' AND ctx.contextlevel = 50'.
