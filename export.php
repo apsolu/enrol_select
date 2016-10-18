@@ -104,6 +104,7 @@ foreach ($users as $user) {
     $optionpaid = '';
     $bonificationpaid = '';
     $librepaid = '';
+    $cardpaid = '';
 
     $fields = $DB->get_records('user_info_field');
     $userfields = $DB->get_records('user_info_data', array('userid' => $user->id), $sort = '', $columns = 'fieldid, data');
@@ -116,14 +117,19 @@ foreach ($users as $user) {
             case 'optionpaid':
             case 'bonificationpaid':
             case 'librepaid':
+            case 'cardpaid':
                 if (isset($userfields[$fieldid])) {
                     ${$field->shortname} = $userfields[$fieldid]->data;
                 }
                 break;
         }
     }
-    $paid = $roles[$user->roleid]->shortname.'paid';
 
+    if ($cardpaid == 1) {
+        $paid = get_string('yes');
+    } else {
+        $paid = get_string('no');
+    }
 
     try {
         $birthdayday = substr($birthday, 0, 2);
@@ -145,7 +151,7 @@ foreach ($users as $user) {
     $row[] = (isset($lmd)) ? $lmd : '';
     $row[] = $roles[$user->roleid]->localname;
     $row[] = userdate($user->timecreated);
-    $row[] = (${$paid} === '1') ? get_string('yes') : get_string('no');
+    $row[] = $paid;
     if (!isset($exportstatus)) {
         $state = enrol_select_plugin::$states[$user->status];
         $row[] = get_string($state.'_list', 'enrol_select');
