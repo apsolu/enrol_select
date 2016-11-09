@@ -144,3 +144,15 @@ button.uncheckall {
 #page-enrol-select-overview .moodle-dialogue-base {
     z-index: 100002 !important;
 }
+
+#page-enrol-select-manage form #addselect {
+    height: 300px;
+}
+
+#page-enrol-select-manage form #adduseroptionsdl {
+    margin-top: 1em;
+}
+
+.enrol-select-manage-fieldset-div {
+    padding: 1em;
+}

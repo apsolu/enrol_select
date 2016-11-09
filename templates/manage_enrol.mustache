@@ -1,5 +1,10 @@
 <form method="post" action="{{ action }}">
-    <dl>
+    <div class="enrol-select-manage-fieldset-div">
+        <label for="addselect">{{# str}}users, moodle{{/ str}}</label>
+        {{{ potential_users_selector }}}
+    </div>
+
+    <dl id="adduseroptionsdl" class="enrol-select-manage-fieldset-div">
         <div>
             <dt>Rôle</dt>
             <dd>
@@ -22,12 +27,7 @@
         </div>
     </dl>
 
-    <div>
-        <label for="addselect">{{# str}}users, moodle{{/ str}}</label>
-        {{{ potential_users_selector }}}
-    </div>
-
     <p>
-        <input class="btn btn-default" type="submit" value="Inscrire les utilisateurs" />
+        <input class="btn btn-primary" type="submit" value="Inscrire les utilisateurs" />
     </p>
 </form>
