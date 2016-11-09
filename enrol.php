@@ -105,6 +105,9 @@ if ($enroldata->roles === array()) {
     print_error('error_no_role', 'enrol_select', $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$instance->id);
 }
 
+// Pour avoir l'option "libre" en premier...
+rsort($enroldata->roles);
+
 $enroldata->status = array();
 $enroldata->status[] = (object) array('id' => 0, 'name' => get_string('accepted_list', 'enrol_select'));
 $enroldata->status[] = (object) array('id' => 2, 'name' => get_string('main_list', 'enrol_select'));
