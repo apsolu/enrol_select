@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+require_once($CFG->dirroot.'/local/apsolu_payment/locallib.php');
+
 class enrol_select_plugin extends enrol_plugin {
     const ACCEPTED = '0';
     const MAIN = '2';
