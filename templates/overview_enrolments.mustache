@@ -31,9 +31,16 @@
 	{{! activities }}
 	{{#activity_enrolments}}
 	<li>
+		{{#is_enrol_period_active}}
 		<a class="apsolu-enrol-a" data-enrolid="{{enrolid}}" href="{{wwwroot}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">
 			{{#pix}}i/completion-manual-y,core,{{#quote}}{{#str}}edit{{/str}}{{/quote}}{{/pix}}
 		</a>
+		{{/is_enrol_period_active}}
+
+		{{^is_enrol_period_active}}
+			{{#pix}}i/completion-manual-enabled,core{{/pix}}
+		{{/is_enrol_period_active}}
+
 		{{fullname}} - {{role}}
 	</li>
 	{{/activity_enrolments}}

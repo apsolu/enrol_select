@@ -102,6 +102,8 @@ function get_enrolments_block() {
 
     $roles = role_fix_names($DB->get_records('role'));
 
+    $instance = new \enrol_select_plugin();
+
     $overviewenrolmentsdata = new \stdClass();
     $overviewenrolmentsdata->wwwroot = $CFG->wwwroot;
     $overviewenrolmentsdata->activity_enrolments = array();
@@ -111,6 +113,14 @@ function get_enrolments_block() {
         }
 
         $enrolment->role = $roles[$enrolment->roleid]->localname;
+
+        $enrol = $DB->get_record('enrol', array('id' => $enrolment->enrolid));
+        if ($enrol) {
+            $enrolment->is_enrol_period_active = $instance->is_enrol_period_active($enrol);
+        } else {
+            $enrolment->is_enrol_period_active = false;
+        }
+
         $overviewenrolmentsdata->activity_enrolments[] = $enrolment;
     }
     $overviewenrolmentsdata->count_activity_enrolments = count($overviewenrolmentsdata->activity_enrolments);

@@ -87,6 +87,8 @@ if ($complement !== false) {
 } else {
     $instance->complement = false;
 
+    // TODO: vérifier que les inscriptions sont en cours...
+
     // L'utilisateur n'est pas inscrit à ce cours...
     if ($instance->role === '') {
         // Est-ce que le cours est plein ?
