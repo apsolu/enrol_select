@@ -92,6 +92,8 @@ function get_user_activity_enrolments($userid = null) {
         $userid = $USER->id;
     }
 
+    $time = time();
+
     $sql = "SELECT DISTINCT c.*, cc.name AS sport, FORMAT(acol.userprice, 2) AS price, ac.paymentcenterid,".
         " e.id AS enrolid, ue.status, ra.roleid".
         " FROM {course} c".
@@ -108,10 +110,12 @@ function get_user_activity_enrolments($userid = null) {
         " JOIN {apsolu_colleges_members} acm ON acol.id = acm.collegeid AND acm.cohortid = cm.cohortid".
         " WHERE e.enrol = 'select'".
         " AND e.status = 0". // Active.
-        " AND cm.userid=?".
-        " AND c.visible=1".
+        " AND cm.userid = :userid".
+        " AND c.visible = 1".
+        " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
+        " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
         " ORDER BY c.fullname";
-    return $DB->get_records_sql($sql, array($userid));
+    return $DB->get_records_sql($sql, array('userid' => $userid, 'timestart' => $time, 'timeend' => $time));
 }
 
 /**
@@ -126,6 +130,8 @@ function get_real_user_activity_enrolments($userid = null) {
         $userid = $USER->id;
     }
 
+    $time = time();
+
     $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, ac.paymentcenterid".
         " FROM {course} c".
         " JOIN {course_categories} cc ON cc.id = c.category".
@@ -136,10 +142,12 @@ function get_real_user_activity_enrolments($userid = null) {
         " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id".
         " WHERE e.enrol = 'select'".
         " AND e.status = 0". // Active.
-        " AND ue.userid=?".
-        " AND c.visible=1".
+        " AND c.visible = 1".
+        " AND ue.userid = :userid".
+        " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
+        " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
         " ORDER BY c.fullname";
-    return $DB->get_records_sql($sql, array($userid));
+    return $DB->get_records_sql($sql, array('userid' => $userid, 'timestart' => $time, 'timeend' => $time));
 }
 
 /**
@@ -283,6 +291,8 @@ function get_count_user_role_assignments($userid = null) {
         $userid = $USER->id;
     }
 
+    $time = time();
+
     $sql = "SELECT ra.roleid, COUNT(c.id) AS count".
         " FROM {role_assignments} ra".
         " JOIN {context} ctx ON ctx.id = ra.contextid".
@@ -292,10 +302,12 @@ function get_count_user_role_assignments($userid = null) {
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid".
         " WHERE e.enrol = 'select'".
         " AND e.status = 0". // Active.
-        " AND c.visible=1".
-        " AND ue.userid=?".
+        " AND c.visible = 1".
+        " AND ue.userid = :userid".
+        " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
+        " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
         " GROUP BY ra.roleid";
-    return $DB->get_records_sql($sql, array($userid));
+    return $DB->get_records_sql($sql, array('userid' => $userid, 'timestart' => $time, 'timeend' => $time));
 }
 
 /**
@@ -351,6 +363,8 @@ function get_potential_user_roles($userid = null, $courseid = null) {
             " WHERE cm.userid=?";
         $params = array($userid);
     } else {
+        $time = time();
+
         $sql = "SELECT r.*".
             " FROM {role} r".
             " JOIN {role_assignments} ra ON r.id = ra.roleid".
@@ -360,10 +374,12 @@ function get_potential_user_roles($userid = null, $courseid = null) {
             " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid".
             " WHERE e.enrol = 'select'".
             " AND e.status = 0". // Active.
-            " AND ue.userid = ?".
-            " AND c.id = ?".
+            " AND ue.userid = :userid".
+            " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
+            " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
+            " AND c.id = :courseid".
             " AND ctx.contextlevel = 50";
-        $params = array($userid, $courseid);
+        $params = array('userid' => $userid, 'timestart' => $time, 'timeend' => $time, 'courseid' => $courseid);
     }
 
     $roles = role_fix_names($DB->get_records_sql($sql, $params));
