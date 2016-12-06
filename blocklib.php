@@ -100,6 +100,8 @@ function get_remaining_choices_block() {
 function get_enrolments_block() {
     global $DB, $CFG, $OUTPUT;
 
+    require_once(__DIR__.'/lib.php');
+
     $roles = role_fix_names($DB->get_records('role'));
 
     $instance = new \enrol_select_plugin();
