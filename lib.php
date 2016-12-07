@@ -100,6 +100,11 @@ class enrol_select_plugin extends enrol_plugin {
         $fields['customint1']      = 20; // Max places on main list.
         $fields['customint2']      = 10; // Max places on wait list.
         $fields['customint3']      = 0;  // Enable quota or not.
+        $fields['customint4']      = 0;  // Reenrol start date.
+        $fields['customint5']      = 0;  // Reenrol end date.
+        $fields['customint6']      = 0;  // Reenrol select_enrol instance.
+        $fields['customint7']      = 0;  // Course start date.
+        $fields['customint8']      = 0;  // Course end date.
 
         return $fields;
     }

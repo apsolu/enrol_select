@@ -68,7 +68,12 @@ if ($instanceid) {
 
 $cohorts = $DB->get_records('cohort');
 $roles = apsolu\get_custom_student_roles();
-$mform = new enrol_select_edit_form(null, array($instance, $plugin, $context, $cohorts, $roles));
+$enrolmethods = array();
+foreach ($DB->get_records('enrol', array('courseid' => $course->id, 'enrol' => 'select'), 'name') as $enrol) {
+    $enrolmethods[$enrol->id] = $plugin->get_instance_name($enrol);
+}
+
+$mform = new enrol_select_edit_form(null, array($instance, $plugin, $context, $cohorts, $roles, $enrolmethods));
 
 if ($mform->is_cancelled()) {
     redirect($return);
@@ -82,6 +87,15 @@ if ($mform->is_cancelled()) {
         $instance->customint1     = $data->customint1;
         $instance->customint2     = $data->customint2;
         $instance->customint3     = $data->customint3;
+        $instance->customint4     = $data->customint4;
+        $instance->customint5     = $data->customint5;
+        if (isset($data->customint6)) {
+            $instance->customint6 = $data->customint6;
+        } else {
+            $instance->customint6 = 0;
+        }
+        $instance->customint7     = $data->customint7;
+        $instance->customint8     = $data->customint8;
         $instance->enrolstartdate = $data->enrolstartdate;
         $instance->enrolenddate   = $data->enrolenddate;
         $instance->timemodified   = time();
@@ -98,6 +112,11 @@ if ($mform->is_cancelled()) {
             'customint1'      => $data->customint1,
             'customint2'      => $data->customint2,
             'customint3'      => $data->customint3,
+            'customint4'      => $data->customint4,
+            'customint5'      => $data->customint5,
+            'customint6'      => $data->customint6,
+            'customint7'      => $data->customint7,
+            'customint8'      => $data->customint8,
             'enrolstartdate'  => $data->enrolstartdate,
             'enrolenddate'    => $data->enrolenddate);
         $instance->id = $plugin->add_instance($course, $fields);

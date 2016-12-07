@@ -32,13 +32,15 @@ class enrol_select_edit_form extends moodleform {
 
         $mform = $this->_form;
 
-        list($instance, $plugin, $context, $cohorts, $roles) = $this->_customdata;
+        list($instance, $plugin, $context, $cohorts, $roles, $enrolmethods) = $this->_customdata;
 
-        // Activer la méthode d'inscription.
+        $datetimeoptions = array('optional' => true);
+
+        // ACTIVER LA MÉTHODE D'INSCRIPTION.
         // Note: pas de selectyesno parce que la valeur de mdl_enrol.status est inversée par rapport à la logique.
         $options = array(ENROL_INSTANCE_ENABLED  => get_string('yes'),
                          ENROL_INSTANCE_DISABLED => get_string('no'));
-        $mform->addElement('select', 'status', 'Activer cette méthode d\'inscription', $options);
+        $mform->addElement('select', 'status', get_string('enableinstance', 'enrol_select'), $options);
 
         // Nom de la méthode.
         $nameattribs = array('size' => '20', 'maxlength' => '255');
@@ -46,9 +48,8 @@ class enrol_select_edit_form extends moodleform {
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'server');
 
-        // Date d'inscription.
-        $mform->addElement('header', 'header', 'Dates d\'inscription');
-        $datetimeoptions = array('optional' => true);
+        // DATE D'INSCRIPTION.
+        $mform->addElement('header', 'header', get_string('enroldate', 'enrol_select'));
 
         // Date de début des inscriptions.
         $mform->addElement('date_time_selector', 'enrolstartdate', get_string('enrolstartdate', 'enrol_select'), $datetimeoptions);
@@ -56,11 +57,34 @@ class enrol_select_edit_form extends moodleform {
         // Date de fin des inscriptions.
         $mform->addElement('date_time_selector', 'enrolenddate', get_string('enrolenddate', 'enrol_select'), $datetimeoptions);
 
-        // Quota.
-        $mform->addElement('header', 'header', 'Quotas');
+        // DATE DE FIN DES COURS.
+        $mform->addElement('header', 'header', get_string('coursedate', 'enrol_select'));
+
+        // Date de début du cours.
+        $mform->addElement('date_time_selector', 'customint7', get_string('coursestartdate', 'enrol_select'), $datetimeoptions);
+
+        // Date de fin du cours.
+        $mform->addElement('date_time_selector', 'customint8', get_string('courseenddate', 'enrol_select'), $datetimeoptions);
+
+        // DATE DE RÉINSCRIPTION.
+        $mform->addElement('header', 'header', get_string('reenroldate', 'enrol_select'));
+
+        // Date de début des réinscriptions.
+        $mform->addElement('date_time_selector', 'customint4', get_string('reenrolstartdate', 'enrol_select'), $datetimeoptions);
+
+        // Date de fin des réinscriptions.
+        $mform->addElement('date_time_selector', 'customint5', get_string('reenrolenddate', 'enrol_select'), $datetimeoptions);
+
+        // Méthode de réinscription.
+        $select = $mform->addElement('select', 'customint6', get_string('reenrolinstance', 'enrol_select'), $enrolmethods);
+        $mform->disabledIf('customint6', 'customint4[enabled]');
+        $mform->disabledIf('customint6', 'customint5[enabled]');
+
+        // QUOTA.
+        $mform->addElement('header', 'header', get_string('quotas', 'enrol_select'));
 
         // Activer les quotas.
-        $mform->addElement('selectyesno', 'customint3', 'Activer les quotas');
+        $mform->addElement('selectyesno', 'customint3', get_string('enablequotas', 'enrol_select'));
         $mform->setType('customint3', PARAM_INT);
 
         // Nombre de places sur la liste principale.
@@ -74,24 +98,24 @@ class enrol_select_edit_form extends moodleform {
         $mform->disabledIf('customint2', 'customint3', 'eq', 0);
 
         // Cohortes.
-        $mform->addElement('header', 'header', 'Cohortes');
+        $mform->addElement('header', 'header', get_string('cohorts', 'enrol_select'));
 
         $options = array();
         foreach ($cohorts as $cohort) {
             $options[$cohort->id] = $cohort->name;
         }
         $attributes = array('size' => 10);
-        $select = $mform->addElement('select', 'cohorts', 'Sélectionner les populations (cohortes)', $options, $attributes);
+        $select = $mform->addElement('select', 'cohorts', get_string('selectcohorts', 'enrol_select'), $options, $attributes);
         $select->setMultiple(true);
 
         // Rôles.
-        $mform->addElement('header', 'header', 'Rôles');
+        $mform->addElement('header', 'header', get_string('roles'));
 
         $options = array();
         foreach ($roles as $role) {
             $options[$role->id] = $role->localname;
         }
-        $select = $mform->addElement('select', 'roles', 'Type d\'inscription', $options, $instance->roles);
+        $select = $mform->addElement('select', 'roles', get_string('registertype', 'enrol_select'), $options, $instance->roles);
         $select->setMultiple(true);
 
         $mform->addElement('hidden', 'id');
@@ -99,10 +123,6 @@ class enrol_select_edit_form extends moodleform {
 
         $mform->addElement('hidden', 'courseid');
         $mform->setType('courseid', PARAM_INT);
-
-        if (enrol_accessing_via_instance($instance)) {
-            $mform->addElement('static', 'apsoluwarn', get_string('instanceeditapsoluwarning', 'core_enrol'), get_string('instanceeditapsoluwarningtext', 'core_enrol'));
-        }
 
         $this->add_action_buttons(true, ($instance->id ? null : get_string('addinstance', 'enrol')));
 
@@ -116,8 +136,29 @@ class enrol_select_edit_form extends moodleform {
         list($instance, $plugin, $context) = $this->_customdata;
 
         if ($data['status'] == ENROL_INSTANCE_ENABLED) {
-            if (!empty($data['enrolenddate']) and $data['enrolenddate'] < $data['enrolstartdate']) {
-                $errors['enrolenddate'] = get_string('enrolenddaterror', 'enrol_select');
+            // Vérifie que la date de fin des inscriptions est bien supérieure à la date de début.
+            if (!empty($data['enrolenddate']) && $data['enrolenddate'] < $data['enrolstartdate']) {
+                $errors['enrolenddate'] = get_string('enrolenddateerror', 'enrol_select');
+            }
+
+            // Vérifie que la date de fin du cours est bien supérieure à la date de début.
+            if (!empty($data['customint8']) && $data['customint8'] < $data['customint7']) {
+                $errors['customint8'] = get_string('courseenddateerror', 'enrol_select');
+            }
+
+            // Vérifie que la date de fin des réinscriptions est bien supérieure à la date de début.
+            if (!empty($data['customint5']) && $data['customint5'] < $data['customint4']) {
+                $errors['customint5'] = get_string('reenrolenddateerror', 'enrol_select');
+            }
+
+            // Vérifie que la date de début des réinscriptions est renseignée lorsque la date de fin l'est également.
+            if (empty($data['customint4']) && !empty($data['customint5'])) {
+                $errors['customint4'] = get_string('reenrolstartdatemissingerror', 'enrol_select');
+            }
+
+            // Vérifie que la date de fin des réinscriptions est renseignée lorsque la date de début l'est également.
+            if (!empty($data['customint4']) && empty($data['customint5'])) {
+                $errors['customint5'] = get_string('reenrolenddatemissingerror', 'enrol_select');
             }
         }
 

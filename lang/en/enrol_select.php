@@ -33,10 +33,33 @@ $string['select:unenrol'] = 'Désinscrire du cours les utilisateurs';
 $string['select:unenrolself'] = 'Se désinscrire du cours';
 
 $string['enrolname'] = 'Nom de l\'instance d\'inscription';
-$string['cohortonly'] = 'Seulement les membres de la cohorte';
-$string['cohortnonmemberinfo'] = 'Only members of cohort \'{$a}\' can enrol.';
+
+// Edit form.
+$string['enableinstance'] = 'Activer cette méthode d\'inscription';
+$string['enroldate'] = 'Date des inscriptions';
 $string['enrolstartdate'] = 'Date d\'ouverture des inscriptions';
 $string['enrolenddate'] = 'Date de fermeture des inscriptions';
+$string['coursedate'] = 'Date des cours';
+$string['coursestartdate'] = 'Date de début du cours';
+$string['courseenddate'] = 'Date de fin du cours';
+$string['reenroldate'] = 'Date des réinscriptions';
+$string['reenrolstartdate'] = 'Date d\'ouverture des réinscriptions';
+$string['reenrolenddate'] = 'Date de fermeture des réinscriptions';
+$string['reenrolinstance'] = 'Instance de réinscription';
+$string['quotas'] = 'Quotas';
+$string['enablequotas'] = 'Activer les quotas';
+$string['cohorts'] = 'Cohortes';
+$string['selectcohorts'] = 'Sélectionner les populations (cohortes)';
+$string['registertype'] = 'Type d\'inscription';
+
+$string['enrolenddateerror'] = 'La date de fin des inscriptions ne peut être antérieure à celle du début';
+$string['courseenddateerror'] = 'La date de fin du cours ne peut être antérieure à celle du début';
+$string['reenrolenddateerror'] = 'La date de fin des réinscriptions ne peut être antérieure à celle du début';
+$string['reenrolstartdatemissingerror'] = 'La date de début des réinscriptions doit être renseignée si la date de fin est présente';
+$string['reenrolenddatemissingerror'] = 'La date de fin des réinscriptions doit être renseignée si la date de début est présente';
+
+$string['cohortonly'] = 'Seulement les membres de la cohorte';
+$string['cohortnonmemberinfo'] = 'Only members of cohort \'{$a}\' can enrol.';
 
 $string['max_places'] = 'Nombre de places sur liste principale';
 $string['free_places'] = 'Places disponibles';
