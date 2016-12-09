@@ -64,7 +64,8 @@ button.uncheckall {
     padding: 1.5em;
 }
 
-#page-enrol-select-overview .block_navigation {
+#page-enrol-select-overview .block_navigation,
+#page-enrol-select-renew .block_navigation {
     display: none;
 }
 
@@ -155,4 +156,8 @@ button.uncheckall {
 
 .enrol-select-manage-fieldset-div {
     padding: 1em;
+}
+
+.apsolu-inactive-td {
+    background-color: #eeeeee;
 }

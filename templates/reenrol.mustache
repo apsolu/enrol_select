@@ -1,0 +1,42 @@
+{{^enrolments_count}}
+	{{#str}}noreenrolment,enrol_select{{/str}}
+{{/enrolments_count}}
+
+{{#enrolments_count}}
+
+{{#str}}reenrolmentexplanationcase,enrol_select{{/str}}
+<form method="post" action="{{action}}">
+	<div class="table-responsive" id="apsolu-enrol-select-renew-table">
+		<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>{{#str}}coursename,enrol_select{{/str}}</th>
+				<th>{{#str}}teachercontact,enrol_select{{/str}}</th>
+				<th>{{#str}}renewenrolement,enrol_select{{/str}}</th>
+				<th>{{#str}}registertype,enrol_select{{/str}}</th>
+			</tr>
+		</thead>
+		{{#enrolments}}
+		<tbody>
+			<tr>
+				<td>{{fullname}}</td>
+				<td>
+					{{#count_teachers}}
+						<ul class="list list-unstyled">
+						{{#teachers}}
+							<li><a href="mailto:{{email}}">{{firstname}} {{lastname}}</a></li>
+						{{/teachers}}
+						</ul>
+					{{/count_teachers}}
+				</td>
+				<td>{{{renew}}}</td>
+				<td id="apsolu-td[{{id}}]">{{{roles}}}</td>
+			</tr>
+		</tbody>
+		{{/enrolments}}
+		</table>
+	</div>
+
+	<p class="text-right"><input class="btn btn-primary" type="submit" value="{{#str}}savechanges{{/str}}" name="reenrol" /></p>
+</form>
+{{/enrolments_count}}

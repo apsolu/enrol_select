@@ -200,3 +200,18 @@ $string['error_no_left_slot'] = 'Il n\'y a pas plus de place disponible pour ce 
 $string['error_reach_wishes_limit'] = 'Vous avez atteint le nombre maximum de voeux de type {$a}.';
 $string['error_cannot_enrol'] = 'Vous ne pouvez pas vous inscrire à ce cours.';
 $string['error_no_role'] = 'Vous devez sélectionner au moins un rôle pour pouvoir inscrire un utilisateur.';
+
+// Renew form.
+$string['renewtitle'] = 'Réinscription aux activités';
+$string['reenrolment'] = 'Réinscription';
+$string['noreenrolment'] = '<div class="alert alert-info"><p>Aucune de vos inscriptions actuelles ne propose de réinscription. Vous pourrez vous préinscrire <strong>entre le 2 et le 7 janvier 2017</strong>.</p></div>';
+$string['reenrolmentexplanationcase'] = '<div class="alert alert-info">'.
+    '<ol>'.
+    '<li>vous souhaitez poursuivre sur le même créneau, il vous suffit de compléter et d\'enregistrer le tableau ci-dessous</li>'.
+    '<li>vous souhaitez changer de créneau avec le même enseignant, <strong>contactez-le vite par mail <u>avant le 20 décembre</u></strong></li>'.
+    '<li>vous souhaitez vous inscrire sur un autre cours avec un nouvel enseignant, revenez vous préinscrire sur « votre espace SIUAPS » <strong>entre le 2 et le 7 janvier 2017</strong></li>'.
+    '</ol>'.
+    '</div>';
+$string['coursename'] = 'Nom du cours';
+$string['teachercontact'] = 'Contact enseignant';
+$string['renewenrolement'] = 'Renouveler mon inscription';

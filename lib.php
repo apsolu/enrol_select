@@ -172,6 +172,56 @@ class enrol_select_plugin extends enrol_plugin {
         return $roles;
     }
 
+    public function get_user_role($instance, $userid = null) {
+        global $DB, $USER;
+
+        if ($userid === null) {
+            $userid = $USER->id;
+        }
+
+        $sql = "SELECT r.*".
+            " FROM {role} r".
+            " JOIN {role_assignments} ra ON r.id = ra.roleid".
+            " JOIN {context} ctx ON ctx.id = ra.contextid".
+            " JOIN {enrol} e ON ctx.instanceid = e.courseid AND e.id = ra.itemid".
+            " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid".
+            " WHERE e.id = :enrolid".
+            " AND e.enrol = 'select'".
+            " AND e.status = 0". // Active.
+            " AND ue.userid = :userid".
+            " AND ctx.contextlevel = 50";
+        $params = array('enrolid' => $instance->id, 'userid' => $userid);
+
+        $roles = role_fix_names($DB->get_records_sql($sql, $params));
+
+        return current($roles);
+    }
+
+    public function get_available_user_roles($instance, $userid = null) {
+        global $DB, $USER;
+
+        if ($userid === null) {
+            $userid = $USER->id;
+        }
+
+        $sql = "SELECT r.*".
+            " FROM {role} r".
+            " JOIN {enrol_select_roles} esr ON r.id = esr.roleid".
+            " JOIN {enrol} e ON e.id = esr.enrolid".
+            " JOIN {enrol_select_cohorts} esc ON e.id = esc.enrolid".
+            " JOIN {cohort_members} cm ON cm.cohortid = esc.cohortid".
+            " JOIN {apsolu_colleges_members} acm ON acm.cohortid = cm.cohortid".
+            " JOIN {apsolu_colleges} ac ON ac.id = acm.collegeid AND r.id = ac.roleid".
+            " WHERE e.id = :enrolid".
+            " AND e.enrol = 'select'".
+            " AND e.status = 0". // Active.
+            " AND cm.userid = :userid";
+        $params = array('enrolid' => $instance->id, 'userid' => $userid);
+
+        return role_fix_names($DB->get_records_sql($sql, $params));
+    }
+
+
     public function set_available_status($instance, $user = null) {
         global $DB;
 
@@ -241,6 +291,7 @@ class enrol_select_plugin extends enrol_plugin {
             $usercohorts = $DB->get_records('cohort_members', array('userid' => $user->id));
             $enrolcohorts = $DB->get_records('enrol_select_cohorts', array('enrolid' => $instance->id), '', 'cohortid');
 
+            $found = false;
             foreach ($usercohorts as $cohort) {
                 if (isset($enrolcohorts[$cohort->cohortid])) {
                     $found = true;
@@ -291,6 +342,73 @@ class enrol_select_plugin extends enrol_plugin {
         if ($DB->get_record('enrol_select_roles', array('enrolid' => $instance->id, 'roleid' => $roleid)) === false) {
             debugging($this->get_name().': roleid #'.$roleid.' is not available.');
             return false;
+        }
+
+        return true;
+    }
+
+    public function can_reenrol($instance, $userid = null, $roleid = null) {
+        global $DB, $USER;
+
+        $today = time();
+
+        if ($userid === null) {
+            $userid = $USER->id;
+        }
+
+        // Check reenrol enabled.
+        if (empty($instance->customint6)) {
+            debugging($this->get_name().' reenrol not enabled.');
+            return false;
+        }
+
+        // Check reenrol exists.
+        $enrol = $DB->get_record('enrol', array('id' => $instance->customint6, 'enrol' => 'select'));
+        if ($enrol === false) {
+            debugging($this->get_name().' reenrol id #'.$instance->customint6.' does not exist');
+            return false;
+        }
+
+        // Check opening reenrol period.
+        if ($instance->customint4 !== '0' && $instance->customint4 > $today) {
+            debugging($this->get_name().' not opened yet.');
+            return false;
+        }
+
+        // Check closing reenrol period.
+        if ($instance->customint5 !== '0' && $instance->customint5 < $today) {
+            debugging($this->get_name().' already closed.');
+            return false;
+        }
+
+        // Check cohorts.
+        if ($instance->customint3 === '1') {
+            $usercohorts = $DB->get_records('cohort_members', array('userid' => $userid));
+            $enrolcohorts = $DB->get_records('enrol_select_cohorts', array('enrolid' => $instance->id), '', 'cohortid');
+
+            $found = false;
+            foreach ($usercohorts as $cohort) {
+                if (isset($enrolcohorts[$cohort->cohortid])) {
+                    $found = true;
+                    break;
+                }
+            }
+
+            if ($found !== true) {
+                debugging($this->get_name().': userid #'.$userid.' and enrol cohort mismatch.');
+                return false;
+            }
+        }
+
+        // We don't check available slots.
+        // We don't check user limit.
+
+        // Check role.
+        if ($roleid !== null) {
+            if ($DB->get_record('enrol_select_roles', array('enrolid' => $instance->id, 'roleid' => $roleid)) === false) {
+                debugging($this->get_name().': roleid #'.$roleid.' is not available.');
+                return false;
+            }
         }
 
         return true;

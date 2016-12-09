@@ -619,6 +619,37 @@ function get_potential_user_complements() {
     return $courses;
 }
 
+/*
+ * Retourne les activités pour lesquelles l'utilisateur peut potentiellement se réinscrire.
+ */
+function get_user_reenrolments($userid = null) {
+    global $DB, $USER;
+
+    if ($userid === null) {
+        $userid = $USER->id;
+    }
+
+    $time = time();
+
+    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, ac.paymentcenterid".
+        " FROM {course} c".
+        " JOIN {course_categories} cc ON cc.id = c.category".
+        " JOIN {apsolu_courses} ac ON c.id = ac.id".
+        " JOIN {enrol} e ON c.id = e.courseid".
+        " JOIN {user_enrolments} ue ON e.id = ue.enrolid".
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid".
+        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id".
+        " WHERE e.enrol = 'select'".
+        " AND e.status = 0". // Active.
+        " AND c.visible = 1".
+        " AND ue.userid = :userid".
+        " AND e.customint6 != 0". // Reenrolement available.
+        " AND (e.customint4 = 0 OR e.customint4 <= :timestart)".
+        " AND (e.customint5 = 0 OR e.customint5 >= :timeend)".
+        " ORDER BY c.fullname";
+    return $DB->get_records_sql($sql, array('userid' => $userid, 'timestart' => $time, 'timeend' => $time));
+}
+
 function generate_filters($courses = array()) {
     $filters = array();
 
