@@ -204,6 +204,7 @@ $string['error_no_role'] = 'Vous devez sélectionner au moins un rôle pour pouv
 // Renew form.
 $string['renewtitle'] = 'Réinscription aux activités';
 $string['reenrolment'] = 'Réinscription';
+$string['closedreenrolment'] = '<p class="alert alert-info">La période de réinscription sera ouverte <strong>du lundi 12 décembre au vendredi 16 décembre</strong>. Merci de patienter.</p>';
 $string['noreenrolment'] = '<div class="alert alert-info"><p>Aucune de vos inscriptions actuelles ne propose de réinscription. Vous pourrez vous préinscrire <strong>entre le 2 et le 7 janvier 2017</strong>.</p></div>';
 $string['reenrolmentexplanationcase'] = '<div class="alert alert-info">'.
     '<ol>'.

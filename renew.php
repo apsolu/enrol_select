@@ -41,6 +41,22 @@ $PAGE->set_context($context);
 $PAGE->set_heading(get_string('renewtitle', 'enrol_select'));
 $PAGE->set_title(get_string('pluginname', 'enrol_select'));
 
+// Navigation.
+$PAGE->navbar->add(get_string('reenrolment', 'enrol_select'));
+
+if (is_file(__DIR__.'/renew.lock')) {
+    echo $OUTPUT->header();
+
+    echo get_string('closedreenrolment', 'enrol_select');
+
+    echo $OUTPUT->footer();
+
+    exit(0);
+}
+
+// Javascript.
+$PAGE->requires->js_call_amd('enrol_select/select_renew', 'initialise');
+
 if (!$select = enrol_get_plugin('select')) {
     throw new coding_exception('Can not instantiate enrol_select');
 }
@@ -151,12 +167,6 @@ $data = new stdClass();
 $data->action = $CFG->wwwroot.'/enrol/select/renew.php';
 $data->enrolments = $enrolments;
 $data->enrolments_count = $enrolments_count;
-
-// Navigation.
-$PAGE->navbar->add(get_string('reenrolment', 'enrol_select'));
-
-// Javascript.
-$PAGE->requires->js_call_amd('enrol_select/select_renew', 'initialise');
 
 echo $OUTPUT->header();
 
