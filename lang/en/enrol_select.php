@@ -216,3 +216,4 @@ $string['reenrolmentexplanationcase'] = '<div class="alert alert-info">'.
 $string['coursename'] = 'Nom du cours';
 $string['teachercontact'] = 'Contact enseignant';
 $string['renewenrolement'] = 'Renouveler mon inscription';
+$string['savedreenrolment'] = 'Réinscription enregistrée';

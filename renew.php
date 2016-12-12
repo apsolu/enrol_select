@@ -61,6 +61,7 @@ if (!$select = enrol_get_plugin('select')) {
     throw new coding_exception('Can not instantiate enrol_select');
 }
 
+$notification = '';
 if (isset($_POST['reenrol'])) {
     // renew et role.
     foreach ($_POST['renew'] as $enrolid => $renew) {
@@ -81,6 +82,8 @@ if (isset($_POST['reenrol'])) {
             }
         }
     }
+
+    $notification = $OUTPUT->notification(get_string('savedreenrolment', 'enrol_select'), 'notifysuccess');
 }
 
 $enrolments = array();
@@ -167,6 +170,7 @@ $data = new stdClass();
 $data->action = $CFG->wwwroot.'/enrol/select/renew.php';
 $data->enrolments = $enrolments;
 $data->enrolments_count = $enrolments_count;
+$data->notification = $notification;
 
 echo $OUTPUT->header();
 
