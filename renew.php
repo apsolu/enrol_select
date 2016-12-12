@@ -63,22 +63,51 @@ if (!$select = enrol_get_plugin('select')) {
 
 $notification = '';
 if (isset($_POST['reenrol'])) {
-    // renew et role.
+    $logfile = '/log/applis/renew.log';
+
+    // Parcours les réponses.
     foreach ($_POST['renew'] as $enrolid => $renew) {
         $instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'));
 
+        $log = strftime('%c').' '.$USER->firstname.' '.$USER->lastname.' ('.$USER->email.' #id '.$USER->id.')';
+
         if (!$instance) {
+            file_put_contents($logfile, 'ERROR: '.$log.' invalid instance #id '.$enrolid.PHP_EOL, FILE_APPEND);
             continue;
         }
+
 
         if ($renew === '0') {
             // Désinscrire l'utilisateur...
             $select->unenrol_user($instance, $USER->id);
+
+            // Ajouter une ligne de log.
+            file_put_contents($logfile, $log.' unenrol from '.$instance->id.PHP_EOL, FILE_APPEND);
         } else if ($renew === '1') {
             // Inscrire l'utilisateur...
             if (isset($_POST['role'][$enrolid])) {
                 $roleid = $_POST['role'][$enrolid];
-                $select->enrol_user($instance, $USER->id, $roleid, $instance->customint7, $instance->customint8, $status = ENROL_INSTANCE_ENABLED, $recovergrades = null);
+
+                $activities = apsolu\get_real_user_activity_enrolments();
+                $roles = $select->get_available_user_roles($instance);
+                if (isset($activities[$instance->courseid], $roles[$roleid])) {
+                    $select->enrol_user($instance, $USER->id, $roleid, $instance->customint7, $instance->customint8, $status = ENROL_INSTANCE_ENABLED, $recovergrades = null);
+
+                    // Ajouter une ligne de log.
+                    file_put_contents($logfile, $log.' enrol into instanceid '.$instance->id.', roleid '.$roleid.PHP_EOL, FILE_APPEND);
+                } else {
+                    // Ajouter une ligne de log.
+                    $reasons = array();
+                    if (!isset($activities[$instance->courseid])) {
+                        $reasons[] = 'non inscrit dans le cours #'.$instance->courseid;
+                    }
+
+                    if (!isset($roles[$roleid])) {
+                        $reasons[] = 'non autorisé pour le rôle #'.$roleid;
+                    }
+
+                    file_put_contents($logfile, 'ERROR: '.$log.' can\'t enrol instanceid '.$instance->id.', roleid '.$roleid.' :: '.implode(', ', $reasons).PHP_EOL, FILE_APPEND);
+                }
             }
         }
     }
