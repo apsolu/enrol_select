@@ -161,3 +161,9 @@ button.uncheckall {
 .apsolu-inactive-td {
     background-color: #eeeeee;
 }
+
+.apsolu-manage-users-tab-ul,
+.apsolu-manage-enrolments-ul,
+.apsolu-manage-export-ul {
+    margin: 1em 0;
+}

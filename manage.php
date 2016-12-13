@@ -48,105 +48,112 @@ if (!$enrolselect = enrol_get_plugin('select')) {
     throw new coding_exception('Can not instantiate enrol_select');
 }
 
-$instancename = $enrolselect->get_instance_name($instance);
-
-$PAGE->set_url('/enrol/select/manage.php', array('enrolid' => $instance->id));
-$PAGE->set_pagelayout('admin');
-$PAGE->set_title($enrolselect->get_instance_name($instance));
-$PAGE->set_heading($course->fullname);
-
-$roles = role_fix_names($DB->get_records('role'));
-
-$sql = 'SELECT u.*, ra.roleid, ue.timecreated'.
-    ' FROM {user} u'.
-    ' JOIN {user_enrolments} ue ON u.id = ue.userid'.
-    ' JOIN {role_assignments} ra ON u.id = ra.userid'.
-    ' JOIN {context} ctx ON ctx.id = ra.contextid'.
-    ' WHERE ue.enrolid = :enrolid'.
-    ' AND u.deleted = 0'.
-    ' AND ue.status = :status'.
-    ' AND ctx.instanceid = :courseid'.
-    ' AND ctx.contextlevel = 50'.
-    ' ORDER BY ue.timecreated, u.lastname, u.firstname';
-
 $options = array();
 foreach (enrol_select_plugin::$states as $code => $state) {
     $options[$code] = get_string('move_to_'.$state, 'enrol_select');
 }
 $options['notify'] = get_string('notify', 'enrol_select');
 $options['editenroltype'] = get_string('editenroltype', 'enrol_select');
-$options['changecourse'] = get_string('change_course', 'enrol_select');
 
-$enrollinks = new stdClass();
-$enrollinks->wwwroot = $CFG->wwwroot;
-$enrollinks->canunenrol = $canunenrol;
-$enrollinks->enrolid = $enrolid;
-$enrollinks->enrol_user_link = $CFG->wwwroot.'/enrol/select/enrol.php?enrolid='.$enrolid;
-$enrollinks->unenrol_user_link = $CFG->wwwroot.'/enrol/select/unenrol.php?enrolid='.$enrolid;
+$data = new stdClass();
+$data->wwwroot = $CFG->wwwroot;
+$data->canunenrol = $canunenrol;
+$data->enrols = array();
 
-$lists = array();
-foreach (enrol_select_plugin::$states as $code => $state) {
-    $selectoptions = $options;
-    unset($selectoptions[$code]);
+$roles = role_fix_names($DB->get_records('role'));
+$instances = $DB->get_records('enrol', array('enrol' => 'select', 'courseid' => $course->id));
 
-    $data = new stdClass();
-    $data->name = get_string($state.'_list', 'enrol_select');
-    $data->description = get_string($state.'_description', 'enrol_select');
-    $data->roles = $roles;
-    $data->status = $code;
-    $data->form_action = $CFG->wwwroot.'/enrol/select/manage_handler.php?enrolid='.$enrolid;
-    $data->enrol_user_link = $CFG->wwwroot.'/enrol/select/add.php?enrolid='.$enrolid.'&status='.$code;
-    $data->users = array();
+foreach ($instances as $instance) {
 
-    if ($code == 2) {
-        $data->max_users = $instance->customint1;
-    } else if ($code == 3) {
-        $data->max_users = $instance->customint2;
-    } else {
-        $data->max_users = false;
-    }
+    $sql = 'SELECT u.*, ra.roleid, ue.timecreated'.
+        ' FROM {user} u'.
+        ' JOIN {user_enrolments} ue ON u.id = ue.userid'.
+        ' JOIN {role_assignments} ra ON u.id = ra.userid'.
+        ' JOIN {context} ctx ON ctx.id = ra.contextid'.
+        ' WHERE ue.enrolid = :enrolid'.
+        ' AND u.deleted = 0'.
+        ' AND ue.status = :status'.
+        ' AND ctx.instanceid = :courseid'.
+        ' AND ctx.contextlevel = 50'.
+        ' ORDER BY ue.timecreated, u.lastname, u.firstname';
 
-    $data->count_users = 0;
-    foreach ($DB->get_recordset_sql($sql, array('enrolid' => $enrolid, 'status' => $code, 'courseid' => $course->id)) as $user) {
-        if (!isset($roles[$user->roleid])) {
-            continue;
-        }
+    $enrol = new stdClass();
+    $enrol->name = $enrolselect->get_instance_name($instance);
+    $enrol->enrolid = $instance->id;
+    $enrol->enrol_user_link = $CFG->wwwroot.'/enrol/select/enrol.php?enrolid='.$instance->id;
+    $enrol->unenrol_user_link = $CFG->wwwroot.'/enrol/select/unenrol.php?enrolid='.$instance->id;
+    $enrol->lists = array();
 
-        if (isset($data->users[$user->id])) {
-            $data->users[$user->id]->role .= ', '.$roles[$user->roleid]->localname;
+    foreach (enrol_select_plugin::$states as $code => $state) {
+        $selectoptions = $options;
+        unset($selectoptions[$code]);
+
+        $list = new stdClass();
+        $list->name = get_string($state.'_list', 'enrol_select');
+        $list->description = get_string($state.'_description', 'enrol_select');
+        $list->roles = $roles;
+        $list->status = $code;
+        $list->form_action = $CFG->wwwroot.'/enrol/select/manage_handler.php?enrolid='.$instance->id;
+        $list->enrol_user_link = $CFG->wwwroot.'/enrol/select/add.php?enrolid='.$instance->id.'&status='.$code;
+        $list->users = array();
+
+        if ($code == 2) {
+            $list->max_users = $instance->customint1;
+        } else if ($code == 3) {
+            $list->max_users = $instance->customint2;
         } else {
-            $user->picture = $OUTPUT->user_picture($user, array('size' => 30, 'courseid' => $course->id));
-            $user->role = $roles[$user->roleid]->localname;
-            $user->timecreated = strftime('%a %d %b à %T', $user->timecreated);
-            $user->customfields = profile_user_record($user->id);
-
-            $data->users[$user->id] = $user;
-            $data->count_users++;
+            $list->max_users = false;
         }
-    }
-    $data->users = array_values($data->users);
 
-    foreach ($data->users as $user) {
-        $enrolments = apsolu\get_real_user_activity_enrolments($user->id);
+        $list->count_users = 0;
+        foreach ($DB->get_recordset_sql($sql, array('enrolid' => $instance->id, 'status' => $code, 'courseid' => $course->id)) as $user) {
+            if (!isset($roles[$user->roleid])) {
+                continue;
+            }
 
-        $user->enrolments = array();
-        $user->count_enrolments = 0;
-        foreach ($enrolments as $enrolment) {
-            $enrolment->state = get_string(enrol_select_plugin::$states[$enrolment->status].'_list', 'enrol_select');
-            $enrolment->role = $roles[$enrolment->roleid]->localname;
-            $user->enrolments[] = $enrolment;
-            $user->count_enrolments++;
+            if (isset($list->users[$user->id])) {
+                $list->users[$user->id]->role .= ', '.$roles[$user->roleid]->localname;
+            } else {
+                $user->picture = $OUTPUT->user_picture($user, array('size' => 30, 'courseid' => $course->id));
+                $user->role = $roles[$user->roleid]->localname;
+                $user->timecreated = strftime('%a %d %b à %T', $user->timecreated);
+                $user->customfields = profile_user_record($user->id);
+
+                $list->users[$user->id] = $user;
+                $list->count_users++;
+            }
         }
+        $list->users = array_values($list->users);
+
+        foreach ($list->users as $user) {
+            $enrolments = apsolu\get_recordset_user_activity_enrolments($user->id);
+
+            $user->enrolments = array();
+            $user->count_enrolments = 0;
+            foreach ($enrolments as $enrolment) {
+                $enrolment->state = get_string(enrol_select_plugin::$states[$enrolment->status].'_list', 'enrol_select');
+                $enrolment->role = $roles[$enrolment->roleid]->localname;
+                $user->enrolments[] = $enrolment;
+                $user->count_enrolments++;
+            }
+        }
+
+        $htmlselectattributes = array('id' => 'to-'.$state, 'class' => 'select_options');
+        $list->actions = '<p>'.html_writer::tag('label', get_string("withselectedusers"), array('for' => 'to-'.$state)).
+            html_writer::select($selectoptions, 'actions', '', array('' => 'choosedots'), $htmlselectattributes).
+            html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'from', 'value' => $code)).
+            '</p>';
+
+        $enrol->lists[] = $list;
     }
 
-    $htmlselectattributes = array('id' => 'to-'.$state, 'class' => 'select_options');
-    $data->actions = '<p>'.html_writer::tag('label', get_string("withselectedusers"), array('for' => 'to-'.$state)).
-        html_writer::select($selectoptions, 'actions', '', array('' => 'choosedots'), $htmlselectattributes).
-        html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'from', 'value' => $code)).
-        '</p>';
-
-    $lists[] = $data;
+    $data->enrols[] = $enrol;
 }
+
+$PAGE->set_url('/enrol/select/manage.php', array('enrolid' => $instance->id));
+$PAGE->set_pagelayout('admin');
+$PAGE->set_title($enrolselect->get_instance_name($instance));
+$PAGE->set_heading($course->fullname);
 
 $pluginname = get_string('pluginname', 'enrol_select');
 
@@ -163,8 +170,6 @@ if (isset($notification)) {
     echo $notification;
 }
 
-$enrollinks->lists = $lists;
-
-echo $OUTPUT->render_from_template('enrol_select/manage', $enrollinks);
+echo $OUTPUT->render_from_template('enrol_select/manage', $data);
 
 echo $OUTPUT->footer();

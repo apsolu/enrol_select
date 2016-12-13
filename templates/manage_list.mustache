@@ -1,61 +1,59 @@
-<div class="apsolu-list-rows-div">
-	<h3 class="apsolu-manage-users-h3">{{name}} ({{count_users}}{{#max_users}}/{{max_users}}{{/max_users}})</h3>
+<h4 class="apsolu-manage-users-h4">{{name}} ({{count_users}}{{#max_users}}/{{max_users}}{{/max_users}})</h4>
 
-	<div class="apsolu-manage-users-content-div">
-		<ul class="list list-inline text-right">
-			<li><a class="btn btn-primary" href="{{wwwroot}}/enrol/select/export.php?enrolid={{enrolid}}&status={{status}}&format=xls">{{#str}}xls_export,enrol_select{{/str}}</a></li>
-		</ul>
+<div class="apsolu-manage-users-content-div">
+	<ul class="list list-inline text-right apsolu-manage-export-ul">
+		<li><a class="btn btn-primary" href="{{wwwroot}}/enrol/select/export.php?enrolid={{enrolid}}&status={{status}}&format=xls">{{#str}}xls_export,enrol_select{{/str}}</a></li>
+	</ul>
 
-		<div class="alert alert-info">{{description}}</div>
+	<div class="alert alert-info">{{description}}</div>
 
-		{{^users}}<p class="alert alert-warning text-center">{{#str}}no_users,enrol_select{{/str}}</p>{{/users}}
+	{{^users}}<p class="alert alert-warning text-center">{{#str}}no_users,enrol_select{{/str}}</p>{{/users}}
 
-		{{#count_users}}
-		<form action="{{form_action}}" method="post" id="participantsform">
-			<table class="table table-striped table-sortable">
-				<thead>
-					<tr>
-						<th>{{#str}}select,enrol_select{{/str}}
-							<br />(<button type="button" class="btn btn-link checkall">{{#str}}any{{/str}}</button> / <button type="button" class="btn btn-link uncheckall">{{#str}}none{{/str}}</button>)</th>
-						<th>{{#str}}pictureofuser{{/str}}</th>
-						<th>{{#str}}lastname{{/str}}</th>
-						<th>{{#str}}firstname{{/str}}</th>
-						<th>{{#str}}register_type,enrol_select{{/str}}</th>
-						<th>{{#str}}institution{{/str}}</th>
-						<th>{{#str}}lmd,enrol_select{{/str}}</th>
-						<th>{{#str}}department{{/str}}</th>
-						<th>{{#str}}all_registers,enrol_select{{/str}}</th>
-						<th>{{#str}}register_date,enrol_select{{/str}}</th>
-					</tr>
-				</thead>
-				<tbody>
-					{{#users}}
-					<tr>
-						<td><input type="checkbox" class="apsolu-select-manage-users-input-checkbox" name="users[]" value="{{id}}" /></td>
-						<td>{{{picture}}}</td>
-						<td>{{lastname}}</td>
-						<td>{{firstname}}</td>
-						<td>{{role}}</td>
-						<td>{{institution}}</td>
-						<td>{{customfields.lmd}}</td>
-						<td>{{department}}</td>
-						<td class="{{count_enrolments}}">
-							{{#count_enrolments}}
-							<ul class="list-unstyled">
-								{{#enrolments}}
-								<li><abbr title="{{fullname}}">{{sport}}</abbr> ({{state}}/{{role}})</li>
-								{{/enrolments}}
-							</ul>
-							{{/count_enrolments}}
-						</td>
-						<td>{{timecreated}}</td>
-					</tr>
-					{{/users}}
-				</tbody>
-			</table>
+	{{#count_users}}
+	<form action="{{form_action}}" method="post" id="participantsform">
+		<table class="table table-striped table-sortabl">
+			<thead>
+				<tr>
+					<th>{{#str}}select,enrol_select{{/str}}
+						<br />(<button type="button" class="btn btn-link checkall">{{#str}}any{{/str}}</button> / <button type="button" class="btn btn-link uncheckall">{{#str}}none{{/str}}</button>)</th>
+					<th>{{#str}}pictureofuser{{/str}}</th>
+					<th>{{#str}}lastname{{/str}}</th>
+					<th>{{#str}}firstname{{/str}}</th>
+					<th>{{#str}}register_type,enrol_select{{/str}}</th>
+					<th>{{#str}}institution{{/str}}</th>
+					<th>{{#str}}lmd,enrol_select{{/str}}</th>
+					<th>{{#str}}department{{/str}}</th>
+					<th>{{#str}}all_registers,enrol_select{{/str}}</th>
+					<th>{{#str}}register_date,enrol_select{{/str}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#users}}
+				<tr>
+					<td><input type="checkbox" class="apsolu-select-manage-users-input-checkbox" name="users[]" value="{{id}}" /></td>
+					<td>{{{picture}}}</td>
+					<td>{{lastname}}</td>
+					<td>{{firstname}}</td>
+					<td>{{role}}</td>
+					<td>{{institution}}</td>
+					<td>{{customfields.lmd}}</td>
+					<td>{{department}}</td>
+					<td class="{{count_enrolments}}">
+						{{#count_enrolments}}
+						<ul class="list-unstyled">
+							{{#enrolments}}
+							<li><abbr title="{{fullname}}">{{sport}}</abbr> ({{state}}/{{role}})</li>
+							{{/enrolments}}
+						</ul>
+						{{/count_enrolments}}
+					</td>
+					<td>{{timecreated}}</td>
+				</tr>
+				{{/users}}
+			</tbody>
+		</table>
 
-			<p>{{{actions}}}</p>
-		</form>
-		{{/count_users}}
-	</div>
+		<p>{{{actions}}}</p>
+	</form>
+	{{/count_users}}
 </div>

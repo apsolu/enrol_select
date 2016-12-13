@@ -1,29 +1,64 @@
 define(['jquery', 'local_apsolu_courses/jquery.tablesorter'], function($) {
     return {
         initialise : function(){
-            // Gère les onglets
-            $('.apsolu-list-rows-div').css('display', 'none');
+            // Gère les onglets des méthodes d'inscription.
 
-            $('#apsolu-manage-users').prepend('<ul id="apsolu-manage-users-tab-ul" class="nav nav-tabs"></ul>');
+            // Créer une barre de navigation en haut du conteneur.
+            $('#apsolu-manage-users').prepend('<ul id="apsolu-manage-methods-title-tab-ul" class="nav nav-tabs"></ul>');
+
+            // Ajoute les titres de chaque méthode dans la barre de navigation.
             $('.apsolu-manage-users-h3').each(function(){
-                $('#apsolu-manage-users-tab-ul').append('<li class="apsolu-manage-users-tab-li"><a>'+$(this).text()+'</a></li>');
+                $('#apsolu-manage-methods-title-tab-ul').append('<li class="apsolu-manage-users-tab-li"><a>'+$(this).text()+'</a></li>');
                 $(this).remove();
             });
 
-            $('.apsolu-list-rows-div:eq(0), #apsolu-manage-users-tab-ul li:eq(0)').css('display', 'block');
-            $('#apsolu-manage-users-tab-ul li:eq(0)').addClass('active');
+            // Affiche le semestre 2.
+            index = $('#apsolu-manage-methods-title-tab-ul > li').length/2;
+            // Active le premier onglet de méthodes.
+            $('#apsolu-manage-methods-title-tab-ul > li').eq(index).addClass('active');
+            // Affiche les conteneurs (sauf le premier).
+            $('#apsolu-manage-methods-lists-tab-ul > li:not(:eq('+index+'))').css('display', 'none');
 
             // Gère la navigation par onglet.
-            $('#apsolu-manage-users-tab-ul li').click(function(){
-                var current_tab = $('#apsolu-manage-users-tab-ul li.active');
-                var index = $('#apsolu-manage-users-tab-ul li').index(current_tab);
+            $('#apsolu-manage-methods-title-tab-ul > li').click(function(){
+                var current_tab = $('#apsolu-manage-methods-title-tab-ul li.active');
+                var index = $('#apsolu-manage-methods-title-tab-ul li').index(current_tab);
 
                 current_tab.removeClass('active');
-                $('.apsolu-list-rows-div:eq('+index+')').css('display', 'none');
+                $('#apsolu-manage-methods-lists-tab-ul > li:eq('+index+')').css('display', 'none');
 
                 $(this).addClass('active');
-                index = $('#apsolu-manage-users-tab-ul li').index($(this));
-                $('.apsolu-list-rows-div:eq('+index+')').css('display', 'block');
+                index = $('#apsolu-manage-methods-title-tab-ul > li').index($(this));
+                $('#apsolu-manage-methods-lists-tab-ul > li').eq(index).css('display', 'block');
+            });
+
+            // Gère les onglets des listes d'inscription (dans les méthodes d'inscription).
+            $('.apsolu-manage-users').each(function(){
+                // Ajoute le menu contenant les différentes listes d'inscription.
+                $(this).parent().prepend('<ul class="apsolu-manage-users-tab-ul nav nav-tabs"></ul>');
+                $(this).children('.apsolu-manage-users-h4').each(function(){
+                    $(this).parent().prev().prev().append('<li class="apsolu-manage-users-tab-li"><a>'+$(this).text()+'</a></li>');
+                    $(this).remove();
+                });
+
+                // Ajoute "active" sur le premier onglet.
+                $(this).parent().children('.apsolu-manage-users-tab-ul').children().eq(0).addClass('active');
+                // Masque toutes les listes (sauf la première).
+                $(this).children('.apsolu-manage-users-content-div:gt(0)').css('display', 'none');
+
+                // Gère la navigation par onglet.
+                $('.apsolu-manage-users-tab-ul > li').click(function(){
+                    var current_tab = $(this).parent().children('li.active');
+                    var index = $(this).parent().children().index(current_tab);
+
+                    current_tab.removeClass('active');
+                    $(this).parent().parent().children('.apsolu-manage-users').children('.apsolu-manage-users-content-div').eq(index).css('display', 'none');
+
+                    $(this).addClass('active');
+                    index = $(this).parent().children().index($(this));
+
+                    $(this).parent().parent().children('.apsolu-manage-users').children('.apsolu-manage-users-content-div').eq(index).css('display', 'block');
+                });
             });
 
             // Gère les checkboxes... blabla !

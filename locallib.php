@@ -151,6 +151,38 @@ function get_real_user_activity_enrolments($userid = null) {
 }
 
 /**
+ * Renvoie toutes les activités dans lesquelles un utilisateur est inscrit (sans vérifier les cohortes).
+ * @param int userid (si null, on prend l'id de l'utilisateur courant)
+ * @return array
+ */
+function get_recordset_user_activity_enrolments($userid = null) {
+    global $DB, $USER;
+
+    if ($userid === null) {
+        $userid = $USER->id;
+    }
+
+    $time = time();
+
+    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, ac.paymentcenterid".
+        " FROM {course} c".
+        " JOIN {course_categories} cc ON cc.id = c.category".
+        " JOIN {apsolu_courses} ac ON c.id = ac.id".
+        " JOIN {enrol} e ON c.id = e.courseid".
+        " JOIN {user_enrolments} ue ON e.id = ue.enrolid".
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid".
+        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id".
+        " WHERE e.enrol = 'select'".
+        " AND e.status = 0". // Active.
+        " AND c.visible = 1".
+        " AND ue.userid = :userid".
+        " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
+        " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
+        " ORDER BY c.fullname";
+    return $DB->get_recordset_sql($sql, array('userid' => $userid, 'timestart' => $time, 'timeend' => $time));
+}
+
+/**
  * Renvoie toutes les activités dans lesquelles un utilisateur est inscrit (avec les informations de paiement).
  * @param int userid (si null, on prend l'id de l'utilisateur courant)
  * @return array
@@ -479,8 +511,15 @@ function get_potential_user_activities($manager = false) {
         $course->enrolid = $enrol->id;
         $course->enrolname = $enrol->name;
 
-        $sql = "SELECT userid FROM {user_enrolments} WHERE enrolid = ? AND status IN (0, 2)";
-        $mainlistenrolements = $DB->get_records_sql($sql, array($enrol->id));
+        $time = time();
+
+        $sql = "SELECT userid".
+            " FROM {user_enrolments}".
+            " WHERE enrolid = :enrolid".
+            " AND status IN (0, 2)".
+            " AND timestart <= :timestart".
+            " AND (timeend = 0 OR timeend >= :timeend)";
+        $mainlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $enrol->id, 'timestart' => $time, 'timeend' => $time));
 
         $course->count_main_list = count($mainlistenrolements);
         $course->max_main_list = $enrol->customint1;
@@ -492,7 +531,13 @@ function get_potential_user_activities($manager = false) {
             $course->left_main_list_str = $countmainslots.' place restante sur liste principale';
         }
 
-        $waitlistenrolements = $DB->get_records('user_enrolments', array('enrolid' => $enrol->id, 'status' => 3), '', 'userid');
+        $sql = "SELECT userid".
+            " FROM {user_enrolments}".
+            " WHERE enrolid = :enrolid".
+            " AND status IN (3)".
+            " AND timestart <= :timestart".
+            " AND (timeend = 0 OR timeend >= :timeend)";
+        $waitlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $enrol->id, 'timestart' => $time, 'timeend' => $time));
         $course->count_wait_list = count($waitlistenrolements);
         $course->max_wait_list = $enrol->customint2;
         $course->user_wait_list = isset($waitlistenrolements[$USER->id]);
