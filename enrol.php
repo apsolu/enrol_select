@@ -59,6 +59,7 @@ $pluginname = get_string('pluginname', 'enrol_select');
 $PAGE->navbar->add(get_string('users'));
 $PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', array('id' => $course->id)));
 $PAGE->navbar->add($pluginname, new moodle_url('/enrol/select/manage.php', array('enrolid' => $instance->id)));
+$PAGE->navbar->add($instancename);
 
 if (isset($_POST['role'], $_POST['status'], $_POST['addselect']) && ctype_digit($_POST['role']) && ctype_digit($_POST['status'])) {
     $enrolselectplugin = new enrol_select_plugin();
@@ -113,6 +114,7 @@ $enroldata->status[] = (object) array('id' => 0, 'name' => get_string('accepted_
 $enroldata->status[] = (object) array('id' => 2, 'name' => get_string('main_list', 'enrol_select'));
 $enroldata->status[] = (object) array('id' => 3, 'name' => get_string('wait_list', 'enrol_select'));
 $enroldata->potential_users_selector = $userselector;
+$enroldata->cancel = new moodle_url('/enrol/select/manage.php', array('enrolid' => $instance->id));
 
 echo $OUTPUT->render_from_template('enrol_select/manage_enrol', $enroldata);
 

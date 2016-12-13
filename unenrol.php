@@ -57,6 +57,7 @@ $pluginname = get_string('pluginname', 'enrol_select');
 $PAGE->navbar->add(get_string('users'));
 $PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', array('id' => $course->id)));
 $PAGE->navbar->add($pluginname, new moodle_url('/enrol/select/manage.php', array('enrolid' => $instance->id)));
+$PAGE->navbar->add($instancename);
 
 if (isset($_POST['removeselect'])) {
     $enrolselectplugin = new enrol_select_plugin();
@@ -92,6 +93,7 @@ if (isset($notification)) {
 $enroldata = new stdClass();
 $enroldata->action = $CFG->wwwroot.'/enrol/select/unenrol.php?enrolid='.$enrolid;
 $enroldata->current_users_selector = $userselector;
+$enroldata->cancel = new moodle_url('/enrol/select/manage.php', array('enrolid' => $instance->id));
 
 echo $OUTPUT->render_from_template('enrol_select/manage_unenrol', $enroldata);
 
