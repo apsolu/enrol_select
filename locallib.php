@@ -138,7 +138,7 @@ function get_real_user_activity_enrolments($userid = null) {
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
         " JOIN {enrol} e ON c.id = e.courseid".
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid".
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid".
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.itemid = e.id".
         " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id".
         " WHERE e.enrol = 'select'".
         " AND e.status = 0". // Active.
@@ -170,7 +170,7 @@ function get_recordset_user_activity_enrolments($userid = null) {
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
         " JOIN {enrol} e ON c.id = e.courseid".
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid".
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid".
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.itemid = e.id".
         " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id".
         " WHERE e.enrol = 'select'".
         " AND e.status = 0". // Active.
