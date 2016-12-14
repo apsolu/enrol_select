@@ -22,6 +22,7 @@
 
 require(__DIR__.'/../../config.php');
 require_once($CFG->dirroot.'/enrol/manual/locallib.php');
+require_once($CFG->dirroot.'/enrol/select/locallib.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 
