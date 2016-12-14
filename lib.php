@@ -423,8 +423,8 @@ class enrol_select_plugin extends enrol_plugin {
         } else {
             $coursecontext = context_course::instance($instance->courseid);
 
-            $sql = "UPDATE {role_assignments} SET roleid = ? WHERE component = 'enrol_select' AND userid = ? AND contextid = ?";
-            $DB->execute($sql, array($roleid, $userid, $coursecontext->id));
+            $sql = "UPDATE {role_assignments} SET roleid = ? WHERE component = 'enrol_select' AND userid = ? AND contextid = ? AND itemid= ?";
+            $DB->execute($sql, array($roleid, $userid, $coursecontext->id, $instance->id));
         }
 
         // Update payments.
