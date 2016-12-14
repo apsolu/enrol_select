@@ -68,7 +68,7 @@ foreach ($instances as $instance) {
     $sql = 'SELECT u.*, ra.roleid, ue.timecreated'.
         ' FROM {user} u'.
         ' JOIN {user_enrolments} ue ON u.id = ue.userid'.
-        ' JOIN {role_assignments} ra ON u.id = ra.userid'.
+        ' JOIN {role_assignments} ra ON u.id = ra.userid AND ra.itemid = ue.enrolid'.
         ' JOIN {context} ctx ON ctx.id = ra.contextid'.
         ' WHERE ue.enrolid = :enrolid'.
         ' AND u.deleted = 0'.
@@ -112,10 +112,11 @@ foreach ($instances as $instance) {
             }
 
             if (isset($list->users[$user->id])) {
-                $list->users[$user->id]->role .= ', '.$roles[$user->roleid]->localname;
+                $list->users[$user->id]->role[$user->roleid] = $roles[$user->roleid]->localname;
             } else {
                 $user->picture = $OUTPUT->user_picture($user, array('size' => 30, 'courseid' => $course->id));
-                $user->role = $roles[$user->roleid]->localname;
+                $user->role = array();
+                $user->role[$user->roleid] = $roles[$user->roleid]->localname;
                 $user->timecreated = strftime('%a %d %b à %T', $user->timecreated);
                 $user->customfields = profile_user_record($user->id);
 
@@ -126,6 +127,8 @@ foreach ($instances as $instance) {
         $list->users = array_values($list->users);
 
         foreach ($list->users as $user) {
+            $user->role = implode(', ', $user->role);
+
             $enrolments = apsolu\get_recordset_user_activity_enrolments($user->id);
 
             $user->enrolments = array();
