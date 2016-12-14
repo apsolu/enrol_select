@@ -130,7 +130,7 @@ if ($mform->is_cancelled()) {
             $roleassignment = $DB->get_record('role_assignments', array('component' => 'enrol_select', 'userid' => $userid, 'contextid' => $coursecontext->id));
             if ($roleassignment) {
                 $enrolselect->unenrol_user($instance, $userid);
-                $enrolselect->enrol_user($newinstance, $userid, $roleassignment->roleid, $currentenrol->timestart, $currentenrol->timeend, $currentenrol->status, $recovergrades = null);
+                $enrolselect->enrol_user($newinstance, $userid, $roleassignment->roleid, $timestart = 0, $timeend = 0, $currentenrol->status, $recovergrades = null);
                 $goodmoves++;
             } else {
                 $badmoves++;

@@ -66,7 +66,7 @@ if (isset($_POST['role'], $_POST['status'], $_POST['addselect']) && ctype_digit(
 
     $count = 0;
     foreach ($_POST['addselect'] as $userid) {
-        $timestart = time();
+        $timestart = 0;
         $timeend = 0;
         $recovergrades = null;
 

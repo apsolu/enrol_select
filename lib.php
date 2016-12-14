@@ -419,6 +419,14 @@ class enrol_select_plugin extends enrol_plugin {
 
         $currentenrol = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $userid));
         if ($currentenrol === false) {
+            if ($timestart === 0) {
+                $timestart = $instance->customint7;
+            }
+
+            if ($timeend === 0) {
+                $timeend = $instance->customint8;
+            }
+
             parent::enrol_user($instance, $userid, $roleid, $timestart, $timeend, $status, $recovergrades);
         } else {
             $coursecontext = context_course::instance($instance->courseid);

@@ -218,7 +218,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
         if (ctype_digit((string) $data->role) === false) {
             print_error('error_cannot_enrol', 'enrol_select');
         } else if ($enrolselectplugin->can_enrol($instance, $USER, $data->role)) {
-            $timestart = time();
+            $timestart = 0;
             $timeend = 0;
             $status = current($enrolselectplugin->available_status);
             $recovergrades = null;
