@@ -54,6 +54,7 @@ foreach (enrol_select_plugin::$states as $code => $state) {
 }
 $options['notify'] = get_string('notify', 'enrol_select');
 $options['editenroltype'] = get_string('editenroltype', 'enrol_select');
+$options['changecourse'] = get_string('change_course', 'enrol_select');
 
 $data = new stdClass();
 $data->wwwroot = $CFG->wwwroot;
