@@ -4,12 +4,18 @@
 		<li>
 			<h3 class="apsolu-manage-users-h3">{{name}}</h3>
 
+			{{^lock}}
 			<ul class="list-inline text-right apsolu-manage-enrolments-ul">
 				<li><a class="btn btn-default" href="{{enrol_user_link}}">{{#pix}}t/enrolusers, core{{/pix}} {{# str}}enrolusers, enrol_manual{{/ str}}</a></li>
 				{{#canunenrol}}
 				<li><a class="btn btn-default" href="{{unenrol_user_link}}">{{#pix}}t/removecontact, core{{/pix}} {{# str}}unenrolusers, enrol_manual{{/ str}}</a></li>
 				{{/canunenrol}}
 			</ul>
+			{{/lock}}
+
+			{{#lock}}
+			<p class="alert alert-warning text-center apsolu-manage-users-locked-form-div">{{#str}}lockedform, enrol_select{{/str}}</p>
+			{{/lock}}
 
 			<div class="apsolu-manage-users">
 				{{#lists}}

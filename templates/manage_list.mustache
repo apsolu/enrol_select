@@ -15,7 +15,10 @@
 			<thead>
 				<tr>
 					<th>{{#str}}select,enrol_select{{/str}}
-						<br />(<button type="button" class="btn btn-link checkall">{{#str}}any{{/str}}</button> / <button type="button" class="btn btn-link uncheckall">{{#str}}none{{/str}}</button>)</th>
+					{{^lock}}
+						<br />(<button type="button" class="btn btn-link checkall">{{#str}}any{{/str}}</button> / <button type="button" class="btn btn-link uncheckall">{{#str}}none{{/str}}</button>)
+					{{/lock}}
+					</th>
 					<th>{{#str}}pictureofuser{{/str}}</th>
 					<th>{{#str}}lastname{{/str}}</th>
 					<th>{{#str}}firstname{{/str}}</th>
@@ -30,7 +33,11 @@
 			<tbody>
 				{{#users}}
 				<tr>
-					<td><input type="checkbox" class="apsolu-select-manage-users-input-checkbox" name="users[]" value="{{id}}" /></td>
+					<td>
+					{{^lock}}
+						<input type="checkbox" class="apsolu-select-manage-users-input-checkbox" name="users[]" value="{{id}}" />
+					{{/lock}}
+					</td>
 					<td>{{{picture}}}</td>
 					<td>{{lastname}}</td>
 					<td>{{firstname}}</td>
@@ -53,7 +60,9 @@
 			</tbody>
 		</table>
 
+		{{^lock}}
 		<p>{{{actions}}}</p>
+		{{/lock}}
 	</form>
 	{{/count_users}}
 </div>

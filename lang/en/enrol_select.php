@@ -174,6 +174,7 @@ $string['eula_help'] = 'Texte présenté à tous les étudiants avant toute insc
 
 // Manage.
 $string['xls_export'] = 'Exporter au format Excel';
+$string['lockedform'] = 'Semestre verrouillé';
 $string['no_users'] = 'Aucun utilisateur dans cette liste';
 $string['select'] = 'Sélectionner';
 $string['lmd'] = 'LMD';

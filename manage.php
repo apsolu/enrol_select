@@ -84,6 +84,7 @@ foreach ($instances as $instance) {
     $enrol->enrol_user_link = $CFG->wwwroot.'/enrol/select/enrol.php?enrolid='.$instance->id;
     $enrol->unenrol_user_link = $CFG->wwwroot.'/enrol/select/unenrol.php?enrolid='.$instance->id;
     $enrol->lists = array();
+    $enrol->lock = ($instance->customint7 < mktime(0, 0, 0, 12, 14, 2016));
 
     foreach (enrol_select_plugin::$states as $code => $state) {
         $selectoptions = $options;

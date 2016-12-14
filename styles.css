@@ -163,6 +163,7 @@ button.uncheckall {
 }
 
 .apsolu-manage-users-tab-ul,
+.apsolu-manage-users-locked-form-div,
 .apsolu-manage-enrolments-ul,
 .apsolu-manage-export-ul {
     margin: 1em 0;
