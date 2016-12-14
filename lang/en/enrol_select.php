@@ -130,6 +130,7 @@ $string['manage_notification_2'] = 'Vous avez été retiré de la liste principa
 $string['manage_notification_3'] = 'Vous avez été retiré de la liste complémentaire.';
 $string['manage_notification_4'] = 'Vous avez été retiré de la liste des étudiants refusés.';
 
+$string['move_to'] = 'Déplacer';
 $string['move_to_accepted'] = 'Déplacer dans la liste des étudiants acceptés';
 $string['move_to_main'] = 'Déplacer dans la liste principale';
 $string['move_to_wait'] = 'Déplacer dans la liste complémentaire';
