@@ -167,3 +167,8 @@ button.uncheckall {
 .apsolu-manage-export-ul {
     margin: 1em 0;
 }
+
+#page-enrol-select-manage_move textarea[disabled] {
+    background-color: #eeeeee;
+    cursor: not-allowed;
+}
