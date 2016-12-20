@@ -419,11 +419,11 @@ class enrol_select_plugin extends enrol_plugin {
 
         $currentenrol = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $userid));
         if ($currentenrol === false) {
-            if ($timestart === 0) {
+            if ($timestart === 0 && !in_array($instance->courseid, array(249, 250))) {
                 $timestart = $instance->customint7;
             }
 
-            if ($timeend === 0) {
+            if ($timeend === 0 && !in_array($instance->courseid, array(249, 250))) {
                 $timeend = $instance->customint8;
             }
 

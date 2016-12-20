@@ -220,6 +220,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
         } else if ($enrolselectplugin->can_enrol($instance, $USER, $data->role)) {
             $timestart = 0;
             $timeend = 0;
+            $enrolselectplugin->set_available_status($instance, $USER);
             $status = current($enrolselectplugin->available_status);
             $recovergrades = null;
             $enrolselectplugin->enrol_user($instance, $USER->id, $data->role, $timestart, $timeend, $status, $recovergrades);
