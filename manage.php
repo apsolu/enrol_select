@@ -33,8 +33,11 @@ $course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUS
 $context = context_course::instance($course->id, MUST_EXIST);
 
 require_login($course);
+
 $canenrol = has_capability('enrol/select:enrol', $context);
 $canunenrol = has_capability('enrol/select:unenrol', $context);
+
+$is_manager = $DB->get_record('role_assignments', array('contextid' => 1, 'roleid' => 1, 'userid' => $USER->id));
 
 // Note: manage capability not used here because it is used for editing
 // of existing enrolments which is not possible here.
@@ -84,7 +87,7 @@ foreach ($instances as $instance) {
     $enrol->enrol_user_link = $CFG->wwwroot.'/enrol/select/enrol.php?enrolid='.$instance->id;
     $enrol->unenrol_user_link = $CFG->wwwroot.'/enrol/select/unenrol.php?enrolid='.$instance->id;
     $enrol->lists = array();
-    $enrol->lock = ($instance->customint7 < mktime(0, 0, 0, 12, 14, 2016));
+    $enrol->lock = ($instance->customint7 < mktime(0, 0, 0, 12, 14, 2016) && $is_manager === false);
 
     foreach (enrol_select_plugin::$states as $code => $state) {
         $selectoptions = $options;
