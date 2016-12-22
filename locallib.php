@@ -104,8 +104,8 @@ function get_user_activity_enrolments($userid = null) {
         " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid".
         " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid".
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = cm.userid".
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid".
-        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid=c.id".
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid AND ra.itemid = e.id".
+        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id".
         " JOIN {apsolu_colleges} acol ON acol.roleid = ra.roleid".
         " JOIN {apsolu_colleges_members} acm ON acol.id = acm.collegeid AND acm.cohortid = cm.cohortid".
         " WHERE e.enrol = 'select'".
@@ -144,8 +144,8 @@ function get_real_user_activity_enrolments($userid = null) {
         " AND e.status = 0". // Active.
         " AND c.visible = 1".
         " AND ue.userid = :userid".
-        " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
-        " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
+        " AND e.enrolstartdate <= :timestart". // Date de début des inscriptions.
+        " AND e.customint8 >= :timeend". // Date de fin des cours.
         " ORDER BY c.fullname";
     return $DB->get_records_sql($sql, array('userid' => $userid, 'timestart' => $time, 'timeend' => $time));
 }
@@ -202,7 +202,7 @@ function get_user_activity_enrolments_for_payment($userid = null) {
         " JOIN {enrol} e ON c.id = e.courseid".
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid".
         " JOIN {cohort_members} cm ON cm.userid = ue.userid".
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid".
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid AND ra.itemid = e.id".
         " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid=c.id".
         " JOIN {apsolu_colleges} acol ON acol.roleid = ra.roleid".
         " JOIN {apsolu_colleges_members} acm ON acol.id = acm.collegeid AND acm.cohortid = cm.cohortid".
@@ -211,7 +211,7 @@ function get_user_activity_enrolments_for_payment($userid = null) {
         " AND ue.userid=?".
         " AND c.visible=1".
         " ORDER BY c.fullname";
-    return $DB->get_records_sql($sql, array($userid));
+    return $DB->get_recordset_sql($sql, array($userid));
 }
 
 
@@ -235,7 +235,7 @@ function get_user_complement_enrolments($userid = null) {
         " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid".
         " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid".
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = cm.userid".
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid".
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid AND ra.itemid = e.id".
         " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid=c.id".
         " WHERE e.enrol = 'select'".
         " AND e.status = 0". // Active.
@@ -264,7 +264,7 @@ function get_user_complement_enrolments_for_payment($userid = null) {
         " JOIN {enrol} e ON c.id = e.courseid".
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid".
         " JOIN {cohort_members} cm ON cm.userid = ue.userid".
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid".
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid AND ra.itemid = e.id".
         " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid=c.id".
         " WHERE e.enrol = 'select'".
         " AND e.status = 0". // Active.
@@ -330,14 +330,14 @@ function get_count_user_role_assignments($userid = null) {
         " JOIN {context} ctx ON ctx.id = ra.contextid".
         " JOIN {course} c ON c.id = ctx.instanceid AND ctx.contextlevel = 50".
         " JOIN {apsolu_courses} ac ON ac.id = c.id".
-        " JOIN {enrol} e ON c.id = e.courseid".
+        " JOIN {enrol} e ON c.id = e.courseid AND ra.itemid = e.id".
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid".
         " WHERE e.enrol = 'select'".
         " AND e.status = 0". // Active.
         " AND c.visible = 1".
         " AND ue.userid = :userid".
-        " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
-        " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
+        " AND e.enrolstartdate <= :timestart". // Date de début des inscriptions.
+        " AND e.customint8 >= :timeend". // Date de fin des cours.
         " GROUP BY ra.roleid";
     return $DB->get_records_sql($sql, array('userid' => $userid, 'timestart' => $time, 'timeend' => $time));
 }
@@ -348,6 +348,7 @@ function get_count_user_role_assignments($userid = null) {
  * @param int userid : si null, on prend l'id de l'utilisateur courant
  * @return object
  */
+// TODO: function obsolete ???
 function get_user_role($courseid, $userid = null) {
     global $DB, $USER;
 
@@ -355,18 +356,22 @@ function get_user_role($courseid, $userid = null) {
         $userid = $USER->id;
     }
 
+    $time = time();
+
     $sql = "SELECT r.*".
         " FROM {role} r".
         " JOIN {role_assignments} ra ON r.id = ra.roleid".
         " JOIN {context} ctx ON ctx.id = ra.contextid".
-        " JOIN {enrol} e ON ctx.instanceid = e.courseid".
+        " JOIN {enrol} e ON ctx.instanceid = e.courseid AND ra.itemid = e.id".
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid".
         " WHERE e.enrol = 'select'".
         " AND e.status = 0". // Active.
-        " AND ue.userid = ?".
-        " AND ctx.instanceid = ?".
+        " AND ue.userid = :userid".
+        " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
+        " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
+        " AND ctx.instanceid = :courseid".
         " AND ctx.contextlevel = 50";
-    $params = array($userid, $courseid);
+    $params = array('userid' => $userid, 'timestart' => $time, 'timeend' => $time, 'courseid' => $courseid);
 
     $roles = role_fix_names($DB->get_records_sql($sql, $params));
 
@@ -402,7 +407,7 @@ function get_potential_user_roles($userid = null, $courseid = null) {
             " JOIN {role_assignments} ra ON r.id = ra.roleid".
             " JOIN {context} ctx ON ctx.id = ra.contextid".
             " JOIN {course} c ON c.id = ctx.instanceid".
-            " JOIN {enrol} e ON c.id = e.courseid".
+            " JOIN {enrol} e ON c.id = e.courseid AND ra.itemid = e.id".
             " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid".
             " WHERE e.enrol = 'select'".
             " AND e.status = 0". // Active.
@@ -682,7 +687,7 @@ function get_user_reenrolments($userid = null) {
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
         " JOIN {enrol} e ON c.id = e.courseid".
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid".
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid".
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.itemid = e.id".
         " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id".
         " WHERE e.enrol = 'select'".
         " AND e.status = 0". // Active.

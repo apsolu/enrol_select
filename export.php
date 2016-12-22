@@ -27,6 +27,7 @@ require_once(__DIR__.'/locallib.php');
 require_once($CFG->libdir.'/csvlib.class.php');
 require_once($CFG->libdir.'/excellib.class.php');
 
+// TODO: remplacer enrolid par courseid dans les paramètres de l'URL (bloc teachers et page manage).
 $enrolid = required_param('enrolid', PARAM_INT);
 $exportformat = optional_param('format', 'xls', PARAM_ALPHA);
 $exportstatus = optional_param('status', null, PARAM_INT);
@@ -54,7 +55,8 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 
 $roles = role_fix_names($DB->get_records('role'));
 
-$params = array('enrolid' => $enrolid, 'courseid' => $course->id);
+$time = time();
+$params = array('timestart' => $time, 'timeend' => $time, 'courseid' => $course->id);
 if (isset($exportstatus)) {
     $conditions = ' AND ue.status = :status';
     $params['status'] = $exportstatus;
@@ -65,10 +67,12 @@ if (isset($exportstatus)) {
 $sql = 'SELECT DISTINCT u.*, ra.roleid, ue.timecreated, ue.status'.
     ' FROM {user} u'.
     ' JOIN {user_enrolments} ue ON u.id = ue.userid'.
-    ' JOIN {role_assignments} ra ON u.id = ra.userid'.
+    ' JOIN {role_assignments} ra ON u.id = ra.userid AND ue.enrolid = ra.itemid'.
     ' JOIN {role} r ON r.id = ra.roleid AND r.archetype = "student"'.
     ' JOIN {context} ctx ON ctx.id = ra.contextid'.
-    ' WHERE ue.enrolid = :enrolid'.
+    ' JOIN {enrol} e ON e.id = ra.itemid AND e.id = ue.enrolid AND ctx.instanceid = e.courseid'.
+    ' WHERE (ue.timestart = 0 OR ue.timestart <= :timestart)'.
+    ' AND (ue.timeend = 0 OR ue.timeend >= :timeend)'.
     ' AND ctx.instanceid = :courseid'.
     ' AND ctx.contextlevel = 50'.$conditions.
     ' ORDER BY ue.status, ue.timecreated, u.lastname, u.firstname, u.institution, u.department';

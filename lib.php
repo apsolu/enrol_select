@@ -189,8 +189,10 @@ class enrol_select_plugin extends enrol_plugin {
             " AND e.enrol = 'select'".
             " AND e.status = 0". // Active.
             " AND ue.userid = :userid".
+            " AND (ue.timestart = 0 OR ue.timestart <= :time)".
+            " AND (ue.timeend = 0 OR ue.timeend >= :time)".
             " AND ctx.contextlevel = 50";
-        $params = array('enrolid' => $instance->id, 'userid' => $userid);
+        $params = array('enrolid' => $instance->id, 'userid' => $userid, 'time' => time());
 
         $roles = role_fix_names($DB->get_records_sql($sql, $params));
 
@@ -263,8 +265,8 @@ class enrol_select_plugin extends enrol_plugin {
     public function is_enrol_period_active($instance) {
         $today = time();
 
-        $opening = ($instance->enrolstartdate !== '0' && $instance->enrolstartdate > $today);
-        $closing = ($instance->enrolenddate !== '0' && $instance->enrolenddate < $today);
+        $opening = ($instance->enrolstartdate === '0' || $instance->enrolstartdate <= $today);
+        $closing = ($instance->enrolenddate === '0' || $instance->enrolenddate >= $today);
 
         return ($opening && $closing);
     }

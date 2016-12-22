@@ -82,7 +82,7 @@ $sql = "SELECT e.id, e.name, c.id AS courseid, c.fullname".
     " JOIN {apsolu_courses} apc ON apc.id = c.id".
     " JOIN {context} ctx ON c.id = ctx.instanceid AND ctx.contextlevel = 50".
     " JOIN {role_assignments} ra ON ctx.id = ra.contextid AND ra.roleid = 3".
-    " JOIN {enrol} e ON c.id = e.courseid AND e.status = 0 AND e.enrol = 'select'".
+    " JOIN {enrol} e ON c.id = e.courseid AND e.status = 0 AND e.enrol = 'select' AND ra.itemid = e.id".
     " WHERE ra.userid = ?".
     " ORDER BY c.fullname";
 $courses = array();
