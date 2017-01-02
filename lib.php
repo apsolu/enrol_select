@@ -230,7 +230,11 @@ class enrol_select_plugin extends enrol_plugin {
         $this->available_status = array();
 
         // Check main list.
-        $mainlistenrolements = $DB->get_records('user_enrolments', array('enrolid' => $instance->id, 'status' => 2), '', 'userid');
+        $sql = "SELECT userid".
+            " FROM {user_enrolments}".
+            " WHERE enrolid = :enrolid".
+            " AND status IN (0, 2)";
+        $mainlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $instance->id));
         $this->count_main_list_enrolements = count($mainlistenrolements);
 
         if (isset($user, $mainlistenrolements[$user->id])) {
