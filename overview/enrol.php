@@ -220,8 +220,13 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
         } else if ($enrolselectplugin->can_enrol($instance, $USER, $data->role)) {
             $timestart = 0;
             $timeend = 0;
-            $enrolselectplugin->set_available_status($instance, $USER);
-            $status = current($enrolselectplugin->available_status);
+            if (in_array($instance->courseid, array(249, 250))) {
+                // Pour la musculation et la licence FFSU, on accepte d'office les inscriptions.
+                $status = 0;
+            } else {
+                $enrolselectplugin->set_available_status($instance, $USER);
+                $status = current($enrolselectplugin->available_status);
+            }
             $recovergrades = null;
             $enrolselectplugin->enrol_user($instance, $USER->id, $data->role, $timestart, $timeend, $status, $recovergrades);
             file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$instance->courseid.', role: '.$data->role.', action: enrol course'.PHP_EOL, FILE_APPEND);
