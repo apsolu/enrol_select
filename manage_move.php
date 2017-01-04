@@ -132,7 +132,7 @@ $pluginname = get_string('pluginname', 'enrol_select');
 $PAGE->navbar->add(get_string('users'));
 $PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', array('id' => $enrolid)));
 $PAGE->navbar->add($pluginname, new moodle_url('/enrol/select/manage.php', array('enrolid' => $enrolid)));
-$PAGE->navbar->add(get_string('move_to'));
+$PAGE->navbar->add(get_string('move_to', 'enrol_select'));
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('pluginname', 'enrol_select'));
