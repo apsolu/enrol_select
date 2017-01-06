@@ -26,10 +26,15 @@ require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/locallib.php');
 require_once($CFG->dirroot.'/user/profile/lib.php');
 
-$enrolid = required_param('enrolid', PARAM_INT);
+$enrolid = optional_param('enrolid', null, PARAM_INT);
 
-$instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
+if ($enrolid !== null) {
+	$instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
+	$courseid = $instance->courseid;
+} else {
+	$courseid = required_param('courseid', PARAM_INT);
+}
+$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 $context = context_course::instance($course->id, MUST_EXIST);
 
 require_login($course);
