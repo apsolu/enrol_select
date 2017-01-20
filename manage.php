@@ -152,6 +152,13 @@ foreach ($instances as $instance) {
 
                 $enrolment->state = get_string(enrol_select_plugin::$states[$enrolment->status].'_list_abbr', 'enrol_select');
                 $enrolment->role = $roles[$enrolment->roleid]->localname;
+
+                if ($is_manager === false) {
+                    $enrolment->course_url = '';
+                } else {
+                    $enrolment->course_url = new moodle_url('/course/view.php', array('id' => $enrolment->id));
+                }
+
                 $user->enrolments[] = $enrolment;
                 $user->count_enrolments++;
             }
