@@ -528,58 +528,65 @@ function get_potential_user_activities($manager = false) {
 
         $time = time();
 
-        $sql = "SELECT userid".
-            " FROM {user_enrolments}".
-            " WHERE enrolid = :enrolid".
-            " AND status IN (0, 2)".
-            " AND timestart <= :timestart".
-            " AND (timeend = 0 OR timeend >= :timeend)";
-        $mainlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $enrol->id, 'timestart' => $time, 'timeend' => $time));
+        if ($enrol->customint3 == 1) {
+            $sql = "SELECT userid".
+                " FROM {user_enrolments}".
+                " WHERE enrolid = :enrolid".
+                " AND status IN (0, 2)".
+                " AND timestart <= :timestart".
+                " AND (timeend = 0 OR timeend >= :timeend)";
+            $mainlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $enrol->id, 'timestart' => $time, 'timeend' => $time));
 
-        $course->count_main_list = count($mainlistenrolements);
-        $course->max_main_list = $enrol->customint1;
-        $course->user_main_list = isset($mainlistenrolements[$USER->id]);
-        $countmainslots = $course->max_main_list - $course->count_main_list;
-        if ($countmainslots > 1) {
-            $course->left_main_list_str = $countmainslots.' places restantes sur liste principale';
+            $course->count_main_list = count($mainlistenrolements);
+            $course->max_main_list = $enrol->customint1;
+            $course->user_main_list = isset($mainlistenrolements[$USER->id]);
+            $countmainslots = $course->max_main_list - $course->count_main_list;
+            if ($countmainslots > 1) {
+                $course->left_main_list_str = $countmainslots.' places restantes sur liste principale';
+            } else {
+                $course->left_main_list_str = $countmainslots.' place restante sur liste principale';
+            }
+
+            $sql = "SELECT userid".
+                " FROM {user_enrolments}".
+                " WHERE enrolid = :enrolid".
+                " AND status IN (3)".
+                " AND timestart <= :timestart".
+                " AND (timeend = 0 OR timeend >= :timeend)";
+            $waitlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $enrol->id, 'timestart' => $time, 'timeend' => $time));
+            $course->count_wait_list = count($waitlistenrolements);
+            $course->max_wait_list = $enrol->customint2;
+            $course->user_wait_list = isset($waitlistenrolements[$USER->id]);
+            $countwaitslots = $course->max_wait_list - $course->count_wait_list;
+            if ($countwaitslots > 1) {
+                $course->left_wait_list_str = $countwaitslots.' places restantes sur liste complémentaire';
+            } else {
+                $course->left_wait_list_str = $countwaitslots.' place restante sur liste complémentaire';
+            }
+
+            $course->user_no_list = !$course->user_main_list && !$course->user_wait_list;
+
+            $ismainlistfull = $course->count_main_list >= $course->max_main_list;
+            $iswaitlistfull = $course->count_wait_list >= $course->max_wait_list;
+            $course->full_registration = $ismainlistfull && $iswaitlistfull;
+
+            if ($course->max_main_list > $course->count_main_list) {
+                $count = $course->max_main_list - $course->count_main_list;
+                $course->left_places_str = $count.' places restantes sur liste principale';
+                $course->left_places_style = 'success';
+            } else if ($course->max_wait_list > $course->count_wait_list) {
+                $count = $course->max_wait_list - $course->count_wait_list;
+                $course->left_places_str = $count.' places restantes sur liste complémentaire';
+                $course->left_places_style = 'warning';
+            } else {
+                $course->left_places_str = 'Aucune place disponible';
+                $course->left_places_style = 'danger';
+            }
         } else {
-            $course->left_main_list_str = $countmainslots.' place restante sur liste principale';
-        }
-
-        $sql = "SELECT userid".
-            " FROM {user_enrolments}".
-            " WHERE enrolid = :enrolid".
-            " AND status IN (3)".
-            " AND timestart <= :timestart".
-            " AND (timeend = 0 OR timeend >= :timeend)";
-        $waitlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $enrol->id, 'timestart' => $time, 'timeend' => $time));
-        $course->count_wait_list = count($waitlistenrolements);
-        $course->max_wait_list = $enrol->customint2;
-        $course->user_wait_list = isset($waitlistenrolements[$USER->id]);
-        $countwaitslots = $course->max_wait_list - $course->count_wait_list;
-        if ($countwaitslots > 1) {
-            $course->left_wait_list_str = $countwaitslots.' places restantes sur liste complémentaire';
-        } else {
-            $course->left_wait_list_str = $countwaitslots.' place restante sur liste complémentaire';
-        }
-
-        $course->user_no_list = !$course->user_main_list && !$course->user_wait_list;
-
-        $ismainlistfull = $course->count_main_list >= $course->max_main_list;
-        $iswaitlistfull = $course->count_wait_list >= $course->max_wait_list;
-        $course->full_registration = $ismainlistfull && $iswaitlistfull;
-
-        if ($course->max_main_list > $course->count_main_list) {
-            $count = $course->max_main_list - $course->count_main_list;
-            $course->left_places_str = $count.' places restantes sur liste principale';
+            // Aucun quota.
+            $course->left_places_str = 'Aucune restriction de places';
             $course->left_places_style = 'success';
-        } else if ($course->max_wait_list > $course->count_wait_list) {
-            $count = $course->max_wait_list - $course->count_wait_list;
-            $course->left_places_str = $count.' places restantes sur liste complémentaire';
-            $course->left_places_style = 'warning';
-        } else {
-            $course->left_places_str = 'Aucune place disponible';
-            $course->left_places_style = 'danger';
+            $course->full_registration = false;
         }
 
         // TODO: est-ce que l'utilisateur peut accéder à tous les types ?
