@@ -144,7 +144,13 @@ foreach ($instances as $instance) {
             $user->enrolments = array();
             $user->count_enrolments = 0;
             foreach ($enrolments as $enrolment) {
-                $enrolment->state = get_string(enrol_select_plugin::$states[$enrolment->status].'_list', 'enrol_select');
+                if (stripos($enrolment->enrolname, 'semestre 1') !== false) {
+                    $enrolment->enrolname = 'S1';
+                } else if (stripos($enrolment->enrolname, 'semestre 2') !== false) {
+                    $enrolment->enrolname = 'S2';
+                }
+
+                $enrolment->state = get_string(enrol_select_plugin::$states[$enrolment->status].'_list_abbr', 'enrol_select');
                 $enrolment->role = $roles[$enrolment->roleid]->localname;
                 $user->enrolments[] = $enrolment;
                 $user->count_enrolments++;
