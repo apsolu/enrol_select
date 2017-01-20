@@ -29,10 +29,10 @@ require_once($CFG->dirroot.'/user/profile/lib.php');
 $enrolid = optional_param('enrolid', null, PARAM_INT);
 
 if ($enrolid !== null) {
-	$instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
-	$courseid = $instance->courseid;
+    $instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
+    $courseid = $instance->courseid;
 } else {
-	$courseid = required_param('courseid', PARAM_INT);
+    $courseid = required_param('courseid', PARAM_INT);
 }
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 $context = context_course::instance($course->id, MUST_EXIST);
@@ -139,7 +139,7 @@ foreach ($instances as $instance) {
         foreach ($list->users as $user) {
             $user->role = implode(', ', $user->role);
 
-            $enrolments = apsolu\get_recordset_user_activity_enrolments($user->id);
+            $enrolments = apsolu\get_recordset_user_activity_enrolments($user->id, $onlyactive = false);
 
             $user->enrolments = array();
             $user->count_enrolments = 0;

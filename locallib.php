@@ -155,16 +155,19 @@ function get_real_user_activity_enrolments($userid = null) {
  * @param int userid (si null, on prend l'id de l'utilisateur courant)
  * @return array
  */
-function get_recordset_user_activity_enrolments($userid = null) {
+function get_recordset_user_activity_enrolments($userid = null, $onlyactive = true) {
     global $DB, $USER;
 
     if ($userid === null) {
         $userid = $USER->id;
     }
 
-    $time = time();
+    if ($onlyactive === true) {
+        $time = time();
+    }
 
-    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, ac.paymentcenterid".
+    $params = array('userid' => $userid);
+    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, e.name AS enrolname, ue.status, ra.roleid, ac.paymentcenterid".
         " FROM {course} c".
         " JOIN {course_categories} cc ON cc.id = c.category".
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
@@ -175,11 +178,18 @@ function get_recordset_user_activity_enrolments($userid = null) {
         " WHERE e.enrol = 'select'".
         " AND e.status = 0". // Active.
         " AND c.visible = 1".
-        " AND ue.userid = :userid".
-        " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
-        " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
-        " ORDER BY c.fullname";
-    return $DB->get_recordset_sql($sql, array('userid' => $userid, 'timestart' => $time, 'timeend' => $time));
+        " AND ue.userid = :userid";
+
+    if ($onlyactive === true) {
+        $sql .= " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
+            " AND (ue.timeend = 0 OR ue.timeend >= :timeend)";
+        $params['timestart'] = $time;
+        $params['timeend'] = $time;
+    }
+
+    $sql .= " ORDER BY c.fullname";
+
+    return $DB->get_recordset_sql($sql, $params);
 }
 
 /**
