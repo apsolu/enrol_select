@@ -59,7 +59,7 @@ class enrol_select_manage_notify_form extends moodleform {
         $userslist .= '</ul>';
         $mform->addElement('static', 'users', $label, $userslist);
 
-        $mform->addElement('textarea', 'message', 'Envoyer un mesage', array('rows' => '15', 'cols' => '50'));
+        $mform->addElement('textarea', 'message', get_string('send_message', 'enrol_select'), array('rows' => '15', 'cols' => '50'));
         $mform->setType('message', PARAM_TEXT);
 
         $mform->addElement('hidden', 'actions', $to);

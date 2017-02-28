@@ -128,7 +128,7 @@ $string['full_registration'] = 'Inscription complète';
 $string['maxwishes'] = 'Nombre de voeux maximum';
 $string['maxwishes_help'] = 'Nombre de voeux maximum par défaut attribué à un utilisateur n\'étant pas clairement identifié dans le système d\'information ; n\'appartenant à aucune population définie.';
 
-$string['manage_nofity'] = 'Envoyer une notification aux étudiants sélectionnés';
+$string['manage_notify'] = 'Envoyer une notification aux étudiants sélectionnés';
 $string['manage_notification_0'] = 'Vous avez été retiré de la liste des étudiants acceptés.';
 $string['manage_notification_2'] = 'Vous avez été retiré de la liste principale.';
 $string['manage_notification_3'] = 'Vous avez été retiré de la liste complémentaire.';
@@ -143,6 +143,8 @@ $string['move_to_deleted'] = 'Déplacer dans la liste des étudiants désinscrit
 $string['notify'] = 'Notifier par emails';
 $string['editenroltype'] = 'Modifier le type d\'inscription';
 
+$string['send_message'] = 'Envoyer un message';
+
 $string['goto'] = 'Déplacer de la liste {$a->from} vers la liste {$a->to}';
 $string['list_accepted'] = '"accepté"';
 $string['list_main'] = 'principale';
@@ -155,7 +157,7 @@ Vous avez été déplacé de la liste des inscrits à la liste principale.
 
 Cordialement,';
 $string['message_accepted_to_wait'] = str_replace('principale', 'complémentaire', $string['message_accepted_to_main']);
-$string['message_accepted_to_deleted'] = str_replace('principale', 'déinscrit', $string['message_accepted_to_main']);
+$string['message_accepted_to_deleted'] = str_replace('principale', 'déinscrits', $string['message_accepted_to_main']);
 
 $string['message_main_to_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits à la liste principale', 'Votre pré-inscription a été confirmée', $string['message_accepted_to_main']);
 $string['message_main_to_wait'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_wait']);

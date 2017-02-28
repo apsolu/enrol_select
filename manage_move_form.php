@@ -65,7 +65,7 @@ class enrol_select_manage_move_form extends moodleform {
         $mform->addElement('selectyesno', 'notify', 'Envoyer une notification aux étudiants');
         $mform->setType('notify', PARAM_INT);
 
-        $mform->addElement('textarea', 'message', 'Envoyer un mesage', array('rows' => '15', 'cols' => '50'));
+        $mform->addElement('textarea', 'message', get_string('send_message', 'enrol_select'), array('rows' => '15', 'cols' => '50'));
         $mform->setType('message', PARAM_TEXT);
         $mform->setDefault('message', get_string('message_'.$strfrom.'_to_'.$strto, 'enrol_select'));
         $mform->disabledIf('message', 'notify', 'eq', 0);
