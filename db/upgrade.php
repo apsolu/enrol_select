@@ -70,5 +70,29 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
 
     }
 
+    if ($result && $oldversion < 2017030100) {
+        // Add missing indexes !
+        $tables = array();
+        $tables['apsolu_colleges'] = array('roleid');
+        $tables['apsolu_colleges_members'] = array('collegeid', 'cohortid');
+        $tables['enrol_select_roles'] = array('enrolid', 'roleid');
+        $tables['enrol_select_cohorts'] = array('enrolid', 'cohortid');
+        $tables['enrol_select_cohorts_roles'] = array('roleid', 'cohortid');
+
+        foreach ($tables as $tablename => $indexes) {
+            $table = new xmldb_table($tablename);
+            foreach ($indexes as $indexname) {
+                $index = new xmldb_index($indexname, XMLDB_INDEX_NOTUNIQUE, array($indexname));
+
+                if (!$dbman->index_exists($table, $index)) {
+                    $dbman->add_index($table, $index);
+                }
+            }
+        }
+
+        // Savepoint reached.
+        upgrade_plugin_savepoint(true, 2017030100, 'enrol', 'select');
+    }
+
     return $result;
 }
