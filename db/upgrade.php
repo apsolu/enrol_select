@@ -28,10 +28,9 @@
 function xmldb_enrol_select_upgrade($oldversion = 0) {
     global $DB;
 
-    $result = true;
     $dbman = $DB->get_manager();
 
-    if ($result && $oldversion < 2016082900) {
+    if ($oldversion < 2016082900) {
         $table = new xmldb_table('apsolu_colleges');
 
         // If the table does not exist, create it along with its fields.
@@ -68,9 +67,11 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
             $dbman->create_table($table);
         }
 
+        // Savepoint reached.
+        upgrade_plugin_savepoint(true, 2016082900, 'enrol', 'select');
     }
 
-    if ($result && $oldversion < 2017030100) {
+    if ($oldversion < 2017030100) {
         // Add missing indexes !
         $tables = array();
         $tables['apsolu_colleges'] = array('roleid');
@@ -94,5 +95,5 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
         upgrade_plugin_savepoint(true, 2017030100, 'enrol', 'select');
     }
 
-    return $result;
+    return true;
 }
