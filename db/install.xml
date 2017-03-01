@@ -20,7 +20,7 @@
         </INDEXES>
     </TABLE>
 
-	<TABLE NAME="apsolu_colleges_members" COMMENT="Table apsolu_colleges_members">
+    <TABLE NAME="apsolu_colleges_members" COMMENT="Table apsolu_colleges_members">
         <FIELDS>
             <FIELD NAME="collegeid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true" />
             <FIELD NAME="cohortid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true" />
@@ -34,7 +34,7 @@
         </INDEXES>
     </TABLE>
 
-	<TABLE NAME="enrol_select_roles" COMMENT="Table enrol_select_roles">
+    <TABLE NAME="enrol_select_roles" COMMENT="Table enrol_select_roles">
         <FIELDS>
             <FIELD NAME="enrolid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true" />
             <FIELD NAME="roleid" TYPE="int" LENGTH="10" SEQUENCE="false" NOTNULL="true" />
@@ -48,7 +48,7 @@
         </INDEXES>
     </TABLE>
 
-	<TABLE NAME="enrol_select_cohorts" COMMENT="Table enrol_select_cohorts">
+    <TABLE NAME="enrol_select_cohorts" COMMENT="Table enrol_select_cohorts">
         <FIELDS>
             <FIELD NAME="enrolid" TYPE="int" LENGTH="10" NOTNULL="true" />
             <FIELD NAME="cohortid" TYPE="int" LENGTH="10" NOTNULL="true" />
@@ -62,7 +62,7 @@
         </INDEXES>
     </TABLE>
 
-	<TABLE NAME="enrol_select_cohorts_roles" COMMENT="Table enrol_select_cohorts_roles">
+    <TABLE NAME="enrol_select_cohorts_roles" COMMENT="Table enrol_select_cohorts_roles">
         <FIELDS>
             <FIELD NAME="roleid" TYPE="int" LENGTH="10" NOTNULL="true" />
             <FIELD NAME="cohortid" TYPE="int" LENGTH="10" NOTNULL="true" />
@@ -74,6 +74,6 @@
             <INDEX NAME="roleid" UNIQUE="false" FIELDS="roleid"/>
             <INDEX NAME="cohortid" UNIQUE="false" FIELDS="cohortid"/>
         </INDEXES>
-	</TABLE>
+    </TABLE>
 </TABLES>
 </XMLDB>
