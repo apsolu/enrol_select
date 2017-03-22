@@ -451,7 +451,7 @@ function get_potential_user_activities($manager = false) {
 
     $unavailableuserroles = array();
     foreach ($usercolleges as $college) {
-        if ($college->count >= $college->maxwish) {
+        if ($college->maxwish > 0 && $college->count >= $college->maxwish) {
             $unavailableuserroles[$college->roleid] = $college->roleid;
         }
     }

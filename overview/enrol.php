@@ -107,7 +107,7 @@ if ($complement !== false) {
         $prices = array();
         $unavailableuserroles = array();
         foreach ($userchoices as $choice) {
-            if ($choice->count >= $choice->maxwish) {
+            if ($choice->maxwish > 0 && $choice->count >= $choice->maxwish) {
                 $unavailableuserroles[$choice->roleid] = $choice->roleid;
             } else {
                 if ($choice->userprice === '0') {

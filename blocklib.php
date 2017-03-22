@@ -43,7 +43,12 @@ function get_remaining_choices_block() {
             '</thead>'.
             '<tbody>';
 
-    foreach ($overviewremainingchoicesdata->choices as $choice) {
+    foreach ($overviewremainingchoicesdata->choices as $index => $choice) {
+        if ($choice->maxwish == 0) {
+            unset($overviewremainingchoicesdata->choices[$index]);
+            continue;
+        }
+
         if ($choice->count >= $choice->maxwish) {
             $choice->str = '<p class="alert-success">Vous avez atteint le maximum de voeux avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.</p>';
         } else {
