@@ -100,7 +100,14 @@ if ($mform->is_cancelled()) {
                     'smallmessage' => ''
                 );
 
-                message_send($eventdata);
+                if (message_send($eventdata) !== false) {
+                    // Ajoute une trace dans les logs.
+                    $event = \enrol_select\event\user_notified::create(array(
+                        'relateduserid' => $userid,
+                        'context' => $context,
+                    ));
+                    $event->trigger();
+                }
             }
         }
 
