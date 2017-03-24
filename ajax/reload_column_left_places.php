@@ -39,31 +39,38 @@ $PAGE->set_context($context);
 // Generate column content.
 $enrol = $DB->get_record('enrol', array('id' => $enrolid), '*', MUST_EXIST);
 
-$sql = "SELECT userid FROM {user_enrolments} WHERE enrolid = ? AND status IN (0, 2)";
-$mainlistenrolements = $DB->get_records_sql($sql, array($enrolid));
-$countmainlist = count($mainlistenrolements);
-$maxmainlist = $enrol->customint1;
-$usermainlist = isset($mainlistenrolements[$USER->id]);
-$leftmainliststr = ($maxmainlist - $countmainlist).' places restantes sur liste principale';
+if ($enrol->customint3 == 1) {
+    // Les quotas sont activés.
+    $sql = "SELECT userid FROM {user_enrolments} WHERE enrolid = ? AND status IN (0, 2)";
+    $mainlistenrolements = $DB->get_records_sql($sql, array($enrolid));
+    $countmainlist = count($mainlistenrolements);
+    $maxmainlist = $enrol->customint1;
+    $usermainlist = isset($mainlistenrolements[$USER->id]);
+    $leftmainliststr = ($maxmainlist - $countmainlist).' places restantes sur liste principale';
 
-$waitlistenrolements = $DB->get_records('user_enrolments', array('enrolid' => $enrol->id, 'status' => 3), '', 'userid');
-$countwaitlist = count($waitlistenrolements);
-$maxwaitlist = $enrol->customint2;
-$userwaitlist = isset($waitlistenrolements[$USER->id]);
-$leftwaitliststr = ($maxwaitlist - $countwaitlist).' places restantes sur liste complémentaire';
+    $waitlistenrolements = $DB->get_records('user_enrolments', array('enrolid' => $enrol->id, 'status' => 3), '', 'userid');
+    $countwaitlist = count($waitlistenrolements);
+    $maxwaitlist = $enrol->customint2;
+    $userwaitlist = isset($waitlistenrolements[$USER->id]);
+    $leftwaitliststr = ($maxwaitlist - $countwaitlist).' places restantes sur liste complémentaire';
 
-$usernolist = !$usermainlist && !$userwaitlist;
-$fullregistration = ($countmainlist >= $maxmainlist) && ($countwaitlist >= $maxwaitlist);
+    $usernolist = !$usermainlist && !$userwaitlist;
+    $fullregistration = ($countmainlist >= $maxmainlist) && ($countwaitlist >= $maxwaitlist);
 
-if ($maxmainlist > $countmainlist) {
-    $leftplacesstr = ($maxmainlist - $countmainlist).' places restantes sur liste principale';
-    $leftplacesstyle = 'success';
-} else if ($maxwaitlist > $countwaitlist) {
-    $leftplacesstr = ($maxwaitlist - $countwaitlist).' places restantes sur liste complémentaire';
-    $leftplacesstyle = 'warning';
+    if ($maxmainlist > $countmainlist) {
+        $leftplacesstr = ($maxmainlist - $countmainlist).' places restantes sur liste principale';
+        $leftplacesstyle = 'success';
+    } else if ($maxwaitlist > $countwaitlist) {
+        $leftplacesstr = ($maxwaitlist - $countwaitlist).' places restantes sur liste complémentaire';
+        $leftplacesstyle = 'warning';
+    } else {
+        $leftplacesstr = 'Aucune place disponible';
+        $leftplacesstyle = 'danger';
+    }
 } else {
-    $leftplacesstr = 'Aucune place disponible';
-    $leftplacesstyle = 'danger';
+    // Les quotas sont désactivés.
+    $leftplacesstr = 'Aucune restriction de places';
+    $leftplacesstyle = 'success';
 }
 
 echo '<td id="apsolu-select-left-places-'.$enrolid.'-ajax" class="'.$leftplacesstyle.'">'.$leftplacesstr.'</td>';
