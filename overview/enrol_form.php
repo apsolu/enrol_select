@@ -112,7 +112,8 @@ class enrol_select_form extends moodleform {
 
         // Static text about roles.
         if ($instance->complement === false) {
-            $mform->addElement('html', get_string('html_role_notifications', 'enrol_select'));
+            // TODO: trouver un moyen d'afficher ce message uniquement sur les activités en option, bonification et libres.
+            // $mform->addElement('html', get_string('html_role_notifications', 'enrol_select'));
         }
 
         // Hidden fields.
