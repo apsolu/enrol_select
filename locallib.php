@@ -558,6 +558,7 @@ function get_potential_user_activities($manager = false) {
             $course->max_wait_list = $enrol->customint2;
             $course->user_wait_list = isset($waitlistenrolements[$USER->id]);
             $countwaitslots = $course->max_wait_list - $course->count_wait_list;
+            // À quoi sert $course->left_wait_list_str ??? Ça ne semble être utilisé nulle part ailleurs...
             if ($countwaitslots > 1) {
                 $course->left_wait_list_str = $countwaitslots.' places restantes sur liste complémentaire';
             } else {
@@ -575,8 +576,7 @@ function get_potential_user_activities($manager = false) {
                 $course->left_places_str = $count.' places restantes sur liste principale';
                 $course->left_places_style = 'success';
             } else if ($course->max_wait_list > $course->count_wait_list) {
-                $count = $course->max_wait_list - $course->count_wait_list;
-                $course->left_places_str = $count.' places restantes sur liste complémentaire';
+                $course->left_places_str = 'Il reste des places sur liste complémentaire';
                 $course->left_places_style = 'warning';
             } else {
                 $course->left_places_str = 'Aucune place disponible';
