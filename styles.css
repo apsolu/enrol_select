@@ -141,6 +141,10 @@ button.uncheckall {
     background-image: url('[[pix:enrol_select|i/grade_libre]]');
 }
 
+.apsolu-roles-decouverte {
+    background-image: url('[[pix:enrol_select|i/grade_decouverte]]');
+}
+
 #page-enrol-select-overview .moodle-dialogue,
 #page-enrol-select-overview .moodle-dialogue-base {
     z-index: 100002 !important;
