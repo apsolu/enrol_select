@@ -13,7 +13,7 @@ define(['jquery', 'local_apsolu_courses/jquery.tablesorter'], function($) {
             });
 
             // Affiche le semestre 2.
-            index = Math.floor($('#apsolu-manage-methods-title-tab-ul > li').length/2);
+            index = 0; // Math.floor($('#apsolu-manage-methods-title-tab-ul > li').length/2);
             // Active le premier onglet de méthodes.
             $('#apsolu-manage-methods-title-tab-ul > li').eq(index).addClass('active');
             // Affiche les conteneurs (sauf le premier).
