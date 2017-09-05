@@ -215,7 +215,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
         if (ctype_digit((string) $data->role) === false) {
             print_error('error_cannot_enrol', 'enrol_select');
         } else if ($enrolselectplugin->can_enrol($instance, $USER, $data->role)) {
-            $timestart = 0;
+            $timestart = time();
             $timeend = 0;
             if (in_array($instance->courseid, array(249, 250))) {
                 // Pour la musculation et la licence FFSU, on accepte d'office les inscriptions.
