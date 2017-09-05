@@ -206,13 +206,10 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
         $enrolselectplugin->unenrol_user($instance, $USER->id);
         file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$instance->courseid.', action: unenrol course'.PHP_EOL, FILE_APPEND);
 
-        echo $OUTPUT->notification(get_string('changessaved'), 'notifysuccess');
-        if (defined('AJAX_SCRIPT')) {
-            echo '<div class="alert alert-success"><p>'.get_string('changessaved').'</p></div>';
-        }
+        echo '<div class="alert alert-success"><p>'.get_string('unenrolmentsaved', 'enrol_select').'</p></div>';
 
         $href = $CFG->wwwroot.'/enrol/select/overview.php';
-        echo '<p class="text-center"><a class="btn btn-default apsolu-cancel-a" href="'.$href.'">Continuer</a></p>';
+        echo '<p class="text-center"><a class="btn btn-default apsolu-cancel-a" href="'.$href.'">'.get_string('continue').'</a></p>';
     } else {
         // Enrol.
         if (ctype_digit((string) $data->role) === false) {
@@ -297,13 +294,15 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 }
             }
 
-            echo $OUTPUT->notification(get_string('changessaved'), 'notifysuccess');
-            if (defined('AJAX_SCRIPT')) {
-                echo '<div class="alert alert-success"><p>'.get_string('changessaved').'</p></div>';
+            $message = get_string('enrolmentsaved', 'enrol_select');
+            if (in_array($data->role, array('9', '10'), true) === true) {
+                $message .= '<br /><strong>Attention il faut aussi faire votre IP dans votre scolarité.</strong>';
             }
 
+            echo '<div class="alert alert-success text-center"><p>'.$message.'</p></div>';
+
             $href = $CFG->wwwroot.'/enrol/select/overview.php';
-            echo '<p class="text-center"><a class="btn btn-default apsolu-cancel-a" href="'.$href.'">Continuer</a></p>';
+            echo '<p class="text-center"><a class="btn btn-default apsolu-cancel-a" href="'.$href.'">'.get_string('continue').'</a></p>';
         } else {
             print_error('error_cannot_enrol', 'enrol_select');
         }
