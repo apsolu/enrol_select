@@ -95,17 +95,21 @@ $string['colleges'] = 'Population';
 
 $string['accepted_list'] = 'Liste des étudiants acceptés';
 $string['accepted_list_abbr'] = 'Accepté';
+$string['accepted_list_short'] = 'Accepté';
 $string['accepted_description'] = 'Liste des étudiants acceptés en cours. Ils ont accès aux forums et aux documents du cours. Une liste de toutes les sessions à venir est également indiquée sur leur page d\'accueil.';
 $string['main_list'] = 'Liste principale';
 $string['main_list_abbr'] = 'LP';
+$string['main_list_short'] = 'Principale';
 $string['main_description'] = 'Liste des étudiants sur liste principale. Ils n\'ont accès ni aux forums, ni aux documents du cours. Seule la première session du cours est indiquée leur page d\'accueil.';
 $string['main_list_registered'] = 'Inscrit sur liste principale';
 $string['wait_list'] = 'Liste complémentaire';
 $string['wait_list_abbr'] = 'LC';
+$string['wait_list_short'] = 'Complément';
 $string['wait_description'] = 'Liste des étudiants sur liste complémentaire. Ils n\'ont accès ni aux forums, ni aux documents du cours. Seule la première session du cours est indiquée leur page d\'accueil.';
 $string['wait_list_registered'] = 'Inscrit sur liste complémentaire';
 $string['deleted_list'] = 'Liste des étudiants désinscrits';
 $string['deleted_list_abbr'] = 'Désinscrit';
+$string['deleted_list_short'] = 'Désinscrit';
 $string['deleted_description'] = 'Liste des étudiants désinscrits. Ils n\'ont accès ni aux forums, ni aux documents du cours. Ce cours n\'est pas référencé sur leur page d\'accueil.';
 $string['error:enrol'] = 'Impossible de vous inscrire à ce cours';
 

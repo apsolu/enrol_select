@@ -38,6 +38,22 @@ class enrol_select_plugin extends enrol_plugin {
         self::DELETED => 'deleted',
     );
 
+    public static function get_enrolment_list_name($status, $type = null) {
+        if ($type !== null ) {
+            $type = '_'.$type;
+        }
+
+        switch ($status) {
+            case self::ACCEPTED:
+            case self::MAIN:
+            case self::WAIT:
+            case self::DELETED:
+                return get_string(self::$states[$status].'_list'.$type, 'enrol_select');
+        }
+
+        return false;
+    }
+
     public function get_name() {
         // Second word in class is always enrol name, sorry, no fancy plugin names with _.
         return 'select';
