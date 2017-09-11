@@ -533,9 +533,9 @@ function get_potential_user_activities($manager = false) {
                 " FROM {user_enrolments}".
                 " WHERE enrolid = :enrolid".
                 " AND status IN (0, 2)".
-                " AND timestart <= :timestart".
+                " AND (timestart <= :timestart OR timestart = :startenrol)". // TODO: régler ce problème de date de début !
                 " AND (timeend = 0 OR timeend >= :timeend)";
-            $mainlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $enrol->id, 'timestart' => $time, 'timeend' => $time));
+            $mainlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $enrol->id, 'timestart' => $time, 'startenrol' => $enrol->customint7, 'timeend' => $time));
 
             $course->count_main_list = count($mainlistenrolements);
             $course->max_main_list = $enrol->customint1;
@@ -551,9 +551,9 @@ function get_potential_user_activities($manager = false) {
                 " FROM {user_enrolments}".
                 " WHERE enrolid = :enrolid".
                 " AND status IN (3)".
-                " AND timestart <= :timestart".
+                " AND (timestart <= :timestart OR timestart = :startenrol)". // TODO: régler ce problème de date de début !
                 " AND (timeend = 0 OR timeend >= :timeend)";
-            $waitlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $enrol->id, 'timestart' => $time, 'timeend' => $time));
+            $waitlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $enrol->id, 'timestart' => $time, 'startenrol' => $enrol->customint7, 'timeend' => $time));
             $course->count_wait_list = count($waitlistenrolements);
             $course->max_wait_list = $enrol->customint2;
             $course->user_wait_list = isset($waitlistenrolements[$USER->id]);
