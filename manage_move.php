@@ -89,15 +89,6 @@ if ($mform->is_cancelled()) {
             $sql = "UPDATE {user_enrolments} SET status=? WHERE userid=? AND enrolid=?";
             $DB->execute($sql, array($to, $userid, $enrolid));
 
-            if ($to == 0) {
-                $role = $DB->get_record('role_assignments', array('userid' => $userid, 'itemid' => $enrolid, 'component' => 'enrol_select'));
-                if ($role) {
-                    UniversiteRennes2\Apsolu\update_payment_item($userid, $course->id, $role->roleid);
-                }
-            } else {
-                UniversiteRennes2\Apsolu\remove_payment_item($userid, $course->id);
-            }
-
             $event = \enrol_select\event\user_moved::create(array(
                 'relateduserid' => $userid,
                 'other' => array('status' => $to),
