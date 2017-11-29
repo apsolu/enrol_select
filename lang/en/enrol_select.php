@@ -217,10 +217,13 @@ $string['error_cannot_enrol'] = 'Vous ne pouvez pas vous inscrire à ce cours.';
 $string['error_no_role'] = 'Vous devez sélectionner au moins un rôle pour pouvoir inscrire un utilisateur.';
 
 // Renew form.
+$string['strftimedaydatetime'] = '%A %d %B %Y à %Ih%M';
 $string['renewtitle'] = 'Réinscription aux activités';
 $string['reenrolment'] = 'Réinscription';
-$string['closedreenrolment'] = '<p class="alert alert-info">La période de réinscription sera ouverte <strong>du lundi 12 décembre au vendredi 16 décembre</strong>. Merci de patienter.</p>';
-$string['noreenrolment'] = '<div class="alert alert-info"><p>Aucune de vos inscriptions actuelles ne propose de réinscription. Vous pourrez vous préinscrire <strong>entre le 2 et le 7 janvier 2017</strong>.</p></div>';
+$string['closedreenrolment'] = '<p class="alert alert-info">La période de réinscription est fermée.</p>';
+$string['nextreenrolment'] = '<p class="alert alert-info">La prochaine période de réinscription est prévue du <strong>{$a->from}</strong> au <strong>{$a->to}</strong>.</p>';
+$string['noreenrolment'] = '<div class="alert alert-info"><p>Aucune de vos inscriptions actuelles ne propose de réinscription.</div>';
+$string['nextenrolment'] = '<div class="alert alert-info"><p>Les préinscriptions du 2ème semestre auront lieu du <strong>{$a->from}</strong> au <strong>{$a->to}</strong>.</p></div>';
 $string['reenrolmentexplanationcase'] = '<div class="alert alert-info">'.
     '<ol>'.
     '<li>vous souhaitez poursuivre sur le même créneau, il vous suffit de compléter et d\'enregistrer le tableau ci-dessous</li>'.

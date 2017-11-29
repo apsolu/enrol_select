@@ -44,10 +44,30 @@ $PAGE->set_title(get_string('pluginname', 'enrol_select'));
 // Navigation.
 $PAGE->navbar->add(get_string('reenrolment', 'enrol_select'));
 
-if (is_file(__DIR__.'/renew.lock')) {
+if (!$select = enrol_get_plugin('select')) {
+    throw new coding_exception('Can not instantiate enrol_select');
+}
+
+// Vérifie que la période de réinscription est ouverte.
+$time = time();
+$semester1_reenrol_startdate = get_config('local_apsolu', 'semester1_reenrol_startdate');
+$semester1_reenrol_enddate = get_config('local_apsolu', 'semester1_reenrol_enddate');
+
+$open = ($semester1_reenrol_startdate <= $time && $semester1_reenrol_enddate >= $time);
+if ($open === false) {
     echo $OUTPUT->header();
 
     echo get_string('closedreenrolment', 'enrol_select');
+
+    if ($semester1_reenrol_startdate > $time) {
+        $strdate = get_string('strftimedaydatetime', 'langconfig');
+
+        $next = new stdClass();
+        $next->from = userdate($semester1_reenrol_startdate, $strdate);
+        $next->to = userdate($semester1_reenrol_enddate, $strdate);
+
+        echo get_string('nextreenrolment', 'enrol_select', $next);
+    }
 
     echo $OUTPUT->footer();
 
@@ -56,10 +76,6 @@ if (is_file(__DIR__.'/renew.lock')) {
 
 // Javascript.
 $PAGE->requires->js_call_amd('enrol_select/select_renew', 'initialise');
-
-if (!$select = enrol_get_plugin('select')) {
-    throw new coding_exception('Can not instantiate enrol_select');
-}
 
 $notification = '';
 if (isset($_POST['reenrol'])) {
@@ -200,6 +216,17 @@ $data->action = $CFG->wwwroot.'/enrol/select/renew.php';
 $data->enrolments = $enrolments;
 $data->enrolments_count = $enrolments_count;
 $data->notification = $notification;
+
+if ($enrolments_count === 0) {
+    $strdate = get_string('strftimedaydatetime', 'enrol_select');
+    $semester2_enrol_startdate = get_config('local_apsolu', 'semester2_enrol_startdate');
+    $semester2_enrol_enddate = get_config('local_apsolu', 'semester2_enrol_enddate');
+
+    $next = new stdClass();
+    $next->from = userdate($semester2_enrol_startdate, $strdate);
+    $next->to = userdate($semester2_enrol_enddate, $strdate);
+    $data->nextenrolment = get_string('nextenrolment', 'enrol_select', $next);
+}
 
 echo $OUTPUT->header();
 
