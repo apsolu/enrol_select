@@ -60,7 +60,7 @@ if ($open === false) {
     echo get_string('closedreenrolment', 'enrol_select');
 
     if ($semester1_reenrol_startdate > $time) {
-        $strdate = get_string('strftimedaydatetime', 'langconfig');
+        $strdate = get_string('strftimedaydatetime', 'enrol_select');
 
         $next = new stdClass();
         $next->from = userdate($semester1_reenrol_startdate, $strdate);
