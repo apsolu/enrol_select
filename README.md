@@ -16,6 +16,6 @@ Structure base de données:
 - customint3 : témoin d'activation des quotas
 - customint4 : date de début des réinscriptions
 - customint5 : date de fin des réinscriptions
-- customint6 : témoin d'activation des réinscriptions
+- customint6 : id de la méthode vers laquelle les utilisateurs seront réinscrits
 - customint7 : date de début du cours
 - customint8 : date de fin du cours
