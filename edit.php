@@ -79,6 +79,12 @@ if ($mform->is_cancelled()) {
     redirect($return);
 
 } else if ($data = $mform->get_data()) {
+
+    // Force la remise à zéro du témoin, si l'option de réinscription n'est pas activée.
+    if (isset($data->customint6) && $data->customint4 !== 0 && $data->customint5 !== 0) {
+        $data->customint6 = 0;
+    }
+
     if ($instance->id) {
         $reset = ($instance->status != $data->status);
 
@@ -89,16 +95,13 @@ if ($mform->is_cancelled()) {
         $instance->customint3     = $data->customint3;
         $instance->customint4     = $data->customint4;
         $instance->customint5     = $data->customint5;
-        if (isset($data->customint6)) {
-            $instance->customint6 = $data->customint6;
-        } else {
-            $instance->customint6 = 0;
-        }
+        $instance->customint6     = $data->customint6;
         $instance->customint7     = $data->customint7;
         $instance->customint8     = $data->customint8;
         $instance->enrolstartdate = $data->enrolstartdate;
         $instance->enrolenddate   = $data->enrolenddate;
         $instance->timemodified   = time();
+
         $DB->update_record('enrol', $instance);
 
         if ($reset) {
