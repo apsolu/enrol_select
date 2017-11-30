@@ -189,12 +189,21 @@ class enrol_select_plugin extends enrol_plugin {
         return $roles;
     }
 
+    /**
+     * Retourne le rôle d'un utilisateur pour une méthode d'inscription donnée.
+     *
+     * @param object $instance Objet de l'instance de la méthode d'inscription
+     * @param int    $userid   Identifiant de l'utilisateur. Si il n'est pas fourni, c'est l'identifiant de l'utilisateur courant qui sera utilisé.
+     * @return object|false Retourne un object du rôle ou false si l'utilisateur n'est pas inscrit via cette méthode.
+     */
     public function get_user_role($instance, $userid = null) {
         global $DB, $USER;
 
         if ($userid === null) {
             $userid = $USER->id;
         }
+
+        $time = time();
 
         $sql = "SELECT r.*".
             " FROM {role} r".
@@ -206,10 +215,10 @@ class enrol_select_plugin extends enrol_plugin {
             " AND e.enrol = 'select'".
             " AND e.status = 0". // Active.
             " AND ue.userid = :userid".
-            " AND (ue.timestart = 0 OR ue.timestart <= :time)".
-            " AND (ue.timeend = 0 OR ue.timeend >= :time)".
+            " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
+            " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
             " AND ctx.contextlevel = 50";
-        $params = array('enrolid' => $instance->id, 'userid' => $userid, 'time' => time());
+        $params = array('enrolid' => $instance->id, 'userid' => $userid, 'timestart' => $time, 'timeend' => $time);
 
         $roles = role_fix_names($DB->get_records_sql($sql, $params));
 
