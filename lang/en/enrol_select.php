@@ -227,8 +227,8 @@ $string['nextenrolment'] = '<div class="alert alert-info"><p>Les préinscription
 $string['reenrolmentexplanationcase'] = '<div class="alert alert-info">'.
     '<ol>'.
     '<li>vous souhaitez poursuivre sur le même créneau, il vous suffit de compléter et d\'enregistrer le tableau ci-dessous</li>'.
-    '<li>vous souhaitez changer de créneau avec le même enseignant, <strong>contactez-le vite par mail <u>avant le 20 décembre</u></strong></li>'.
-    '<li>vous souhaitez vous inscrire sur un autre cours avec un nouvel enseignant, revenez vous préinscrire sur « votre espace SIUAPS » <strong>entre le 2 et le 7 janvier 2017</strong></li>'.
+    '<li>vous souhaitez changer de créneau avec le même enseignant, <strong>contactez-le vite par mail <u>avant le {$a->limit}</u></strong></li>'.
+    '<li>vous souhaitez vous inscrire sur un autre cours avec un nouvel enseignant, revenez vous préinscrire sur « votre espace SIUAPS » <strong>entre le {$a->from} et le {$a->to}</strong></li>'.
     '</ol>'.
     '</div>';
 $string['coursename'] = 'Nom du cours';

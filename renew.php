@@ -226,6 +226,17 @@ if ($enrolments_count === 0) {
     $next->from = userdate($semester2_enrol_startdate, $strdate);
     $next->to = userdate($semester2_enrol_enddate, $strdate);
     $data->nextenrolment = get_string('nextenrolment', 'enrol_select', $next);
+} else {
+    $strdate = get_string('strftimedaydatetime', 'enrol_select');
+    $semester1_reenrol_enddate = get_config('local_apsolu', 'semester1_reenrol_enddate');
+    $semester2_enrol_startdate = get_config('local_apsolu', 'semester2_enrol_startdate');
+    $semester2_enrol_enddate = get_config('local_apsolu', 'semester2_enrol_enddate');
+
+    $explanation = new stdClass();
+    $explanation->limit = userdate($semester1_reenrol_enddate, $strdate);
+    $explanation->from = userdate($semester2_enrol_startdate, $strdate);
+    $explanation->to = userdate($semester2_enrol_enddate, $strdate);
+    $data->explanation = get_string('reenrolmentexplanationcase', 'enrol_select', $explanation);
 }
 
 echo $OUTPUT->header();
