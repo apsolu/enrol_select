@@ -203,8 +203,6 @@ class enrol_select_plugin extends enrol_plugin {
             $userid = $USER->id;
         }
 
-        $time = time();
-
         $sql = "SELECT r.*".
             " FROM {role} r".
             " JOIN {role_assignments} ra ON r.id = ra.roleid".
@@ -215,10 +213,8 @@ class enrol_select_plugin extends enrol_plugin {
             " AND e.enrol = 'select'".
             " AND e.status = 0". // Active.
             " AND ue.userid = :userid".
-            " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
-            " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
             " AND ctx.contextlevel = 50";
-        $params = array('enrolid' => $instance->id, 'userid' => $userid, 'timestart' => $time, 'timeend' => $time);
+        $params = array('enrolid' => $instance->id, 'userid' => $userid);
 
         $roles = role_fix_names($DB->get_records_sql($sql, $params));
 
