@@ -217,7 +217,7 @@ $string['error_cannot_enrol'] = 'Vous ne pouvez pas vous inscrire à ce cours.';
 $string['error_no_role'] = 'Vous devez sélectionner au moins un rôle pour pouvoir inscrire un utilisateur.';
 
 // Renew form.
-$string['strftimedaydatetime'] = '%A %d %B %Y à %Ih%M';
+$string['strftimedaydatetime'] = '%A %d %B %Y à %Hh%M';
 $string['renewtitle'] = 'Réinscription aux activités';
 $string['reenrolment'] = 'Réinscription';
 $string['closedreenrolment'] = '<p class="alert alert-info">La période de réinscription est fermée.</p>';
