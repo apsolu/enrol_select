@@ -77,6 +77,7 @@ class enrol_select_edit_form extends moodleform {
 
         // Méthode de réinscription.
         $select = $mform->addElement('select', 'customint6', get_string('reenrolinstance', 'enrol_select'), $enrolmethods);
+        $mform->addHelpButton('customint6', 'reenrolinstance', 'enrol_select');
         $mform->disabledIf('customint6', 'customint4[enabled]');
         $mform->disabledIf('customint6', 'customint5[enabled]');
 

@@ -46,6 +46,7 @@ $string['reenroldate'] = 'Date des réinscriptions';
 $string['reenrolstartdate'] = 'Date d\'ouverture des réinscriptions';
 $string['reenrolenddate'] = 'Date de fermeture des réinscriptions';
 $string['reenrolinstance'] = 'Instance de réinscription';
+$string['reenrolinstance_help'] = 'L\'instance de réiniscription devrait toujours être configurée au premier semestre. Dans le menu déroulant, il faut cibler une instance du second semestre.';
 $string['quotas'] = 'Quotas';
 $string['enablequotas'] = 'Activer les quotas';
 $string['cohorts'] = 'Cohortes';
