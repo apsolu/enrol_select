@@ -221,14 +221,14 @@ $string['strftimedaydatetime'] = '%A %d %B %Y à %Hh%M';
 $string['renewtitle'] = 'Réinscription aux activités';
 $string['reenrolment'] = 'Réinscription';
 $string['closedreenrolment'] = '<p class="alert alert-info">La période de réinscription est fermée.</p>';
-$string['nextreenrolment'] = '<p class="alert alert-info">La prochaine période de réinscription est prévue du <strong>{$a->from}</strong> au <strong>{$a->to}</strong>.</p>';
-$string['noreenrolment'] = '<div class="alert alert-info"><p>Aucune de vos inscriptions actuelles ne propose de réinscription.</div>';
-$string['nextenrolment'] = '<div class="alert alert-info"><p>Les préinscriptions du 2ème semestre auront lieu du <strong>{$a->from}</strong> au <strong>{$a->to}</strong>.</p></div>';
+$string['nextreenrolment'] = '<p class="alert alert-info">La prochaine période de réinscription est prévue à partir du <strong>{$a->from}</strong>.</p>';
+$string['noreenrolment'] = '<div class="alert alert-warning"><p>Aucune de vos inscriptions actuelles ne propose de réinscription.</div>';
+$string['nextenrolment'] = '<div class="alert alert-info"><p>Les préinscriptions du 2ème semestre auront lieu à partir du <strong>{$a->from}</strong>.</p></div>';
 $string['reenrolmentexplanationcase'] = '<div class="alert alert-info">'.
     '<ol>'.
     '<li>vous souhaitez poursuivre sur le même créneau, il vous suffit de compléter et d\'enregistrer le tableau ci-dessous</li>'.
     '<li>vous souhaitez changer de créneau avec le même enseignant, <strong>contactez-le vite par mail <u>avant le {$a->limit}</u></strong></li>'.
-    '<li>vous souhaitez vous inscrire sur un autre cours avec un nouvel enseignant, revenez vous préinscrire sur « votre espace SIUAPS » <strong>entre le {$a->from} et le {$a->to}</strong></li>'.
+    '<li>vous souhaitez vous inscrire sur un autre cours avec un nouvel enseignant, revenez vous préinscrire sur « votre espace SIUAPS » à partir du <strong>{$a->from}</strong></li>'.
     '</ol>'.
     '</div>';
 $string['coursename'] = 'Nom du cours';
