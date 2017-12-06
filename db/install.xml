@@ -3,7 +3,7 @@
 <TABLES>
     <TABLE NAME="apsolu_colleges" COMMENT="Table apsolu_colleges">
         <FIELDS>
-            <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" NEXT="event" />
+            <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" NEXT="event" />
             <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" PREVIOUS="id" NEXT="maxwish" />
             <FIELD NAME="maxwish" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="name" NEXT="minregister" />
             <FIELD NAME="minregister" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="maxwish" NEXT="maxregister" />
