@@ -236,3 +236,10 @@ $string['coursename'] = 'Nom du cours';
 $string['teachercontact'] = 'Contact enseignant';
 $string['renewenrolement'] = 'Renouveler mon inscription';
 $string['savedreenrolment'] = 'Réinscription enregistrée';
+
+
+// Debug.
+$string['debug_enrol_invalid_enrolment'] = 'Le cours #{$a->courseid} n\'est pas un créneau apsolu. La méthode d\'inscription #{$a->enrolid} a été ignorée.';
+$string['debug_enrol_invalid_category'] = 'Le cours #{$a->courseid} n\'est pas rattaché à une activité sportive apsolu (catégorie #{$a->categoryid}.';
+$string['debug_enrol_no_enrolments'] = 'Le cours #{$a->courseid} n\'offre aucune méthode d\'inscription par voeux valide pour l\'utilisateur #{$a->userid}.';
+$string['debug_enrol_too_many_enrolments'] = 'Le cours #{$a->courseid} offre plus d\'une méthode d\'inscription par voeux valide pour l\'utilisateur #{$a->userid}.';

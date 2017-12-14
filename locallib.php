@@ -457,6 +457,7 @@ function get_potential_user_activities($manager = false) {
     $enrols = $DB->get_records_sql($sql, $params);
     foreach ($enrols as $enrol) {
         if (!isset($courses[$enrol->courseid])) {
+            debugging(get_string('debug_enrol_invalid_enrolment', 'enrol_select', (object) ['courseid' => $enrol->courseid, 'enrolid' => $enrol->id]));
             continue;
         }
 
@@ -469,19 +470,21 @@ function get_potential_user_activities($manager = false) {
 
     foreach ($courses as $courseid => $course) {
         if (!isset($categories[$course->category])) {
+            debugging(get_string('debug_enrol_invalid_category', 'enrol_select', (object) ['courseid' => $course->id, 'categoryid' => $course->category]));
             unset($courses[$courseid]);
             continue;
         }
 
         // L'utilisateur ne semble pas avoir le droit de s'inscrire à ce cours.
         if (!isset($courses[$courseid]->enrols)) {
+            debugging(get_string('debug_enrol_no_enrolments', 'enrol_select', (object) ['courseid' => $course->id, 'userid' => $USER->id]));
             unset($courses[$courseid]);
             continue;
         }
 
         // Il y a trop de méthodes !
         if (isset($courses[$courseid]->enrols[1]) && $manager === false) {
-            debugging('Course #'.$course->id.': too much enrol ! (user #'.$USER->id.')');
+            debugging(get_string('debug_enrol_too_many_enrolments', 'enrol_select', (object) ['courseid' => $course->courseid, 'userid' => $USER->id]));
             unset($courses[$courseid]);
             continue;
         }
