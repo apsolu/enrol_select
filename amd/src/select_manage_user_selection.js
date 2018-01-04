@@ -1,6 +1,6 @@
 define(['jquery', 'local_apsolu_courses/jquery.tablesorter'], function($) {
     return {
-        initialise : function(){
+        initialise : function(semester2){
             // Gère les onglets des méthodes d'inscription.
 
             // Créer une barre de navigation en haut du conteneur.
@@ -12,8 +12,13 @@ define(['jquery', 'local_apsolu_courses/jquery.tablesorter'], function($) {
                 $(this).remove();
             });
 
-            // Affiche le semestre 2.
-            index = 0; // Math.floor($('#apsolu-manage-methods-title-tab-ul > li').length/2);
+            // Détermine quel onglet doit être actif au chargement de la page (S1 ou S2).
+            if (semester2 == true) {
+                index = Math.floor($('#apsolu-manage-methods-title-tab-ul > li').length/2);
+            } else {
+                index = 0;
+            }
+
             // Active le premier onglet de méthodes.
             $('#apsolu-manage-methods-title-tab-ul > li').eq(index).addClass('active');
             // Affiche les conteneurs (sauf le premier).

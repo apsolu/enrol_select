@@ -187,7 +187,8 @@ $PAGE->navbar->add(get_string('users'));
 $PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', array('id' => $course->id)));
 $PAGE->navbar->add($pluginname);
 
-$PAGE->requires->js_call_amd('enrol_select/select_manage_user_selection', 'initialise');
+$semester2 = time() > get_config('local_apsolu', 'semester1_enddate');
+$PAGE->requires->js_call_amd('enrol_select/select_manage_user_selection', 'initialise', array($semester2));
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading('Gestion des voeux');
