@@ -70,7 +70,7 @@ $data->canunenrol = $canunenrol;
 $data->enrols = array();
 
 $roles = role_fix_names($DB->get_records('role'));
-$instances = $DB->get_records('enrol', array('enrol' => 'select', 'courseid' => $course->id));
+$instances = $DB->get_records('enrol', array('enrol' => 'select', 'courseid' => $course->id), $sort = 'name');
 
 foreach ($instances as $instance) {
 
