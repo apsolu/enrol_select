@@ -29,6 +29,10 @@ $filters['sites'] = new \stdClass();
 $filters['sites']->label = 'Site de pratique';
 $filters['sites']->values = array();
 
+$filters['areas'] = new \stdClass();
+$filters['areas']->label = 'Lieu de pratique';
+$filters['areas']->values = array();
+
 $filters['sports'] = new \stdClass();
 $filters['sports']->label = 'Activité';
 $filters['sports']->values = array();
@@ -55,10 +59,6 @@ $filters['times']->values[] = 'Matin';
 $filters['times']->values[] = 'Midi';
 $filters['times']->values[] = 'Après-midi';
 $filters['times']->values[] = 'Soir';
-
-$filters['areas'] = new \stdClass();
-$filters['areas']->label = 'Lieu';
-$filters['areas']->values = array();
 
 $filters['locations'] = new \stdClass();
 $filters['locations']->label = 'Lieu';
@@ -151,7 +151,7 @@ $courses = array_values($courses);
 $filters['roles']->values = array_values($filters['roles']->values);
 ksort($filters['teachers']->values);
 $filters['teachers']->values = array_values($filters['teachers']->values);
-unset($filters['teachers'], $filters['roles'], $filters['locations'], $filters['areas'], $filters['skills']);
+unset($filters['teachers'], $filters['roles'], $filters['locations'], $filters['skills']);
 foreach ($filters as $name => $filter) {
     if (in_array($name, array('periods', 'weekdays', 'teachers', 'times'), $strict = true) === false) {
         sort($filter->values);

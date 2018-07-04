@@ -101,7 +101,7 @@ define(['jquery', 'enrol_select/select2'], function($) {
             // $('.apsolu-enrol-selects').select2({width: 'resolve'});
             $('.apsolu-enrol-selects').select2({
                 allowClear: true,
-                width: '20em'
+                width: '18em'
                 // width: 'resolve'
                 });
             // $('.apsolu-enrol-selects').select2();
