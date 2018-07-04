@@ -22,10 +22,23 @@
 
 namespace UniversiteRennes2\Apsolu;
 
-function get_activities() {
+function get_activities($categoryid = 0, $categoryname = '') {
     global $DB;
 
-    $sql = "SELECT c.id, c.fullname, ac.event, ac.weekday, ac.starttime, ac.endtime, cc0.id AS domainid, cc0.name AS domain, cc.id AS sportid, cc.name AS sport,".
+    $params = array();
+    $conditions = array();
+
+    if (empty($categoryid) === false) {
+        $params['categoryid'] = $categoryid;
+        $conditions[] = " AND cc.id = :categoryid";
+    }
+
+    if (empty($categoryname) === false) {
+        $params['categoryname'] = $categoryname;
+        $conditions[] = " AND cc.name LIKE :categoryname";
+    }
+
+    $sql = "SELECT c.id, c.fullname, ac.event, ac.weekday, ac.starttime, ac.endtime, cc0.id AS domainid, cc0.name AS domain, cc.id AS sportid, cc.name AS sport, cc.description,".
         " ac.skillid, ask.name AS skill, ac.locationid, al.name AS location, aa.name AS area, aci.name AS site, ac.periodid, ap.generic_name".
         " FROM {course} c".
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
@@ -39,8 +52,9 @@ function get_activities() {
         " WHERE cc0.visible = 1".
         " AND cc.visible = 1".
         " AND c.visible = 1".
+        implode(' ', $conditions).
         " ORDER BY domain, sport, numweekday, starttime, event";
-    return $DB->get_records_sql($sql);
+    return $DB->get_records_sql($sql, $params);
 }
 
 function get_activities_roles() {
