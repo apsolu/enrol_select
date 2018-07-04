@@ -177,3 +177,22 @@ button.uncheckall {
     background-color: #eeeeee;
     cursor: not-allowed;
 }
+
+#apsolu-enrol-select tbody th {
+    background-color: #434241;
+    color: #F39C12;
+    padding: 0 1em;
+    line-height: 2em;
+}
+
+#apsolu-enrol-select .hide {
+    display: none;
+}
+
+#apsolu-enrol-select tbody ul {
+    margin: 0;
+}
+
+#apsolu-enrol-select tbody ul li {
+    white-space: nowrap;
+}

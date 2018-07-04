@@ -22,6 +22,79 @@
 
 namespace UniversiteRennes2\Apsolu;
 
+function get_activities() {
+    global $DB;
+
+    $sql = "SELECT c.id, c.fullname, ac.event, ac.weekday, ac.starttime, ac.endtime, cc0.id AS domainid, cc0.name AS domain, cc.id AS sportid, cc.name AS sport,".
+        " ac.skillid, ask.name AS skill, ac.locationid, al.name AS location, aa.name AS area, aci.name AS site, ac.periodid, ap.generic_name".
+        " FROM {course} c".
+        " JOIN {apsolu_courses} ac ON c.id = ac.id".
+        " JOIN {course_categories} cc ON cc.id = c.category".
+        " JOIN {course_categories} cc0 ON cc0.id = cc.parent".
+        " JOIN {apsolu_skills} ask ON ask.id = ac.skillid".
+        " JOIN {apsolu_locations} al ON al.id = ac.locationid".
+        " JOIN {apsolu_areas} aa ON aa.id = al.id".
+        " JOIN {apsolu_cities} aci ON aci.id = aa.cityid".
+        " JOIN {apsolu_periods} ap ON ap.id = ac.periodid".
+        " WHERE cc0.visible = 1".
+        " AND cc.visible = 1".
+        " AND c.visible = 1".
+        " ORDER BY domain, sport, numweekday, starttime, event";
+    return $DB->get_records_sql($sql);
+}
+
+function get_activities_roles() {
+    global $DB;
+
+    $roles = role_fix_names($DB->get_records('role', array(), 'sortorder'));
+
+    $activities = array();
+
+    $sql = "SELECT e.courseid, esr.roleid".
+        " FROM {enrol} e".
+        " JOIN {apsolu_courses} ac ON ac.id = e.courseid".
+        " JOIN {enrol_select_roles} esr ON e.id = esr.enrolid";
+    foreach ($DB->get_recordset_sql($sql) as $record) {
+        if (isset($roles[$record->roleid]) === false) {
+            continue;
+        }
+
+        if (isset($activities[$record->courseid]) === false) {
+            $activities[$record->courseid] = array();
+        }
+        $activities[$record->courseid][$record->roleid] = $roles[$record->roleid];
+    }
+
+    return $activities;
+}
+
+function get_activities_teachers() {
+    global $DB;
+
+    $teachers = array();
+
+    $sql = "SELECT u.id AS userid, u.firstname, u.lastname, u.email, ac.id AS courseid".
+        " FROM {user} u".
+        " JOIN {role_assignments} ra ON u.id = ra.userid AND ra.roleid = 3". // Teacher.
+        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50". // Course context.
+        " JOIN {apsolu_courses} ac ON ac.id = ctx.instanceid".
+        " ORDER BY u.lastname, u.firstname";
+    foreach ($DB->get_recordset_sql($sql) as $record) {
+        if (isset($teachers[$record->courseid]) === false) {
+            $teachers[$record->courseid] = array();
+        }
+
+        $user = new \stdClass();
+        $user->id = $record->userid;
+        $user->firstname = $record->firstname;
+        $user->lastname = $record->lastname;
+        $user->email = $record->email;
+        $teachers[$record->courseid][$record->userid] = $user;
+    }
+
+    return $teachers;
+}
+
 /**
  * Renvoie tous les groupements d'activités visibles (Sports de raquettes, sports aquatiques, etc)
  * @return array
