@@ -33,7 +33,7 @@ function get_activities() {
         " JOIN {course_categories} cc0 ON cc0.id = cc.parent".
         " JOIN {apsolu_skills} ask ON ask.id = ac.skillid".
         " JOIN {apsolu_locations} al ON al.id = ac.locationid".
-        " JOIN {apsolu_areas} aa ON aa.id = al.id".
+        " JOIN {apsolu_areas} aa ON aa.id = al.areaid".
         " JOIN {apsolu_cities} aci ON aci.id = aa.cityid".
         " JOIN {apsolu_periods} ap ON ap.id = ac.periodid".
         " WHERE cc0.visible = 1".
