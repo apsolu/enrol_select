@@ -197,6 +197,14 @@ button.uncheckall {
     white-space: nowrap;
 }
 
-#apsolu-enrol-select .modal-sports-descriptions {
+#apsolu-enrol-select .apsolu-modal-sports-descriptions {
     z-index: 4040;
+}
+
+#apsolu-enrol-select .apsolu-modal-sports-descriptions-button,
+#apsolu-enrol-select .apsolu-modal-sports-descriptions-button:focus,
+#apsolu-enrol-select .apsolu-modal-sports-descriptions-button:hover {
+    background: none;
+    border: none;
+    line-height: 1.5;
 }

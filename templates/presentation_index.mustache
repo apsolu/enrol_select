@@ -1,11 +1,15 @@
 <div id="apsolu-enrol-select-presentation">
 
   <div id="apsolu-enrol-select-presentation-courses-list2" class="table-unresponsive">
+    {{#site}}
+    <p><strong>Réservés aux étudiants/personnels du site de {{.}}.</strong></p>
+    {{/site}}
+
     <!-- Sélecteur de site. -->
     {{#sites_count}}
-    <ul class="list-inline text-right">
+    <ul class="list-inline">
       {{#sites}}
-      <li><a class="btn btn-success{{#active}} active{{/active}}" href="{{wwwroot}}/enrol/select/presentation/index.php?siteid={{id}}">{{name}}</a></li>
+      <li><a class="btn {{#active}}btn-success active{{/active}}{{^active}}btn-default{{/active}}" href="{{wwwroot}}/enrol/select/presentation/index.php?siteid={{id}}">{{name}}</a></li>
       {{/sites}}
     </ul>
     {{/sites_count}}
@@ -41,22 +45,27 @@
       {{#courses}}
         <tr>
           <th colspan="10">{{name}}
-            {{#description}} - <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modal-sports-descriptions-{{id}}">plus d'info...</button>
+            {{#modal}}<button type="button" class="apsolu-modal-sports-descriptions-button" data-toggle="modal" data-target="#apsolu-modal-sports-descriptions-{{id}}"><img height="16px" width="16px" src="{{wwwroot}}/enrol/select/pix/i/more.svg" alt="{{#str}}detailedmore{{/str}}" /></button>
 
-            <div class="modal fade modal-sports-descriptions" id="modal-sports-descriptions-{{id}}" tabindex="-1" role="dialog" aria-labelledby="modal-sports-descriptions-{{id}}-title">
+            <div class="modal fade apsolu-modal-sports-descriptions" id="apsolu-modal-sports-descriptions-{{id}}" tabindex="-1" role="dialog" aria-labelledby="apsolu-modal-sports-descriptions-{{id}}-title">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="{{#str}}closewindow{{/str}}"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="modal-sports-descriptions-{{id}}-title">{{name}}</h4>
+                    <h4 class="modal-title" id="apsolu-modal-sports-descriptions-{{id}}-title">{{name}}</h4>
                   </div>
                   <div class="modal-body">
-                  {{{description}}}
+                    {{#url}}
+                    <p><a href="{{.}}">Modalités pédagogiques</a></p>
+                    {{/url}}
+                    {{#description}}
+                    <div>{{{.}}}</div>
+                    {{/description}}
                   </div>
                 </div>
               </div>
             </div>
-            {{/description}}
+            {{/modal}}
           </th>
         </tr>
         {{#courses}}

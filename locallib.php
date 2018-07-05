@@ -43,11 +43,12 @@ function get_activities($siteid = 0, $categoryid = 0, $categoryname = '') {
         $conditions[] = " AND cc.name LIKE :categoryname";
     }
 
-    $sql = "SELECT c.id, c.fullname, ac.event, ac.weekday, ac.starttime, ac.endtime, cc0.id AS domainid, cc0.name AS domain, cc.id AS sportid, cc.name AS sport, cc.description,".
+    $sql = "SELECT c.id, c.fullname, ac.event, ac.weekday, ac.starttime, ac.endtime, cc0.id AS domainid, cc0.name AS domain, cc.id AS sportid, cc.name AS sport, acc.url, cc.description,".
         " ac.skillid, ask.name AS skill, ac.locationid, al.name AS location, aa.name AS area, aci.name AS site, ac.periodid, ap.generic_name".
         " FROM {course} c".
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
         " JOIN {course_categories} cc ON cc.id = c.category".
+        " JOIN {apsolu_courses_categories} acc ON acc.id = cc.id".
         " JOIN {course_categories} cc0 ON cc0.id = cc.parent".
         " JOIN {apsolu_skills} ask ON ask.id = ac.skillid".
         " JOIN {apsolu_locations} al ON al.id = ac.locationid".

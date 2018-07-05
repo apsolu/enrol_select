@@ -16,11 +16,7 @@ if (isset($sites[$siteid]) === true) {
 
 $PAGE->set_url('/enrol/select/presentation/index.php');
 
-if ($siteid === 0) {
-    $title = 'Les créneaux du SIUAPS';
-} else {
-    $title = 'Les créneaux du SIUAPS du site de '.$sites[$siteid]->name;
-}
+$title = 'Les créneaux du SIUAPS';
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_title($title);
@@ -96,7 +92,9 @@ foreach (UniversiteRennes2\Apsolu\get_activities($siteid) as $activity) {
         $courses[$activity->sport] = new \stdClass();
         $courses[$activity->sport]->id = $activity->sportid;
         $courses[$activity->sport]->name = $activity->sport;
+        $courses[$activity->sport]->url = $activity->url;
         $courses[$activity->sport]->description = $activity->description;
+        $courses[$activity->sport]->modal = (empty($activity->url) === false || empty($activity->description) === false);
         $courses[$activity->sport]->courses = array();
     }
 
@@ -181,6 +179,11 @@ foreach ($filters as $name => $filter) {
 $data = array();
 $data['wwwroot'] = $CFG->wwwroot;
 $data['courses'] = $courses;
+if (isset($sites[$siteid]->name) === true) {
+    $data['site'] = $sites[$siteid]->name;
+} else {
+    $data['site'] = '';
+}
 $data['sites'] = array_values($sites);
 $data['sites_count'] = count($data['sites']);
 $data['filters'] = array_values($filters);
