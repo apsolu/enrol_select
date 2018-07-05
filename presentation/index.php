@@ -179,6 +179,7 @@ foreach ($filters as $name => $filter) {
 }
 
 $data = array();
+$data['wwwroot'] = $CFG->wwwroot;
 $data['courses'] = $courses;
 $data['sites'] = array_values($sites);
 $data['sites_count'] = count($data['sites']);
