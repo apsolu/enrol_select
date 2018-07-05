@@ -42,17 +42,25 @@ $filters['sites'] = new \stdClass();
 $filters['sites']->label = 'Site de pratique';
 $filters['sites']->values = array();
 
-$filters['areas'] = new \stdClass();
-$filters['areas']->label = 'Lieu de pratique';
-$filters['areas']->values = array();
-
 $filters['sports'] = new \stdClass();
 $filters['sports']->label = 'Activité';
 $filters['sports']->values = array();
 
+$filters['areas'] = new \stdClass();
+$filters['areas']->label = 'Lieu de pratique';
+$filters['areas']->values = array();
+
 $filters['periods'] = new \stdClass();
 $filters['periods']->label = 'Période de l\'année';
 $filters['periods']->values = array('S1', 'S2');
+
+$filters['times'] = new \stdClass();
+$filters['times']->label = 'Période de la journée';
+$filters['times']->values = array();
+$filters['times']->values[] = 'Matin';
+$filters['times']->values[] = 'Midi';
+$filters['times']->values[] = 'Après-midi';
+$filters['times']->values[] = 'Soir';
 
 $filters['weekdays'] = new \stdClass();
 $filters['weekdays']->label = 'Jour de la semaine';
@@ -64,14 +72,6 @@ $filters['weekdays']->values[] = get_string('thursday', 'calendar');
 $filters['weekdays']->values[] = get_string('friday', 'calendar');
 $filters['weekdays']->values[] = get_string('saturday', 'calendar');
 $filters['weekdays']->values[] = get_string('sunday', 'calendar');
-
-$filters['times'] = new \stdClass();
-$filters['times']->label = 'Période de la journée';
-$filters['times']->values = array();
-$filters['times']->values[] = 'Matin';
-$filters['times']->values[] = 'Midi';
-$filters['times']->values[] = 'Après-midi';
-$filters['times']->values[] = 'Soir';
 
 $filters['locations'] = new \stdClass();
 $filters['locations']->label = 'Lieu';
