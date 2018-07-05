@@ -94,7 +94,9 @@ $courses = array();
 foreach (UniversiteRennes2\Apsolu\get_activities($siteid) as $activity) {
     if (isset($courses[$activity->sport]) === false) {
         $courses[$activity->sport] = new \stdClass();
+        $courses[$activity->sport]->id = $activity->sportid;
         $courses[$activity->sport]->name = $activity->sport;
+        $courses[$activity->sport]->description = $activity->description;
         $courses[$activity->sport]->courses = array();
     }
 

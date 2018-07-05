@@ -40,7 +40,24 @@
       <tbody>
       {{#courses}}
         <tr>
-          <th colspan="10">{{name}}</th>
+          <th colspan="10">{{name}}
+            {{#description}} - <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modal-sports-descriptions-{{id}}">plus d'info...</button>
+
+            <div class="modal fade modal-sports-descriptions" id="modal-sports-descriptions-{{id}}" tabindex="-1" role="dialog" aria-labelledby="modal-sports-descriptions-{{id}}-title">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{#str}}closewindow{{/str}}"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modal-sports-descriptions-{{id}}-title">{{name}}</h4>
+                  </div>
+                  <div class="modal-body">
+                  {{{description}}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            {{/description}}
+          </th>
         </tr>
         {{#courses}}
         <tr>

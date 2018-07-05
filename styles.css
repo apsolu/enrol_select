@@ -196,3 +196,7 @@ button.uncheckall {
 #apsolu-enrol-select tbody ul li {
     white-space: nowrap;
 }
+
+#apsolu-enrol-select .modal-sports-descriptions {
+    z-index: 4040;
+}
