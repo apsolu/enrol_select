@@ -12,7 +12,7 @@ if (empty($activityid) === true && empty($activityname) === true) {
     print_error('invalidrecordunknown');
 }
 
-$activities = UniversiteRennes2\Apsolu\get_activities($activityid, $activityname);
+$activities = UniversiteRennes2\Apsolu\get_activities($siteid = 0, $activityid, $activityname);
 
 if (count($activities) === 0) {
     print_error('invalidrecordunknown');

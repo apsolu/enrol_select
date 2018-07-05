@@ -5,9 +5,22 @@ use UniversiteRennes2\Apsolu;
 require __DIR__.'/../../../config.php';
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
 
+$siteid = optional_param('siteid', 0, PARAM_INT);
+
+$sites = $DB->get_records('apsolu_cities', $params = array(), $sort = 'name');
+if (isset($sites[$siteid]) === true) {
+    $sites[$siteid]->active = true;
+} else {
+    $siteid = 0;
+}
+
 $PAGE->set_url('/enrol/select/presentation/index.php');
 
-$title = 'Les créneaux du SIUAPS';
+if ($siteid === 0) {
+    $title = 'Les créneaux du SIUAPS';
+} else {
+    $title = 'Les créneaux du SIUAPS du site de '.$sites[$siteid]->name;
+}
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_title($title);
@@ -78,7 +91,7 @@ $filters['teachers']->values = array();
 
 // category, site, activity, period, jour, start, end, level, zone geo, zone, enroltype, enseignant
 $courses = array();
-foreach (UniversiteRennes2\Apsolu\get_activities() as $activity) {
+foreach (UniversiteRennes2\Apsolu\get_activities($siteid) as $activity) {
     if (isset($courses[$activity->sport]) === false) {
         $courses[$activity->sport] = new \stdClass();
         $courses[$activity->sport]->name = $activity->sport;
@@ -121,9 +134,12 @@ foreach (UniversiteRennes2\Apsolu\get_activities() as $activity) {
 
     $activity->time = implode(' ', $time);
 
+    if ($siteid === 0) {
+        $activity->area = $activity->site.' - '.$activity->area;
+    }
+
     $courses[$activity->sport]->courses[] = $activity;
 
-    $activity->area = $activity->site.' - '.$activity->area;
 
     // Filtres.
     foreach (array('area', 'location', 'skill', 'site', 'sport') as $type) {
@@ -151,7 +167,7 @@ $courses = array_values($courses);
 $filters['roles']->values = array_values($filters['roles']->values);
 ksort($filters['teachers']->values);
 $filters['teachers']->values = array_values($filters['teachers']->values);
-unset($filters['teachers'], $filters['roles'], $filters['locations'], $filters['skills']);
+unset($filters['teachers'], $filters['roles'], $filters['locations'], $filters['sites'], $filters['skills']);
 foreach ($filters as $name => $filter) {
     if (in_array($name, array('periods', 'weekdays', 'teachers', 'times'), $strict = true) === false) {
         sort($filter->values);
@@ -160,7 +176,12 @@ foreach ($filters as $name => $filter) {
     $filter->html = \html_writer::select($filter->values, $name, $selected = '', $nothing = false, $attributes = array('class' => 'apsolu-enrol-selects', 'multiple' => 'multiple'));
 }
 
-$data = array('courses' => $courses, 'filters' => array_values($filters));
+$data = array();
+$data['courses'] = $courses;
+$data['sites'] = array_values($sites);
+$data['sites_count'] = count($data['sites']);
+$data['filters'] = array_values($filters);
+
 echo $OUTPUT->render_from_template('enrol_select/presentation_index', $data);
 
 echo $OUTPUT->footer();

@@ -1,9 +1,16 @@
 <div id="apsolu-enrol-select-presentation">
 
-  <!-- Boite de filtres générée avec javascript. -->
-
-  <!-- Liste des cours. -->
   <div id="apsolu-enrol-select-presentation-courses-list2" class="table-unresponsive">
+    <!-- Sélecteur de site. -->
+    {{#sites_count}}
+    <ul class="list-inline text-right">
+      {{#sites}}
+      <li><a class="btn btn-success{{#active}} active{{/active}}" href="{{wwwroot}}/apsu/enrol/select/presentation/index.php?siteid={{id}}">{{name}}</a></li>
+      {{/sites}}
+    </ul>
+    {{/sites_count}}
+
+    <!-- Bloc pour filtrer le tableau. -->
     <aside class="well form-inline">
       <h3>Filtres</h3>
       {{#filters}}
@@ -14,6 +21,7 @@
       {{/filters}}
     </aside>
 
+    <!-- Liste des cours. -->
     <table class="table table-bordered table-sorter2 table-sortable" id="apsolu-enrol-select">
       <thead>
         <tr>

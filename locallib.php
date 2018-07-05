@@ -22,11 +22,16 @@
 
 namespace UniversiteRennes2\Apsolu;
 
-function get_activities($categoryid = 0, $categoryname = '') {
+function get_activities($siteid = 0, $categoryid = 0, $categoryname = '') {
     global $DB;
 
     $params = array();
     $conditions = array();
+
+    if (empty($siteid) === false) {
+        $params['siteid'] = $siteid;
+        $conditions[] = " AND aci.id = :siteid";
+    }
 
     if (empty($categoryid) === false) {
         $params['categoryid'] = $categoryid;
