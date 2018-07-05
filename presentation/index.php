@@ -43,7 +43,7 @@ $filters['sports']->label = 'Activité';
 $filters['sports']->values = array();
 
 $filters['areas'] = new \stdClass();
-$filters['areas']->label = 'Lieu de pratique';
+$filters['areas']->label = 'Zone géographique';
 $filters['areas']->values = array();
 
 $filters['periods'] = new \stdClass();
