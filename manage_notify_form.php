@@ -72,7 +72,7 @@ class enrol_select_manage_notify_form extends moodleform {
         $attributes = new stdClass();
         $attributes->href = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$instance->id;
         $attributes->class = 'btn btn-default';
-        $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu_courses', $attributes));
+        $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu', $attributes));
 
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
     }

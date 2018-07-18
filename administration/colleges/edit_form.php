@@ -86,7 +86,7 @@ class apsolu_colleges_form extends moodleform {
 
         $attributes = array('class' => 'btn btn-primary');
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('save', 'admin'), $attributes);
-        $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu_courses', $a));
+        $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu', $a));
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
 
         $mform->addElement('hidden', 'id', $data->id);

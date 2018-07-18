@@ -819,7 +819,7 @@ function generate_filters($courses = array()) {
         }
         $attributes = array(
             'data-column-name' => $type,
-            'data-placeholder' => get_string($type, 'local_apsolu_courses'),
+            'data-placeholder' => get_string($type, 'local_apsolu'),
             'data-allow-clear' => 'true',
             'style' => 'margin: 0 1em',
             'multiple' => 'true',

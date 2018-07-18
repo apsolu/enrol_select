@@ -23,7 +23,7 @@
  */
 
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
-require_once($CFG->dirroot.'/local/apsolu_payment/locallib.php');
+require_once($CFG->dirroot.'/local/apsolu/locallib.php');
 
 class enrol_select_plugin extends enrol_plugin {
     const ACCEPTED = '0';

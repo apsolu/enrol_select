@@ -43,21 +43,21 @@ class enrol_select_form extends moodleform {
             // Inscription ou modification d'inscription.
             if (count($roles) === 1) {
                 $attributes = array('disabled' => 1, 'size' => '48');
-                $mform->addElement('text', 'fakerole', get_string('role', 'local_apsolu_courses'), $attributes);
+                $mform->addElement('text', 'fakerole', get_string('role', 'local_apsolu'), $attributes);
                 $mform->setType('fakerole', PARAM_TEXT);
                 $mform->setDefault('fakerole', current($roles));
 
                 unset($instance->role);
                 $mform->addElement('hidden', 'role', key($roles));
             } else {
-                $mform->addElement('select', 'role', get_string('role', 'local_apsolu_courses'), $roles);
+                $mform->addElement('select', 'role', get_string('role', 'local_apsolu'), $roles);
                 $mform->addRule('role', get_string('required'), 'required', null, 'client');
             }
             $mform->setType('role', PARAM_INT);
 
             // Federations fields.
             if ($federations !== array()) {
-                $mform->addElement('select', 'federation', get_string('federation', 'local_apsolu_courses'), $federations);
+                $mform->addElement('select', 'federation', get_string('federation', 'local_apsolu'), $federations);
                 $mform->setType('federation', PARAM_INT);
             }
 
@@ -77,7 +77,7 @@ class enrol_select_form extends moodleform {
             }
         } else {
             // Désinscription.
-            $mform->addElement('text', 'role', get_string('role', 'local_apsolu_courses'), array('readonly' => 1, 'size' => '48'));
+            $mform->addElement('text', 'role', get_string('role', 'local_apsolu'), array('readonly' => 1, 'size' => '48'));
             $mform->setType('role', PARAM_TEXT);
             $instance->role = $roles[$instance->role];
         }
@@ -106,7 +106,7 @@ class enrol_select_form extends moodleform {
         $attributes = new stdClass();
         $attributes->href = $CFG->wwwroot.'/enrol/select/overview.php';
         $attributes->class = 'btn btn-default apsolu-cancel-a';
-        $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu_courses', $attributes));
+        $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu', $attributes));
 
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
 

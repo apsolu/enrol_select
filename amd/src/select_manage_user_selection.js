@@ -1,4 +1,4 @@
-define(['jquery', 'local_apsolu_courses/jquery.tablesorter'], function($) {
+define(['jquery', 'local_apsolu/jquery.tablesorter'], function($) {
     return {
         initialise : function(semester2){
             // Gère les onglets des méthodes d'inscription.
