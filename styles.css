@@ -158,6 +158,10 @@ button.uncheckall {
     margin-top: 1em;
 }
 
+#page-enrol-select-edit form select[multiple='multiple'] {
+    max-width: 500px;
+}
+
 .enrol-select-manage-fieldset-div {
     padding: 1em;
 }
