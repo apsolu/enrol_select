@@ -22,7 +22,7 @@
 
 namespace UniversiteRennes2\Apsolu;
 
-function get_activities($siteid = 0, $categoryid = 0, $categoryname = '') {
+function get_activities($siteid = 0, $categoryid = 0, $categoryname = '', $on_homepage = true) {
     global $DB;
 
     $params = array();
@@ -41,6 +41,11 @@ function get_activities($siteid = 0, $categoryid = 0, $categoryname = '') {
     if (empty($categoryname) === false) {
         $params['categoryname'] = $categoryname;
         $conditions[] = " AND cc.name LIKE :categoryname";
+    }
+
+    if ($on_homepage !== null) {
+        $params['on_homepage'] = intval($on_homepage);
+        $conditions[] = " AND ac.on_homepage = :on_homepage";
     }
 
     $sql = "SELECT c.id, c.fullname, ac.event, ac.weekday, ac.starttime, ac.endtime, cc0.id AS domainid, cc0.name AS domain, cc.id AS sportid, cc.name AS sport, acc.url, cc.description,".
