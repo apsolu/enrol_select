@@ -48,6 +48,13 @@ class enrol_select_edit_form extends moodleform {
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'server');
 
+        // Calendrier utilisé.
+        $options = array();
+        $options[] = $mform->createElement('radio', 'customchar1', '', get_string('none'), 0);
+        $options[] = $mform->createElement('radio', 'customchar1', '', get_string('semester1', 'local_apsolu'), 's1');
+        $options[] = $mform->createElement('radio', 'customchar1', '', get_string('semester2', 'local_apsolu'), 's2');
+        $mform->addGroup($options, 'customchar1', get_string('calendar', 'calendar'), array(' '), false);
+
         // DATE D'INSCRIPTION.
         $mform->addElement('header', 'header', get_string('enroldate', 'enrol_select'));
 

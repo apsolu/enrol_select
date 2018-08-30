@@ -85,6 +85,24 @@ if ($mform->is_cancelled()) {
         $data->customint6 = 0;
     }
 
+    if (isset($data->customchar1) === true) {
+        switch ($data->customchar1) {
+            case 's1':
+                $data->enrolstartdate = get_config('local_apsolu', 'semester1_enrol_startdate');
+                $data->enrolenddate = get_config('local_apsolu', 'semester1_enrol_enddate');
+                $data->customint4 = get_config('local_apsolu', 'semester1_reenrol_startdate');
+                $data->customint5 = get_config('local_apsolu', 'semester1_reenrol_enddate');
+                $data->customint7 = get_config('local_apsolu', 'semester1_startdate');
+                $data->customint8 = get_config('local_apsolu', 'semester1_enddate');
+                break;
+            case 's2':
+                $data->enrolstartdate = get_config('local_apsolu', 'semester2_enrol_startdate');
+                $data->enrolenddate = get_config('local_apsolu', 'semester2_enrol_enddate');
+                $data->customint7 = get_config('local_apsolu', 'semester2_startdate');
+                $data->customint8 = get_config('local_apsolu', 'semester2_enddate');
+        }
+    }
+
     if ($instance->id) {
         $reset = ($instance->status != $data->status);
 
@@ -98,11 +116,16 @@ if ($mform->is_cancelled()) {
         $instance->customint6     = $data->customint6;
         $instance->customint7     = $data->customint7;
         $instance->customint8     = $data->customint8;
+        $instance->customchar1    = $data->customchar1;
         $instance->enrolstartdate = $data->enrolstartdate;
         $instance->enrolenddate   = $data->enrolenddate;
         $instance->timemodified   = time();
 
         $DB->update_record('enrol', $instance);
+
+        // Mets à jour les dates d'accès au cours des étudiants.
+        $sql = "UPDATE {user_enrolments} SET timestart = :timestart, timeend = :timeend WHERE enrolid = :enrolid";
+        $DB->execute($sql, array('timestart' => $instance->customint7, 'timeend' => $instance->customint8, 'enrolid' => $instance->id));
 
         if ($reset) {
             $context->mark_dirty();
@@ -120,6 +143,7 @@ if ($mform->is_cancelled()) {
             'customint6'      => $data->customint6,
             'customint7'      => $data->customint7,
             'customint8'      => $data->customint8,
+            'customchar1'     => $data->customchar1,
             'enrolstartdate'  => $data->enrolstartdate,
             'enrolenddate'    => $data->enrolenddate);
         $instance->id = $plugin->add_instance($course, $fields);
