@@ -47,7 +47,9 @@ $PAGE->set_title(get_string('pluginname', 'enrol_select'));
 $select = enrol_get_plugin('select');
 
 // Activities : get all visible courses for current user.
+ob_start();
 $courses = apsolu\get_potential_user_activities();
+$debugging = ob_get_clean();
 
 $overviewactivitiesdata = (object) array('activities' => array(), 'count_activities' => 0);
 
@@ -108,5 +110,5 @@ echo $OUTPUT->header();
 
 echo $OUTPUT->render_from_template('enrol_select/overview_complements', $overviewcomplementsdata);
 echo $OUTPUT->render_from_template('enrol_select/overview_activities', $overviewactivitiesdata);
-
+echo $debugging;
 echo $OUTPUT->footer();
