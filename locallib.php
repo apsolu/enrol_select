@@ -582,7 +582,7 @@ function get_potential_user_activities($manager = false) {
 
         // Il y a trop de méthodes !
         if (isset($courses[$courseid]->enrols[1]) && $manager === false) {
-            debugging(get_string('debug_enrol_too_many_enrolments', 'enrol_select', (object) ['courseid' => $course->courseid, 'userid' => $USER->id]));
+            debugging(get_string('debug_enrol_too_many_enrolments', 'enrol_select', (object) ['courseid' => $courseid, 'userid' => $USER->id]));
             unset($courses[$courseid]);
             continue;
         }

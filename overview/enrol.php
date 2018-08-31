@@ -143,8 +143,12 @@ if ($complement !== false) {
         }
 
         if (count($availableuserroles) === 0) {
-            $role = $DB->get_record('role', array('id' => $instance->role));
-            print_error('error_reach_wishes_limit', 'enrol_select', '', $role->name);
+            if (empty($instance->role) === false) {
+                $role = $DB->get_record('role', array('id' => $instance->role));
+                print_error('error_reach_wishes_role_limit', 'enrol_select', '', $role->name);
+            } else {
+                print_error('error_reach_wishes_limit', 'enrol_select');
+            }
         }
     } else {
         // Si l'utilisateur est déjà inscrit à ce cours.
