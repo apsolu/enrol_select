@@ -91,6 +91,45 @@ class enrol_select_plugin extends enrol_plugin {
     }
 
     /**
+     * This returns false for backwards compatibility, but it is really recommended.
+     *
+     * @since Moodle 3.1
+     * @return boolean
+     */
+    public function use_standard_editing_ui() {
+        // TODO: mettre à true pour afficher les méthodes dans le menu déroulant.
+        return false;
+    }
+
+    /**
+     * Add elements to the edit instance form.
+     *
+     * @param stdClass $instance
+     * @param MoodleQuickForm $mform
+     * @param context $context
+     * @return bool
+     */
+    public function edit_instance_form($instance, MoodleQuickForm $mform, $context) {
+        // TODO: ne pas utiliser ce hook moche.
+        redirect(new moodle_url('/enrol/select/edit.php', array('courseid' => $instance->courseid, 'id' => $instance->id)));
+    }
+
+    /**
+     * Perform custom validation of the data used to edit the instance.
+     *
+     * @param array $data array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @param object $instance The instance loaded from the DB
+     * @param context $context The context of the instance we are editing
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *         or an empty array if everything is OK.
+     * @return void
+     */
+    public function edit_instance_validation($data, $files, $instance, $context) {
+        // TODO.
+    }
+
+    /**
      * Returns link to page which may be used to add new instance of enrolment plugin in course.
      * @param int $courseid
      * @return moodle_url page url
