@@ -25,7 +25,7 @@ use UniversiteRennes2\Apsolu as apsolu;
 require_once(__DIR__.'/../../config.php');
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
 require_once($CFG->dirroot.'/enrol/select/manage_editenroltype_form.php');
-require_once($CFG->dirroot.'/local/apsolu_payment/locallib.php');
+require_once($CFG->dirroot.'/local/apsolu/locallib.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 $from = required_param('from', PARAM_INT);
