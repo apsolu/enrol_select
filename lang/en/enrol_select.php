@@ -179,6 +179,12 @@ $string['message_deleted_to_accepted'] = str_replace('de la liste des inscrits �
 $string['message_deleted_to_main'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste principale', $string['message_accepted_to_main']);
 $string['message_deleted_to_wait'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste complémentaire', $string['message_accepted_to_main']);
 
+$string['message_promote'] = 'Bonjour,
+
+Suite à un désistement, vous avez été placé sur liste principale.
+
+Cordialement,';
+
 $string['notifystudents'] = 'Notifier les étudiants';
 $string['message'] = 'Message';
 $string['enrolcoursesubject'] = '[{$a->fullname}] Situation de votre inscription';

@@ -471,4 +471,66 @@ class enrol_select_plugin extends enrol_plugin {
             $DB->execute($sql, array($roleid, $userid, $coursecontext->id, $instance->id));
         }
     }
+
+    public function unenrol_user(stdClass $instance, $userid) {
+        parent::unenrol_user($instance, $userid);
+
+        $this->refill_main_list($instance, $userid);
+    }
+
+    public function refill_main_list(stdClass $instance, $userid) {
+        global $DB, $USER;
+
+        if ($USER->id !== $userid) {
+            // L'utilisateur courant n'est pas l'utilisateur à désinscrire.
+            // Il s'agit probablement d'un enseignant dans la partie management.
+            return;
+        }
+
+        if (empty($instance->customint3) === true) {
+            // Les quotas ne sont pas activés pour ce cours.
+            return;
+        }
+
+        $count_main = $DB->count_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::MAIN));
+        if ($count_main >= $instance->customint1) {
+            // La liste principale est déjà pleine.
+            return;
+        }
+
+        $count_wait = $DB->count_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::WAIT));
+        if ($count_wait === 0) {
+            // La liste complémentaire est vide.
+            return;
+        }
+
+        $course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
+
+        $promote = $instance->customint1 - $count_main;
+        $waiting_users = $DB->get_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::WAIT), $sort='timecreated DESC');
+        foreach ($waiting_users as $user) {
+            $user->status = self::MAIN;
+            $DB->update_record('user_enrolments', $user);
+
+            // Notifie l'utilisateur sur liste d'attente qui vient d'être basculé sur liste principale.
+            $eventdata = (object) array(
+                'name' => 'select_notification',
+                'component' => 'enrol_select',
+                'userfrom' => get_admin(),
+                'userto' => $DB->get_record('user', array('id' => $user->userid)),
+                'subject' => get_string('enrolcoursesubject', 'enrol_select', $course),
+                'fullmessage' => get_string('message_promote', 'enrol_select'),
+                'fullmessageformat' => FORMAT_PLAIN,
+                'fullmessagehtml' => null,
+                'smallmessage' => ''
+                );
+
+            message_send($eventdata);
+
+            $promote--;
+            if ($promote === 0) {
+                break;
+            }
+        }
+    }
 }
