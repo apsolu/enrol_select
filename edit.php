@@ -98,6 +98,8 @@ if ($mform->is_cancelled()) {
             case 's2':
                 $data->enrolstartdate = get_config('local_apsolu', 'semester2_enrol_startdate');
                 $data->enrolenddate = get_config('local_apsolu', 'semester2_enrol_enddate');
+                $data->customint4 = 0;
+                $data->customint5 = 0;
                 $data->customint7 = get_config('local_apsolu', 'semester2_startdate');
                 $data->customint8 = get_config('local_apsolu', 'semester2_enddate');
         }
