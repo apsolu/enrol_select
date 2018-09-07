@@ -127,7 +127,7 @@ define(['jquery'], function($) {
                     $('#apsolu-select-remaining-ajax').html(result);
 
                     $('#apsolu-rules-summary').css('display', 'none');
-                    $('#apsolu-select-remaining-ajax').append('<p class="text-right"><a id="apsolu-rules-summary-a" href="#apsolu-rules-summary">Tableau récapitulatif</a></p>');
+                    // $('#apsolu-select-remaining-ajax').append('<p class="text-right"><a id="apsolu-rules-summary-a" href="#apsolu-rules-summary">Tableau récapitulatif</a></p>');
 
                     $('#apsolu-rules-summary_background, #apsolu-rules-summary_wrapper').remove();
 

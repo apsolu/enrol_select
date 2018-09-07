@@ -39,7 +39,7 @@ define(["jquery", "enrol_select/jquery.popupoverlay"], function($) {
 
             // Masque le tableau récapitulatif des voeux.
             $('#apsolu-rules-summary').css('display', 'none');
-            $('#apsolu-select-remaining-ajax').append('<p class="text-right"><a id="apsolu-rules-summary-a" href="#apsolu-rules-summary">Tableau récapitulatif</a></p>');
+            // $('#apsolu-select-remaining-ajax').append('<p class="text-right"><a id="apsolu-rules-summary-a" href="#apsolu-rules-summary">Tableau récapitulatif</a></p>');
 
             $('#apsolu-rules-summary-a').click(function(evt){
                 evt.preventDefault();
