@@ -47,6 +47,7 @@ define(['jquery', 'enrol_select/ol', 'enrol_select/jquery.popupoverlay'], functi
 
                 layers = map.getLayers().getArray();
                 source = layers[1].getSource();
+                source.clear();
                 source.addFeature(new ol.Feature({geometry: new ol.geom.Point(ol.proj.transform([longitude, latitude], 'EPSG:4326',   'EPSG:3857'))}));
 
                 // Affiche l'overlay.
