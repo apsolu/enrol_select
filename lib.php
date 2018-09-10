@@ -520,6 +520,11 @@ class enrol_select_plugin extends enrol_plugin {
     public function refill_main_list(stdClass $instance, $userid) {
         global $DB, $USER;
 
+        if ($this->is_enrol_period_active($instance) === false) {
+            // On réalimente la liste principale uniquement si les inscriptions sont ouvertes.
+            return;
+        }
+
         if ($USER->id !== $userid) {
             // L'utilisateur courant n'est pas l'utilisateur à désinscrire.
             // Il s'agit probablement d'un enseignant dans la partie management.
