@@ -508,6 +508,8 @@ function get_potential_user_activities($manager = false) {
     $availableuserroles = get_potential_user_roles();
     $skills = $DB->get_records('apsolu_skills');
     $locations = $DB->get_records('apsolu_locations');
+    $areas = $DB->get_records('apsolu_areas');
+    $cities = $DB->get_records('apsolu_cities');
     $usercolleges = get_user_colleges($userid = null, $count = true);
     $useractivityenrolments = get_user_activity_enrolments();
 
@@ -703,7 +705,10 @@ function get_potential_user_activities($manager = false) {
         $course->sport = $categories[$course->category]->name;
         $course->weekday_locale = get_string(strtolower($course->weekday), 'calendar');
         $course->skill = $skills[$course->skillid]->name;
-        $course->location = $locations[$course->locationid]->name;
+        $location = $locations[$course->locationid];
+        $course->location = $location->name;
+        $area = $areas[$location->areaid];
+        $course->city = $cities[$area->cityid]->name;
         if (isset($locations[$course->locationid]->longitude, $locations[$course->locationid]->latitude)) {
             $course->longitude = $locations[$course->locationid]->longitude;
             $course->latitude = $locations[$course->locationid]->latitude;
