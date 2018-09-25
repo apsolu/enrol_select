@@ -80,9 +80,10 @@ if ($complement !== false) {
         }
 
         // Génère un tableau de type array(5 => 'Adhérent de l\'association').
-        $roles = array(5 => 'Adhérent de l\'association sportive');
+        // TODO: ne pas hardcoder le rôle "libre".
+        $roles = array(11 => 'Adhérent de l\'association sportive');
     } else {
-        $roles = array(5 => 'Libre accès');
+        $roles = array(11 => 'Libre accès');
     }
 } else {
     $instance->complement = false;
