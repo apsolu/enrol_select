@@ -46,8 +46,6 @@ if ($colleges) {
         'nombre de voeux maximum',
         'nombre d\'inscription minimum',
         'nombre d\'inscription maximum',
-        'tarif étudiant',
-        'tarif établissement',
         'cohortes',
         'actions'
         );
@@ -74,8 +72,6 @@ if ($colleges) {
             $college->maxwish,
             $college->minregister,
             $college->maxregister,
-            number_format($college->userprice, 2).'€',
-            number_format($college->institutionprice, 2).'€',
             $members,
             $actions);
     }

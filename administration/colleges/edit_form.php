@@ -54,30 +54,20 @@ class apsolu_colleges_form extends moodleform {
         $select = $mform->addElement('select', 'cohorts', 'Sélectionner les cohortes', $options, array('size' => 10));
         $select->setMultiple(true);
 
-        // Limit.
+        // Limite de voeux.
         $mform->addElement('text', 'maxwish', 'Nombre maximum de voeux');
         $mform->setType('maxwish', PARAM_INT);
         $mform->addRule('maxwish', get_string('required'), 'required', null, 'client');
 
-        // Limit.
+        // Minimum d'inscriptions.
         $mform->addElement('text', 'minregister', 'Nombre d\'inscription minimum');
         $mform->setType('minregister', PARAM_INT);
         $mform->addRule('minregister', get_string('required'), 'required', null, 'client');
 
-        // Limit.
+        // Maximum d'inscriptions.
         $mform->addElement('text', 'maxregister', 'Nombre d\'inscription maximum');
         $mform->setType('maxregister', PARAM_INT);
         $mform->addRule('maxregister', get_string('required'), 'required', null, 'client');
-
-        // Limit.
-        $mform->addElement('text', 'userprice', 'Tarif étudiant');
-        $mform->setType('userprice', PARAM_FLOAT);
-        $mform->addRule('userprice', get_string('required'), 'required', null, 'client');
-
-        // Limit.
-        $mform->addElement('text', 'institutionprice', 'Tarif établissement');
-        $mform->setType('institutionprice', PARAM_FLOAT);
-        $mform->addRule('institutionprice', get_string('required'), 'required', null, 'client');
 
         // Submit buttons.
         $a = new stdClass();

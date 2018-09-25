@@ -72,6 +72,7 @@ $data->enrols = array();
 $roles = role_fix_names($DB->get_records('role'));
 $instances = $DB->get_records('enrol', array('enrol' => 'select', 'courseid' => $course->id), $sort = 'name');
 
+$semester2 = false;
 foreach ($instances as $instance) {
 
     $sql = 'SELECT u.*, ra.roleid, ue.timecreated'.
@@ -173,6 +174,11 @@ foreach ($instances as $instance) {
         $enrol->lists[] = $list;
     }
 
+    if (time() > $instance->customint8) {
+        // Si la date courante est supérieure à au moins une des dates de fin de cours d'une des instances, c'est que nous sommes au 2ème semestre.
+        $semester2 = true;
+    }
+
     $data->enrols[] = $enrol;
 }
 
@@ -187,7 +193,6 @@ $PAGE->navbar->add(get_string('users'));
 $PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', array('id' => $course->id)));
 $PAGE->navbar->add($pluginname);
 
-$semester2 = time() > get_config('local_apsolu', 'semester1_enddate');
 $PAGE->requires->js_call_amd('enrol_select/select_manage_user_selection', 'initialise', array($semester2));
 
 echo $OUTPUT->header();

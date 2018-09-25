@@ -104,17 +104,10 @@ if ($complement !== false) {
 
         // Est-ce que l'utilisateur n'a pas dépassé son quota de voeux...
         $userchoices = apsolu\get_user_colleges($userid = null, $count = true);
-        $prices = array();
         $unavailableuserroles = array();
         foreach ($userchoices as $choice) {
             if ($choice->maxwish > 0 && $choice->count >= $choice->maxwish) {
                 $unavailableuserroles[$choice->roleid] = $choice->roleid;
-            } else {
-                if ($choice->userprice === '0') {
-                    $prices[$choice->roleid] = $choice->userprice;
-                } else {
-                    $prices[$choice->roleid] = money_format('%i', $choice->userprice);
-                }
             }
         }
 
@@ -129,16 +122,7 @@ if ($complement !== false) {
                 // L'utilisateur a déjà atteint le quota pour ce type d'inscription.
                 unset($availableuserroles[$roleid]);
             } else {
-                if (isset($prices[$roleid])) {
-                    if ($prices[$roleid] === '0') {
-                        $roles[$roleid] = get_string('rolename_and_price_free', 'enrol_select', $rolename->name);
-                    } else {
-                        $params = (object) ['rolename' => $rolename->name, 'price' => $prices[$roleid], 'currency' => '€'];
-                        $roles[$roleid] = get_string('rolename_and_price', 'enrol_select', $params);
-                    }
-                } else {
-                    $roles[$roleid] = $rolename->name;
-                }
+                $roles[$roleid] = $rolename->name;
             }
         }
 

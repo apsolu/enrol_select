@@ -32,7 +32,7 @@ class enrol_select_edit_form extends moodleform {
 
         $mform = $this->_form;
 
-        list($instance, $plugin, $context, $cohorts, $roles, $enrolmethods) = $this->_customdata;
+        list($instance, $plugin, $context, $cohorts, $roles, $enrolmethods, $calendars, $cards) = $this->_customdata;
 
         $datetimeoptions = array('optional' => true);
 
@@ -50,10 +50,10 @@ class enrol_select_edit_form extends moodleform {
 
         // Calendrier utilisé.
         $options = array();
-        $options[] = $mform->createElement('radio', 'customchar1', '', get_string('none'), 0);
-        $options[] = $mform->createElement('radio', 'customchar1', '', get_string('semester1', 'local_apsolu'), 's1');
-        $options[] = $mform->createElement('radio', 'customchar1', '', get_string('semester2', 'local_apsolu'), 's2');
-        $mform->addGroup($options, 'customchar1', get_string('calendar', 'calendar'), array(' '), false);
+        foreach ($calendars as $calendar) {
+            $options[$calendar->id] = $calendar->name;
+        }
+        $select = $mform->addElement('select', 'customchar1', get_string('calendars', 'local_apsolu'), $options);
 
         // DATE D'INSCRIPTION.
         $mform->addElement('header', 'header', get_string('enroldate', 'enrol_select'));
@@ -126,6 +126,18 @@ class enrol_select_edit_form extends moodleform {
         $select = $mform->addElement('select', 'roles', get_string('registertype', 'enrol_select'), $options, $instance->roles);
         $select->setMultiple(true);
 
+        // Paiements.
+        $mform->addElement('header', 'header', get_string('payments'));
+
+        $options = array();
+        foreach ($cards as $card) {
+            $options[$card->id] = $card->fullname;
+        }
+        $attributes = array('size' => 10);
+        $select = $mform->addElement('select', 'cards', 'Cartes requises', $options, $attributes);
+        $select->setMultiple(true);
+
+        // Validation.
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 

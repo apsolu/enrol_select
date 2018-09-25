@@ -38,7 +38,6 @@ function get_remaining_choices_block() {
                     '<th>nombre de voeux maximums</th>'.
                     '<th>nombre d\'inscriptions minimums</th>'.
                     '<th>nombre d\'inscriptions maximums</th>'.
-                    '<th>tarif</th>'.
                 '</tr>'.
             '</thead>'.
             '<tbody>';
@@ -89,7 +88,6 @@ function get_remaining_choices_block() {
                 '<td>'.$choice->maxwish.'</td>'.
                 '<td>'.$choice->minregister.'</td>'.
                 '<td>'.$choice->maxregister.'</td>'.
-                '<td>'.number_format($choice->userprice, 2, ',', ' ').'&nbsp;€</td>'.
             '</tr>';
     }
     $overviewremainingchoicesdata->summary .= '</tbody></table></div>';

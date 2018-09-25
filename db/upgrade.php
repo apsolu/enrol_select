@@ -109,5 +109,24 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
         upgrade_plugin_savepoint(true, $version, 'enrol', 'select');
     }
 
+    $version = 2018091700;
+    if ($oldversion < $version) {
+        $table = new xmldb_table('enrol_select_cards');
+        if ($dbman->table_exists($table) === false) {
+            // Adding fields.
+            $table->add_field('enrolid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, $sequence = null, $default = null, null);
+            $table->add_field('cardid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, $sequence = null, $default = null, null);
+
+            // Adding key.
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, array('enrolid', 'cardid'));
+
+            // Create table.
+            $dbman->create_table($table);
+        }
+
+        // Savepoint reached.
+        upgrade_plugin_savepoint(true, $version, 'enrol', 'select');
+    }
+
     return true;
 }

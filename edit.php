@@ -54,6 +54,7 @@ if ($instanceid) {
 
     $instance->cohorts = array_keys($DB->get_records('enrol_select_cohorts', array('enrolid' => $instance->id), '', 'cohortid'));
     $instance->roles = array_keys($DB->get_records('enrol_select_roles', array('enrolid' => $instance->id), '', 'roleid'));
+    $instance->cards = array_keys($DB->get_records('enrol_select_cards', array('enrolid' => $instance->id), '', 'cardid'));
 } else {
     require_capability('moodle/course:enrolconfig', $context);
     // No instance yet, we have to add new instance.
@@ -66,14 +67,16 @@ if ($instanceid) {
     $instance->status   = ENROL_INSTANCE_ENABLED;
 }
 
-$cohorts = $DB->get_records('cohort');
+$cohorts = $DB->get_records('cohort', $conditions = null, $sort = 'name');
 $roles = apsolu\get_custom_student_roles();
+$cards = $DB->get_records('apsolu_payments_cards', $conditions = null, $sort = 'name');
+$calendars = array((object) array('id' => 0, 'name' => get_string('none'))) + $DB->get_records('apsolu_calendars', $conditions = null, $sort = 'name');
 $enrolmethods = array();
 foreach ($DB->get_records('enrol', array('courseid' => $course->id, 'enrol' => 'select'), 'name') as $enrol) {
     $enrolmethods[$enrol->id] = $plugin->get_instance_name($enrol);
 }
 
-$mform = new enrol_select_edit_form(null, array($instance, $plugin, $context, $cohorts, $roles, $enrolmethods));
+$mform = new enrol_select_edit_form(null, array($instance, $plugin, $context, $cohorts, $roles, $enrolmethods, $calendars, $cards));
 
 if ($mform->is_cancelled()) {
     redirect($return);
@@ -85,24 +88,14 @@ if ($mform->is_cancelled()) {
         $data->customint6 = 0;
     }
 
-    if (isset($data->customchar1) === true) {
-        switch ($data->customchar1) {
-            case 's1':
-                $data->enrolstartdate = get_config('local_apsolu', 'semester1_enrol_startdate');
-                $data->enrolenddate = get_config('local_apsolu', 'semester1_enrol_enddate');
-                $data->customint4 = get_config('local_apsolu', 'semester1_reenrol_startdate');
-                $data->customint5 = get_config('local_apsolu', 'semester1_reenrol_enddate');
-                $data->customint7 = get_config('local_apsolu', 'semester1_startdate');
-                $data->customint8 = get_config('local_apsolu', 'semester1_enddate');
-                break;
-            case 's2':
-                $data->enrolstartdate = get_config('local_apsolu', 'semester2_enrol_startdate');
-                $data->enrolenddate = get_config('local_apsolu', 'semester2_enrol_enddate');
-                $data->customint4 = 0;
-                $data->customint5 = 0;
-                $data->customint7 = get_config('local_apsolu', 'semester2_startdate');
-                $data->customint8 = get_config('local_apsolu', 'semester2_enddate');
-        }
+    if (empty($data->customchar1) === false && isset($calendars[$data->customchar1]) === true) {
+        $calendar = $calendars[$data->customchar1];
+        $data->enrolstartdate = $calendar->enrolstartdate;
+        $data->enrolenddate = $calendar->enrolenddate;
+        $data->customint4 = $calendar->reenrolstartdate;
+        $data->customint5 = $calendar->reenrolenddate;
+        $data->customint7 = $calendar->coursestartdate;
+        $data->customint8 = $calendar->courseenddate;
     }
 
     if ($instance->id) {
@@ -152,16 +145,23 @@ if ($mform->is_cancelled()) {
     }
 
     $DB->delete_records('enrol_select_cohorts', array('enrolid' => $instance->id));
-    if (isset($data->cohorts)) {
+    if (isset($data->cohorts) === true) {
         foreach ($data->cohorts as $cohortid) {
             $DB->execute('INSERT INTO {enrol_select_cohorts}(enrolid, cohortid) VALUES(?, ?)', array($instance->id, $cohortid));
         }
     }
 
     $DB->delete_records('enrol_select_roles', array('enrolid' => $instance->id));
-    if (isset($data->roles)) {
+    if (isset($data->roles) === true) {
         foreach ($data->roles as $roleid) {
             $DB->execute('INSERT INTO {enrol_select_roles}(enrolid, roleid) VALUES(?, ?)', array($instance->id, $roleid));
+        }
+    }
+
+    $DB->delete_records('enrol_select_cards', array('enrolid' => $instance->id));
+    if (isset($data->cards) === true) {
+        foreach ($data->cards as $cardid) {
+            $DB->execute('INSERT INTO {enrol_select_cards}(enrolid, cardid) VALUES(?, ?)', array($instance->id, $cardid));
         }
     }
 
