@@ -374,7 +374,7 @@ class enrol_select_plugin extends enrol_plugin {
 
         // Dirty hack pour les activités complémentaires !
         // À virer, et mettre des auto-inscriptions à la place.
-        if ($roleid == 5) {
+        if ($roleid == 5 || in_array($instance->courseid, array('249', '250'), $strict = true) === true) {
             return true;
         }
 
