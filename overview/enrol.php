@@ -243,6 +243,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 } else {
                     $federationcourseid = $federationcourse->id;
                     $federationrole = 5; // Student.
+                    $federationrole = 11; // Libre.
                     $enrolselectplugin->enrol_user($federationinstance, $USER->id, $federationrole, $timestart, $timeend, $status, $recovergrades);
                     file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$federationcourse->id.', action: enrol course (federation)'.PHP_EOL, FILE_APPEND);
                 }

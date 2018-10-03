@@ -491,6 +491,7 @@ class enrol_select_plugin extends enrol_plugin {
                 $timestart = 0; // Pas de date de début.
                 $timeend = 0; // Pas de date de fin.
                 $status = 0; // Étudiant accepté automatiquement.
+                $roleid = 11; // On force le rôle libre.
             } else {
                 // Inscription à un cours du SIUAPS.
                 if ($timestart === 0) {
