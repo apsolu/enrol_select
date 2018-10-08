@@ -21,10 +21,12 @@
  */
 
 use UniversiteRennes2\Apsolu as apsolu;
+use UniversiteRennes2\Apsolu\CustomFields;
 
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/locallib.php');
 require_once($CFG->dirroot.'/user/profile/lib.php');
+require_once($CFG->dirroot.'/local/apsolu/classes/apsolu/customfields.php');
 
 $enrolid = optional_param('enrolid', null, PARAM_INT);
 
@@ -71,30 +73,22 @@ $data->enrols = array();
 
 $roles = role_fix_names($DB->get_records('role'));
 $instances = $DB->get_records('enrol', array('enrol' => 'select', 'courseid' => $course->id), $sort = 'name');
+$customfields = CustomFields::getCustomFields();
 
+$enrols = array();
 $semester2 = false;
+
+// Initialise chaque instance du cours utilisant la méthode enrol_select.
 foreach ($instances as $instance) {
-
-    $sql = 'SELECT u.*, ra.roleid, ue.timecreated'.
-        ' FROM {user} u'.
-        ' JOIN {user_enrolments} ue ON u.id = ue.userid'.
-        ' JOIN {role_assignments} ra ON u.id = ra.userid AND ra.itemid = ue.enrolid'.
-        ' JOIN {context} ctx ON ctx.id = ra.contextid'.
-        ' WHERE ue.enrolid = :enrolid'.
-        ' AND u.deleted = 0'.
-        ' AND ue.status = :status'.
-        ' AND ctx.instanceid = :courseid'.
-        ' AND ctx.contextlevel = 50'.
-        ' ORDER BY ue.timecreated, u.lastname, u.firstname';
-
     $enrol = new stdClass();
     $enrol->name = $enrolselect->get_instance_name($instance);
     $enrol->enrolid = $instance->id;
     $enrol->enrol_user_link = $CFG->wwwroot.'/enrol/select/enrol.php?enrolid='.$instance->id;
     $enrol->unenrol_user_link = $CFG->wwwroot.'/enrol/select/unenrol.php?enrolid='.$instance->id;
     $enrol->lists = array();
-    $enrol->lock = ($instance->customint7 < mktime(0, 0, 0, 12, 14, 2016) && $is_manager === false);
+    $enrol->lock = ($instance->customint8 < time() && $is_manager === false);
 
+    // On initialise chaque liste (LP, LC, etc).
     foreach (enrol_select_plugin::$states as $code => $state) {
         $selectoptions = $options;
         unset($selectoptions[$code]);
@@ -102,67 +96,21 @@ foreach ($instances as $instance) {
         $list = new stdClass();
         $list->name = get_string($state.'_list', 'enrol_select');
         $list->description = get_string($state.'_description', 'enrol_select');
-        $list->roles = $roles;
         $list->status = $code;
         $list->form_action = $CFG->wwwroot.'/enrol/select/manage_handler.php?enrolid='.$instance->id;
         $list->enrol_user_link = $CFG->wwwroot.'/enrol/select/add.php?enrolid='.$instance->id.'&status='.$code;
         $list->users = array();
-
-        if ($code == 2) {
-            $list->max_users = $instance->customint1;
-        } else if ($code == 3) {
-            $list->max_users = $instance->customint2;
-        } else {
-            $list->max_users = false;
-        }
-
         $list->count_users = 0;
-        foreach ($DB->get_recordset_sql($sql, array('enrolid' => $instance->id, 'status' => $code, 'courseid' => $course->id)) as $user) {
-            if (!isset($roles[$user->roleid])) {
-                continue;
-            }
 
-            if (isset($list->users[$user->id])) {
-                $list->users[$user->id]->role[$user->roleid] = $roles[$user->roleid]->localname;
-            } else {
-                $user->picture = $OUTPUT->user_picture($user, array('size' => 30, 'courseid' => $course->id));
-                $user->role = array();
-                $user->role[$user->roleid] = $roles[$user->roleid]->localname;
-                $user->timecreated = strftime('%a %d %b à %T', $user->timecreated);
-                $user->customfields = profile_user_record($user->id);
-
-                $list->users[$user->id] = $user;
-                $list->count_users++;
-            }
-        }
-        $list->users = array_values($list->users);
-
-        foreach ($list->users as $user) {
-            $user->role = implode(', ', $user->role);
-
-            $enrolments = apsolu\get_recordset_user_activity_enrolments($user->id, $onlyactive = false);
-
-            $user->enrolments = array();
-            $user->count_enrolments = 0;
-            foreach ($enrolments as $enrolment) {
-                if (stripos($enrolment->enrolname, 'semestre 1') !== false) {
-                    $enrolment->enrolname = 'S1';
-                } else if (stripos($enrolment->enrolname, 'semestre 2') !== false) {
-                    $enrolment->enrolname = 'S2';
-                }
-
-                $enrolment->state = get_string(enrol_select_plugin::$states[$enrolment->status].'_list_abbr', 'enrol_select');
-                $enrolment->role = $roles[$enrolment->roleid]->localname;
-
-                if ($is_manager === false) {
-                    $enrolment->course_url = '';
-                } else {
-                    $enrolment->course_url = new moodle_url('/course/view.php', array('id' => $enrolment->id));
-                }
-
-                $user->enrolments[] = $enrolment;
-                $user->count_enrolments++;
-            }
+        switch ($code) {
+            case 2:
+                $list->max_users = $instance->customint1;
+                break;
+            case 3:
+                $list->max_users = $instance->customint2;
+                break;
+            default:
+                $list->max_users = false;
         }
 
         $htmlselectattributes = array('id' => 'to-'.$state, 'class' => 'select_options');
@@ -171,7 +119,7 @@ foreach ($instances as $instance) {
             html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'from', 'value' => $code)).
             '</p>';
 
-        $enrol->lists[] = $list;
+        $enrol->lists[$code] = $list;
     }
 
     if (time() > $instance->customint8) {
@@ -179,8 +127,85 @@ foreach ($instances as $instance) {
         $semester2 = true;
     }
 
-    $data->enrols[] = $enrol;
+    $enrols[$instance->id] = $enrol;
 }
+
+// On récupère toutes les inscriptions de tous les étudiants inscrits à ce cours.
+$sql = 'SELECT u.*, ra.roleid, e.name AS enrolname, e.courseid, ue.enrolid, ue.status, ue.timecreated, c.fullname, cc.name AS sport, uid1.data AS apsolucycle'.
+    ' FROM {user} u'.
+    ' LEFT JOIN {user_info_data} uid1 ON u.id = uid1.userid AND uid1.fieldid = :fieldid'.
+    ' JOIN {user_enrolments} ue ON u.id = ue.userid'.
+    ' JOIN {role_assignments} ra ON u.id = ra.userid AND ra.itemid = ue.enrolid'.
+    ' JOIN {enrol} e ON e.id = ue.enrolid'.
+    " JOIN {course} c ON c.id = e.courseid".
+    " JOIN {course_categories} cc ON cc.id = c.category".
+    ' WHERE u.deleted = 0'.
+    ' AND e.enrol = "select"'.
+    ' AND e.status = 0'.
+    ' AND u.id IN (SELECT ue.userid FROM {user_enrolments} ue JOIN {enrol} e ON e.id = ue.enrolid WHERE e.enrol = "select" AND e.courseid = :courseid)'.
+    ' ORDER BY ue.timecreated, u.lastname, u.firstname';
+$users = array();
+foreach ($DB->get_recordset_sql($sql, array('fieldid' => $customfields['apsolucycle']->id, 'courseid' => $course->id)) as $record) {
+    if (isset($roles[$record->roleid]) === false) {
+        continue;
+    }
+
+    if (isset($users[$record->id]) === false) {
+        // On initialise le profile utilisateur (photo, inscriptions, etc).
+        $record->picture = $OUTPUT->user_picture($record, array('size' => 30, 'courseid' => $course->id));
+        $record->enrolments = array();
+        $record->count_enrolments = 0;
+
+        $users[$record->id] = $record;
+    }
+
+    $enrolment = new stdClass();
+    $enrolment->fullname = $record->fullname;
+    $enrolment->sport = $record->sport;
+    $enrolment->role = $roles[$record->roleid]->localname;
+
+    // TODO: utiliser la nouvelle table.
+    if (stripos($record->enrolname, 'semestre 1') !== false) {
+        $enrolment->enrolname = 'S1';
+    } else if (stripos($record->enrolname, 'semestre 2') !== false) {
+        $enrolment->enrolname = 'S2';
+    }
+    $enrolment->state = get_string(enrol_select_plugin::$states[$record->status].'_list_abbr', 'enrol_select');
+    $enrolment->status = $record->status;
+    $enrolment->role = $roles[$record->roleid]->localname;
+    $enrolment->timecreated = strftime('%a %d %b à %T', $record->timecreated);
+    if ($is_manager === false) {
+        $enrolment->course_url = '';
+    } else {
+        $enrolment->course_url = new moodle_url('/course/view.php', array('id' => $record->courseid));
+    }
+
+    $users[$record->id]->enrolments[$record->enrolid] = $enrolment;
+    $users[$record->id]->count_enrolments++;
+}
+
+// On affecte chaque utilisateur dans le ou les méthodes d'inscription auxquelles il est inscrit.
+foreach ($users as $user) {
+    $enrolments = $user->enrolments;
+    $user->enrolments = array_values($user->enrolments);
+
+    foreach ($enrolments as $enrolid => $enrolment) {
+        if (isset($enrols[$enrolid]) === true) {
+            // On stocke le rôle et la date d'inscription pour cet utilisateur.
+            $user->role = $enrolment->role;
+            $user->timecreated = $enrolment->timecreated;
+
+            $enrols[$enrolid]->lists[$enrolment->status]->users[] = $user;
+            $enrols[$enrolid]->lists[$enrolment->status]->count_users++;
+        }
+    }
+}
+
+foreach ($enrols as $enrolid => $enrol) {
+    $enrols[$enrolid]->lists = array_values($enrol->lists);
+}
+
+$data->enrols = array_values($enrols);
 
 $PAGE->set_url('/enrol/select/manage.php', array('enrolid' => $instance->id));
 $PAGE->set_pagelayout('admin');
