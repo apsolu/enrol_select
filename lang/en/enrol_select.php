@@ -254,6 +254,7 @@ $string['reenrolmentnotificationsubject'] = 'Récapitulatif de vos réinscriptio
 $string['reenrolmentnotification'] = 'Bonjour,'.PHP_EOL.PHP_EOL.
     'Vous avez choisi de :'.PHP_EOL.
     '{$a->choices}'.PHP_EOL.PHP_EOL.
+    'Pour valider votre préinscription, il vous appartient maintenant de vous présenter (avec votre tenue) sur le lieu et à l\'heure du cours lors de la semaine de rentrée au SIUAPS (tableau de bord - vos rendez-vous à venir).'.PHP_EOL.PHP_EOL.
     'À bientôt,'.PHP_EOL.PHP_EOL.
     'L\'équipe du SIUAPS';
 $string['reenrolmentcontinue'] = 'poursuivre le cours {$a->fullname}';
