@@ -240,11 +240,24 @@ $string['reenrolmentexplanationcase'] = '<div class="alert alert-info">'.
     '<li>vous souhaitez vous inscrire sur un autre cours avec un nouvel enseignant, revenez vous préinscrire sur « votre espace SIUAPS » à partir du <strong>{$a->from}</strong></li>'.
     '</ol>'.
     '</div>';
+$string['reenrolmentexplanationcasenoenrol'] = '<div class="alert alert-info">'.
+    '<ol>'.
+    '<li>vous souhaitez poursuivre sur le même créneau, il vous suffit de compléter et d\'enregistrer le tableau ci-dessous</li>'.
+    '<li>vous souhaitez changer de créneau avec le même enseignant, <strong>contactez-le vite par mail <u>avant le {$a->limit}</u></strong></li>'.
+    '</ol>'.
+    '</div>';
 $string['coursename'] = 'Nom du cours';
 $string['teachercontact'] = 'Contact enseignant';
 $string['renewenrolement'] = 'Renouveler mon inscription';
 $string['savedreenrolment'] = 'Réinscription enregistrée';
-
+$string['reenrolmentnotificationsubject'] = 'Récapitulatif de vos réinscriptions au SIUAPS';
+$string['reenrolmentnotification'] = 'Bonjour,'.PHP_EOL.PHP_EOL.
+    'Vous avez choisi de :'.PHP_EOL.
+    '{$a->choices}'.PHP_EOL.PHP_EOL.
+    'À bientôt,'.PHP_EOL.PHP_EOL.
+    'L\'équipe du SIUAPS';
+$string['reenrolmentcontinue'] = 'poursuivre le cours {$a->fullname}';
+$string['reenrolmentstop'] = 'quitter le cours {$a->fullname}';
 
 // Debug.
 $string['debug_enrol_invalid_enrolment'] = 'Le cours #{$a->courseid} n\'est pas un créneau apsolu. La méthode d\'inscription #{$a->enrolid} a été ignorée.';

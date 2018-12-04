@@ -50,20 +50,47 @@ if (!$select = enrol_get_plugin('select')) {
 
 // Vérifie que la période de réinscription est ouverte.
 $time = time();
-$semester1_reenrol_startdate = get_config('local_apsolu', 'semester1_reenrol_startdate');
-$semester1_reenrol_enddate = get_config('local_apsolu', 'semester1_reenrol_enddate');
 
-$open = ($semester1_reenrol_startdate <= $time && $semester1_reenrol_enddate >= $time);
+$open = false;
+$nextopen = 0;
+$calendars = $DB->get_records('apsolu_calendars', $conditions = array(), $sort = 'reenrolstartdate');
+foreach ($calendars as $calendar) {
+    if (empty($calendar->reenrolstartdate) === true) {
+        continue;
+    }
+
+    if (empty($calendar->reenrolenddate) === true) {
+        continue;
+    }
+
+    if ($calendar->reenrolstartdate <= $time && $calendar->reenrolenddate  >= $time) {
+        $open = true;
+
+        // Détermine la prochaine phase d'inscription.
+        $sql = "SELECT * FROM {apsolu_calendars} WHERE enrolstartdate > :now ORDER BY enrolstartdate";
+        $nextenrols = $DB->get_records_sql($sql, array('now' => $time));
+        if (empty($nextenrols) === false) {
+            $nextenrol = current($nextenrols);
+            $calendar->nextenrol = $nextenrol->enrolstartdate;
+        }
+        break;
+    }
+
+    if ($calendar->reenrolstartdate < $nextopen || $nextopen === 0) {
+        $nextopen = $calendar->reenrolstartdate;
+    }
+}
+
 if ($open === false) {
     echo $OUTPUT->header();
 
     echo get_string('closedreenrolment', 'enrol_select');
 
-    if ($semester1_reenrol_startdate > $time) {
+    if ($nextopen !== 0) {
         $strdate = get_string('strftimedaydatetime', 'enrol_select');
 
         $next = new stdClass();
-        $next->from = userdate($semester1_reenrol_startdate, $strdate);
+        $next->from = userdate($nextopen, $strdate);
 
         echo get_string('nextreenrolment', 'enrol_select', $next);
     }
@@ -78,9 +105,11 @@ $PAGE->requires->js_call_amd('enrol_select/select_renew', 'initialise');
 
 $notification = '';
 if (isset($_POST['reenrol'])) {
+    // TODO: à supprimer !
     $logfile = '/log/applis/renew.log';
 
     // Parcours les réponses.
+    $mail_content = array();
     foreach ($_POST['renew'] as $enrolid => $renew) {
         $instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'));
 
@@ -91,10 +120,16 @@ if (isset($_POST['reenrol'])) {
             continue;
         }
 
+        $course = $DB->get_record('course', array('id' => $instance->courseid));
+        if ($course === false) {
+            continue;
+        }
 
         if ($renew === '0') {
             // Désinscrire l'utilisateur...
             $select->unenrol_user($instance, $USER->id);
+
+            $mail_content[] = get_string('reenrolmentstop', 'enrol_select', $course);
 
             // Ajouter une ligne de log.
             file_put_contents($logfile, $log.' unenrol from '.$instance->id.PHP_EOL, FILE_APPEND);
@@ -107,6 +142,8 @@ if (isset($_POST['reenrol'])) {
                 $roles = $select->get_available_user_roles($instance);
                 if (isset($activities[$instance->courseid], $roles[$roleid])) {
                     $select->enrol_user($instance, $USER->id, $roleid, $instance->customint7, $instance->customint8, $status = ENROL_INSTANCE_ENABLED, $recovergrades = null);
+
+                    $mail_content[] = get_string('reenrolmentcontinue', 'enrol_select', $course);
 
                     // Ajouter une ligne de log.
                     file_put_contents($logfile, $log.' enrol into instanceid '.$instance->id.', roleid '.$roleid.PHP_EOL, FILE_APPEND);
@@ -127,6 +164,18 @@ if (isset($_POST['reenrol'])) {
         }
     }
 
+    if (isset($mail_content[0]) === true) {
+        // Notifie l'utilisateur.
+        sort($mail_content);
+
+        $list = new stdClass();
+        $list->choices = ' - '.implode(PHP_EOL.' - ', $mail_content);
+        $body = get_string('reenrolmentnotification', 'enrol_select', $list);
+        $subject = get_string('reenrolmentnotificationsubject', 'enrol_select');
+
+        email_to_user($USER, '', $subject, $body);
+    }
+
     $notification = $OUTPUT->notification(get_string('savedreenrolment', 'enrol_select'), 'notifysuccess');
 }
 
@@ -135,79 +184,96 @@ $enrolments_count = 0;
 foreach (apsolu\get_user_reenrolments() as $enrolment) {
     if ($enrolment->status !== enrol_select_plugin::ACCEPTED) {
         // On ne conserve que les inscriptions validées.
+        debugging('L\'inscription d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'est pas validée (status: '.$enrolment->status.').');
         continue;
     }
 
     $enrol = $DB->get_record('enrol', array('id' => $enrolment->enrolid));
 
-    if ($enrol && $select->can_reenrol($enrol)) {
-        $targetenrol = $DB->get_record('enrol', array('id' => $enrol->customint6));
-        if ($targetenrol) {
-            // Contact teachers.
-            $enrolment->teachers = array();
-            $enrolment->count_teachers = 0;
+    if ($enrol === false) {
+        // L'instance d'inscription n'existe pas.
+        debugging('L\'instance d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'existe pas.');
+        continue;
+    }
 
-            $sql = "SELECT ra.*".
-                " FROM {role_assignments} ra".
-                " JOIN {context} c ON c.id = ra.contextid".
-                " WHERE c.instanceid = :courseid".
-                " AND c.contextlevel = 50".
-                " AND ra.roleid = 3";
-            $assignments = $DB->get_records_sql($sql, array('courseid' => $targetenrol->courseid));
-            foreach ($assignments as $assignment) {
-                $teacher = $DB->get_record('user', array('id' => $assignment->userid, 'deleted' => 0));
-                if ($teacher) {
-                    if (stripos($teacher->email, '@uhb.fr') === false) {
-                        $enrolment->teachers[] = $teacher;
-                        $enrolment->count_teachers++;
-                    }
-                }
+    if ($select->can_reenrol($enrol) === false) {
+        // L'utilisateur n'est pas autorisé à se réinscrire.
+        debugging('L\'utilisateur #'.$USER->id.' n\'est pas autorisé à se réinscrire via l\'instance #'.$enrolment->enrolid.' du cours #'.$enrolment->id.'.');
+        continue;
+    }
+
+    $targetenrol = $DB->get_record('enrol', array('id' => $enrol->customint6));
+
+    if ($targetenrol === false) {
+        // L'instance de réinscription n'existe pas.
+        debugging('L\'instance de réinscription #'.$targetenrol->id.' du cours #'.$enrolment->id.' n\'existe pas.');
+        continue;
+    }
+
+    // Contact teachers.
+    $enrolment->teachers = array();
+    $enrolment->count_teachers = 0;
+
+    $sql = "SELECT ra.*".
+        " FROM {role_assignments} ra".
+        " JOIN {context} c ON c.id = ra.contextid".
+        " WHERE c.instanceid = :courseid".
+        " AND c.contextlevel = 50".
+        " AND ra.roleid = 3";
+    $assignments = $DB->get_records_sql($sql, array('courseid' => $targetenrol->courseid));
+    foreach ($assignments as $assignment) {
+        $teacher = $DB->get_record('user', array('id' => $assignment->userid, 'deleted' => 0));
+        if ($teacher) {
+            if (stripos($teacher->email, '@uhb.fr') === false) {
+                $enrolment->teachers[] = $teacher;
+                $enrolment->count_teachers++;
             }
-
-            // Get all available roles for target enrol.
-            $roles = array();
-            foreach ($select->get_available_user_roles($targetenrol) as $role) {
-                $roles[$role->id] = $role->name;
-            }
-
-            if ($roles === array()) {
-                // L'utilisateur ne peut pas s'incrire (problème de cohortes ou de rôles).
-                continue;
-            }
-
-            // Set current role for user.
-            $role = $select->get_user_role($targetenrol);
-            if ($role) {
-                // Si défini, le rôle choisi.
-                $role = $role->id;
-                $renew = 1;
-            } else {
-                // Si non défini, le rôle précédent.
-                $role = $enrolment->roleid;
-                $renew = 0;
-            }
-
-            // Build form.
-            $attributes = null;
-
-            $enrolment->renew = '';
-            foreach (array(1 => get_string('yes'), 0 => get_string('no')) as $value => $label) {
-                $checked = ($renew == $value);
-                $checkbox = html_writer::checkbox($name = 'renew['.$targetenrol->id.']', $value, $checked, $label, $attributes);
-                $enrolment->renew .= str_replace('checkbox', 'radio', $checkbox);
-            }
-
-            $enrolment->roles = '';
-            foreach ($roles as $value => $label) {
-                $checked = ($role == $value);
-                $checkbox = html_writer::checkbox($name = 'role['.$targetenrol->id.']', $value, $checked, $label, $attributes);
-                $enrolment->roles .= str_replace('checkbox', 'radio', $checkbox);
-            }
-
-            $enrolments[] = $enrolment;
-            $enrolments_count++;
         }
     }
+
+    // Get all available roles for target enrol.
+    $roles = array();
+    foreach ($select->get_available_user_roles($targetenrol) as $role) {
+        $roles[$role->id] = $role->name;
+    }
+
+    if ($roles === array()) {
+        // L'utilisateur ne peut pas s'incrire (problème de cohortes ou de rôles).
+        debugging('L\'utilisateur #'.$USER->id.' ne peut pas s\'inscrire (problème de cohortes ou de rôles).');
+        continue;
+    }
+
+    // Set current role for user.
+    $role = $select->get_user_role($targetenrol);
+    if ($role) {
+        // Si défini, le rôle choisi.
+        $role = $role->id;
+        $renew = 1;
+    } else {
+        // Si non défini, le rôle précédent.
+        $role = $enrolment->roleid;
+        $renew = 0;
+    }
+
+    // Build form.
+    $attributes = null;
+
+    $enrolment->renew = '';
+    foreach (array(1 => get_string('yes'), 0 => get_string('no')) as $value => $label) {
+        $checked = ($renew == $value);
+        $checkbox = html_writer::checkbox($name = 'renew['.$targetenrol->id.']', $value, $checked, $label, $attributes);
+        $enrolment->renew .= str_replace('checkbox', 'radio', $checkbox);
+    }
+
+    $enrolment->roles = '';
+    foreach ($roles as $value => $label) {
+        $checked = ($role == $value);
+        $checkbox = html_writer::checkbox($name = 'role['.$targetenrol->id.']', $value, $checked, $label, $attributes);
+        $enrolment->roles .= str_replace('checkbox', 'radio', $checkbox);
+    }
+
+    $enrolments[] = $enrolment;
+    $enrolments_count++;
 }
 
 $data = new stdClass();
@@ -220,18 +286,25 @@ if ($enrolments_count === 0) {
     $strdate = get_string('strftimedaydatetime', 'enrol_select');
     $semester2_enrol_startdate = get_config('local_apsolu', 'semester2_enrol_startdate');
 
-    $next = new stdClass();
-    $next->from = userdate($semester2_enrol_startdate, $strdate);
-    $data->nextenrolment = get_string('nextenrolment', 'enrol_select', $next);
+    $data->nextenrolment = '';
+    if (isset($calendar->nextenrol) === true) {
+        $next = new stdClass();
+        $next->from = userdate($calendar->nextenrol, $strdate);
+        $data->nextenrolment = get_string('nextenrolment', 'enrol_select', $next);
+    }
 } else {
     $strdate = get_string('strftimedaydatetime', 'enrol_select');
     $semester1_reenrol_enddate = get_config('local_apsolu', 'semester1_reenrol_enddate');
     $semester2_enrol_startdate = get_config('local_apsolu', 'semester2_enrol_startdate');
 
     $explanation = new stdClass();
-    $explanation->limit = userdate($semester1_reenrol_enddate, $strdate);
-    $explanation->from = userdate($semester2_enrol_startdate, $strdate);
-    $data->explanation = get_string('reenrolmentexplanationcase', 'enrol_select', $explanation);
+    $explanation->limit = userdate($calendar->reenrolenddate, $strdate);
+    if (isset($calendar->nextenrol) === true) {
+        $explanation->from = userdate($calendar->nextenrol, $strdate);
+        $data->explanation = get_string('reenrolmentexplanationcase', 'enrol_select', $explanation);
+    } else {
+        $data->explanation = get_string('reenrolmentexplanationcasenoenrol', 'enrol_select', $explanation);
+    }
 }
 
 echo $OUTPUT->header();

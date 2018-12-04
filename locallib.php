@@ -780,7 +780,7 @@ function get_user_reenrolments($userid = null) {
         " AND e.status = 0". // Active.
         " AND c.visible = 1".
         " AND ue.userid = :userid".
-        " AND e.customint6 != 0". // Reenrolement available.
+        " AND e.customint6 != 0". // Enrol id, vers lequel on réinscrit l'utilisateur.
         " AND (e.customint4 = 0 OR e.customint4 <= :timestart)". // Date de début des réinscriptions.
         " AND (e.customint5 = 0 OR e.customint5 >= :timeend)". // Date de fin des réinscriptions.
         " ORDER BY c.fullname";
