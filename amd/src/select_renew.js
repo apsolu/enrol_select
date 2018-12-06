@@ -6,12 +6,18 @@ define(["jquery"], function($) {
                 var index = name.substr(5);
 
                 if (input.attr("value") === "1") {
+                    input.parent().addClass("success");
+                    input.parent().removeClass("danger");
+
                     $("#apsolu-enrol-select-renew-table input[name='role"+index+"']").prop("disabled", false);
                     input.parent().next().removeClass("apsolu-inactive-td");
                 } else if (input.attr("value") === "0") {
+                    input.parent().removeClass("success");
+                    input.parent().addClass("danger");
+
                     $("#apsolu-enrol-select-renew-table input[name='role"+index+"']").prop("disabled", true);
                     input.parent().next().addClass("apsolu-inactive-td");
-                }   
+                }
             }
 
             $("#apsolu-enrol-select-renew-table input[name^='renew']").each(function() {

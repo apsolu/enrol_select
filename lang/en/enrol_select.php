@@ -249,7 +249,7 @@ $string['reenrolmentexplanationcasenoenrol'] = '<div class="alert alert-info">'.
 $string['coursename'] = 'Nom du cours';
 $string['teachercontact'] = 'Contact enseignant';
 $string['renewenrolement'] = 'Renouveler mon inscription';
-$string['savedreenrolment'] = 'Réinscription enregistrée';
+$string['savedreenrolment'] = 'Votre choix a été enregistré.<br />Vous pouvez revenir sur votre sélection à tout moment jusqu\'au {$a->date}.';
 $string['reenrolmentnotificationsubject'] = 'Récapitulatif de vos réinscriptions au SIUAPS';
 $string['reenrolmentnotification'] = 'Bonjour,'.PHP_EOL.PHP_EOL.
     'Vous avez choisi de :'.PHP_EOL.

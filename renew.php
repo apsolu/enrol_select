@@ -176,7 +176,11 @@ if (isset($_POST['reenrol'])) {
         email_to_user($USER, '', $subject, $body);
     }
 
-    $notification = $OUTPUT->notification(get_string('savedreenrolment', 'enrol_select'), 'notifysuccess');
+    $strdate = get_string('strftimedaydatetime', 'enrol_select');
+    $savedreenrolment = new stdClass();
+    $savedreenrolment->date = userdate($calendar->reenrolenddate, $strdate);
+
+    $notification = $OUTPUT->notification(get_string('savedreenrolment', 'enrol_select', $savedreenrolment), 'notifysuccess');
 }
 
 $enrolments = array();

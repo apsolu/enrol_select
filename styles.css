@@ -69,6 +69,10 @@ button.uncheckall {
     display: none;
 }
 
+input[type="radio"][name^="renew"] {
+    margin-left: 2em;
+}
+
 .block_overview_enrolments ul {
     margin: 0;
 }
