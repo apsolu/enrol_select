@@ -195,7 +195,7 @@ foreach ($users as $user) {
             $user->role = $enrolment->role;
             $user->timecreated = $enrolment->timecreated;
 
-            $enrols[$enrolid]->lists[$enrolment->status]->users[] = $user;
+            $enrols[$enrolid]->lists[$enrolment->status]->users[] = clone $user;
             $enrols[$enrolid]->lists[$enrolment->status]->count_users++;
         }
     }
