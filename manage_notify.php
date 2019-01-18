@@ -83,7 +83,12 @@ if ($mform->is_cancelled()) {
     redirect($return);
 
 } else if ($data = $mform->get_data()) {
-    if (!empty($data->message)) {
+    if (empty($data->message) === false) {
+        if (isset($data->users[$USER->id]) === false) {
+            // Mets en copie l'auteur du messsage.
+            $data->users[$USER->id] = $USER->id;
+        }
+
         foreach ($data->users as $userid) {
             $user = $DB->get_record('user', array('id' => $userid));
 
@@ -112,7 +117,7 @@ if ($mform->is_cancelled()) {
         }
 
         $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
-        redirect($url, 'Le ou les utilisateurs ont été correctement déplacés.', 5, \core\output\notification::NOTIFY_SUCCESS);
+        redirect($url, 'Le ou les utilisateurs ont été notifiés.', 5, \core\output\notification::NOTIFY_SUCCESS);
     } else {
         $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
         redirect($url, 'Le message ne peut pas être vide.', 5, \core\output\notification::NOTIFY_ERROR);
