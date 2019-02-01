@@ -90,8 +90,10 @@ if ($mform->is_cancelled()) {
 
     if (empty($data->customchar1) === false && isset($calendars[$data->customchar1]) === true) {
         $calendar = $calendars[$data->customchar1];
-        $data->enrolstartdate = $calendar->enrolstartdate;
-        $data->enrolenddate = $calendar->enrolenddate;
+        // Note: afin de permettre la réouverture d'inscription en cours d'année, on permet à un utilisateur de diverger avec le calendrier officiel.
+        // Par contre, si une modification est effectuée dans le calendrier, les dates d'inscriptions seront écrasées pour tous les cours.
+        // $data->enrolstartdate = $calendar->enrolstartdate;
+        // $data->enrolenddate = $calendar->enrolenddate;
         $data->customint4 = $calendar->reenrolstartdate;
         $data->customint5 = $calendar->reenrolenddate;
         $data->customint7 = $calendar->coursestartdate;
