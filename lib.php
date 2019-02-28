@@ -484,10 +484,12 @@ class enrol_select_plugin extends enrol_plugin {
     public function enrol_user(stdClass $instance, $userid, $roleid = null, $timestart = 0, $timeend = 0, $status = null, $recovergrades = null) {
         global $DB;
 
-        $currentenrol = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $userid));
-        if ($currentenrol === false) {
-            if (in_array($instance->courseid, array(249, 250))) {
+        // La méthode parent::enrol_user() ne remplace pas les rôles, mais cumul. Il faut donc faire un traitement différent si il s'agit juste d'un changement de rôle.
+        $enrolled = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $userid));
+        if ($enrolled === false) {
+            if (in_array($instance->courseid, array(249, 250), $strict = true) === true) {
                 // Inscription à la ffsu ou à la musculation.
+
                 $timestart = 0; // Pas de date de début.
                 $timeend = 0; // Pas de date de fin.
                 $status = 0; // Étudiant accepté automatiquement.
@@ -504,11 +506,22 @@ class enrol_select_plugin extends enrol_plugin {
             }
 
             parent::enrol_user($instance, $userid, $roleid, $timestart, $timeend, $status, $recovergrades);
-        } else {
+
+            return;
+        }
+
+        // Traitement dans le cas où on souhaite juste modifier le rôle ou un statut.
+
+        if ($status !== null) {
+            $sql = "UPDATE {user_enrolments} SET status = :status, timemodified = :now WHERE enrolid = :enrolid AND userid = :userid";
+            $DB->execute($sql, array('status' => $status, 'now' => time(), 'enrolid' => $instance->id, 'userid' => $userid));
+        }
+
+        if ($roleid !== null) {
             $coursecontext = context_course::instance($instance->courseid);
 
-            $sql = "UPDATE {role_assignments} SET roleid = ? WHERE component = 'enrol_select' AND userid = ? AND contextid = ? AND itemid= ?";
-            $DB->execute($sql, array($roleid, $userid, $coursecontext->id, $instance->id));
+            $sql = "UPDATE {role_assignments} SET roleid = :roleid, timemodified = :now WHERE component = 'enrol_select' AND userid = :userid AND contextid = :contextid AND itemid= :itemid";
+            $DB->execute($sql, array('roleid' => $roleid, 'now' => time(), 'userid' => $userid, 'contextid' => $coursecontext->id, 'itemid' => $instance->id));
         }
     }
 
