@@ -20,13 +20,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use UniversiteRennes2\Apsolu as apsolu;
-use UniversiteRennes2\Apsolu\CustomFields;
+use local_apsolu\core\customfields as CustomFields;
 
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/locallib.php');
 require_once($CFG->dirroot.'/user/profile/lib.php');
-require_once($CFG->dirroot.'/local/apsolu/classes/apsolu/customfields.php');
 
 $enrolid = optional_param('enrolid', null, PARAM_INT);
 
