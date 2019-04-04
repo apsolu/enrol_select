@@ -8,8 +8,8 @@
             <FIELD NAME="maxwish" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
             <FIELD NAME="minregister" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
             <FIELD NAME="maxregister" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
-            <FIELD NAME="userprice" TYPE="float" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
-            <FIELD NAME="institutionprice" TYPE="float" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+            <FIELD NAME="userprice" TYPE="float" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
+            <FIELD NAME="institutionprice" TYPE="float" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
             <FIELD NAME="roleid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
         </FIELDS>
         <KEYS>
