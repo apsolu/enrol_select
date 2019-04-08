@@ -75,5 +75,19 @@
             <INDEX NAME="cohortid" UNIQUE="false" FIELDS="cohortid" />
         </INDEXES>
     </TABLE>
+
+    <TABLE NAME="enrol_select_cards" COMMENT="Table enrol_select_cards">
+        <FIELDS>
+            <FIELD NAME="enrolid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+            <FIELD NAME="cardid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+        </FIELDS>
+        <KEYS>
+            <KEY NAME="primary" TYPE="primary" FIELDS="enrolid,cardid" />
+        </KEYS>
+        <INDEXES>
+            <INDEX NAME="enrolid" UNIQUE="false" FIELDS="enrolid" />
+            <INDEX NAME="cardid" UNIQUE="false" FIELDS="cardid" />
+        </INDEXES>
+    </TABLE>
 </TABLES>
 </XMLDB>
