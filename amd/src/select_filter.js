@@ -116,7 +116,7 @@ define(['jquery', 'enrol_select/select2'], function($) {
             }
 
             $('.filters').each(function(){
-                $(this).select2({width: 'resolve'});
+                $(this).select2({width: '100%'});
 
                 $(this).on('change.select2', function(){
                     apsolu_filter()
