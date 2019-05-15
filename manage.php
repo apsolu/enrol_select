@@ -200,6 +200,7 @@ foreach ($users as $user) {
 }
 
 foreach ($enrols as $enrolid => $enrol) {
+    $enrols[$enrolid]->id = $enrolid;
     $enrols[$enrolid]->lists = array_values($enrol->lists);
 }
 

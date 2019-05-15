@@ -14,7 +14,7 @@
 		<h4 class="sr-only">Rôles</h4>
 		<ul class="list list-inline text-right">
 		{{#roles}}
-			<li class="apsolu-roles-list-li"><span title="{{localname}}" class="apsolu-roles apsolu-roles-{{shortname}}"></span><span>{{localname}}</span></li>
+			<li class="apsolu-roles-list-li list-inline-item"><span title="{{localname}}" class="apsolu-roles apsolu-roles-{{shortname}}"></span><span>{{localname}}</span></li>
 		{{/roles}}
 		</ul>
 	</div>
@@ -98,12 +98,12 @@
 						<td>
 							<ul class="list list-inline text-center">
 							{{#role_options}}
-								<li class="apsolu-roles-list-li"><span title="{{localname}}" class="apsolu-roles apsolu-roles-{{shortname}}"></span><span class="sr-only">{{localname}}</span></li>
+								<li class="apsolu-roles-list-li list-inline-item"><span title="{{localname}}" class="apsolu-roles apsolu-roles-{{shortname}}"></span><span class="sr-only">{{localname}}</span></li>
 							{{/role_options}}
 							</ul>
 						</td>
 						{{! Places disponibles. }}
-						<td id="apsolu-select-left-places-{{enrolid}}-ajax" class="{{left_places_style}}">{{left_places_str}}</td>
+						<td id="apsolu-select-left-places-{{enrolid}}-ajax" class="table-{{left_places_style}}">{{left_places_str}}</td>
 
 						{{#is_courses_creator}}
 						<td><a href="{{www_url}}/enrol/instances.php?id={{id}}">{{#pix}} t/edit,core,{{#str}}editenrolment,enrol{{/str}}{{/pix}}</a></td>

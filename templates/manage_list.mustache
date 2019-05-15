@@ -1,20 +1,18 @@
-<h4 class="apsolu-manage-users-h4">{{name}} ({{count_users}}{{#max_users}}/{{max_users}}{{/max_users}})</h4>
-
-<div class="apsolu-manage-users-content-div">
+<div aria-labelledby="enrol-{{id}}-list-{{status}}" class="apsolu-manage-users-content-div fade tab-pane" id="enrol-{{id}}-list-{{status}}" role="tabpanel">
 	<ul class="list list-inline text-right apsolu-manage-export-ul">
-		<li><a class="btn btn-primary" href="{{wwwroot}}/enrol/select/export.php?enrolid={{enrolid}}&status={{status}}&format=xls">{{#str}}xls_export,enrol_select{{/str}}</a></li>
+		<li class="list-inline-item"><a class="btn btn-primary" href="{{wwwroot}}/enrol/select/export.php?enrolid={{enrolid}}&status={{status}}&format=xls">{{#str}}xls_export, enrol_select{{/str}}</a></li>
 	</ul>
 
 	<div class="alert alert-info">{{description}}</div>
 
-	{{^users}}<p class="alert alert-warning text-center">{{#str}}no_users,enrol_select{{/str}}</p>{{/users}}
+	{{^users}}<p class="alert alert-warning text-center">{{#str}}no_users, enrol_select{{/str}}</p>{{/users}}
 
 	{{#count_users}}
 	<form action="{{form_action}}" method="post" id="participantsform">
 		<table class="table table-striped table-sortable">
 			<thead>
 				<tr>
-					<th>{{#str}}select,enrol_select{{/str}}
+					<th>{{#str}}select, enrol_select{{/str}}
 					{{^lock}}
 						<br />(<button type="button" class="btn btn-link checkall">{{#str}}any{{/str}}</button> / <button type="button" class="btn btn-link uncheckall">{{#str}}none{{/str}}</button>)
 					{{/lock}}
@@ -22,12 +20,12 @@
 					<th>{{#str}}pictureofuser{{/str}}</th>
 					<th>{{#str}}lastname{{/str}}</th>
 					<th>{{#str}}firstname{{/str}}</th>
-					<th>{{#str}}register_type,enrol_select{{/str}}</th>
+					<th>{{#str}}register_type, enrol_select{{/str}}</th>
 					<th>{{#str}}institution{{/str}}</th>
-					<th>{{#str}}fields_apsolucycle,local_apsolu{{/str}}</th>
+					<th>{{#str}}fields_apsolucycle, local_apsolu{{/str}}</th>
 					<th>{{#str}}department{{/str}}</th>
-					<th>{{#str}}all_registers,enrol_select{{/str}}</th>
-					<th>{{#str}}register_date,enrol_select{{/str}}</th>
+					<th>{{#str}}all_registers, enrol_select{{/str}}</th>
+					<th>{{#str}}register_date, enrol_select{{/str}}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -49,7 +47,7 @@
 						{{#count_enrolments}}
 						<ul class="list-unstyled">
 							{{#enrolments}}
-							<li><abbr title="{{fullname}}">{{sport}}</abbr>{{#course_url}} <a href="{{course_url}}">{{#pix}}i/course,core,{{#str}}course{{/str}}{{/pix}}</a>{{/course_url}} ({{enrolname}}/{{state}}/{{role}})</li>
+							<li><abbr title="{{fullname}}">{{sport}}</abbr>{{#course_url}} <a href="{{course_url}}">{{#pix}}i/course, core, {{#str}}course{{/str}}{{/pix}}</a>{{/course_url}} ({{enrolname}}/{{state}}/{{role}})</li>
 							{{/enrolments}}
 						</ul>
 						{{/count_enrolments}}

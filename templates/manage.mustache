@@ -1,14 +1,19 @@
 <div id="apsolu-manage-users">
-	<ul id="apsolu-manage-methods-lists-tab-ul" class="nav nav-tabs--">
+    {{! Onglets semestre 1, semestre 2, etc }}
+	<ul class="nav nav-tabs" id="apsolu-manage-methods-title-tab-ul" role="tablist">
 	{{#enrols}}
-		<li>
-			<h3 class="apsolu-manage-users-h3">{{name}}</h3>
+	    <li><a aria-controls="enrol-{{id}}" aria-selected="false" class="nav-link" data-toggle="tab" href="#enrol-{{id}}" role="tab">{{name}}</a></li>
+    {{/enrols}}
+    </ul>
 
+	<div class="tab-content">
+    {{#enrols}}
+        <div id="enrol-{{id}}" class="tab-pane fade" role="tabpanel" aria-labelledby="enrol-{{id}}">
 			{{^lock}}
 			<ul class="list-inline text-right apsolu-manage-enrolments-ul">
-				<li><a class="btn btn-default" href="{{enrol_user_link}}">{{#pix}}t/enrolusers, core{{/pix}} {{# str}}enrolusers, enrol_manual{{/ str}}</a></li>
+				<li class="list-inline-item"><a class="btn btn-default" href="{{enrol_user_link}}">{{#pix}}t/enrolusers, core{{/pix}} {{# str}}enrolusers, enrol_manual{{/ str}}</a></li>
 				{{#canunenrol}}
-				<li><a class="btn btn-default" href="{{unenrol_user_link}}">{{#pix}}t/removecontact, core{{/pix}} {{# str}}unenrolusers, enrol_manual{{/ str}}</a></li>
+				<li class="list-inline-item"><a class="btn btn-default" href="{{unenrol_user_link}}">{{#pix}}t/removecontact, core{{/pix}} {{# str}}unenrolusers, enrol_manual{{/ str}}</a></li>
 				{{/canunenrol}}
 			</ul>
 			{{/lock}}
@@ -17,12 +22,19 @@
 			<p class="alert alert-warning text-center apsolu-manage-users-locked-form-div">{{#str}}lockedform, enrol_select{{/str}}</p>
 			{{/lock}}
 
-			<div class="apsolu-manage-users">
+            {{! Onglets liste des acceptés, liste principale, liste complémentaire, etc }}
+            <ul class="apsolu-manage-users-tab-ul nav nav-tabs" role="tablist">
+            {{#lists}}
+                <li><a aria-controls="enrol-{{id}}-list-{{status}}" aria-selected="false" class="nav-link" data-toggle="tab" href="#enrol-{{id}}-list-{{status}}" role="tab">{{name}} ({{count_users}}{{#max_users}}/{{max_users}}{{/max_users}})</a></li>
+            {{/lists}}
+            </ul>
+
+			<div class="apsolu-manage-users tab-content">
 				{{#lists}}
 					{{> enrol_select/manage_list}}
 				{{/lists}}
 			</div>
-		</li>
+		</div>
 	{{/enrols}}
-	</ul>
+	</div>
 </div>
