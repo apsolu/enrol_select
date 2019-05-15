@@ -71,8 +71,8 @@ foreach ($courses as $course) {
 }
 
 $overviewactivitiesdata->roles = array_values(apsolu\get_custom_student_roles());
-$overviewactivitiesdata->info_pix_url = $OUTPUT->pix_url('i/info');
-$overviewactivitiesdata->marker_pix_url = $OUTPUT->pix_url('a/marker', 'enrol_select');
+$overviewactivitiesdata->info_pix_url = $OUTPUT->image_url('i/info');
+$overviewactivitiesdata->marker_pix_url = $OUTPUT->image_url('a/marker', 'enrol_select');
 $overviewactivitiesdata->www_url = $CFG->wwwroot;
 $overviewactivitiesdata->is_courses_creator = has_capability('moodle/course:create', context_system::instance());
 
