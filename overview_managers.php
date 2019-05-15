@@ -45,7 +45,7 @@ require_capability($capabilities[1], context_system::instance());
 $context = context_user::instance($USER->id);
 
 $PAGE->set_url('/enrol/select/overview_manager.php');
-$PAGE->set_pagelayout('course');
+$PAGE->set_pagelayout('base');
 
 $PAGE->set_context($context);
 

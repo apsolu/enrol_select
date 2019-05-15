@@ -59,7 +59,7 @@ $instancename = $enrolselect->get_instance_name($instance);
 $url = new moodle_url('/enrol/select/manage_change_course.php', array('enrolid' => $instance->id, 'from' => $from, 'to' => $to));
 
 $PAGE->set_url($url->out());
-$PAGE->set_pagelayout('admin');
+$PAGE->set_pagelayout('base');
 $PAGE->set_title($enrolselect->get_instance_name($instance));
 $PAGE->set_heading($course->fullname);
 

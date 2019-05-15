@@ -207,7 +207,7 @@ foreach ($enrols as $enrolid => $enrol) {
 $data->enrols = array_values($enrols);
 
 $PAGE->set_url('/enrol/select/manage.php', array('enrolid' => $instance->id));
-$PAGE->set_pagelayout('admin');
+$PAGE->set_pagelayout('base');
 $PAGE->set_title($enrolselect->get_instance_name($instance));
 $PAGE->set_heading($course->fullname);
 

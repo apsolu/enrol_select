@@ -43,7 +43,7 @@ require_login();
 $context = context_user::instance($USER->id);
 
 $PAGE->set_url('/enrol/select/overview/enrol.php');
-$PAGE->set_pagelayout('course');
+$PAGE->set_pagelayout('base');
 
 $PAGE->set_context($context);
 
