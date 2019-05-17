@@ -16,7 +16,7 @@ if (isset($sites[$siteid]) === true) {
 
 $PAGE->set_url('/enrol/select/presentation/index.php');
 
-$title = 'Les créneaux du SIUAPS';
+$title = get_string('slots_of_service', 'enrol_select');
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_title($title);

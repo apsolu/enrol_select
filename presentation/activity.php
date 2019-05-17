@@ -25,7 +25,7 @@ $title = current($activities)->sport;
 $PAGE->set_context(context_system::instance());
 $PAGE->set_title($title);
 // $PAGE->set_heading($SITE->fullname);
-$PAGE->navbar->add('Les créneaux du SIUAPS', new moodle_url('/enrol/select/presentation/index.php'));
+$PAGE->navbar->add(get_string('slots_of_service', 'enrol_select'), new moodle_url('/enrol/select/presentation/index.php'));
 $PAGE->navbar->add($title);
 
 echo $OUTPUT->header();

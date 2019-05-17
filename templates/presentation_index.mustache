@@ -15,14 +15,16 @@
     {{/sites_count}}
 
     <!-- Bloc pour filtrer le tableau. -->
-    <aside class="well form-inline">
-      <h3>Filtres</h3>
-      {{#filters}}
-      <div class="form-group">
-        <label for="{{name}}">{{label}}</label><br />
-        {{{html}}}
-      </div>
-      {{/filters}}
+    <aside class="well">
+        <h3>Filtres</h3>
+        <div class="row mb-2">
+          {{#filters}}
+          <div class="col-md-2 mx-2">
+              <label class="font-weight-bold" for="{{name}}">{{label}}</label><br />
+              {{{html}}}
+          </div>
+          {{/filters}}
+        </div>
     </aside>
 
     <!-- Liste des cours. -->
