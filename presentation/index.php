@@ -180,13 +180,14 @@ $data = array();
 $data['wwwroot'] = $CFG->wwwroot;
 $data['courses'] = $courses;
 if (isset($sites[$siteid]->name) === true) {
-    $data['site'] = $sites[$siteid]->name;
+    $data['selected_site'] = $sites[$siteid]->name;
 } else {
-    $data['site'] = '';
+    $data['selected_site'] = '';
 }
 $data['sites'] = array_values($sites);
-$data['sites_count'] = count($data['sites']);
+$data['sites_single'] = (count($data['sites']) < 2);
 $data['filters'] = array_values($filters);
+$data['is_siuaps_rennes'] = isset($CFG->is_siuaps_rennes);
 
 echo $OUTPUT->render_from_template('enrol_select/presentation_index', $data);
 

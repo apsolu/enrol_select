@@ -1,18 +1,26 @@
 <div id="apsolu-enrol-select-presentation">
 
   <div id="apsolu-enrol-select-presentation-courses-list2" class="table-unresponsive">
-    {{#site}}
+    {{#is_siuaps_rennes}}
+    {{#selected_site}}
     <p><strong>Réservés aux étudiants/personnels du site de {{.}}.</strong></p>
-    {{/site}}
+    {{/selected_site}}
+    {{/is_siuaps_rennes}}
 
     <!-- Sélecteur de site. -->
-    {{#sites_count}}
+    {{^sites_single}}
     <ul class="list-inline">
-      {{#sites}}
-      <li class="list-inline-item"><a class="btn {{#active}}btn-success active{{/active}}{{^active}}btn-default{{/active}}" href="{{wwwroot}}/enrol/select/presentation/index.php?siteid={{id}}">{{name}}</a></li>
-      {{/sites}}
+        <li class="list-inline-item">
+            <a class="btn {{^selected_site}}btn-success active{{/selected_site}}{{#selected_site}}btn-default{{/selected_site}}" href="{{wwwroot}}/enrol/select/presentation/index.php">{{#str}}all_cities, local_apsolu{{/str}}</a>
+        </li>
+
+        {{#sites}}
+        <li class="list-inline-item">
+            <a class="btn {{#active}}btn-success active{{/active}}{{^active}}btn-default{{/active}}" href="{{wwwroot}}/enrol/select/presentation/index.php?siteid={{id}}">{{name}}</a>
+        </li>
+        {{/sites}}
     </ul>
-    {{/sites_count}}
+    {{/sites_single}}
 
     <!-- Bloc pour filtrer le tableau. -->
     <aside class="well">
@@ -31,7 +39,7 @@
     <table class="table table-bordered table-sorter2 table-sortable" id="apsolu-enrol-select">
       <thead>
         <tr>
-            <th class="col-md-1 hide" data-column="sites">Site</th>
+            <th class="col-md-1{{#selected_site}} hide{{/selected_site}}" data-column="sites">Site</th>
             <th class="col-md-1 hide" data-column="sports">Activité</th>
             <th class="col-md-1" data-column="periods">Période</th>
             <th class="col-md-1" data-column="weekdays">Jour</th>
@@ -72,7 +80,7 @@
         </tr>
         {{#courses}}
         <tr>
-          <td class="hide" data-column="sites" data-value="{{site}}">{{site}}</td>
+          <td{{#selected_site}} class="hide"{{/selected_site}} data-column="sites" data-value="{{site}}">{{site}}</td>
           <td class="hide" data-column="sports" data-value="{{sport}}">{{sport}}</td>
           <td data-column="periods" data-value="{{generic_name}}">{{generic_name}}</td>
           <td data-column="weekdays" data-value="{{weekday}}">{{weekday}}</td>
