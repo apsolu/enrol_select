@@ -37,7 +37,7 @@ require_login();
 $context = context_user::instance($USER->id);
 
 $PAGE->set_url('/enrol/select/overview.php');
-$PAGE->set_pagelayout('base');
+$PAGE->set_pagelayout('admin');
 
 $PAGE->set_context($context);
 
