@@ -52,16 +52,16 @@ if ($enrol->customint3 == 1) {
     $countwaitlist = count($waitlistenrolements);
     $maxwaitlist = $enrol->customint2;
     $userwaitlist = isset($waitlistenrolements[$USER->id]);
-    $leftwaitliststr = ($maxwaitlist - $countwaitlist).' places restantes sur liste complémentaire';
 
     $usernolist = !$usermainlist && !$userwaitlist;
     $fullregistration = ($countmainlist >= $maxmainlist) && ($countwaitlist >= $maxwaitlist);
-
     if ($maxmainlist > $countmainlist) {
         $leftplacesstr = ($maxmainlist - $countmainlist).' places restantes sur liste principale';
         $leftplacesstyle = 'success';
     } else if ($maxwaitlist > $countwaitlist) {
-        $leftplacesstr = ($maxwaitlist - $countwaitlist).' places restantes sur liste complémentaire';
+        // TODO: faire une option afin de laisser le choix entre afficher ou non le nombre de places restantes.
+        // $leftplacesstr = ($maxwaitlist - $countwaitlist).' places restantes sur liste complémentaire';
+        $leftplacesstr = 'Il reste des places sur liste complémentaire';
         $leftplacesstyle = 'warning';
     } else {
         $leftplacesstr = 'Aucune place disponible';
