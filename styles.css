@@ -216,3 +216,13 @@ input[type="radio"][name^="renew"] {
     border: none;
     line-height: 1.5;
 }
+
+#page-enrol-select-overview #id_unenrolbutton {
+    background-color: #d9534f;
+    border-color: #d9534f;
+}
+
+#page-enrol-select-overview #id_unenrolbutton:hover {
+    background-color: #d23430;
+    border-color: #c9302c;
+}

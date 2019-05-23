@@ -84,22 +84,18 @@ class enrol_select_form extends moodleform {
 
         // Submit buttons.
         if (empty($instance->role)) {
-            $attributes = array('class' => 'btn btn-primary');
-            $buttonarray[] = &$mform->createElement('submit', 'enrolbutton', get_string('enrol', 'enrol_select'), $attributes);
+            $buttonarray[] = &$mform->createElement('submit', 'enrolbutton', get_string('enrol', 'enrol_select'));
         } else {
             if (isset($instance->edit)) {
-                $attributes = array('class' => 'btn btn-primary');
-                $buttonarray[] = &$mform->createElement('submit', 'enrolbutton', get_string('save', 'admin'), $attributes);
+                $buttonarray[] = &$mform->createElement('submit', 'enrolbutton', get_string('save', 'admin'));
             } else {
                 if (count($roles) > 1) {
                     $label = get_string('edit_enrol', 'enrol_select');
-                    $attributes = array('class' => 'btn btn-primary');
-                    $buttonarray[] = &$mform->createElement('submit', 'editenrol', $label, $attributes);
+                    $buttonarray[] = &$mform->createElement('submit', 'editenrol', $label);
                 }
 
                 $label = get_string('unenrol', 'enrol_select');
-                $attributes = array('class' => 'btn btn-danger');
-                $buttonarray[] = &$mform->createElement('submit', 'unenrolbutton', $label, $attributes);
+                $buttonarray[] = &$mform->createElement('submit', 'unenrolbutton', $label);
             }
         }
 
