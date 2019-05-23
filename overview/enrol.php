@@ -285,7 +285,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
             }
 
             $message = get_string('enrolmentsaved', 'enrol_select');
-            if (in_array($data->role, array('9', '10'), true) === true) {
+            if (isset($CFG->is_siuaps_rennes) === true && in_array($data->role, array('9', '10'), true) === true) {
                 $message .= '<br /><strong>Attention il faut aussi faire votre IP dans votre scolarité.</strong>';
             }
 
