@@ -93,17 +93,18 @@ if ($mform->is_cancelled()) {
             $user = $DB->get_record('user', array('id' => $userid));
 
             if ($user) {
-                $eventdata = (object) array(
-                    'name' => 'select_notification',
-                    'component' => 'enrol_select',
-                    'userfrom' => $USER,
-                    'userto' => $user,
-                    'subject' => get_string('enrolcoursesubject', 'enrol_select', $course),
-                    'fullmessage' => $data->message,
-                    'fullmessageformat' => FORMAT_PLAIN,
-                    'fullmessagehtml' => null,
-                    'smallmessage' => ''
-                );
+                $eventdata = new \core\message\message();
+                $eventdata->courseid = $course->id;
+                $eventdata->component = 'enrol_select';
+                $eventdata->name = 'select_notification';
+                $eventdata->userfrom = $USER;
+                $eventdata->userto = $user;
+                $eventdata->subject = get_string('enrolcoursesubject', 'enrol_select', $course);
+                $eventdata->fullmessage = $data->message;
+                $eventdata->fullmessageformat = FORMAT_PLAIN;
+                $eventdata->fullmessagehtml = '';
+                $eventdata->smallmessage = '';
+                $eventdata->notification = 1;
 
                 if (message_send($eventdata) !== false) {
                     // Ajoute une trace dans les logs.

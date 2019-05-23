@@ -571,17 +571,18 @@ class enrol_select_plugin extends enrol_plugin {
             $DB->update_record('user_enrolments', $user);
 
             // Notifie l'utilisateur sur liste d'attente qui vient d'être basculé sur liste principale.
-            $eventdata = (object) array(
-                'name' => 'select_notification',
-                'component' => 'enrol_select',
-                'userfrom' => get_admin(),
-                'userto' => $DB->get_record('user', array('id' => $user->userid)),
-                'subject' => get_string('enrolcoursesubject', 'enrol_select', $course),
-                'fullmessage' => get_string('message_promote', 'enrol_select'),
-                'fullmessageformat' => FORMAT_PLAIN,
-                'fullmessagehtml' => null,
-                'smallmessage' => ''
-                );
+            $eventdata = new \core\message\message();
+            $eventdata->courseid = $course->id;
+            $eventdata->component = 'enrol_select';
+            $eventdata->name = 'select_notification';
+            $eventdata->userfrom = get_admin();
+            $eventdata->userto = $DB->get_record('user', array('id' => $user->userid));
+            $eventdata->subject = get_string('enrolcoursesubject', 'enrol_select', $course);
+            $eventdata->fullmessage = get_string('message_promote', 'enrol_select');
+            $eventdata->fullmessageformat = FORMAT_PLAIN;
+            $eventdata->fullmessagehtml = '';
+            $eventdata->smallmessage = '';
+            $eventdata->notification = 1;
 
             message_send($eventdata);
 
