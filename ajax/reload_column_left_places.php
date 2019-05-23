@@ -73,4 +73,4 @@ if ($enrol->customint3 == 1) {
     $leftplacesstyle = 'success';
 }
 
-echo '<td id="apsolu-select-left-places-'.$enrolid.'-ajax" class="'.$leftplacesstyle.'">'.$leftplacesstr.'</td>';
+echo '<td id="apsolu-select-left-places-'.$enrolid.'-ajax" class="table-'.$leftplacesstyle.'">'.$leftplacesstr.'</td>';
