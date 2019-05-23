@@ -90,8 +90,9 @@ $PAGE->blocks->add_fake_block(apsolu\get_remaining_choices_block(), BLOCK_POS_LE
 $PAGE->blocks->add_fake_block(apsolu\get_enrolments_block(), BLOCK_POS_LEFT);
 
 // Set filters block.
-$PAGE->blocks->add_fake_block(apsolu\get_filters_block($courses), BLOCK_POS_LEFT);
-
+$filters = apsolu\get_filters_block($courses);
+$overviewactivitiesdata->more_than_one_site = $filters->more_than_one_site;
+$PAGE->blocks->add_fake_block($filters, BLOCK_POS_LEFT);
 
 // CSS.
 $PAGE->requires->css(new moodle_url($CFG->wwwroot.'/enrol/select/styles/select2.min.css'));

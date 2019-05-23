@@ -708,6 +708,9 @@ function get_potential_user_activities($manager = false) {
         $location = $locations[$course->locationid];
         $course->location = $location->name;
         $area = $areas[$location->areaid];
+        $course->areaid = $areas[$location->areaid]->id;
+        $course->area = $areas[$location->areaid]->name;
+        $course->cityid = $cities[$area->cityid]->id;
         $course->city = $cities[$area->cityid]->name;
         if (isset($locations[$course->locationid]->longitude, $locations[$course->locationid]->latitude)) {
             $course->longitude = $locations[$course->locationid]->longitude;
@@ -791,10 +794,12 @@ function generate_filters($courses = array()) {
     $filters = array();
 
     $elements = array(
+        'city' => array(),
         'category' => array(),
         'sport' => array(),
         'skill' => array(),
         'area' => array(),
+        // 'location' => array(),
         'weekday' => array(),
         'starttime' => array(),
         'endtime' => array(),
@@ -806,13 +811,19 @@ function generate_filters($courses = array()) {
         $elements['category'][$course->groupingid] = $course->grouping;
         $elements['sport'][$course->category] = $course->sport;
         $elements['skill'][$course->skillid] = $course->skill;
-        $elements['area'][$course->locationid] = $course->location;
+        $elements['area'][$course->areaid] = $course->area;
+        // $elements['location'][$course->locationid] = $course->location;
         $elements['weekday'][$course->numweekday] = get_string($course->weekday, 'calendar');
         $starttime = substr($course->starttime, 0, 2).'h';
         $elements['starttime'][$starttime] = $starttime;
         $endtime = substr($course->endtime, 0, 2).'h';
         $elements['endtime'][$endtime] = $endtime;
         $elements['role'] = $elements['role'] + $course->role_options;
+        $elements['city'][$course->cityid] = $course->city;
+    }
+
+    if (count($elements['city']) < 2) {
+        unset($elements['city']);
     }
 
     foreach ($elements as $type => $element) {
@@ -835,7 +846,7 @@ function generate_filters($courses = array()) {
             'multiple' => 'true',
             'class' => 'filters'
         );
-        $filters[] = \html_writer::select($element, 'filters['.$type.']', $selected = '', $nothing = '', $attributes);
+        $filters[$type] = \html_writer::select($element, 'filters['.$type.']', $selected = '', $nothing = '', $attributes);
     }
 
     return $filters;

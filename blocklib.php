@@ -143,14 +143,17 @@ function get_enrolments_block() {
 function get_filters_block($courses) {
     global $CFG, $OUTPUT;
 
+    $filters = generate_filters($courses);
+
     $overviewfiltersdata = new \stdClass();
     $overviewfiltersdata->form = (object) array('action' => $CFG->wwwroot.'/enrol/select/overview.php');
-    $overviewfiltersdata->filters = generate_filters($courses);
+    $overviewfiltersdata->filters = array_values($filters);
 
     $block = new \block_contents();
     $block->title = get_string('filters', 'admin');
     $block->attributes['class'] = 'block block_book_toc';
     $block->content = $OUTPUT->render_from_template('enrol_select/overview_filters', $overviewfiltersdata);
+    $block->more_than_one_site = isset($filters['city']);
 
     return $block;
 }

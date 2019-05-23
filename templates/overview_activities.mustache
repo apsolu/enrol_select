@@ -2,123 +2,125 @@
 <div><img style="display: none;" id="apsolu-location-marker-img" alt="carte" src="{{marker_pix_url}}" /></div>
 
 <div id="apsolu-activities-div">
-	<h3>{{#str}}activities_list,enrol_select{{/str}}</h3>
+    <h3>{{#str}}activities_list, enrol_select{{/str}}</h3>
 
-	{{^activities}}
-	<p class="alert alert-info text-center">{{#str}}no_activities,enrol_select{{/str}}</p>
-	{{/activities}}
+    {{^activities}}
+    <p class="alert alert-info text-center">{{#str}}no_activities, enrol_select{{/str}}</p>
+    {{/activities}}
 
-	{{#count_activities}}
-	{{! Roles. }}
-	<div id="apsolu-activities-content-legend-div">
-		<h4 class="sr-only">Rôles</h4>
-		<ul class="list list-inline text-right">
-		{{#roles}}
-			<li class="apsolu-roles-list-li list-inline-item"><span title="{{localname}}" class="apsolu-roles apsolu-roles-{{shortname}}"></span><span>{{localname}}</span></li>
-		{{/roles}}
-		</ul>
-	</div>
+    {{#count_activities}}
+    {{! Roles. }}
+    <div id="apsolu-activities-content-legend-div">
+        <h4 class="sr-only">Rôles</h4>
+        <ul class="list list-inline text-right">
+        {{#roles}}
+            <li class="apsolu-roles-list-li list-inline-item"><span title="{{localname}}" class="apsolu-roles apsolu-roles-{{shortname}}"></span><span>{{localname}}</span></li>
+        {{/roles}}
+        </ul>
+    </div>
 
-	<div class="table-responsive">
-		<table id="apsolu-activities-table" class="table tablesorted">
-			<caption class="sr-only">{{#str}}activities_list,enrol_select{{/str}}</caption>
-			<thead>
-				<tr>
-					<th>{{#str}}actions{{/str}}</th>
-					<th data-column="category" class="apsolu-categories-col">{{#str}}category,local_apsolu{{/str}}</th>
-					<th data-column="sport">{{#str}}sport,local_apsolu{{/str}}</th>
-					<th data-column="weekday">{{#str}}weekday,local_apsolu{{/str}}</th>
-					<th data-column="starttime">{{#str}}starttime,local_apsolu{{/str}}</th>
-					<th data-column="endtime">{{#str}}endtime,local_apsolu{{/str}}</th>
-					<th data-column="skill">{{#str}}skill,local_apsolu{{/str}}</th>
-					<th data-column="area">{{#str}}area,local_apsolu{{/str}}</th>
-					<th data-column="city">{{#str}}city,local_apsolu{{/str}}</th>
-					<th data-column="role">{{#str}}register_type,enrol_select{{/str}}</th>
-					<th>{{#str}}free_places,enrol_select{{/str}}</th>
-					{{#is_courses_creator}}
-					<th>{{#str}}editsettings{{/str}}</th>
-					{{/is_courses_creator}}
-				</tr>
-			</thead>
-			<tbody>
-				{{#activities}}
-					<tr class="apsolu-sports-tr">
-						<th class="apsolu-sports-th" colspan="12">
-							{{^ description}}
-								<span class="apsolu-sports-th-span">{{name}}</span>
-							{{/description}}
-							{{#description}}
-								<span class="apsolu-sports-th-span" aria-describedby="apsolu-sports-id-{{sportid}}">{{name}}</span>
-								<img class="apsolu-sports-description-info-img" data-popup="apsolu-sports-id-{{sportid}}" role="button" src="{{info_pix_url}}" alt="aide" />
-								<div id="apsolu-sports-id-{{sportid}}" class="apsolu-sports-description" aria-hidden="true">{{{description}}}</div>
-							{{/description}}
-						</th>
-					</tr>
+    <div class="table-responsive">
+        <table id="apsolu-activities-table" class="table tablesorted">
+            <caption class="sr-only">{{#str}}activities_list, enrol_select{{/str}}</caption>
+            <thead>
+                <tr>
+                    <th>{{#str}}actions{{/str}}</th>
+                    <th data-column="category" class="apsolu-categories-col">{{#str}}category, local_apsolu{{/str}}</th>
+                    <th data-column="sport">{{#str}}sport, local_apsolu{{/str}}</th>
+                    <th data-column="weekday">{{#str}}weekday, local_apsolu{{/str}}</th>
+                    <th data-column="starttime">{{#str}}starttime, local_apsolu{{/str}}</th>
+                    <th data-column="endtime">{{#str}}endtime, local_apsolu{{/str}}</th>
+                    <th data-column="skill">{{#str}}skill, local_apsolu{{/str}}</th>
+                    <th class="d-none hidden" data-column="area">{{#str}}area, local_apsolu{{/str}}</th>
+                    <th data-column="location">{{#str}}location, local_apsolu{{/str}}</th>
+                    <th{{^more_than_one_site}} class="d-none hidden"{{/more_than_one_site}} data-column="city">{{#str}}city, local_apsolu{{/str}}</th>
+                    <th data-column="role">{{#str}}register_type, enrol_select{{/str}}</th>
+                    <th>{{#str}}free_places, enrol_select{{/str}}</th>
+                    {{#is_courses_creator}}
+                    <th>{{#str}}editsettings{{/str}}</th>
+                    {{/is_courses_creator}}
+                </tr>
+            </thead>
+            <tbody>
+                {{#activities}}
+                    <tr class="apsolu-sports-tr">
+                        <th class="apsolu-sports-th" colspan="12">
+                            {{^ description}}
+                                <span class="apsolu-sports-th-span">{{name}}</span>
+                            {{/description}}
+                            {{#description}}
+                                <span class="apsolu-sports-th-span" aria-describedby="apsolu-sports-id-{{sportid}}">{{name}}</span>
+                                <img class="apsolu-sports-description-info-img" data-popup="apsolu-sports-id-{{sportid}}" role="button" src="{{info_pix_url}}" alt="aide" />
+                                <div id="apsolu-sports-id-{{sportid}}" class="apsolu-sports-description" aria-hidden="true">{{{description}}}</div>
+                            {{/description}}
+                        </th>
+                    </tr>
 
-					{{#courses}}
-					<tr{{#enroled}} class="info"{{/enroled}} >
-						<td class="text-center">
-							{{#enroled}}
-							<a class="apsolu-enrol-a apsolu-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">
-								{{#pix}}i/completion-manual-y,core,{{#quote}}{{#str}}edit{{/str}}{{/quote}}{{/pix}}
-							</a>
-							{{/enroled}}
-							{{^enroled}}
-								{{#allow_enrolment}}
-									<a class="apsolu-enrol-a apsolu-not-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">
-										{{#pix}}i/completion-manual-n,core,{{#quote}}{{#str}}enrol,enrol_select{{/str}}{{/quote}}{{/pix}}
-									</a>
-								{{/allow_enrolment}}
-								{{^allow_enrolment}}{{#debug}}<a class="apsolu-enrol-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">Debug</a>{{/debug}}{{/allow_enrolment}}
-							{{/enroled}}
-						</td>
-						<td class="apsolu-categories-col">{{grouping}}</td>
-						<td>
-							<div>{{sport}}</div>
-							{{#event}}<div><i>{{event}}</i></div>{{/event}}
-						</td>
-						<td>{{weekday_locale}}</td>
-						<td>{{starttime}}</td>
-						<td>{{endtime}}</td>
-						<td>{{skill}}</td>
-						{{! Zone géographique. }}
-						<td>
-							{{^ longitude}}
-							<span>{{location}}</span>
-							{{/longitude}}
-							{{#longitude}}
-							<span>{{location}}</span>
-							<a target="_blank" href="https://www.openstreetmap.org/?mlat={{latitude}}&mlon={{longitude}}" class="apsolu-location-markers-a" data-longitude="{{longitude}}" data-latitude="{{latitude}}">
-								<img class="apsolu-location-markers-img" alt="carte géographique" src="{{marker_pix_url}}" width="15px" height="20px" />
-							</a>
-							{{/longitude}}
-						</td>
-            <td>{{city}}</td>
-						{{! Types d'inscription. }}
-						<td>
-							<ul class="list list-inline text-center">
-							{{#role_options}}
-								<li class="apsolu-roles-list-li list-inline-item"><span title="{{localname}}" class="apsolu-roles apsolu-roles-{{shortname}}"></span><span class="sr-only">{{localname}}</span></li>
-							{{/role_options}}
-							</ul>
-						</td>
-						{{! Places disponibles. }}
-						<td id="apsolu-select-left-places-{{enrolid}}-ajax" class="table-{{left_places_style}}">{{left_places_str}}</td>
+                    {{#courses}}
+                    <tr{{#enroled}} class="info"{{/enroled}} >
+                        <td class="text-center">
+                            {{#enroled}}
+                            <a class="apsolu-enrol-a apsolu-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">
+                                {{#pix}}i/completion-manual-y,core,{{#quote}}{{#str}}edit{{/str}}{{/quote}}{{/pix}}
+                            </a>
+                            {{/enroled}}
+                            {{^enroled}}
+                                {{#allow_enrolment}}
+                                    <a class="apsolu-enrol-a apsolu-not-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">
+                                        {{#pix}}i/completion-manual-n,core,{{#quote}}{{#str}}enrol,enrol_select{{/str}}{{/quote}}{{/pix}}
+                                    </a>
+                                {{/allow_enrolment}}
+                                {{^allow_enrolment}}{{#debug}}<a class="apsolu-enrol-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">Debug</a>{{/debug}}{{/allow_enrolment}}
+                            {{/enroled}}
+                        </td>
+                        <td class="apsolu-categories-col">{{grouping}}</td>
+                        <td>
+                            <div>{{sport}}</div>
+                            {{#event}}<div><i>{{event}}</i></div>{{/event}}
+                        </td>
+                        <td>{{weekday_locale}}</td>
+                        <td>{{starttime}}</td>
+                        <td>{{endtime}}</td>
+                        <td>{{skill}}</td>
+                        {{! Zone géographique. }}
+                        <td class="d-none hidden">{{area}}</td>
+                        <td>
+                            {{^ longitude}}
+                            <span>{{location}}</span>
+                            {{/longitude}}
+                            {{#longitude}}
+                            <span>{{location}}</span>
+                            <a target="_blank" href="https://www.openstreetmap.org/?mlat={{latitude}}&mlon={{longitude}}" class="apsolu-location-markers-a" data-longitude="{{longitude}}" data-latitude="{{latitude}}">
+                                <img class="apsolu-location-markers-img" alt="carte géographique" src="{{marker_pix_url}}" width="15px" height="20px" />
+                            </a>
+                            {{/longitude}}
+                        </td>
+                        <td{{^more_than_one_site}} class="d-none hidden"{{/more_than_one_site}}>{{city}}</td>
+                        {{! Types d'inscription. }}
+                        <td>
+                            <ul class="list list-inline text-center">
+                            {{#role_options}}
+                                <li class="apsolu-roles-list-li list-inline-item"><span title="{{localname}}" class="apsolu-roles apsolu-roles-{{shortname}}"></span><span class="sr-only">{{localname}}</span></li>
+                            {{/role_options}}
+                            </ul>
+                        </td>
+                        {{! Places disponibles. }}
+                        <td id="apsolu-select-left-places-{{enrolid}}-ajax" class="table-{{left_places_style}}">{{left_places_str}}</td>
 
-						{{#is_courses_creator}}
-						<td><a href="{{www_url}}/enrol/instances.php?id={{id}}">{{#pix}} t/edit,core,{{#str}}editenrolment,enrol{{/str}}{{/pix}}</a></td>
-						{{/is_courses_creator}}
-					</tr>
-					{{/courses}}
-				{{/activities}}
-			</tbody>
-		</table>
+                        {{#is_courses_creator}}
+                        <td><a href="{{www_url}}/enrol/instances.php?id={{id}}">{{#pix}} t/edit,core,{{#str}}editenrolment,enrol{{/str}}{{/pix}}</a></td>
+                        {{/is_courses_creator}}
+                    </tr>
+                    {{/courses}}
+                {{/activities}}
+            </tbody>
+        </table>
 
-		<p class="text-right"><a class="btn btn-primary" href="{{www_url}}/my/">{{#str}}back_to_dashboard,enrol_select{{/str}}</a></p>
-	</div>
-	{{/count_activities}}
+        <p class="text-right"><a class="btn btn-primary" href="{{www_url}}/my/">{{#str}}back_to_dashboard, enrol_select{{/str}}</a></p>
+    </div>
+    {{/count_activities}}
 
-	{{#is_courses_creator}}
-		<p class="text-right"><a class="btn btn-warning" href="{{www_url}}/enrol/select/overview_managers.php">{{#str}}overview_manager_link,enrol_select{{/str}}</a></p>
-	{{/is_courses_creator}}
+    {{#is_courses_creator}}
+        <p class="text-right"><a class="btn btn-warning" href="{{www_url}}/enrol/select/overview_managers.php">{{#str}}overview_manager_link, enrol_select{{/str}}</a></p>
+    {{/is_courses_creator}}
 </div>
