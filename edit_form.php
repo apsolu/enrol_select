@@ -76,17 +76,21 @@ class enrol_select_edit_form extends moodleform {
         // DATE DE RÉINSCRIPTION.
         $mform->addElement('header', 'header', get_string('reenroldate', 'enrol_select'));
 
-        // Date de début des réinscriptions.
-        $mform->addElement('date_time_selector', 'customint4', get_string('reenrolstartdate', 'enrol_select'), $datetimeoptions);
+        if (count($enrolmethods) === 0) {
+            $mform->addElement('html', '<div class="alert alert-info">'.get_string('no_available_enrol_methods_desc', 'enrol_select').'</div>');
+        } else {
+            // Date de début des réinscriptions.
+            $mform->addElement('date_time_selector', 'customint4', get_string('reenrolstartdate', 'enrol_select'), $datetimeoptions);
 
-        // Date de fin des réinscriptions.
-        $mform->addElement('date_time_selector', 'customint5', get_string('reenrolenddate', 'enrol_select'), $datetimeoptions);
+            // Date de fin des réinscriptions.
+            $mform->addElement('date_time_selector', 'customint5', get_string('reenrolenddate', 'enrol_select'), $datetimeoptions);
 
-        // Méthode de réinscription.
-        $select = $mform->addElement('select', 'customint6', get_string('reenrolinstance', 'enrol_select'), $enrolmethods);
-        $mform->addHelpButton('customint6', 'reenrolinstance', 'enrol_select');
-        $mform->disabledIf('customint6', 'customint4[enabled]');
-        $mform->disabledIf('customint6', 'customint5[enabled]');
+            // Méthode de réinscription.
+            $select = $mform->addElement('select', 'customint6', get_string('reenrolinstance', 'enrol_select'), $enrolmethods);
+            $mform->addHelpButton('customint6', 'reenrolinstance', 'enrol_select');
+            $mform->disabledIf('customint6', 'customint4[enabled]');
+            $mform->disabledIf('customint6', 'customint5[enabled]');
+        }
 
         // QUOTA.
         $mform->addElement('header', 'header', get_string('quotas', 'enrol_select'));
@@ -112,9 +116,14 @@ class enrol_select_edit_form extends moodleform {
         foreach ($cohorts as $cohort) {
             $options[$cohort->id] = $cohort->name;
         }
-        $attributes = array('size' => 10);
-        $select = $mform->addElement('select', 'cohorts', get_string('selectcohorts', 'enrol_select'), $options, $attributes);
-        $select->setMultiple(true);
+
+        if (count($options) === 0) {
+            $mform->addElement('html', '<div class="alert alert-danger">'.get_string('no_available_cohorts', 'enrol_select').'</div>');
+        } else {
+            $attributes = array('size' => 10);
+            $select = $mform->addElement('select', 'cohorts', get_string('selectcohorts', 'enrol_select'), $options, $attributes);
+            $select->setMultiple(true);
+        }
 
         // Rôles.
         $mform->addElement('header', 'header', get_string('roles'));
@@ -123,8 +132,13 @@ class enrol_select_edit_form extends moodleform {
         foreach ($roles as $role) {
             $options[$role->id] = $role->localname;
         }
-        $select = $mform->addElement('select', 'roles', get_string('registertype', 'enrol_select'), $options, $instance->roles);
-        $select->setMultiple(true);
+
+        if (count($options) === 0) {
+            $mform->addElement('html', '<div class="alert alert-danger">'.get_string('no_available_roles', 'enrol_select').'</div>');
+        } else {
+            $select = $mform->addElement('select', 'roles', get_string('registertype', 'enrol_select'), $options, $instance->roles);
+            $select->setMultiple(true);
+        }
 
         // Paiements.
         $mform->addElement('header', 'header', get_string('payments'));
@@ -133,9 +147,14 @@ class enrol_select_edit_form extends moodleform {
         foreach ($cards as $card) {
             $options[$card->id] = $card->fullname;
         }
-        $attributes = array('size' => 10);
-        $select = $mform->addElement('select', 'cards', 'Cartes requises', $options, $attributes);
-        $select->setMultiple(true);
+
+        if (count($options) === 0) {
+            $mform->addElement('html', '<div class="alert alert-info">'.get_string('no_available_prices', 'enrol_select').'</div>');
+        } else {
+            $attributes = array('size' => 10);
+            $select = $mform->addElement('select', 'cards', 'Cartes requises', $options, $attributes);
+            $select->setMultiple(true);
+        }
 
         // Validation.
         $mform->addElement('hidden', 'id');

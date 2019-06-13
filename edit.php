@@ -73,6 +73,11 @@ $cards = $DB->get_records('apsolu_payments_cards', $conditions = null, $sort = '
 $calendars = array((object) array('id' => 0, 'name' => get_string('none'))) + $DB->get_records('apsolu_calendars', $conditions = null, $sort = 'name');
 $enrolmethods = array();
 foreach ($DB->get_records('enrol', array('courseid' => $course->id, 'enrol' => 'select'), 'name') as $enrol) {
+    if ($enrol->id === $instance->id) {
+        // On ne met pas sa propre instance dans la liste des méthodes disponibles à la réinscription.
+        continue;
+    }
+
     $enrolmethods[$enrol->id] = $plugin->get_instance_name($enrol);
 }
 
@@ -82,6 +87,14 @@ if ($mform->is_cancelled()) {
     redirect($return);
 
 } else if ($data = $mform->get_data()) {
+    // Défini les valeurs par défaut.
+    if (isset($data->customint4) === false) {
+        $data->customint4 = 0;
+    }
+
+    if (isset($data->customint5) === false) {
+        $data->customint5 = 0;
+    }
 
     // Force la remise à zéro du témoin, si l'option de réinscription n'est pas activée.
     if (isset($data->customint6) === false || $data->customint4 === 0 || $data->customint5 === 0) {
