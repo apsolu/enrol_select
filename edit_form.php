@@ -36,7 +36,10 @@ class enrol_select_edit_form extends moodleform {
 
         $datetimeoptions = array('optional' => true);
 
-        // ACTIVER LA MÉTHODE D'INSCRIPTION.
+        // GÉNÉRAL.
+        $mform->addElement('header', 'header', get_string('general'));
+
+        // Activer la méthode d'inscription.
         // Note: pas de selectyesno parce que la valeur de mdl_enrol.status est inversée par rapport à la logique.
         $options = array(ENROL_INSTANCE_ENABLED  => get_string('yes'),
                          ENROL_INSTANCE_DISABLED => get_string('no'));
@@ -60,18 +63,26 @@ class enrol_select_edit_form extends moodleform {
 
         // Date de début des inscriptions.
         $mform->addElement('date_time_selector', 'enrolstartdate', get_string('enrolstartdate', 'enrol_select'), $datetimeoptions);
+        if (empty($instance->id) === true) {
+            $mform->disabledIf('enrolstartdate', 'customchar1', 'ne', 0);
+        }
 
         // Date de fin des inscriptions.
         $mform->addElement('date_time_selector', 'enrolenddate', get_string('enrolenddate', 'enrol_select'), $datetimeoptions);
+        if (empty($instance->id) === true) {
+            $mform->disabledIf('enrolenddate', 'customchar1', 'ne', 0);
+        }
 
         // DATE DE FIN DES COURS.
         $mform->addElement('header', 'header', get_string('coursedate', 'enrol_select'));
 
         // Date de début du cours.
         $mform->addElement('date_time_selector', 'customint7', get_string('coursestartdate', 'enrol_select'), $datetimeoptions);
+        $mform->disabledIf('customint7', 'customchar1', 'ne', 0);
 
         // Date de fin du cours.
         $mform->addElement('date_time_selector', 'customint8', get_string('courseenddate', 'enrol_select'), $datetimeoptions);
+        $mform->disabledIf('customint8', 'customchar1', 'ne', 0);
 
         // DATE DE RÉINSCRIPTION.
         $mform->addElement('header', 'header', get_string('reenroldate', 'enrol_select'));
@@ -81,15 +92,18 @@ class enrol_select_edit_form extends moodleform {
         } else {
             // Date de début des réinscriptions.
             $mform->addElement('date_time_selector', 'customint4', get_string('reenrolstartdate', 'enrol_select'), $datetimeoptions);
+            $mform->disabledIf('customint4', 'customchar1', 'ne', 0);
 
             // Date de fin des réinscriptions.
             $mform->addElement('date_time_selector', 'customint5', get_string('reenrolenddate', 'enrol_select'), $datetimeoptions);
+            $mform->disabledIf('customint5', 'customchar1', 'ne', 0);
 
             // Méthode de réinscription.
             $select = $mform->addElement('select', 'customint6', get_string('reenrolinstance', 'enrol_select'), $enrolmethods);
             $mform->addHelpButton('customint6', 'reenrolinstance', 'enrol_select');
             $mform->disabledIf('customint6', 'customint4[enabled]');
             $mform->disabledIf('customint6', 'customint5[enabled]');
+            $mform->disabledIf('customint6', 'customchar1', 'ne', 0);
         }
 
         // QUOTA.
