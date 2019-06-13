@@ -85,7 +85,6 @@ $mform = new enrol_select_edit_form(null, array($instance, $plugin, $context, $c
 
 if ($mform->is_cancelled()) {
     redirect($return);
-
 } else if ($data = $mform->get_data()) {
     // Défini les valeurs par défaut.
     if (isset($data->customint4) === false) {
@@ -105,8 +104,11 @@ if ($mform->is_cancelled()) {
         $calendar = $calendars[$data->customchar1];
         // Note: afin de permettre la réouverture d'inscription en cours d'année, on permet à un utilisateur de diverger avec le calendrier officiel.
         // Par contre, si une modification est effectuée dans le calendrier, les dates d'inscriptions seront écrasées pour tous les cours.
-        // $data->enrolstartdate = $calendar->enrolstartdate;
-        // $data->enrolenddate = $calendar->enrolenddate;
+        if ($instance->id === null) {
+            // On applique les dates du calendrier, seulement lors de la création d'une méthode.
+            $data->enrolstartdate = $calendar->enrolstartdate;
+            $data->enrolenddate = $calendar->enrolenddate;
+        }
         $data->customint4 = $calendar->reenrolstartdate;
         $data->customint5 = $calendar->reenrolenddate;
         $data->customint7 = $calendar->coursestartdate;
