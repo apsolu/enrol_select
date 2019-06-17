@@ -87,7 +87,7 @@ class enrol_select_edit_form extends moodleform {
         // DATE DE RÉINSCRIPTION.
         $mform->addElement('header', 'header', get_string('reenroldate', 'enrol_select'));
 
-        if (count($enrolmethods) === 0) {
+        if (count($enrolmethods) === 1) {
             $mform->addElement('html', '<div class="alert alert-info">'.get_string('no_available_enrol_methods_desc', 'enrol_select').'</div>');
         } else {
             // Date de début des réinscriptions.
@@ -101,9 +101,6 @@ class enrol_select_edit_form extends moodleform {
             // Méthode de réinscription.
             $select = $mform->addElement('select', 'customint6', get_string('reenrolinstance', 'enrol_select'), $enrolmethods);
             $mform->addHelpButton('customint6', 'reenrolinstance', 'enrol_select');
-            $mform->disabledIf('customint6', 'customint4[enabled]');
-            $mform->disabledIf('customint6', 'customint5[enabled]');
-            $mform->disabledIf('customint6', 'customchar1', 'ne', 0);
         }
 
         // QUOTA.

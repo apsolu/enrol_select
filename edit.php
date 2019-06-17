@@ -71,7 +71,7 @@ $cohorts = $DB->get_records('cohort', $conditions = null, $sort = 'name');
 $roles = apsolu\get_custom_student_roles();
 $cards = $DB->get_records('apsolu_payments_cards', $conditions = null, $sort = 'name');
 $calendars = array((object) array('id' => 0, 'name' => get_string('none'))) + $DB->get_records('apsolu_calendars', $conditions = null, $sort = 'name');
-$enrolmethods = array();
+$enrolmethods = array(0 => get_string('reenrolment_disabled', 'enrol_select'));
 foreach ($DB->get_records('enrol', array('courseid' => $course->id, 'enrol' => 'select'), 'name') as $enrol) {
     if ($enrol->id === $instance->id) {
         // On ne met pas sa propre instance dans la liste des méthodes disponibles à la réinscription.
