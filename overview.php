@@ -109,7 +109,9 @@ $PAGE->navbar->add(get_string('enrolment', 'enrol_select'));
 
 echo $OUTPUT->header();
 
-echo $OUTPUT->render_from_template('enrol_select/overview_complements', $overviewcomplementsdata);
+if (isset($CFG->is_siuaps_rennes) === true) {
+    echo $OUTPUT->render_from_template('enrol_select/overview_complements', $overviewcomplementsdata);
+}
 echo $OUTPUT->render_from_template('enrol_select/overview_activities', $overviewactivitiesdata);
 echo $debugging;
 echo $OUTPUT->footer();
