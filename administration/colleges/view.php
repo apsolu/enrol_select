@@ -35,8 +35,8 @@ $cohorts = $DB->get_records('cohort');
 $roles = apsolu\get_custom_student_roles();
 
 // TODO: utiliser un template mustache.
-$editimage = $OUTPUT->pix_url('t/edit');
-$deleteimage = $OUTPUT->pix_url('t/delete');
+$editimage = $OUTPUT->image_url('t/edit');
+$deleteimage = $OUTPUT->image_url('t/delete');
 
 if ($colleges) {
     $table = new html_table();
