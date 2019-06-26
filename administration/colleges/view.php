@@ -55,6 +55,11 @@ if ($colleges) {
         // Members.
         $members = '';
         foreach ($DB->get_records('apsolu_colleges_members', array('collegeid' => $college->id), '', 'cohortid') as $member) {
+            if (isset($cohorts[$member->cohortid]) === false) {
+                // TODO: faire en sorte de retirer les cohortes qui n'existe plus. Voir si il y a un event lors de la suppression des cohortes.
+                continue;
+            }
+
             $members .= '<li>'.$cohorts[$member->cohortid]->name.'</li>';
         }
 
