@@ -123,7 +123,7 @@ $string['deleted_description'] = 'Liste des étudiants désinscrits. Ils n\'ont 
 $string['error:enrol'] = 'Impossible de vous inscrire à ce cours';
 
 $string['enrolment'] = 'Inscription';
-$string['enrolmentsaved'] = 'Inscription enregistrée';
+$string['enrolmentsaved'] = 'Vœu enregistré';
 $string['unenrolmentsaved'] = 'Désinscription effectuée';
 $string['enrol'] = 'S\'inscrire';
 $string['unenrol'] = 'Se désinscrire';
