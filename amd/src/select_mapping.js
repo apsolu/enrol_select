@@ -1,6 +1,8 @@
 define(['jquery', 'enrol_select/ol', 'enrol_select/jquery.popupoverlay'], function($, ol) {
     return {
         initialise : function(){
+            return; // Désactivé temporairement.
+
             // Création de la map.
             var map = new ol.Map({
                 layers: [
