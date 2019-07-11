@@ -95,8 +95,7 @@ if ($mform->is_cancelled()) {
         $data->customint5 = 0;
     }
 
-    // Force la remise à zéro du témoin, si l'option de réinscription n'est pas activée.
-    if (isset($data->customint6) === false || $data->customint4 === 0 || $data->customint5 === 0) {
+    if (isset($data->customint6) === false) {
         $data->customint6 = 0;
     }
 
