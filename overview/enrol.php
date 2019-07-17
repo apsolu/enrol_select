@@ -112,7 +112,8 @@ if ($complement !== false) {
             }
         }
 
-        $availableuserroles = apsolu\get_potential_user_roles();
+        $enrolselectplugin = new enrol_select_plugin(); // TODO: factoriser, et ne déclarer qu'une seule fois cette variable.
+        $availableuserroles = $enrolselectplugin->get_available_user_roles($enrol, $USER->id);
         $courseroles = $DB->get_records('enrol_select_roles', array('enrolid' => $enrol->id), '', 'roleid');
         $roles = array();
         foreach ($availableuserroles as $roleid => $rolename) {
@@ -137,7 +138,8 @@ if ($complement !== false) {
         }
     } else {
         // Si l'utilisateur est déjà inscrit à ce cours.
-        $roles = apsolu\get_potential_user_roles();
+        $enrolselectplugin = new enrol_select_plugin(); // TODO: factoriser, et ne déclarer qu'une seule fois cette variable.
+        $roles = $enrolselectplugin->get_available_user_roles($enrol, $USER->id);
 
         foreach ($roles as $roleid => $role) {
             $enrolselectplugin = new enrol_select_plugin();
