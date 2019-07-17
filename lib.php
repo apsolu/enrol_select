@@ -354,7 +354,7 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Check cohorts.
-        if ($instance->customint3 === '1') {
+        if ($instance->customint3 === '1') { // TODO: pourquoi vérifier le paramètre des quotas, pour faire un contrôle sur les cohortes ?
             $usercohorts = $DB->get_records('cohort_members', array('userid' => $user->id));
             $enrolcohorts = $DB->get_records('enrol_select_cohorts', array('enrolid' => $instance->id), '', 'cohortid');
 

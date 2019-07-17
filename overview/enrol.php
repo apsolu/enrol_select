@@ -54,6 +54,8 @@ $instance = new stdClass();
 $instance->fullname = $course->fullname;
 $instance->enrolid = $enrol->id;
 
+// Détermine si l'utilisateur courant est déjà inscrit à ce cours.
+// TODO: à modifer...
 $instance->role = '';
 foreach (apsolu\get_potential_user_roles($userid = null, $enrol->courseid) as $role) {
     $instance->role = $role->id;
@@ -142,11 +144,13 @@ if ($complement !== false) {
         $roles = $enrolselectplugin->get_available_user_roles($enrol, $USER->id);
 
         foreach ($roles as $roleid => $role) {
-            $enrolselectplugin = new enrol_select_plugin();
-            if ($enrolselectplugin->can_enrol($enrol, $USER, $roleid) === false) {
+            $enrolselectplugin = new enrol_select_plugin(); // TODO: à sortir de la boucle.
+
+            if ($enrolselectplugin->can_enrol($enrol, $USER, $roleid) === false) { // TODO: factoriser pour rendre la lecture plus facile...
                 if ($roleid != $instance->role) {
                     unset($roles[$roleid]);
                 } else {
+                    // Affiche le rôle déjà affecté, même si l'étudiant n'est pas autorisé à avoir ce rôle.
                     $roles[$roleid] = $role->localname;
                 }
             } else {
