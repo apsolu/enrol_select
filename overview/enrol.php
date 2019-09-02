@@ -199,7 +199,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
     if (isset($data->unenrolbutton)) {
         // Unenrol.
         $enrolselectplugin->unenrol_user($instance, $USER->id);
-        file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$instance->courseid.', action: unenrol course'.PHP_EOL, FILE_APPEND);
+        // file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$instance->courseid.', action: unenrol course'.PHP_EOL, FILE_APPEND);
 
         echo '<div class="alert alert-success"><p>'.get_string('unenrolmentsaved', 'enrol_select').'</p></div>';
 
@@ -221,7 +221,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
             }
             $recovergrades = null;
             $enrolselectplugin->enrol_user($instance, $USER->id, $data->role, $timestart, $timeend, $status, $recovergrades);
-            file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$instance->courseid.', role: '.$data->role.', action: enrol course'.PHP_EOL, FILE_APPEND);
+            // file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$instance->courseid.', role: '.$data->role.', action: enrol course'.PHP_EOL, FILE_APPEND);
 
             if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_TRUE ||
                 ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_OPTIONAL &&
@@ -251,7 +251,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                     $federationrole = 5; // Student.
                     $federationrole = 11; // Libre.
                     $enrolselectplugin->enrol_user($federationinstance, $USER->id, $federationrole, $timestart, $timeend, $status, $recovergrades);
-                    file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$federationcourse->id.', action: enrol course (federation)'.PHP_EOL, FILE_APPEND);
+                    // file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$federationcourse->id.', action: enrol course (federation)'.PHP_EOL, FILE_APPEND);
                 }
             } else if (isset($data->federation)) {
                 $federationcourseid = $enrol->courseid;
@@ -277,7 +277,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                         } else if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_FALSE) {
                             // On désinscrit uniquement du groupe, si on modifie via le formulaire de la licence FFSU.
                             groups_delete_group_members($group->courseid, $USER->id);
-                            file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$group->courseid.', action: unenrol group #'.$group->id.PHP_EOL, FILE_APPEND);
+                            // file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$group->courseid.', action: unenrol group #'.$group->id.PHP_EOL, FILE_APPEND);
                         } else {
                             $ismembersomewhere = true;
                         }
@@ -286,7 +286,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
 
                 if ($ismember === false && $ismembersomewhere === false) {
                     groups_add_member($group->id, $USER->id);
-                    file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$group->courseid.', action: enrol group #'.$group->id.PHP_EOL, FILE_APPEND);
+                    // file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$group->courseid.', action: enrol group #'.$group->id.PHP_EOL, FILE_APPEND);
                 }
             }
 
