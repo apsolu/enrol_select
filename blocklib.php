@@ -28,8 +28,8 @@ function get_remaining_choices_block() {
     $roles = get_potential_user_roles();
 
     $overviewremainingchoicesdata = new \stdClass();
-    $overviewremainingchoicesdata->choices = array_values(get_user_colleges($userid = null, $count = true));
-    $overviewremainingchoicesdata->count_choices = count($overviewremainingchoicesdata->choices);
+    $overviewremainingchoicesdata->choices = get_user_colleges($userid = null, $count = true);
+    $overviewremainingchoicesdata->count_choices = 0;
     $overviewremainingchoicesdata->summary = '<div id="apsolu-rules-summary" class="table-responsive">'.
             '<table class="table table-bordered">'.
             '<thead>'.
@@ -48,8 +48,9 @@ function get_remaining_choices_block() {
             continue;
         }
 
+        $choice->description = '';
         if ($choice->count >= $choice->maxwish) {
-            $choice->str = '<p class="alert-success">Vous avez atteint le maximum de voeux avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.</p>';
+            $choice->description = '<p class="alert-success">Vous avez atteint le maximum de voeux avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.</p>';
         } else {
             // Pluriel.
             if ($choice->maxregister > 1) {
@@ -59,7 +60,7 @@ function get_remaining_choices_block() {
             }
 
             if ($choice->minregister == 0) {
-                $choice->str = '<p class="alert-info">Vous pouvez choisir '.$choice->maxregister.' '.$activitiesstr.' avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
+                $choice->description = '<p class="alert-info">Vous pouvez choisir '.$choice->maxregister.' '.$activitiesstr.' avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
             } else {
                 if ($choice->count < $choice->minregister) {
                     $style = 'alert-danger';
@@ -68,9 +69,9 @@ function get_remaining_choices_block() {
                 }
 
                 if ($choice->minregister === $choice->maxregister) {
-                    $choice->str = '<p class="'.$style.'">Vous pouvez choisir <b>'.$choice->minregister.' '.$activitiesstr.'</b> avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
+                    $choice->description = '<p class="'.$style.'">Vous pouvez choisir <b>'.$choice->minregister.' '.$activitiesstr.'</b> avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
                 } else {
-                    $choice->str = '<p class="'.$style.'">Vous pouvez choisir <b>entre '.$choice->minregister.' et '.$choice->maxregister.' '.$activitiesstr.'</b> avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
+                    $choice->description = '<p class="'.$style.'">Vous pouvez choisir <b>entre '.$choice->minregister.' et '.$choice->maxregister.' '.$activitiesstr.'</b> avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
                 }
             }
 
@@ -80,7 +81,7 @@ function get_remaining_choices_block() {
             } else {
                 $choicestr = 'voeu';
             }
-            $choice->str .= '<br />Il vous reste encore <b>'.$countchoices.' '.$choicestr.'</b>.</p>';
+            $choice->description .= '<br />Il vous reste encore <b>'.$countchoices.' '.$choicestr.'</b>.</p>';
         }
 
         $overviewremainingchoicesdata->summary .= '<tr>'.
@@ -91,6 +92,10 @@ function get_remaining_choices_block() {
             '</tr>';
     }
     $overviewremainingchoicesdata->summary .= '</tbody></table></div>';
+
+    // Réindexe les valeurs pour mustache.
+    $overviewremainingchoicesdata->choices = array_values($overviewremainingchoicesdata->choices);
+    $overviewremainingchoicesdata->count_choices = count($overviewremainingchoicesdata->choices);
 
     $block = new \block_contents();
     $block->title = 'Choix restants';
