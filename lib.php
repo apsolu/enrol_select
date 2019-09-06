@@ -482,19 +482,21 @@ class enrol_select_plugin extends enrol_plugin {
     }
 
     public function enrol_user(stdClass $instance, $userid, $roleid = null, $timestart = 0, $timeend = 0, $status = null, $recovergrades = null) {
-        global $DB;
+        global $CFG, $DB;
+
+        if (isset($CFG->is_siuaps_rennes) === true && in_array((string) $instance->courseid, array('249', '250'), $strict = true) === true) {
+            // Inscription à la ffsu ou à la musculation.
+
+            $timestart = 0; // Pas de date de début.
+            $timeend = 0; // Pas de date de fin.
+            $status = 0; // Étudiant accepté automatiquement.
+            $roleid = 11; // On force le rôle libre.
+        }
 
         // La méthode parent::enrol_user() ne remplace pas les rôles, mais cumul. Il faut donc faire un traitement différent si il s'agit juste d'un changement de rôle.
         $enrolled = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $userid));
         if ($enrolled === false) {
-            if (in_array($instance->courseid, array(249, 250), $strict = true) === true) {
-                // Inscription à la ffsu ou à la musculation.
-
-                $timestart = 0; // Pas de date de début.
-                $timeend = 0; // Pas de date de fin.
-                $status = 0; // Étudiant accepté automatiquement.
-                $roleid = 11; // On force le rôle libre.
-            } else {
+            if (isset($CFG->is_siuaps_rennes) === false || in_array((string) $instance->courseid, array('249', '250'), $strict = true) === false) {
                 // Inscription à un cours du SIUAPS.
                 if ($timestart === 0) {
                     $timestart = $instance->customint7;
