@@ -89,8 +89,15 @@ $headers = array(
     'LMD',
     get_string('register_type', 'enrol_select'),
     'Date d\'inscription',
-    get_string('paid', 'enrol_select'),
 );
+
+if ($CFG->wwwroot === 'https://mon-espace.siuaps.univ-rennes.fr' || $CFG->debug !== 0) {
+    $headers[] = get_string('paid', 'enrol_select');
+}
+
+if ($CFG->wwwroot === 'https://mon-espace-suapse.univ-lr.fr' || $CFG->debug !== 0) {
+    $headers[] = get_string('sportcard', 'local_apsolu');
+}
 
 if (!isset($exportstatus)) {
     $headers[] = get_string('list', 'enrol_select');
@@ -99,6 +106,8 @@ if (!isset($exportstatus)) {
 $headers[] = 'texte libre';
 $headers[] = 'texte libre';
 $headers[] = 'texte libre';
+
+$fields = $DB->get_records('user_info_field');
 
 $rows = array();
 foreach ($users as $user) {
@@ -109,18 +118,18 @@ foreach ($users as $user) {
     $librepaid = '';
     $cardpaid = '';
 
-    $fields = $DB->get_records('user_info_field');
     $userfields = $DB->get_records('user_info_data', array('userid' => $user->id), $sort = '', $columns = 'fieldid, data');
     foreach ($fields as $fieldid => $field) {
         switch($field->shortname) {
-            case 'ufr':
-            case 'lmd':
-            case 'sex':
-            case 'birthday':
-            case 'optionpaid':
-            case 'bonificationpaid':
-            case 'librepaid':
-            case 'cardpaid':
+            case 'apsoluufr':
+            case 'apsolucycle':
+            case 'apsolusex':
+            case 'apsolubirthday':
+            case 'optionpaid': // Obsolète.
+            case 'bonificationpaid': // Obsolète.
+            case 'librepaid': // Obsolète.
+            case 'apsolucardpaid':
+            case 'apsoluidcardnumber':
                 if (isset($userfields[$fieldid])) {
                     ${$field->shortname} = $userfields[$fieldid]->data;
                 }
@@ -128,16 +137,14 @@ foreach ($users as $user) {
         }
     }
 
-    if ($cardpaid == 1) {
-        $paid = get_string('yes');
-    } else {
-        $paid = get_string('no');
-    }
-
     try {
-        $birthdayday = substr($birthday, 0, 2);
-        $birthdaymonth = substr($birthday, 3, 2);
-        $birthdayyear = substr($birthday, 6, 4);
+        if (isset($apsolubirthday) === false) {
+            throw new Exception('Undefined variable: apsolubirthday');
+        }
+
+        $birthdayday = substr($apsolubirthday, 0, 2);
+        $birthdaymonth = substr($apsolubirthday, 3, 2);
+        $birthdayyear = substr($apsolubirthday, 6, 4);
         $from = new DateTime($birthdayyear.'-'.$birthdaymonth.'-'.$birthdayday);
         $to   = new DateTime('today');
         $age = $from->diff($to)->y;
@@ -149,16 +156,31 @@ foreach ($users as $user) {
     $row[] = $user->lastname;
     $row[] = $user->firstname;
     $row[] = $user->institution;
-    $row[] = (isset($ufr)) ? $ufr : '';
+    $row[] = (isset($apsoluufr)) ? $apsoluufr : '';
     $row[] = $user->department;
-    $row[] = (isset($lmd)) ? $lmd : '';
+    $row[] = (isset($apsolucycle)) ? $apsolucycle : '';
     $row[] = $roles[$user->roleid]->localname;
     $row[] = userdate($user->timecreated);
-    $row[] = $paid;
+
+    if ($CFG->wwwroot === 'https://mon-espace.siuaps.univ-rennes.fr') {
+        if (isset($apsolucardpaid) === true && $apsolucardpaid == 1) {
+            $paid = get_string('yes');
+        } else {
+            $paid = get_string('no');
+        }
+
+        $row[] = $paid;
+    }
+
+    if ($CFG->wwwroot === 'https://mon-espace-suapse.univ-lr.fr') {
+        $row[] = $apsoluidcardnumber;
+    }
+
     if (!isset($exportstatus)) {
         $state = enrol_select_plugin::$states[$user->status];
         $row[] = get_string($state.'_list', 'enrol_select');
     }
+
     $row[] = '';
     $row[] = '';
     $row[] = '';
