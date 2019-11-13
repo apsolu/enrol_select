@@ -528,9 +528,14 @@ class enrol_select_plugin extends enrol_plugin {
     }
 
     public function unenrol_user(stdClass $instance, $userid) {
+        global $CFG;
+
         parent::unenrol_user($instance, $userid);
 
-        $this->refill_main_list($instance, $userid);
+        // TODO: créer une option de paramétrage par instance.
+        if (isset($CFG->is_siuaps_rennes) === true) {
+            $this->refill_main_list($instance, $userid);
+        }
     }
 
     public function refill_main_list(stdClass $instance, $userid) {
