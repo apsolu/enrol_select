@@ -157,7 +157,7 @@ $string['move_to_main'] = 'Déplacer dans la liste principale';
 $string['move_to_wait'] = 'Déplacer dans la liste complémentaire';
 $string['move_to_deleted'] = 'Déplacer dans la liste des étudiants désinscrits';
 
-$string['notify'] = 'Notifier par emails';
+$string['notify'] = 'Notifier par email';
 $string['editenroltype'] = 'Modifier le type d\'inscription';
 
 $string['send_message'] = 'Envoyer un message';
