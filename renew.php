@@ -71,7 +71,11 @@ foreach ($calendars as $calendar) {
         $nextenrols = $DB->get_records_sql($sql, array('now' => $time));
         if (empty($nextenrols) === false) {
             $nextenrol = current($nextenrols);
-            $calendar->nextenrol = $nextenrol->enrolstartdate;
+            if (isset($CFG->is_siuaps_rennes) === false) {
+                // TODO: problème avec Rennes où les UE commencent les inscriptions avant les autres (en décembre au lieu de janvier).
+                // TODO: voir comment mieux gérer ce cas.
+                $calendar->nextenrol = $nextenrol->enrolstartdate;
+            }
         }
         break;
     }
