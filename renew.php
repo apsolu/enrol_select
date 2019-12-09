@@ -141,7 +141,13 @@ if (isset($_POST['reenrol'])) {
                 $activities = apsolu\get_real_user_activity_enrolments();
                 $roles = $select->get_available_user_roles($instance);
                 if (isset($activities[$instance->courseid], $roles[$roleid])) {
-                    $select->enrol_user($instance, $USER->id, $roleid, $instance->customint7, $instance->customint8, $status = ENROL_INSTANCE_ENABLED, $recovergrades = null);
+                    if (isset($CFG->is_siuaps_rennes) === true) {
+                        // Inscription liste définitive.
+                        $select->enrol_user($instance, $USER->id, $roleid, $instance->customint7, $instance->customint8, $status = ENROL_INSTANCE_ENABLED, $recovergrades = null);
+                    } else {
+                        // Inscription liste principale.
+                        $select->enrol_user($instance, $USER->id, $roleid, $instance->customint7, $instance->customint8, $status = 2, $recovergrades = null);
+                    }
 
                     $mail_content[] = get_string('reenrolmentcontinue', 'enrol_select', $course);
 
