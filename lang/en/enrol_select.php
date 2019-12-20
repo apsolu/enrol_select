@@ -101,6 +101,7 @@ $string['wishes'] = 'Voeux';
 $string['roles'] = 'Rôles';
 $string['prices'] = 'Tarification';
 $string['colleges'] = 'Population';
+$string['renewals'] = 'Réinscriptions en masse';
 
 $string['accepted_list'] = 'Liste des étudiants acceptés';
 $string['accepted_list_abbr'] = 'Accepté';
@@ -154,6 +155,10 @@ $string['manage_notification_4'] = 'Vous avez été retiré de la liste des étu
 $string['move_to'] = 'Déplacer';
 $string['move_to_accepted'] = 'Déplacer dans la liste des étudiants acceptés';
 $string['move_to_main'] = 'Déplacer dans la liste principale';
+$string['move_to_next_accepted'] = 'Réinscrire dans la liste des étudiants acceptés';
+$string['move_to_next_deleted'] = 'Réinscrire dans la liste des étudiants désinscrits';
+$string['move_to_next_main'] = 'Réinscrire dans la liste principale';
+$string['move_to_next_wait'] = 'Réinscrire dans la liste complémentaire';
 $string['move_to_wait'] = 'Déplacer dans la liste complémentaire';
 $string['move_to_deleted'] = 'Déplacer dans la liste des étudiants désinscrits';
 
@@ -165,6 +170,10 @@ $string['send_message'] = 'Envoyer un message';
 $string['goto'] = 'Déplacer de la liste {$a->from} vers la liste {$a->to}';
 $string['list_accepted'] = '"accepté"';
 $string['list_main'] = 'principale';
+$string['list_next_accepted'] = '"accepté" du prochain semestre';
+$string['list_next_main'] = 'principale du prochain semestre';
+$string['list_next_wait'] = 'complémentaire du prochain semestre';
+$string['list_next_deleted'] = '"désinscrit" du prochain semestre';
 $string['list_wait'] = 'complémentaire';
 $string['list_deleted'] = '"désinscrit"';
 
@@ -179,6 +188,28 @@ $string['message_accepted_to_deleted'] = str_replace('principale', 'déinscrits'
 $string['message_main_to_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits à la liste principale', 'Votre pré-inscription a été confirmée', $string['message_accepted_to_main']);
 $string['message_main_to_wait'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_wait']);
 $string['message_main_to_deleted'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_deleted']);
+
+$string['message_accepted_to_next_main'] = 'Bonjour,
+
+Vous avez été déplacé de la liste des inscrits du semestre précédent à la liste principale du prochain semestre.
+
+Cordialement,';
+$string['message_accepted_to_next_accepted'] = str_replace('principale', 'des inscrits', $string['message_accepted_to_next_main']);
+$string['message_main_to_next_main'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_next_main']);
+$string['message_accepted_to_next_wait'] = str_replace('principale', 'complémentaire', $string['message_accepted_to_next_main']);
+$string['message_accepted_to_next_deleted'] = str_replace('principale', 'déinscrits', $string['message_accepted_to_next_main']);
+
+$string['message_main_to_next_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits du semestre précédent à la liste principale du prochain semestre', 'Votre ré-inscription a été confirmée', $string['message_accepted_to_next_main']);
+$string['message_main_to_next_wait'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_next_wait']);
+$string['message_main_to_next_deleted'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_next_deleted']);
+
+$string['message_wait_to_next_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits du semestre précédent à la liste principale du prochain semestre', 'Votre ré-inscription a été confirmée', $string['message_accepted_to_next_main']);
+$string['message_wait_to_next_main'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_next_main']);
+$string['message_wait_to_next_deleted'] = str_replace('des inscrits', 'complémentaire', $string['message_accepted_to_next_deleted']);
+
+$string['message_deleted_to_next_accepted'] = str_replace('de la liste des inscrits du semestre précédent à la liste principale', 'dans la liste des inscrits', $string['message_accepted_to_next_main']);
+$string['message_deleted_to_next_main'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste principale', $string['message_accepted_to_next_main']);
+$string['message_deleted_to_next_wait'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste complémentaire', $string['message_accepted_to_next_main']);
 
 $string['message_wait_to_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits à la liste principale', 'Votre pré-inscription a été confirmée', $string['message_accepted_to_main']);
 $string['message_wait_to_main'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_main']);

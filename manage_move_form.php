@@ -34,9 +34,9 @@ class enrol_select_manage_move_form extends moodleform {
 
         $mform = $this->_form;
 
-        list($instance, $users, $from, $to) = $this->_customdata;
+        list($instance, $users, $from, $to, $previousenrolid) = $this->_customdata;
 
-        $strto = enrol_select_plugin::$states[$to];
+        $strto = ($previousenrolid !== false) ? 'next_' . enrol_select_plugin::$states[$to] : enrol_select_plugin::$states[$to];
         $strfrom = enrol_select_plugin::$states[$from];
 
         $lists = new stdClass();
@@ -61,6 +61,8 @@ class enrol_select_manage_move_form extends moodleform {
         }
         $userslist .= '</ul>';
         $mform->addElement('static', 'users', $label, $userslist);
+        $mform->addElement('hidden', 'previousenrolid', $previousenrolid);
+        $mform->setType('previousenrolid', PARAM_INT);
 
         $mform->addElement('selectyesno', 'notify', 'Envoyer une notification aux étudiants');
         $mform->setType('notify', PARAM_INT);

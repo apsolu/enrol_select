@@ -16,34 +16,16 @@
 
 /**
  * @package    enrol_select
- * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @copyright  2019 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+defined('MOODLE_INTERNAL') || die();
 
-$tab = optional_param('tab', 'register_types', PARAM_TEXT);
-$action = optional_param('action', 'view', PARAM_ALPHA);
+$actions = array('select', 'submit');
 
-$tabslist = array('colleges', 'renewals');
-
-$tabsbar = array();
-foreach ($tabslist as $tabname) {
-    $url = new moodle_url('/enrol/select/administration.php', array('tab' => $tabname));
-    $tabsbar[] = new tabobject($tabname, $url, get_string($tabname, 'enrol_select'));
+if (!in_array($action, $actions, true)) {
+    $action = 'select';
 }
 
-if (!in_array($tab, $tabslist, true)) {
-    $tab = $tabslist[0];
-}
-
-admin_externalpage_setup('enrol_select_'.$tab);
-
-echo $OUTPUT->header();
-
-echo $OUTPUT->tabtree($tabsbar, $tab);
-
-require_once(__DIR__.'/administration/'.$tab.'/index.php');
-
-echo $OUTPUT->footer();
+require(__DIR__.'/'.$action.'.php');

@@ -56,14 +56,6 @@ if (!$enrolselect = enrol_get_plugin('select')) {
     throw new coding_exception('Can not instantiate enrol_select');
 }
 
-$options = array();
-foreach (enrol_select_plugin::$states as $code => $state) {
-    $options[$code] = get_string('move_to_'.$state, 'enrol_select');
-}
-$options['notify'] = get_string('notify', 'enrol_select');
-$options['editenroltype'] = get_string('editenroltype', 'enrol_select');
-$options['changecourse'] = get_string('change_course', 'enrol_select');
-
 $data = new stdClass();
 $data->wwwroot = $CFG->wwwroot;
 $data->canunenrol = $canunenrol;
@@ -88,8 +80,40 @@ foreach ($instances as $instance) {
 
     // On initialise chaque liste (LP, LC, etc).
     foreach (enrol_select_plugin::$states as $code => $state) {
-        $selectoptions = $options;
-        unset($selectoptions[$code]);
+        $nextinstance = $DB->get_record('enrol', array('id' => $instance->customint6, 'enrol' => 'select'), '*', IGNORE_MISSING);
+
+        $selectoptions = array();
+        $mainoptions   = array();
+        $suboptions    = array();
+        $otheroptions  = array();
+
+        foreach (enrol_select_plugin::$states as $scode => $sstate) {
+            $mainoptions[$scode] = get_string('move_to_'.$sstate, 'enrol_select');
+            if ($nextinstance !== false) {
+                $suboptions['99'.$scode] = get_string('move_to_next_'.$sstate, 'enrol_select');
+            }
+        }
+
+        $otheroptions['notify'] = get_string('notify', 'enrol_select');
+        $otheroptions['editenroltype'] = get_string('editenroltype', 'enrol_select');
+        $otheroptions['changecourse'] = get_string('change_course', 'enrol_select');
+
+        // Renewal instance, semester 2
+        if ($nextinstance !== false) {
+            $selectoptions[] = '--';
+        }
+
+        // Current instance
+        unset($mainoptions[$code]);
+        $selectoptions[] = array('Déplacement au sein de ' . $instance->name => $mainoptions);
+
+        // Other actions than manage_move
+        $selectoptions[] = array('Autres actions' => $otheroptions);
+
+        // Renewal instance, semester 2
+        if ($nextinstance !== false) {
+            $selectoptions[] = array('Réinscription vers ' . $nextinstance->name => $suboptions);
+        }
 
         $list = new stdClass();
         $list->name = get_string($state.'_list', 'enrol_select');
