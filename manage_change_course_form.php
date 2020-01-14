@@ -66,8 +66,7 @@ class enrol_select_manage_change_course_form extends moodleform {
         $mform->setType('actions', PARAM_INT);
 
         // Submit buttons.
-        $attributes = array('class' => 'btn btn-primary');
-        $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('save', 'admin'), $attributes);
+        $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('save', 'admin'));
 
         $attributes = new stdClass();
         $attributes->href = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$instance->id;

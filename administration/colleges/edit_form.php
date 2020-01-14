@@ -74,8 +74,7 @@ class apsolu_colleges_form extends moodleform {
         $a->href = $CFG->wwwroot.'/enrol/select/administration.php?tab=colleges';
         $a->class = 'btn btn-default';
 
-        $attributes = array('class' => 'btn btn-primary');
-        $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('save', 'admin'), $attributes);
+        $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('save', 'admin'));
         $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu', $a));
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
 
