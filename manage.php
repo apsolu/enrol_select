@@ -196,6 +196,7 @@ foreach ($DB->get_recordset_sql($sql, array('fieldid' => $customfields['apsolucy
     $enrolment->status = $record->status;
     $enrolment->role = $roles[$record->roleid]->localname;
     $enrolment->timecreated = strftime('%a %d %b à %T', $record->timecreated);
+    $enrolment->timecreated_sortable = strftime('%F %T', $record->timecreated);
     if ($is_manager === false) {
         $enrolment->course_url = '';
     } else {
@@ -216,6 +217,7 @@ foreach ($users as $user) {
             // On stocke le rôle et la date d'inscription pour cet utilisateur.
             $user->role = $enrolment->role;
             $user->timecreated = $enrolment->timecreated;
+            $user->timecreated_sortable = $enrolment->timecreated_sortable;
 
             $enrols[$enrolid]->lists[$enrolment->status]->users[] = clone $user;
             $enrols[$enrolid]->lists[$enrolment->status]->count_users++;
@@ -226,6 +228,14 @@ foreach ($users as $user) {
 foreach ($enrols as $enrolid => $enrol) {
     $enrols[$enrolid]->id = $enrolid;
     $enrols[$enrolid]->lists = array_values($enrol->lists);
+    /*
+    // Re-trie les dates, notamment parce qu'elles sont dans le désordre pour le second semestre.
+    foreach ($enrols[$enrolid]->lists as $list) {
+        usort($list->users, function($a, $b) {
+            return $a->timecreated_sortable > $b->timecreated_sortable;
+        });
+    }
+    */
 }
 
 $data->enrols = array_values($enrols);

@@ -64,7 +64,9 @@ define(['jquery', 'local_apsolu/jquery.tablesorter'], function($) {
                     0: {sorter: false},
                     1: {sorter: false}
                     // 6: {sorter: false}
-                }
+                },
+                // Trie chronologiquement la colonne date d'inscription.
+                sortList: [[9,0]]
             });
         }
     };
