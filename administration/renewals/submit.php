@@ -55,8 +55,8 @@ foreach($_POST['uids'] as $uid) {
             $enrolselectplugin = new enrol_select_plugin();
             $roleid = 0;
 
-            $sql = "SELECT roleid FROM {role_assignments} WHERE component = 'enrol_select' AND itemid = :previousinstance_id";
-            foreach ($DB->get_recordset_sql($sql, array('previousinstance_id' => $enrolid)) as $role) {
+            $sql = "SELECT roleid FROM {role_assignments} WHERE component = 'enrol_select' AND itemid = :previousinstance_id AND userid = :userid";
+            foreach ($DB->get_recordset_sql($sql, array('previousinstance_id' => $enrolid, 'userid' => $userid)) as $role) {
                 $roleid = $role->roleid;
             }
 

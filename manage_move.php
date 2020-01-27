@@ -47,7 +47,7 @@ if (strpos($to, '99') === 0 && $instance->customint6 !== null) {
     $to              = str_replace('99', '', $to);
 }
 
-if (isset($_POST['previousenrolid'])) {
+if (isset($_POST['previousenrolid']) && $_POST['previousenrolid'] > 0) {
     $previousenrolid  = $_POST['previousenrolid'];
     $previousinstance = $DB->get_record('enrol', array('id' => $previousenrolid, 'enrol' => 'select'), '*', MUST_EXIST);
 }
@@ -114,8 +114,8 @@ if ($mform->is_cancelled()) {
                 $enrolselectplugin = new enrol_select_plugin();
                 $roleid = 0;
 
-                $sql = "SELECT roleid FROM {role_assignments} WHERE component = 'enrol_select' AND itemid = :previousinstance_id";
-                foreach ($DB->get_recordset_sql($sql, array('previousinstance_id' => $previousenrolid)) as $role) {
+                $sql = "SELECT roleid FROM {role_assignments} WHERE component = 'enrol_select' AND itemid = :previousinstance_id AND userid = :userid";
+                foreach ($DB->get_recordset_sql($sql, array('previousinstance_id' => $previousenrolid, 'userid' => $userid)) as $role) {
                     $roleid = $role->roleid;
                 }
 
