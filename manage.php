@@ -98,11 +98,6 @@ foreach ($instances as $instance) {
         $otheroptions['editenroltype'] = get_string('editenroltype', 'enrol_select');
         $otheroptions['changecourse'] = get_string('change_course', 'enrol_select');
 
-        // Renewal instance, semester 2
-        if ($nextinstance !== false) {
-            $selectoptions[] = '--';
-        }
-
         // Current instance
         unset($mainoptions[$code]);
         $selectoptions[] = array('Déplacement au sein de ' . $instance->name => $mainoptions);
