@@ -192,7 +192,7 @@ function get_user_activity_enrolments($userid = null) {
 
     $time = time();
 
-    $sql = "SELECT DISTINCT c.*, cc.name AS sport, FORMAT(acol.userprice, 2) AS price, ac.paymentcenterid,".
+    $sql = "SELECT DISTINCT c.*, cc.name AS sport, FORMAT(acol.userprice, 2) AS price, '1' AS ac.paymentcenterid,".
         " e.id AS enrolid, ue.status, ra.roleid".
         " FROM {course} c".
         " JOIN {course_categories} cc ON cc.id = c.category".
@@ -230,7 +230,7 @@ function get_real_user_activity_enrolments($userid = null) {
 
     $time = time();
 
-    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, ac.paymentcenterid".
+    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, '1' AS ac.paymentcenterid".
         " FROM {course} c".
         " JOIN {course_categories} cc ON cc.id = c.category".
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
@@ -265,7 +265,7 @@ function get_recordset_user_activity_enrolments($userid = null, $onlyactive = tr
     }
 
     $params = array('userid' => $userid);
-    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, e.name AS enrolname, ue.status, ra.roleid, ac.paymentcenterid".
+    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, e.name AS enrolname, ue.status, ra.roleid, '1' AS ac.paymentcenterid".
         " FROM {course} c".
         " JOIN {course_categories} cc ON cc.id = c.category".
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
@@ -302,7 +302,7 @@ function get_user_complement_enrolments($userid = null) {
         $userid = $USER->id;
     }
 
-    $sql = "SELECT DISTINCT c.*, FORMAT(ac.price, 2) AS price, ac.federation, ac.paymentcenterid, e.id AS enrolid, ue.status".
+    $sql = "SELECT DISTINCT c.*, FORMAT(ac.price, 2) AS price, ac.federation, '1' AS ac.paymentcenterid, e.id AS enrolid, ue.status".
         " FROM {course} c".
         " JOIN {apsolu_complements} ac ON c.id=ac.id".
         // Check cohorts.
@@ -709,7 +709,7 @@ function get_user_reenrolments($userid = null) {
 
     $time = time();
 
-    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, ac.paymentcenterid".
+    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, '1' AS ac.paymentcenterid".
         " FROM {course} c".
         " JOIN {course_categories} cc ON cc.id = c.category".
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
