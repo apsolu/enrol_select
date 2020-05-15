@@ -291,39 +291,6 @@ function get_recordset_user_activity_enrolments($userid = null, $onlyactive = tr
 }
 
 /**
- * Renvoie toutes les activités dans lesquelles un utilisateur est inscrit (avec les informations de paiement).
- * @param int userid (si null, on prend l'id de l'utilisateur courant)
- * @return array
- */
-function get_user_activity_enrolments_for_payment($userid = null) {
-    global $DB, $USER;
-
-    if ($userid === null) {
-        $userid = $USER->id;
-    }
-
-    $sql = "SELECT DISTINCT c.*, cc.name AS sport, FORMAT(acol.userprice, 2) AS price, ac.paymentcenterid,".
-        " e.id AS enrolid, ue.status, ra.roleid".
-        " FROM {course} c".
-        " JOIN {course_categories} cc ON cc.id = c.category".
-        " JOIN {apsolu_courses} ac ON c.id=ac.id".
-        " JOIN {enrol} e ON c.id = e.courseid".
-        " JOIN {user_enrolments} ue ON e.id = ue.enrolid".
-        " JOIN {cohort_members} cm ON cm.userid = ue.userid".
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid AND ra.itemid = e.id".
-        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid=c.id".
-        " JOIN {apsolu_colleges} acol ON acol.roleid = ra.roleid".
-        " JOIN {apsolu_colleges_members} acm ON acol.id = acm.collegeid AND acm.cohortid = cm.cohortid".
-        " WHERE e.enrol = 'select'".
-        " AND e.status = 0". // Active.
-        " AND ue.userid=?".
-        " AND c.visible=1".
-        " ORDER BY c.fullname";
-    return $DB->get_recordset_sql($sql, array($userid));
-}
-
-
-/**
  * Renvoie toutes les activités complémentaires dans lesquelles un utilisateur est inscrit et validé.
  * @param int userid (si null, on prend l'id de l'utilisateur courant)
  * @return array
@@ -343,35 +310,6 @@ function get_user_complement_enrolments($userid = null) {
         " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid".
         " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid".
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = cm.userid".
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid AND ra.itemid = e.id".
-        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid=c.id".
-        " WHERE e.enrol = 'select'".
-        " AND e.status = 0". // Active.
-        " AND cm.userid=?".
-        " AND c.visible=1".
-        " ORDER BY c.fullname";
-
-    return $DB->get_records_sql($sql, array($userid));
-}
-
-/**
- * Renvoie toutes les activités complémentaires dans lesquelles un utilisateur est inscrit et validé.
- * @param int userid (si null, on prend l'id de l'utilisateur courant)
- * @return array
- */
-function get_user_complement_enrolments_for_payment($userid = null) {
-    global $DB, $USER;
-
-    if ($userid === null) {
-        $userid = $USER->id;
-    }
-
-    $sql = "SELECT DISTINCT c.*, FORMAT(ac.price, 2) AS price, ac.federation, ac.paymentcenterid, e.id AS enrolid, ue.status, ra.roleid".
-        " FROM {course} c".
-        " JOIN {apsolu_complements} ac ON c.id=ac.id".
-        " JOIN {enrol} e ON c.id = e.courseid".
-        " JOIN {user_enrolments} ue ON e.id = ue.enrolid".
-        " JOIN {cohort_members} cm ON cm.userid = ue.userid".
         " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid AND ra.itemid = e.id".
         " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid=c.id".
         " WHERE e.enrol = 'select'".
