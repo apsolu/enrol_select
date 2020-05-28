@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Adds new instance of enrol_select to specified course
- * or edits current instance.
+ * Définition du formulaire de gestion des notifications.
  *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
@@ -27,8 +26,19 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
+/**
+ * Définition du formulaire de gestion des notifications.
+ *
+ * @package    enrol_select
+ * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class enrol_select_manage_notify_form extends moodleform {
-
+    /**
+     * Définit les champs du formulaire.
+     *
+     * @return void
+     */
     public function definition() {
         global $CFG, $DB;
 

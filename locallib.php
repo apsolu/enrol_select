@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Fonctions pour le module enrol_select.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -22,6 +24,16 @@
 
 namespace UniversiteRennes2\Apsolu;
 
+/**
+ * Une fonction à documenter (TODO).
+ *
+ * @param int  $siteid       Identifiant du site de pratique.
+ * @param int  $categoryid   Identifiant de l'activité physique.
+ * @param int  $categoryname Nom de l'activité physique.
+ * @param bool $on_homepage  Témoin indique si l'activité est visible sur la page d'accueil.
+ *
+ * @return array Un tableau d'activités.
+ */
 function get_activities($siteid = 0, $categoryid = 0, $categoryname = '', $on_homepage = true) {
     global $DB;
 
@@ -68,6 +80,11 @@ function get_activities($siteid = 0, $categoryid = 0, $categoryname = '', $on_ho
     return $DB->get_records_sql($sql, $params);
 }
 
+/**
+ * Une fonction à documenter (TODO).
+ *
+ * @return array Un tableau d'activités.
+ */
 function get_activities_roles() {
     global $DB;
 
@@ -93,6 +110,11 @@ function get_activities_roles() {
     return $activities;
 }
 
+/**
+ * Une fonction à documenter (TODO).
+ *
+ * @return array Un tableau d'activités.
+ */
 function get_activities_teachers() {
     global $DB;
 
@@ -121,8 +143,9 @@ function get_activities_teachers() {
 }
 
 /**
- * Renvoie tous les groupements d'activités visibles (Sports de raquettes, sports aquatiques, etc)
- * @return array
+ * Renvoie tous les groupements d'activités visibles (Sports de raquettes, sports aquatiques, etc).
+ *
+ * @return array Un tableau de groupements d'activités.
  */
 function get_visible_activities_domains() {
     global $DB;
@@ -136,8 +159,9 @@ function get_visible_activities_domains() {
 }
 
 /**
- * Renvoie toutes les activités visibles (Tennis, Natation, etc)
- * @return array
+ * Renvoie toutes les activités visibles (Tennis, Natation, etc).
+ *
+ * @return array Un tableau d'activités.
  */
 function get_visible_sports() {
     global $DB;
@@ -151,8 +175,9 @@ function get_visible_sports() {
 }
 
 /**
- * Renvoie toutes les activités complémentaires visibles (Musculation, FFSU, etc)
- * @return array
+ * Renvoie toutes les activités complémentaires visibles (Musculation, FFSU, etc).
+ *
+ * @return array Un tableau d'activités complémentaires.
  */
 function get_visible_complements() {
     global $DB;
@@ -166,8 +191,9 @@ function get_visible_complements() {
 }
 
 /**
- * Renvoie tous les rôles basés sur le type STUDENT (sauf le rôle student de base)
- * @return array
+ * Renvoie tous les rôles basés sur le type STUDENT (sauf le rôle student de base).
+ *
+ * @return array Un tableau de rôles basés sur le type STUDENT.
  */
 function get_custom_student_roles() {
     global $DB;
@@ -180,8 +206,10 @@ function get_custom_student_roles() {
 
 /**
  * Renvoie toutes les activités dans lesquelles un utilisateur est inscrit.
- * @param int userid (si null, on prend l'id de l'utilisateur courant)
- * @return array
+ *
+ * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ *
+ * @return array Un tableau contenant la liste des inscriptions.
  */
 function get_user_activity_enrolments($userid = null) {
     global $DB, $USER;
@@ -218,8 +246,10 @@ function get_user_activity_enrolments($userid = null) {
 
 /**
  * Renvoie toutes les activités dans lesquelles un utilisateur est inscrit (sans vérifier les cohortes).
- * @param int userid (si null, on prend l'id de l'utilisateur courant)
- * @return array
+ *
+ * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ *
+ * @return array Un tableau contenant la liste des inscriptions.
  */
 function get_real_user_activity_enrolments($userid = null) {
     global $DB, $USER;
@@ -250,8 +280,11 @@ function get_real_user_activity_enrolments($userid = null) {
 
 /**
  * Renvoie toutes les activités dans lesquelles un utilisateur est inscrit (sans vérifier les cohortes).
- * @param int userid (si null, on prend l'id de l'utilisateur courant)
- * @return array
+ *
+ * @param int|null $userid     Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ * @param bool     $onlyactive Témoin permettant de retourner uniquement les inscriptions actives.
+ *
+ * @return array Un tableau contenant la liste des inscriptions.
  */
 function get_recordset_user_activity_enrolments($userid = null, $onlyactive = true) {
     global $DB, $USER;
@@ -292,8 +325,10 @@ function get_recordset_user_activity_enrolments($userid = null, $onlyactive = tr
 
 /**
  * Renvoie toutes les activités complémentaires dans lesquelles un utilisateur est inscrit et validé.
- * @param int userid (si null, on prend l'id de l'utilisateur courant)
- * @return array
+ *
+ * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ *
+ * @return array Un tableau contenant la liste des inscriptions.
  */
 function get_user_complement_enrolments($userid = null) {
     global $DB, $USER;
@@ -323,9 +358,11 @@ function get_user_complement_enrolments($userid = null) {
 
 /**
  * Renvoie tous les collèges auxquels appartient l'utilisateur (nombre de voeux possibles, roles, prix, etc).
- * @param int userid : si null, on prend l'id de l'utilisateur courant
- * @param bool count : ajoute le nombre de voeux fait par l'utilisateur pour chaque collège
- * @return array
+ *
+ * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ * @param bool     $count  Ajoute le nombre de voeux fait par l'utilisateur pour chaque collège.
+ *
+ * @return array Un tableau contenant la liste des collèges d'un utilisateur.
  */
 function get_user_colleges($userid = null, $count = false) {
     global $DB, $USER;
@@ -359,8 +396,10 @@ function get_user_colleges($userid = null, $count = false) {
 
 /**
  * Renvoie le total d'inscription par rôle d'un utilisateur.
- * @param int userid : si null, on prend l'id de l'utilisateur courant
- * @return array
+ *
+ * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ *
+ * @return array Un tableau contenant la liste des rôles assignés à un utilisateur.
  */
 function get_count_user_role_assignments($userid = null) {
     global $DB, $USER;
@@ -390,9 +429,11 @@ function get_count_user_role_assignments($userid = null) {
 
 /**
  * Renvoie tous les rôles auxquels un utilisateur peut prétendre.
- * @param int userid : si null, on prend l'id de l'utilisateur courant
- * @param int courseid : si null, on prend tous les rôles possibles
- * @return array
+ *
+ * @param int|null $userid   Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ * @param int|null $courseid Identifiant d'un cours. Si NULL, on prend tous les rôles possibles.
+ *
+ * @return array Un tableau contenant la liste des rôles auxquels un utilisateur peut prétendre.
  */
 function get_potential_user_roles($userid = null, $courseid = null) {
     global $DB, $USER;
@@ -438,6 +479,13 @@ function get_potential_user_roles($userid = null, $courseid = null) {
     return $roles;
 }
 
+/**
+ * Une fonction à documenter (TODO).
+ *
+ * @param bool $manager Témoin indiquant si le mode gestionnaire est activé.
+ *
+ * @return void
+ */
 function get_potential_user_activities($manager = false) {
     global $DB, $USER;
 
@@ -659,6 +707,11 @@ function get_potential_user_activities($manager = false) {
     return $courses;
 }
 
+/**
+ * Une fonction à documenter (TODO).
+ *
+ * @return void
+ */
 function get_potential_user_complements() {
     global $DB, $USER;
 
@@ -697,8 +750,12 @@ function get_potential_user_complements() {
     return $courses;
 }
 
-/*
+/**
  * Retourne les activités pour lesquelles l'utilisateur peut potentiellement se réinscrire.
+ *
+ * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ *
+ * @return array Un tableau contenant la liste des activités pour lesquelles l'utilisateur peut potentiellement se réinscrire.
  */
 function get_user_reenrolments($userid = null) {
     global $DB, $USER;
@@ -728,6 +785,13 @@ function get_user_reenrolments($userid = null) {
     return $DB->get_records_sql($sql, array('userid' => $userid, 'timestart' => $time, 'timeend' => $time));
 }
 
+/**
+ * Une fonction à documenter (TODO).
+ *
+ * @param array $courses Tableau contenant une liste de cours.
+ *
+ * @return void
+ */
 function generate_filters($courses = array()) {
     $filters = array();
 

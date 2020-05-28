@@ -15,18 +15,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Définition du formulaire pour configurer une instance enrol_select d'un cours.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 require_once($CFG->dirroot.'/cohort/lib.php');
 
+/**
+ * Définition du formulaire pour configurer une instance enrol_select d'un cours.
+ *
+ * @package    enrol_select
+ * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class enrol_select_edit_form extends moodleform {
-
+    /**
+     * Définit les champs du formulaire.
+     *
+     * @return void
+     */
     public function definition() {
         global $DB;
 
@@ -179,6 +191,14 @@ class enrol_select_edit_form extends moodleform {
         $this->set_data($instance);
     }
 
+    /**
+     * Valide le formulaire.
+     *
+     * @param array $data  array of ("fieldname"=>value) of submitted data.
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path.
+     *
+     * @return array Un tableau contenant la liste des erreurs.
+     */
     public function validation($data, $files) {
         global $DB, $CFG;
         $errors = parent::validation($data, $files);

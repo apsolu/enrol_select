@@ -23,14 +23,36 @@
  */
 
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
-require_once($CFG->dirroot.'/local/apsolu/locallib.php');
 
+/**
+ * Classe principale du module enrol_select.
+ *
+ * @package    enrol_select
+ * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class enrol_select_plugin extends enrol_plugin {
+    /**
+     * Code du statut accepté.
+     */
     const ACCEPTED = '0';
+
+    /**
+     * Code du statut de la liste principale.
+     */
     const MAIN = '2';
+
+    /**
+     * Code du statut de la liste secondaire.
+     */
     const WAIT = '3';
+
+    /**
+     * Code du statut désinscrit.
+     */
     const DELETED = '4';
 
+    /** @var array Tableau indexé avec les constantes de classe ACCEPTED, MAIN, WAIT et DELETED. */
     public static $states = array(
         self::ACCEPTED => 'accepted',
         self::MAIN => 'main',
@@ -38,6 +60,14 @@ class enrol_select_plugin extends enrol_plugin {
         self::DELETED => 'deleted',
     );
 
+    /**
+     * Retourne la chaine de caractères correspondant à une constante.
+     *
+     * @param int|string  $status Valeur correspondant à une des constantes de classe (ACCEPTED, MAIN, WAIT et DELETED).
+     * @param null|string $type   Valeur pouvant être null, abbr ou short.
+     *
+     * @return string|false Retourne false si le $status n'est pas correct.
+     */
     public static function get_enrolment_list_name($status, $type = null) {
         if ($type !== null ) {
             $type = '_'.$type;
@@ -54,14 +84,21 @@ class enrol_select_plugin extends enrol_plugin {
         return false;
     }
 
+    /**
+     * Returns name of this enrol plugin.
+     *
+     * @return string
+     */
     public function get_name() {
         // Second word in class is always enrol name, sorry, no fancy plugin names with _.
         return 'select';
     }
 
     /**
-     * Returns edit icons for the page with list of instances
+     * Returns edit icons for the page with list of instances.
+     *
      * @param stdClass $instance
+     *
      * @return array
      */
     public function get_action_icons(stdClass $instance) {
@@ -131,7 +168,9 @@ class enrol_select_plugin extends enrol_plugin {
 
     /**
      * Returns link to page which may be used to add new instance of enrolment plugin in course.
+     *
      * @param int $courseid
+     *
      * @return moodle_url page url
      */
     public function get_newinstance_link($courseid) {
@@ -146,6 +185,7 @@ class enrol_select_plugin extends enrol_plugin {
 
     /**
      * Returns defaults for new instances.
+     *
      * @return array
      */
     public function get_instance_defaults() {
@@ -169,6 +209,7 @@ class enrol_select_plugin extends enrol_plugin {
      * Is it possible to hide/show enrol instance via standard UI?
      *
      * @param stdClass $instance
+     *
      * @return bool
      */
     public function can_hide_show_instance($instance) {
@@ -181,6 +222,7 @@ class enrol_select_plugin extends enrol_plugin {
      * Return true if we can add a new instance to this course.
      *
      * @param int $courseid
+     *
      * @return boolean
      */
     public function can_add_instance($courseid) {
@@ -203,6 +245,7 @@ class enrol_select_plugin extends enrol_plugin {
      * Is it possible to delete enrol instance via standard UI?
      *
      * @param object $instance
+     *
      * @return bool
      */
     public function can_delete_instance($instance) {
@@ -210,6 +253,14 @@ class enrol_select_plugin extends enrol_plugin {
         return has_capability('enrol/select:config', $context);
     }
 
+    /**
+     * Retourne les rôles disponibles pour une méthode d'inscription donnée et un contexte.
+     *
+     * @param object $instance Objet de l'instance de la méthode d'inscription
+     * @param object $context  Objet représentant un contexte.
+     *
+     * @return array Retourne un tableau de rôles.
+     */
     public function get_roles($instance, $context) {
         global $DB;
 
@@ -233,6 +284,7 @@ class enrol_select_plugin extends enrol_plugin {
      *
      * @param object $instance Objet de l'instance de la méthode d'inscription
      * @param int    $userid   Identifiant de l'utilisateur. Si il n'est pas fourni, c'est l'identifiant de l'utilisateur courant qui sera utilisé.
+     *
      * @return object|false Retourne un object du rôle ou false si l'utilisateur n'est pas inscrit via cette méthode.
      */
     public function get_user_role($instance, $userid = null) {
@@ -260,6 +312,14 @@ class enrol_select_plugin extends enrol_plugin {
         return current($roles);
     }
 
+    /**
+     * Retourne les rôles disponibles pour un utilisateur et une méthode d'inscription donnée.
+     *
+     * @param object $instance Objet de l'instance de la méthode d'inscription
+     * @param int    $userid   Identifiant de l'utilisateur. Si il n'est pas fourni, c'est l'identifiant de l'utilisateur courant qui sera utilisé.
+     *
+     * @return array Retourne un tableau de rôles.
+     */
     public function get_available_user_roles($instance, $userid = null) {
         global $DB, $USER;
 
@@ -284,7 +344,14 @@ class enrol_select_plugin extends enrol_plugin {
         return role_fix_names($DB->get_records_sql($sql, $params));
     }
 
-
+    /**
+     * Fonction à documenter (TODO).
+     *
+     * @param object      $instance Objet de l'instance de la méthode d'inscription
+     * @param null|object $user     Identifiant de l'utilisateur. Si il n'est pas fourni, c'est l'identifiant de l'utilisateur courant qui sera utilisé.
+     *
+     * @return void.
+     */
     public function set_available_status($instance, $user = null) {
         global $DB;
 
@@ -327,6 +394,13 @@ class enrol_select_plugin extends enrol_plugin {
         }
     }
 
+    /**
+     * Détermine si les inscriptions sont ouvertes.
+     *
+     * @param object $instance Objet de l'instance de la méthode d'inscription
+     *
+     * @return bool Vrai si les inscriptions sont ouvertes.
+     */
     public function is_enrol_period_active($instance) {
         $today = time();
 
@@ -336,6 +410,15 @@ class enrol_select_plugin extends enrol_plugin {
         return ($opening && $closing);
     }
 
+    /**
+     * Détermine si un utilisateur peut s'inscrire à une instance.
+     *
+     * @param object     $instance Objet de l'instance de la méthode d'inscription.
+     * @param object     $user     Objet représentant l'utilisateur.
+     * @param int|string $roleid   Identifiant d'un rôle.
+     *
+     * @return bool Vrai si les inscriptions sont ouvertes.
+     */
     public function can_enrol($instance, $user, $roleid) {
         global $DB;
 
@@ -414,6 +497,15 @@ class enrol_select_plugin extends enrol_plugin {
         return true;
     }
 
+    /**
+     * Détermine si un utilisateur peut se réinscrire.
+     *
+     * @param object          $instance Objet de l'instance de la méthode d'inscription.
+     * @param null|int|string $userid   Identifiant d'un utilisateur.
+     * @param null|int|string $roleid   Identifiant d'un rôle.
+     *
+     * @return bool Vrai si les inscriptions sont ouvertes.
+     */
     public function can_reenrol($instance, $userid = null, $roleid = null) {
         global $DB, $USER;
 
@@ -481,6 +573,19 @@ class enrol_select_plugin extends enrol_plugin {
         return true;
     }
 
+    /**
+     * Méthode permettant l'inscription d'un utilisateur à une instance.
+     *
+     * @param stdClass        $instance      Objet de l'instance de la méthode d'inscription.
+     * @param int|string      $userid        Identifiant d'un utilisateur.
+     * @param null|int|string $roleid        Identifiant d'un rôle.
+     * @param int|string      $timestart     Timestamp de début de cours.
+     * @param int|string      $timeend       Timestamp de fin de cours.
+     * @param null|int|string $status        État de l'inscription (accepté, liste principale, liste secondaire, supprimé).
+     * @param null|bool       $recovergrades Récupérer les notes ?
+     *
+     * @return void.
+     */
     public function enrol_user(stdClass $instance, $userid, $roleid = null, $timestart = 0, $timeend = 0, $status = null, $recovergrades = null) {
         global $CFG, $DB;
 
@@ -527,6 +632,14 @@ class enrol_select_plugin extends enrol_plugin {
         }
     }
 
+    /**
+     * Méthode permettant de déinscrire un utilisateur d'une instance.
+     *
+     * @param stdClass   $instance      Objet de l'instance de la méthode d'inscription.
+     * @param int|string $userid        Identifiant d'un utilisateur.
+     *
+     * @return void.
+     */
     public function unenrol_user(stdClass $instance, $userid) {
         global $CFG;
 
@@ -538,6 +651,14 @@ class enrol_select_plugin extends enrol_plugin {
         }
     }
 
+    /**
+     * Réorganise la liste d'inscription principale.
+     *
+     * @param stdClass   $instance      Objet de l'instance de la méthode d'inscription.
+     * @param int|string $userid        Identifiant d'un utilisateur.
+     *
+     * @return void.
+     */
     public function refill_main_list(stdClass $instance, $userid) {
         global $DB, $USER;
 
@@ -572,7 +693,7 @@ class enrol_select_plugin extends enrol_plugin {
         $course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
 
         $promote = $instance->customint1 - $count_main;
-        $waiting_users = $DB->get_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::WAIT), $sort='timecreated DESC');
+        $waiting_users = $DB->get_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::WAIT), $sort = 'timecreated DESC');
         foreach ($waiting_users as $user) {
             $user->status = self::MAIN;
             $DB->update_record('user_enrolments', $user);

@@ -1,3 +1,52 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template enrol_select/overview_enrolments
+
+    Template Moodle pour afficher le bloc des inscriptions en cours sur la page d'inscriptions.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * wwwroot Correspond à la valeur de la variable Moodle $CFG->wwwroot.
+    * count_complement_enrolments
+    * complement_enrolments
+        * enrolid
+        * fullname
+    * count_activity_enrolments
+    * activity_enrolments
+        * is_enrol_period_active
+        * enrolid
+        * fullname
+        * role
+
+    Example context (json):
+    {
+        "wwwroot": "https://apsolu.fr",
+        "count_complement_enrolments": "0",
+        "complement_enrolments": [],
+        "count_activity_enrolments": "0",
+        "activity_enrolments": []
+    }
+}}
 <div id="apsolu-select-enrolments-ajax">
 
 	{{^count_activity_enrolments}}

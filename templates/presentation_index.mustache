@@ -1,3 +1,90 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template enrol_select/presentation_index
+
+    Template Moodle pour la page de présentation de l'offre de formations.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * is_siuaps_rennes
+    * selected_site
+    * sites_single
+    * wwwroot
+    * sites
+        * active
+        * id
+        * name
+    * filters
+        * name
+        * label
+        * html
+    * courses
+        * name
+        * modal
+            * id
+            * name
+            * url
+            * description
+        * courses
+            * sport
+            * generic_name
+            * weekday
+            * starttime
+            * endtime
+            * area
+            * location
+            * skill
+            * event
+            * roles
+                * name
+                * shortname
+            * teachers
+                * firstname
+                * lastname
+
+    Example context (json):
+    {
+        "is_siuaps_rennes": false,
+        "selected_site": true,
+        "sites_single": true,
+        "wwwroot": "https://apsolu.fr",
+        "sites": [
+            {
+                "active": true,
+                "id": 1,
+                "name": "Rennes"
+            }
+        ],
+        "filters": [
+            {
+                "name": "activity",
+                "label": "Par activités",
+                "html": "<input id=\"activity\" name=\"activity\" />"
+            }
+        ],
+        "courses": []
+    }
+}}
 <div id="apsolu-enrol-select-presentation">
 
   <div id="apsolu-enrol-select-presentation-courses-list2" class="table-unresponsive">

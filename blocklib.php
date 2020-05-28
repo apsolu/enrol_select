@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Fonctions pour le module enrol_select.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -22,6 +24,11 @@
 
 namespace UniversiteRennes2\Apsolu;
 
+/**
+ * Retourne le rendu HTML du bloc comptant le nombre de choix restant sur la page des inscriptions.
+ *
+ * @return string Retourne le rendu HTML du bloc.
+ */
 function get_remaining_choices_block() {
     global $OUTPUT;
 
@@ -105,6 +112,11 @@ function get_remaining_choices_block() {
     return $block;
 }
 
+/**
+ * Retourne le rendu HTML du bloc affichant les inscriptions de l'étudiant sur la page des inscriptions.
+ *
+ * @return string Retourne le rendu HTML du bloc.
+ */
 function get_enrolments_block() {
     global $DB, $CFG, $OUTPUT;
 
@@ -145,6 +157,13 @@ function get_enrolments_block() {
     return $block;
 }
 
+/**
+ * Retourne le rendu HTML du bloc permettant de filter les activités sur la page des inscriptions.
+ *
+ * @param array $courses Liste des cours affichés sur la page des inscriptions.
+ *
+ * @return string Retourne le rendu HTML du bloc.
+ */
 function get_filters_block($courses) {
     global $CFG, $OUTPUT;
 

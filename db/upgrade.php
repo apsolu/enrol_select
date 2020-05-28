@@ -21,9 +21,16 @@
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Upgrade procedure.
+ *
+ * @throws moodle_exception If something goes wrong.
+ *
+ * @param int $oldversion Numéro courant de la version du plugin installé.
+ *
+ * @return true If success.
  */
 function xmldb_enrol_select_upgrade($oldversion = 0) {
     global $DB;

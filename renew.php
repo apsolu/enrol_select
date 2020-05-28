@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Adds new instance of enrol_select to specified course
- * or edits current instance.
+ * Page gérant le renouvellement des inscriptions.
  *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
@@ -63,7 +62,7 @@ foreach ($calendars as $calendar) {
         continue;
     }
 
-    if ($calendar->reenrolstartdate <= $time && $calendar->reenrolenddate  >= $time) {
+    if ($calendar->reenrolstartdate <= $time && $calendar->reenrolenddate >= $time) {
         $open = true;
 
         // Détermine la prochaine phase d'inscription.

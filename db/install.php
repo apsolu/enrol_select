@@ -15,15 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * post installation hook for adding data.
+ * Post installation hook for adding data.
  *
- * @package    mod_attendance
- * @copyright  2011 Artem Andreev <andreev.artem@gmail.com>
+ * @package    enrol_select
+ * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
  * Post installation procedure
+ *
+ * @return void
  */
 function xmldb_enrol_select_install() {
     global $DB;
