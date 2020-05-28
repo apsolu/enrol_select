@@ -30,9 +30,6 @@ $string['pluginname'] = 'Inscription par voeux';
 $string['pluginname_desc'] = 'Le plugin d\'inscription par voeux permet aux utilisateurs de choisir les cours qu\'ils veulent suivre. Les cours peuvent être protégés par différents critères (période d\'inscription, taille de la liste principale, cohortes, etc).';
 $string['reenrolment_disabled'] = 'Réinscription désactivée';
 
-// Présentation.
-$string['slots_of_service'] = 'Les créneaux du SIUAPS';
-
 // Permissions.
 $string['select:config'] = 'Configurer les instances d\''.strtolower($string['pluginname']);
 $string['select:enrol'] = 'Inscrire des utilisateurs';

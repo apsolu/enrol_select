@@ -1,71 +1,35 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use UniversiteRennes2\Apsolu;
+/**
+ * Redirige la page vers la nouvelle adresse.
+ *
+ * @package    enrol_select
+ * @copyright  2020 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require __DIR__.'/../../../config.php';
-require_once($CFG->dirroot.'/enrol/select/locallib.php');
 
-$activityid = optional_param('id', 0, PARAM_INT);
-$activityname = optional_param('name', '', PARAM_TAG);
+$id = optional_param('id', null, PARAM_INT);
 
-if (empty($activityid) === true && empty($activityname) === true) {
-    print_error('invalidrecordunknown');
+$redirection = $CFG->wwwroot.'/local/apsolu/presentation/activity.php';
+if ($id !== null) {
+    $redirection .= '?id='.$id;
 }
 
-$activities = UniversiteRennes2\Apsolu\get_activities($siteid = 0, $activityid, $activityname);
-
-if (count($activities) === 0) {
-    print_error('invalidrecordunknown');
-}
-
-$PAGE->set_url('/enrol/select/presentation/activity.php');
-
-$title = current($activities)->sport;
-
-$PAGE->set_context(context_system::instance());
-$PAGE->set_title($title);
-// $PAGE->set_heading($SITE->fullname);
-$PAGE->navbar->add(get_string('slots_of_service', 'enrol_select'), new moodle_url('/enrol/select/presentation/index.php'));
-$PAGE->navbar->add($title);
-
-echo $OUTPUT->header();
-echo $OUTPUT->heading($title);
-
-$roles = UniversiteRennes2\Apsolu\get_activities_roles();
-$teachers = UniversiteRennes2\Apsolu\get_activities_teachers();
-
-// category, site, activity, period, jour, start, end, level, zone geo, zone, enroltype, enseignant
-$courses = array();
-foreach ($activities as $activity) {
-    if (isset($courses[$activity->sport]) === false) {
-        $courses[$activity->sport] = new \stdClass();
-        $courses[$activity->sport]->name = $activity->sport;
-        $courses[$activity->sport]->url = $activity->url;
-        $courses[$activity->sport]->description = $activity->description;
-        $courses[$activity->sport]->courses = array();
-    }
-
-    $activity->weekday = get_string($activity->weekday, 'calendar');
-
-    $activity->roles = array();
-    if (isset($roles[$activity->id]) === true) {
-        $activity->roles = array_values($roles[$activity->id]);
-    }
-
-    $activity->teachers = array();
-    if (isset($teachers[$activity->id]) === true) {
-        $activity->teachers = array_values($teachers[$activity->id]);
-    }
-
-    $activity->area = $activity->site.' - '.$activity->area;
-
-    $courses[$activity->sport]->courses[] = $activity;
-}
-
-ksort($courses);
-$courses = array_values($courses);
-
-$data = array('courses' => $courses);
-echo $OUTPUT->render_from_template('enrol_select/presentation_activity', $data);
-
-echo $OUTPUT->footer();
+header('Location: '.$redirection, $repalce = true, $http_response_code = 301);
+exit();
