@@ -4,6 +4,40 @@ define(['jquery'], function($) {
             // Ajoute une div pour accueil les différents formulaires en overlay...
             $('body').append('<div id="apsolu-enrol-form"></div>');
 
+            // Permet de déplier/replier la liste des activités.
+            var tooglebutton = document.getElementById('apsolu-toggle-activities');
+            if (tooglebutton) {
+                tooglebutton.addEventListener('click', function(evt) {
+                    var i = 0;
+                    var display = '';
+                    var action = evt.currentTarget.getAttribute('data-action');
+                    switch (action) {
+                        case 'show':
+                            display = 'table-row';
+                            action = 'hide';
+                            break;
+                        case 'hide':
+                            display = 'none';
+                            action = 'show';
+                    }
+
+                    // Affiche ou masque toutes les lignes du tableau des activités.
+                    var rows = document.querySelectorAll('#apsolu-activities-table tbody tr');
+                    for (i = 0; i < rows.length; i++) {
+                        rows[i].style.display = display;
+                    }
+
+                    // Affiche toujours les lignes contenant le nom des activités.
+                    rows = document.getElementsByClassName('apsolu-sports-tr');
+                    for (i = 0; i < rows.length; i++) {
+                        rows[i].style.display = 'table-row';
+                    }
+
+                    // Renseigne l'action à réaliser lors du prochain appel.
+                    evt.currentTarget.setAttribute('data-action', action);
+                });
+            }
+
             // Lorsqu'on clique sur le lien "s'inscrire/modifier"...
             $('.apsolu-enrol-a').click(function(event) {
                 event.preventDefault();
