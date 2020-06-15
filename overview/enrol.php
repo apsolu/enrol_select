@@ -37,6 +37,24 @@ require_once($CFG->dirroot.'/local/apsolu/locallib.php');
 // Get params.
 $enrolid = required_param('enrolid', PARAM_INT);
 $edit = optional_param('editenrol', null, PARAM_TEXT);
+$filtertime = null;
+$filtercohorts = null;
+
+$capabilities = array(
+    'moodle/category:manage',
+    'moodle/course:create',
+);
+
+if (has_any_capability($capabilities, context_system::instance()) === true) {
+    $filtertime = optional_param('time', null, PARAM_INT);
+    $filtercohorts = optional_param('cohorts', '', PARAM_TEXT);
+
+    $filtercohorts = explode(',', $filtercohorts);
+    if (count($filtercohorts) === 0) {
+        $filtertime = null;
+        $filtercohorts = null;
+    }
+}
 
 require_login();
 
@@ -115,7 +133,26 @@ if ($complement !== false) {
         }
 
         $enrolselectplugin = new enrol_select_plugin(); // TODO: factoriser, et ne déclarer qu'une seule fois cette variable.
-        $availableuserroles = $enrolselectplugin->get_available_user_roles($enrol, $USER->id);
+        if (isset($filtertime, $filtercohorts) === false) {
+            // Pour un étudiant.
+            $availableuserroles = $enrolselectplugin->get_available_user_roles($enrol, $USER->id);
+
+        } else {
+            // Pour un gestionnaire qui utiliserait les filtres.
+            $sql = "SELECT DISTINCT r.*".
+                " FROM {role} r".
+                " JOIN {apsolu_colleges} ac ON r.id = ac.roleid".
+                " JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid".
+                " WHERE acm.cohortid IN (".substr(str_repeat('?,', count($filtercohorts)), 0, -1).")";
+            $availableuserroles = role_fix_names($DB->get_records_sql($sql, $filtercohorts));
+
+            // Collèges.
+            $unavailableuserroles = apsolu\get_custom_student_roles();
+            foreach ($availableuserroles as $role) {
+                unset($unavailableuserroles[$role->id]);
+            }
+        }
+
         $courseroles = $DB->get_records('enrol_select_roles', array('enrolid' => $enrol->id), '', 'roleid');
         $roles = array();
         foreach ($availableuserroles as $roleid => $rolename) {

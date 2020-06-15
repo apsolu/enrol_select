@@ -60,13 +60,13 @@
                     <tr{{#enroled}} class="info"{{/enroled}} >
                         <td class="text-center">
                             {{#enroled}}
-                            <a class="apsolu-enrol-a apsolu-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">
+                            <a class="apsolu-enrol-a apsolu-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}{{filters}}">
                                 {{#pix}}i/completion-manual-y,core,{{#quote}}{{#str}}edit{{/str}}{{/quote}}{{/pix}}
                             </a>
                             {{/enroled}}
                             {{^enroled}}
                                 {{#allow_enrolment}}
-                                    <a class="apsolu-enrol-a apsolu-not-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">
+                                    <a class="apsolu-enrol-a apsolu-not-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}{{filters}}">
                                         {{#pix}}i/completion-manual-n,core,{{#quote}}{{#str}}enrol,enrol_select{{/str}}{{/quote}}{{/pix}}
                                     </a>
                                 {{/allow_enrolment}}
@@ -119,8 +119,4 @@
         <p class="text-right"><a class="btn btn-primary" href="{{www_url}}/my/">{{#str}}back_to_dashboard, enrol_select{{/str}}</a></p>
     </div>
     {{/count_activities}}
-
-    {{#is_courses_creator}}
-        <p class="text-right"><a class="btn btn-warning" href="{{www_url}}/enrol/select/overview_managers.php">{{#str}}overview_manager_link, enrol_select{{/str}}</a></p>
-    {{/is_courses_creator}}
 </div>

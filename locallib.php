@@ -438,31 +438,51 @@ function get_potential_user_roles($userid = null, $courseid = null) {
     return $roles;
 }
 
-function get_potential_user_activities($manager = false) {
+function get_potential_user_activities($time = null, $cohorts = null) {
     global $DB, $USER;
 
     $groupings = get_visible_activities_domains();
     $categories = get_visible_sports();
-    $availableuserroles = get_potential_user_roles();
     $skills = $DB->get_records('apsolu_skills');
     $locations = $DB->get_records('apsolu_locations');
     $areas = $DB->get_records('apsolu_areas');
     $cities = $DB->get_records('apsolu_cities');
-    $usercolleges = get_user_colleges($userid = null, $count = true);
     $useractivityenrolments = get_user_activity_enrolments();
+    $roles = get_custom_student_roles();
 
-    $unavailableuserroles = array();
-    foreach ($usercolleges as $college) {
-        if ($college->maxwish > 0 && $college->count >= $college->maxwish) {
-            $unavailableuserroles[$college->roleid] = $college->roleid;
+    if ($cohorts === null) {
+        // Pour un étudiant.
+        $availableuserroles = get_potential_user_roles();
+        $usercolleges = get_user_colleges($userid = null, $count = true);
+
+        $unavailableuserroles = array();
+        foreach ($usercolleges as $college) {
+            if ($college->maxwish > 0 && $college->count >= $college->maxwish) {
+                $unavailableuserroles[$college->roleid] = $college->roleid;
+            }
+        }
+    } else {
+        // Lorsqu'on utilise les filtres pour gestionnaires, on prend tous les rôles.
+        $sql = "SELECT DISTINCT r.*".
+            " FROM {role} r".
+            " JOIN {apsolu_colleges} ac ON r.id = ac.roleid".
+            " JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid".
+            " WHERE acm.cohortid IN (".substr(str_repeat('?,', count($cohorts)), 0, -1).")";
+        $availableuserroles = role_fix_names($DB->get_records_sql($sql, $cohorts));
+
+        // Collèges.
+        $unavailableuserroles = $roles;
+        foreach ($availableuserroles as $role) {
+            unset($unavailableuserroles[$role->id]);
         }
     }
 
     $currentactivity = null;
 
-    $now = time();
-
-    $roles = get_custom_student_roles();
+    $now = $time;
+    if ($now === null) {
+        $now = time();
+    }
 
     // Récupère toutes les activités.
     $sql = "SELECT DISTINCT c.*, ac.*, cc.id AS sportid, cc.description, grp.id AS groupingid".
@@ -483,13 +503,22 @@ function get_potential_user_activities($manager = false) {
         " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid".
         " WHERE e.enrol = 'select'".
         " AND e.status = 0".
-        " AND (e.enrolstartdate = 0 OR e.enrolstartdate < ?)".
-        " AND (e.enrolenddate = 0 OR e.enrolenddate > ?)";
-    $params = array($now, $now);
+        " AND (e.enrolstartdate = 0 OR e.enrolstartdate < :enrolstartdate)".
+        " AND (e.enrolenddate = 0 OR e.enrolenddate > :enrolenddate)";
+    $params = array('enrolstartdate' => $now, 'enrolenddate' => $now);
 
-    if ($manager === false) {
-        $sql .= " AND cm.userid = ?";
-        $params[] = $USER->id;
+    if ($cohorts === null) {
+        $sql .= " AND cm.userid = :userid";
+        $params['userid'] = $USER->id;
+    } else {
+        $insql = array();
+        foreach ($cohorts as $index => $cohortid) {
+            $insql[] = ":cohort".$index;
+            $params['cohort'.$index] = $cohortid;
+        }
+
+        $sql .= ' AND ewc.cohortid IN ('.implode(',', $insql).')';
+        $sql = str_replace('JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid', '', $sql);
     }
 
     $enrols = $DB->get_records_sql($sql, $params);
@@ -521,7 +550,7 @@ function get_potential_user_activities($manager = false) {
         }
 
         // Il y a trop de méthodes !
-        if (isset($courses[$courseid]->enrols[1]) && $manager === false) {
+        if (isset($courses[$courseid]->enrols[1])) {
             debugging(get_string('debug_enrol_too_many_enrolments', 'enrol_select', (object) ['courseid' => $courseid, 'userid' => $USER->id]));
             unset($courses[$courseid]);
             continue;
@@ -622,7 +651,7 @@ function get_potential_user_activities($manager = false) {
                 $availableuserrolescopy = $availableuserroles;
                 foreach ($availableuserroles as $roleid => $rolename) {
                     if (!isset($course->role_options[$roleid])) {
-                        // L'utilisateur peut s'inscrire à un type d'inscription qui n'est pas proposé dans ce cours.
+                        // Le cours ne propose pas ce rôle. L'utilisateur ne peut pas choisir ce rôle.
                         unset($availableuserrolescopy[$roleid]);
                     } else if (isset($unavailableuserroles[$roleid])) {
                         // L'utilisateur a déjà atteint le quota pour ce type d'inscription.

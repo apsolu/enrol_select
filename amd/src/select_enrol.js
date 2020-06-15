@@ -5,25 +5,23 @@ define(['jquery'], function($) {
             $('body').append('<div id="apsolu-enrol-form"></div>');
 
             // Lorsqu'on clique sur le lien "s'inscrire/modifier"...
-            $('.apsolu-enrol-a').click(function(event){
+            $('.apsolu-enrol-a').click(function(event) {
                 event.preventDefault();
 
-                // console.log('call popup');
-
-                var enrolid = $(this).data('enrolid');
+                var requesturl = $(this).attr('href');
+                requesturl = requesturl.replace('/enrol/select/overview/enrol.php', '/enrol/select/ajax/enrol.php');
 
                 // Affiche le formulaire.
-                ajax = $.ajax({
-                    url: wwwroot+"/enrol/select/ajax/enrol.php",
+                $.ajax({
+                    url: requesturl,
                     type: 'GET',
-                    data: {enrolid: enrolid},
                     dataType: 'html'
                 })
-                .done(function(result){
+                .done(function(result) {
                     try {
                         var error = $.parseJSON(result);
-                        $('#apsolu-enrol-form').html('<div class="alert alert-danger"><p>'+error.error+'</p></div>');
-                    } catch(e) {
+                        $('#apsolu-enrol-form').html('<div class="alert alert-danger"><p>' + error.error + '</p></div>');
+                    } catch (e) {
                         $('#apsolu-enrol-form').html(result);
                     }
                 })/*

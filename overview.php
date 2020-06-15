@@ -46,9 +46,36 @@ $PAGE->set_title(get_string('pluginname', 'enrol_select'));
 
 $select = enrol_get_plugin('select');
 
+$capabilities = array(
+    'moodle/category:manage',
+    'moodle/course:create',
+);
+
+$time = null;
+$cohorts = null;
+$managersfilters = '';
+if (has_any_capability($capabilities, context_system::instance()) === true) {
+    require_once(__DIR__.'/overview_managers_filters_form.php');
+
+    $mform = new overview_managers_filters_form();
+    if ($data = $mform->get_data()) {
+        $time = $data->now;
+        $cohorts = $data->cohorts;
+
+        if (count($cohorts) === 0) {
+            $time = null;
+            $cohorts = null;
+        }
+    }
+
+    $managersfiltersdata = new stdClass();
+    $managersfiltersdata->form = $mform->render();
+    $managersfilters = $OUTPUT->render_from_template('enrol_select/overview_manager_filters', $managersfiltersdata);
+}
+
 // Activities : get all visible courses for current user.
 ob_start();
-$courses = apsolu\get_potential_user_activities();
+$courses = apsolu\get_potential_user_activities($time, $cohorts);
 $debugging = ob_get_clean();
 
 $overviewactivitiesdata = (object) array('activities' => array(), 'count_activities' => 0);
@@ -75,6 +102,10 @@ $overviewactivitiesdata->info_pix_url = $OUTPUT->image_url('i/info');
 $overviewactivitiesdata->marker_pix_url = $OUTPUT->image_url('a/marker', 'enrol_select');
 $overviewactivitiesdata->www_url = $CFG->wwwroot;
 $overviewactivitiesdata->is_courses_creator = has_capability('moodle/course:create', context_system::instance());
+$overviewactivitiesdata->filters = '';
+if (isset($time, $cohorts) === true) {
+    $overviewactivitiesdata->filters = '&time='.$time.'&cohorts='.implode(',', $cohorts);
+}
 
 // Complements : get all visible complement courses for current user.
 $overviewcomplementsdata = new stdClass();
@@ -108,7 +139,7 @@ $PAGE->requires->js_call_amd('enrol_select/select_enrol', 'initialise', array('u
 $PAGE->navbar->add(get_string('enrolment', 'enrol_select'));
 
 echo $OUTPUT->header();
-
+echo $managersfilters;
 if (isset($CFG->is_siuaps_rennes) === true) {
     echo $OUTPUT->render_from_template('enrol_select/overview_complements', $overviewcomplementsdata);
 }

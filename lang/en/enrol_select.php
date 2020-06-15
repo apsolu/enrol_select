@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['filters_for_managers'] = 'Filtres pour gestionnaires';
 $string['no_available_cohorts'] = 'Aucune cohorte disponible';
 $string['no_available_enrol_methods_desc'] = 'Pour utiliser cette fonctionnalité, une deuxième méthode d\'inscription par voeux est nécessaire dans ce cours.';
 $string['no_available_prices'] = 'Aucun tarif défini';
@@ -73,7 +74,6 @@ $string['free_places'] = 'Places disponibles';
 $string['overviewtitle'] = 'Inscription aux activités';
 $string['overviewtitlemanager'] = 'Inscription aux activités (vue gestionnaire)';
 $string['back_to_dashboard'] = 'Revenir à mon tableau de bord';
-$string['overview_manager_link'] = 'Voir la liste des cours en tant que gestionnaire';
 
 // Bloc filtres.
 $string['filters'] = 'Filtres';
