@@ -524,7 +524,7 @@ function get_potential_user_activities($time = null, $cohorts = null) {
     $enrols = $DB->get_records_sql($sql, $params);
     foreach ($enrols as $enrol) {
         if (!isset($courses[$enrol->courseid])) {
-            debugging(get_string('debug_enrol_invalid_enrolment', 'enrol_select', (object) ['courseid' => $enrol->courseid, 'enrolid' => $enrol->id]));
+            debugging(get_string('debug_enrol_invalid_enrolment', 'enrol_select', (object) ['courseid' => $enrol->courseid, 'enrolid' => $enrol->id]), $level = DEBUG_DEVELOPER);
             continue;
         }
 
@@ -537,21 +537,21 @@ function get_potential_user_activities($time = null, $cohorts = null) {
 
     foreach ($courses as $courseid => $course) {
         if (!isset($categories[$course->category])) {
-            debugging(get_string('debug_enrol_invalid_category', 'enrol_select', (object) ['courseid' => $course->id, 'categoryid' => $course->category]));
+            debugging(get_string('debug_enrol_invalid_category', 'enrol_select', (object) ['courseid' => $course->id, 'categoryid' => $course->category]), $level = DEBUG_DEVELOPER);
             unset($courses[$courseid]);
             continue;
         }
 
         // L'utilisateur ne semble pas avoir le droit de s'inscrire à ce cours.
         if (!isset($courses[$courseid]->enrols)) {
-            debugging(get_string('debug_enrol_no_enrolments', 'enrol_select', (object) ['courseid' => $course->id, 'userid' => $USER->id]));
+            debugging(get_string('debug_enrol_no_enrolments', 'enrol_select', (object) ['courseid' => $course->id, 'userid' => $USER->id]), $level = DEBUG_DEVELOPER);
             unset($courses[$courseid]);
             continue;
         }
 
         // Il y a trop de méthodes !
         if (isset($courses[$courseid]->enrols[1])) {
-            debugging(get_string('debug_enrol_too_many_enrolments', 'enrol_select', (object) ['courseid' => $courseid, 'userid' => $USER->id]));
+            debugging(get_string('debug_enrol_too_many_enrolments', 'enrol_select', (object) ['courseid' => $courseid, 'userid' => $USER->id]), $level = DEBUG_DEVELOPER);
             unset($courses[$courseid]);
             continue;
         }
@@ -635,7 +635,7 @@ function get_potential_user_activities($time = null, $cohorts = null) {
         }
 
         if ($course->role_options === array()) {
-            debugging('Course #'.$course->id.': no role for enrol #'.$enrol->id);
+            debugging('Course #'.$course->id.': no role for enrol #'.$enrol->id, $level = DEBUG_DEVELOPER);
             unset($courses[$courseid]);
             continue;
         } else {

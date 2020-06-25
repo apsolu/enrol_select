@@ -198,7 +198,7 @@ $enrolments_count = 0;
 foreach (apsolu\get_user_reenrolments() as $enrolment) {
     if ($enrolment->status !== enrol_select_plugin::ACCEPTED) {
         // On ne conserve que les inscriptions validées.
-        debugging('L\'inscription d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'est pas validée (status: '.$enrolment->status.').');
+        debugging('L\'inscription d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'est pas validée (status: '.$enrolment->status.').', $level = DEBUG_DEVELOPER);
         continue;
     }
 
@@ -206,13 +206,13 @@ foreach (apsolu\get_user_reenrolments() as $enrolment) {
 
     if ($enrol === false) {
         // L'instance d'inscription n'existe pas.
-        debugging('L\'instance d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'existe pas.');
+        debugging('L\'instance d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'existe pas.', $level = DEBUG_DEVELOPER);
         continue;
     }
 
     if ($select->can_reenrol($enrol) === false) {
         // L'utilisateur n'est pas autorisé à se réinscrire.
-        debugging('L\'utilisateur #'.$USER->id.' n\'est pas autorisé à se réinscrire via l\'instance #'.$enrolment->enrolid.' du cours #'.$enrolment->id.'.');
+        debugging('L\'utilisateur #'.$USER->id.' n\'est pas autorisé à se réinscrire via l\'instance #'.$enrolment->enrolid.' du cours #'.$enrolment->id.'.', $level = DEBUG_DEVELOPER);
         continue;
     }
 
@@ -220,7 +220,7 @@ foreach (apsolu\get_user_reenrolments() as $enrolment) {
 
     if ($targetenrol === false) {
         // L'instance de réinscription n'existe pas.
-        debugging('L\'instance de réinscription #'.$targetenrol->id.' du cours #'.$enrolment->id.' n\'existe pas.');
+        debugging('L\'instance de réinscription #'.$targetenrol->id.' du cours #'.$enrolment->id.' n\'existe pas.', $level = DEBUG_DEVELOPER);
         continue;
     }
 
@@ -253,7 +253,7 @@ foreach (apsolu\get_user_reenrolments() as $enrolment) {
 
     if ($roles === array()) {
         // L'utilisateur ne peut pas s'incrire (problème de cohortes ou de rôles).
-        debugging('L\'utilisateur #'.$USER->id.' ne peut pas s\'inscrire (problème de cohortes ou de rôles).');
+        debugging('L\'utilisateur #'.$USER->id.' ne peut pas s\'inscrire (problème de cohortes ou de rôles).', $level = DEBUG_DEVELOPER);
         continue;
     }
 
