@@ -1,0 +1,138 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template enrol_select/administration_overview
+
+    Template Moodle pour afficher la vue d'ensemble des méthodes d'inscription par créneaux horaires.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * wwwroot
+    * count_courses
+    * courses
+        * fullname
+        * count_enrols
+        * enrols
+            * name
+            * count_accepted_list
+            * count_main_list
+            * count_wait_list
+            * count_deleted_list
+
+    Example context (json):
+    {
+        "wwwroot": "",
+        "count_courses": 0,
+        "courses": []
+    }
+}}
+{{^count_courses}}
+<p class="alert alert-info">{{#str}}no_course, local_apsolu{{/str}}
+{{/count_courses}}
+
+{{#count_courses}}
+<table class="table table-bordered" id="table-enrolments-overview">
+<thead>
+    <tr>
+        <th rowspan="2">{{#str}}courses, local_apsolu{{/str}}</th>
+        <th rowspan="2">{{#str}}enrolname, enrol_select{{/str}}</th>
+        <th rowspan="2">{{#str}}calendars, local_apsolu{{/str}}</th>
+        <th rowspan="2">{{#str}}enrolstartdate, enrol_select{{/str}}</th>
+        <th rowspan="2">{{#str}}enrolenddate, enrol_select{{/str}}</th>
+        <th class="text-center" colspan="4">{{#str}}lists, enrol_select{{/str}}</th>
+    </tr>
+    <tr>
+        <th><abbr title="{{#str}}accepted_list, enrol_select{{/str}}">{{#str}}accepted_list_abbr, enrol_select{{/str}}</abbr></th>
+        <th><abbr title="{{#str}}main_list, enrol_select{{/str}}">{{#str}}main_list_abbr, enrol_select{{/str}}</abbr></th>
+        <th><abbr title="{{#str}}wait_list, enrol_select{{/str}}">{{#str}}wait_list_abbr, enrol_select{{/str}}</abbr></th>
+        <th><abbr title="{{#str}}deleted_list, enrol_select{{/str}}">{{#str}}deleted_list_abbr, enrol_select{{/str}}</abbr></th>
+    </tr>
+</thead>
+<tbody>
+{{#courses}}
+    <tr data-anomalies="{{anomalies}}">
+        {{^count_enrols}}
+        <td rowspan="1">{{fullname}}</td>
+        <td colspan="8" class="table-active text-center">{{#str}}no_enrols, local_apsolu{{/str}}</td>
+        {{/count_enrols}}
+
+        {{#count_enrols}}
+        {{! Colonne nom du cours. }}
+        <td rowspan="{{count_enrols}}">{{fullname}}</td>
+        {{#enrols}}
+
+        {{! Colonne nom de l'instance. }}
+        <td><a href="{{wwwroot}}/enrol/select/edit.php?courseid={{courseid}}&amp;id={{id}}">{{name}}</a></td>
+
+        {{! Colonne calendrier. }}
+        {{^calendar}}
+        <td class="table-danger">{{#pix}}i/risk_xss, core{{/pix}}{{#str}}no_calendar, local_apsolu{{/str}}</td>
+        {{/calendar}}
+        {{#calendar}}
+        <td>{{calendar}}</td>
+        {{/calendar}}
+
+        {{! Colonne date d'ouverture des inscriptions. }}
+        {{^invalid_enrolstartdate}}
+        <td>{{#userdate}}{{enrolstartdate}}, {{#str}}strftimedatetimeshort{{/str}}{{/userdate}}</td>
+        {{/invalid_enrolstartdate}}
+        {{#invalid_enrolstartdate}}
+        <td class="table-warning">
+            {{#pix}}i/risk_xss, core, {{#str}}date_diverging_from_calendar_date, enrol_select{{/str}}{{/pix}} {{#userdate}}{{enrolstartdate}}, {{#str}}strftimedatetimeshort{{/str}}{{/userdate}}
+        </td>
+        {{/invalid_enrolstartdate}}
+
+        {{! Colonne date de fermeture des inscriptions. }}
+        {{^invalid_enrolenddate}}
+        <td>{{#userdate}}{{enrolenddate}}, {{#str}}strftimedatetimeshort{{/str}}{{/userdate}}</td>
+        {{/invalid_enrolenddate}}
+        {{#invalid_enrolenddate}}
+        <td class="table-warning">
+            {{#pix}}i/risk_xss, core, {{#str}}date_diverging_from_calendar_date, enrol_select{{/str}}{{/pix}} {{#userdate}}{{enrolenddate}}, {{#str}}strftimedatetimeshort{{/str}}{{/userdate}}
+        </td>
+        {{/invalid_enrolenddate}}
+
+        {{! Colonne des inscrits acceptés. }}
+        <td>{{count_accepted_list}}</td>
+
+        {{! Colonne des inscrits sur LP/LC. }}
+        {{^quota}}
+        <td class="table-info">{{#pix}}i/risk_xss, core, {{#str}}no_quotas, enrol_select{{/str}}{{/pix}}{{count_main_list}}</td>
+        <td class="table-info">{{#pix}}i/risk_xss, core, {{#str}}no_quotas, enrol_select{{/str}}{{/pix}}{{count_wait_list}}</td>
+        {{/quota}}
+        {{#quota}}
+        <td>{{count_main_list}}/{{customint1}}</td>
+        <td>{{count_wait_list}}/{{customint2}}</td>
+        {{/quota}}
+
+        {{! Colonne des inscrits refusés. }}
+        <td>{{count_deleted_list}}</td>
+
+        </tr>
+        <tr data-anomalies="{{anomalies}}">
+        {{/enrols}}
+        {{/count_enrols}}
+    </tr>
+{{/courses}}
+</tbody>
+</table>
+{{/count_courses}}

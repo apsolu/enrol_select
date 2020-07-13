@@ -22,11 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['date_diverging_from_calendar_date'] = 'Date divergente par rapport à la date du calendrier';
 $string['filters_for_managers'] = 'Filtres pour gestionnaires';
+$string['list'] = 'Liste';
+$string['lists'] = 'Listes';
 $string['no_available_cohorts'] = 'Aucune cohorte disponible';
 $string['no_available_enrol_methods_desc'] = 'Pour utiliser cette fonctionnalité, une deuxième méthode d\'inscription par voeux est nécessaire dans ce cours.';
 $string['no_available_prices'] = 'Aucun tarif défini';
 $string['no_available_roles'] = 'Aucun rôle disponible';
+$string['no_quotas'] = 'Aucun quota';
+$string['overview'] = 'Vue d\'ensemble';
 $string['pluginname'] = 'Inscription par voeux';
 $string['pluginname_desc'] = 'Le plugin d\'inscription par voeux permet aux utilisateurs de choisir les cours qu\'ils veulent suivre. Les cours peuvent être protégés par différents critères (période d\'inscription, taille de la liste principale, cohortes, etc).';
 $string['reenrolment_disabled'] = 'Réinscription désactivée';
@@ -115,7 +120,7 @@ $string['wait_list_short'] = 'Complément';
 $string['wait_description'] = 'Liste des étudiants sur liste complémentaire. Ils n\'ont accès ni aux forums, ni aux documents du cours. Seule la première session du cours est indiquée sur leur page d\'accueil.';
 $string['wait_list_registered'] = 'Inscrit sur liste complémentaire';
 $string['deleted_list'] = 'Liste des étudiants désinscrits';
-$string['deleted_list_abbr'] = 'Désinscrit';
+$string['deleted_list_abbr'] = 'Désins.';
 $string['deleted_list_short'] = 'Désinscrit';
 $string['deleted_description'] = 'Liste des étudiants désinscrits. Ils n\'ont accès ni aux forums, ni aux documents du cours. Ce cours n\'est pas référencé sur leur page d\'accueil.';
 $string['error:enrol'] = 'Impossible de vous inscrire à ce cours';
@@ -244,7 +249,6 @@ $string['birthday'] = 'Date de naissance';
 $string['sex'] = 'Sexe';
 $string['register_type'] = 'Type d\'inscription';
 $string['paid'] = 'Carte sport payée';
-$string['list'] = 'Liste';
 
 // Licence FFSU.
 $string['federation_required'] = 'Adhésion à l\'association sportive (obligatoire)';

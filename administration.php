@@ -26,7 +26,7 @@ require_once($CFG->libdir.'/adminlib.php');
 $tab = optional_param('tab', 'register_types', PARAM_TEXT);
 $action = optional_param('action', 'view', PARAM_ALPHA);
 
-$tabslist = array('colleges', 'renewals');
+$tabslist = array('colleges', 'renewals', 'overview');
 
 $tabsbar = array();
 foreach ($tabslist as $tabname) {
