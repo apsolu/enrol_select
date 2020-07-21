@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/apsolu/enrol_select.svg?branch=master)](https://travis-ci.org/apsolu/enrol_select)
 [![Coverage Status](https://coveralls.io/repos/github/apsolu/enrol_select/badge.svg?branch=master)](https://coveralls.io/github/apsolu/enrol_select?branch=master)
-[![Moodle Status](https://img.shields.io/badge/moodle-3.7-blue)](https://moodle.org)
+[![Moodle Status](https://img.shields.io/badge/moodle-3.9-blue)](https://moodle.org)
 
 ## Description
 
