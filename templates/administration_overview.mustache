@@ -45,6 +45,11 @@
         "courses": []
     }
 }}
+<details class="alert alert-info"{{#filters}} open{{/filters}}>
+    <summary>{{#str}}filters{{/str}}</summary>
+    <div class="mt-4">{{{form}}}</div>
+</details>
+
 {{^count_courses}}
 <p class="alert alert-info">{{#str}}no_course, local_apsolu{{/str}}
 {{/count_courses}}
