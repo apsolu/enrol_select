@@ -267,7 +267,7 @@ class enrol_select_plugin extends enrol_plugin {
             $userid = $USER->id;
         }
 
-        $sql = "SELECT r.*".
+        $sql = "SELECT DISTINCT r.*".
             " FROM {role} r".
             " JOIN {enrol_select_roles} esr ON r.id = esr.roleid".
             " JOIN {enrol} e ON e.id = esr.enrolid".
@@ -387,7 +387,7 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Check user limit.
-        $userchoices = UniversiteRennes2\Apsolu\get_user_colleges($userid = null, $count = true);
+        $userchoices = UniversiteRennes2\Apsolu\get_sum_user_choices($userid = null, $count = true);
         $available = false;
         foreach ($userchoices as $choice) {
             if ($choice->roleid != $roleid) {

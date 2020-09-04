@@ -26,9 +26,10 @@ function get_remaining_choices_block() {
     global $OUTPUT;
 
     $roles = get_potential_user_roles();
+    $colleges = get_user_colleges($userid = null);
 
     $overviewremainingchoicesdata = new \stdClass();
-    $overviewremainingchoicesdata->choices = get_user_colleges($userid = null, $count = true);
+    $overviewremainingchoicesdata->choices = get_sum_user_choices($userid = null, $count = true);
     $overviewremainingchoicesdata->count_choices = 0;
     $overviewremainingchoicesdata->summary = '<div id="apsolu-rules-summary" class="table-responsive">'.
             '<table class="table table-bordered">'.
@@ -41,6 +42,16 @@ function get_remaining_choices_block() {
                 '</tr>'.
             '</thead>'.
             '<tbody>';
+    foreach ($colleges as $college) {
+        $overviewremainingchoicesdata->summary .= '<tr>'.
+                '<td>'.$college->name.'</td>'.
+                '<td>'.$college->maxwish.'</td>'.
+                '<td>'.$college->minregister.'</td>'.
+                '<td>'.$college->maxregister.'</td>'.
+                '</tr>';
+    }
+    $overviewremainingchoicesdata->summary .= '</tbody></table></div>';
+
 
     foreach ($overviewremainingchoicesdata->choices as $index => $choice) {
         if ($choice->maxwish == 0) {
@@ -84,14 +95,7 @@ function get_remaining_choices_block() {
             $choice->description .= '<br />Il vous reste encore <b>'.$countchoices.' '.$choicestr.'</b>.</p>';
         }
 
-        $overviewremainingchoicesdata->summary .= '<tr>'.
-                '<td>'.$choice->name.'</td>'.
-                '<td>'.$choice->maxwish.'</td>'.
-                '<td>'.$choice->minregister.'</td>'.
-                '<td>'.$choice->maxregister.'</td>'.
-            '</tr>';
     }
-    $overviewremainingchoicesdata->summary .= '</tbody></table></div>';
 
     // Réindexe les valeurs pour mustache.
     $overviewremainingchoicesdata->choices = array_values($overviewremainingchoicesdata->choices);

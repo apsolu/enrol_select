@@ -124,7 +124,7 @@ if ($complement !== false) {
         }
 
         // Est-ce que l'utilisateur n'a pas dépassé son quota de voeux...
-        $userchoices = apsolu\get_user_colleges($userid = null, $count = true);
+        $userchoices = apsolu\get_sum_user_choices($userid = null, $count = true);
         $unavailableuserroles = array();
         foreach ($userchoices as $choice) {
             if ($choice->maxwish > 0 && $choice->count >= $choice->maxwish) {

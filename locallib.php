@@ -323,8 +323,10 @@ function get_user_complement_enrolments($userid = null) {
 
 /**
  * Renvoie tous les collèges auxquels appartient l'utilisateur (nombre de voeux possibles, roles, prix, etc).
+ *
  * @param int userid : si null, on prend l'id de l'utilisateur courant
  * @param bool count : ajoute le nombre de voeux fait par l'utilisateur pour chaque collège
+ *
  * @return array
  */
 function get_user_colleges($userid = null, $count = false) {
@@ -341,6 +343,45 @@ function get_user_colleges($userid = null, $count = false) {
         " JOIN {cohort} ct ON ct.id = acm.cohortid".
         " JOIN {cohort_members} cm ON ct.id = cm.cohortid".
         " WHERE cm.userid = ?";
+    $colleges = $DB->get_records_sql($sql, array($userid));
+
+    if ($count === true) {
+        $countuserroles = get_count_user_role_assignments();
+        foreach ($colleges as $college) {
+            if (isset($countuserroles[$college->roleid])) {
+                $college->count = $countuserroles[$college->roleid]->count;
+            } else {
+                $college->count = 0;
+            }
+        }
+    }
+
+    return $colleges;
+}
+
+/**
+ * Renvoie tous les collèges auxquels appartient l'utilisateur (nombre de voeux possibles, roles, prix, etc).
+ *
+ * @param int userid : si null, on prend l'id de l'utilisateur courant
+ * @param bool count : ajoute le nombre de voeux fait par l'utilisateur pour chaque collège
+ *
+ * @return array
+ */
+function get_sum_user_choices($userid, $count = false) {
+    global $DB, $USER;
+
+    if ($userid === null) {
+        $userid = $USER->id;
+    }
+
+    $sql = "SELECT ac.roleid, SUM(ac.maxwish) AS maxwish, SUM(ac.minregister) AS minregister, SUM(ac.maxregister) AS maxregister".
+        " FROM {apsolu_colleges} ac".
+        // Check cohorts.
+        " JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid".
+        " JOIN {cohort} ct ON ct.id = acm.cohortid".
+        " JOIN {cohort_members} cm ON ct.id = cm.cohortid".
+        " WHERE cm.userid = ?".
+        " GROUP BY ac.roleid";
     $colleges = $DB->get_records_sql($sql, array($userid));
 
     if ($count === true) {
@@ -453,7 +494,7 @@ function get_potential_user_activities($time = null, $cohorts = null) {
     if ($cohorts === null) {
         // Pour un étudiant.
         $availableuserroles = get_potential_user_roles();
-        $usercolleges = get_user_colleges($userid = null, $count = true);
+        $usercolleges = get_sum_user_choices($userid = null, $count = true);
 
         $unavailableuserroles = array();
         foreach ($usercolleges as $college) {
