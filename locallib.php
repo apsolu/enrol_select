@@ -376,11 +376,15 @@ function get_sum_user_choices($userid, $count = false) {
 
     $sql = "SELECT ac.roleid, SUM(ac.maxwish) AS maxwish, SUM(ac.minregister) AS minregister, SUM(ac.maxregister) AS maxregister".
         " FROM {apsolu_colleges} ac".
-        // Check cohorts.
-        " JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid".
-        " JOIN {cohort} ct ON ct.id = acm.cohortid".
-        " JOIN {cohort_members} cm ON ct.id = cm.cohortid".
-        " WHERE cm.userid = ?".
+        " WHERE ac.id IN (".
+            // Récupère la liste des populations auxquelles appartient l'étudiant.
+            // Note : nous faisons une sous-requête afin d'éviter de compter un maximum de voeux erroné,
+            // notamment lorsqu'un étudiant apparait dans plusieurs cohortes liées à une population.
+            " SELECT acm.collegeid FROM {apsolu_colleges_members} acm".
+            " JOIN {cohort} ct ON ct.id = acm.cohortid".
+            " JOIN {cohort_members} cm ON ct.id = cm.cohortid".
+            " WHERE cm.userid = ?".
+        " )".
         " GROUP BY ac.roleid";
     $colleges = $DB->get_records_sql($sql, array($userid));
 
