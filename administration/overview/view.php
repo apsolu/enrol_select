@@ -79,6 +79,10 @@ foreach ($enrols as $enrol) {
         $courses[$enrol->courseid]->anomalies = 0;
     }
 
+    if (empty($enrol->name) === true) {
+        $enrol->name = get_string('pluginname', 'enrol_select');
+    }
+
     // Calcule les différences avec le calendrier.
     $enrol->invalid_enrolstartdate = false;
     $enrol->invalid_enrolenddate = false;
