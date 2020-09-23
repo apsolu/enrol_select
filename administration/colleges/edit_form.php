@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Classe pour le formulaire permettant de configurer les populations.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -24,8 +26,19 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
+/**
+ * Classe pour le formulaire permettant de configurer les populations.
+ *
+ * @package    enrol_select
+ * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class apsolu_colleges_form extends moodleform {
-
+    /**
+     * Définit les champs du formulaire.
+     *
+     * @return void
+     */
     public function definition() {
         global $CFG, $DB;
 
@@ -85,5 +98,29 @@ class apsolu_colleges_form extends moodleform {
         $mform->setType('action', PARAM_TEXT);
 
         $this->set_data($data);
+    }
+
+    /**
+     * Validation.
+     *
+     * @param array $data
+     * @param array $files
+     *
+     * @return array The errors that were found.
+     */
+    public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
+
+        // Vérifie que le nombre de voeux n'est pas inférieur au nombre maximum d'inscription.
+        if ($data['maxwish'] < $data['maxregister']) {
+            $errors['maxwish'] = get_string('maximum_wishes_must_be_greater_than_or_equal_to_maximum_enrolments', 'enrol_select');
+        }
+
+        // Vérifie que le nombre maximum de voeux n'est pas inférieur au nombre minimum de voeux.
+        if ($data['maxregister'] < $data['minregister']) {
+            $errors['maxregister'] = get_string('maximum_enrolments_must_be_greater_than_or_equal_to_minimum_enrolments', 'enrol_select');
+        }
+
+        return $errors;
     }
 }
