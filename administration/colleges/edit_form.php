@@ -68,17 +68,17 @@ class apsolu_colleges_form extends moodleform {
         $select->setMultiple(true);
 
         // Limite de voeux.
-        $mform->addElement('text', 'maxwish', 'Nombre maximum de voeux');
+        $mform->addElement('text', 'maxwish', get_string('maximum_wishes', 'enrol_select'));
         $mform->setType('maxwish', PARAM_INT);
         $mform->addRule('maxwish', get_string('required'), 'required', null, 'client');
 
         // Minimum d'inscriptions.
-        $mform->addElement('text', 'minregister', 'Nombre d\'inscription minimum');
+        $mform->addElement('text', 'minregister', get_string('minimum_enrolments', 'enrol_select'));
         $mform->setType('minregister', PARAM_INT);
         $mform->addRule('minregister', get_string('required'), 'required', null, 'client');
 
         // Maximum d'inscriptions.
-        $mform->addElement('text', 'maxregister', 'Nombre d\'inscription maximum');
+        $mform->addElement('text', 'maxregister', get_string('maximum_enrolments', 'enrol_select'));
         $mform->setType('maxregister', PARAM_INT);
         $mform->addRule('maxregister', get_string('required'), 'required', null, 'client');
 

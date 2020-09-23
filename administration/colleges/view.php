@@ -44,9 +44,9 @@ if ($colleges) {
     $table->head = array(
         'nom de la population',
         'roles',
-        'nombre de voeux maximum',
-        'nombre d\'inscription minimum',
-        'nombre d\'inscription maximum',
+        get_string('maximum_wishes', 'enrol_select'),
+        get_string('minimum_enrolments', 'enrol_select'),
+        get_string('maximum_enrolments', 'enrol_select'),
         'cohortes',
         'actions'
         );
