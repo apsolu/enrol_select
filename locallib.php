@@ -360,14 +360,14 @@ function get_user_colleges($userid = null, $count = false) {
 }
 
 /**
- * Renvoie tous les collèges auxquels appartient l'utilisateur (nombre de voeux possibles, roles, prix, etc).
+ * Renvoie le nombre de voeux autorisés pour un utilisateur pour chaque rôle.
  *
- * @param int userid : si null, on prend l'id de l'utilisateur courant
- * @param bool count : ajoute le nombre de voeux fait par l'utilisateur pour chaque collège
+ * @param int|null $userid Si null, on prend l'identifiant de l'utilisateur courant.
+ * @param bool     $count  Ajoute le nombre de voeux fait par l'utilisateur pour chaque rôle.
  *
  * @return array
  */
-function get_sum_user_choices($userid, $count = false) {
+function get_sum_user_choices($userid = null, $count = false) {
     global $DB, $USER;
 
     if ($userid === null) {
@@ -386,20 +386,19 @@ function get_sum_user_choices($userid, $count = false) {
             " WHERE cm.userid = ?".
         " )".
         " GROUP BY ac.roleid";
-    $colleges = $DB->get_records_sql($sql, array($userid));
+    $roles = $DB->get_records_sql($sql, array($userid));
 
     if ($count === true) {
-        $countuserroles = get_count_user_role_assignments();
-        foreach ($colleges as $college) {
-            if (isset($countuserroles[$college->roleid])) {
-                $college->count = $countuserroles[$college->roleid]->count;
-            } else {
-                $college->count = 0;
+        $countuserroles = get_count_user_role_assignments($userid);
+        foreach ($roles as $role) {
+            $role->count = 0;
+            if (isset($countuserroles[$role->roleid]) === true) {
+                $role->count = $countuserroles[$role->roleid]->count;
             }
         }
     }
 
-    return $colleges;
+    return $roles;
 }
 
 /**
