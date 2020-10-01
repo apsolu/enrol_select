@@ -186,6 +186,8 @@ foreach ($DB->get_recordset_sql($sql, array('fieldid' => $customfields['apsolucy
         $enrolment->enrolname = 'S1';
     } else if (stripos($record->enrolname, 'semestre 2') !== false) {
         $enrolment->enrolname = 'S2';
+    } else {
+        $enrolment->enrolname = $record->enrolname;
     }
     $enrolment->state = get_string(enrol_select_plugin::$states[$record->status].'_list_abbr', 'enrol_select');
     $enrolment->status = $record->status;
