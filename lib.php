@@ -91,6 +91,54 @@ class enrol_select_plugin extends enrol_plugin {
     }
 
     /**
+     * Méthode permettant de récupérer la liste des utilisateurs dont l'inscription est valide/autorisée pour une péride donnée.
+     *
+     * @param int|string $courseid  Identifiant du cours.
+     * @param int|null   $timestart Horodatage UNIX représentant la date de début de la période à valider.
+     * @param int|null   $timeend   Horodatage UNIX représentant la date de fin de la période à valider.
+     *
+     * @return array Tableau contenant les utilisateurs indéxé par userid.
+     */
+    public static function get_authorized_registred_users($courseid, $timestart = null, $timeend = null) {
+        global $DB;
+
+        if ($timestart === null) {
+            $timestart = time();
+        }
+
+        if ($timeend === null) {
+            $timeend = time();
+        }
+
+        $sql = "SELECT DISTINCT u.*".
+            " FROM {user} u".
+            " JOIN {user_enrolments} ue ON u.id = ue.userid".
+            " JOIN {enrol} e ON e.id = ue.enrolid AND e.enrol = 'select'".
+            " JOIN {role_assignments} ra ON u.id = ra.userid AND e.id = ra.itemid AND ra.component = 'enrol_select'".
+            " JOIN {role} r ON r.id = ra.roleid".
+            " JOIN {context} ctx ON ra.contextid = ctx.id AND ctx.instanceid = e.courseid".
+            " JOIN {cohort_members} cm ON u.id = cm.userid".
+            " JOIN {enrol_select_roles} esr ON r.id = esr.roleid AND e.id = esr.enrolid".
+            " JOIN {enrol_select_cohorts} esc ON cm.cohortid = esc.cohortid AND e.id = esr.enrolid".
+            " JOIN {apsolu_colleges_members} acm ON cm.cohortid = acm.cohortid".
+            " JOIN {apsolu_colleges} ac ON ra.roleid = ac.roleid AND acm.collegeid = ac.id".
+            " WHERE e.status = 0". // Only active enrolments.
+            " AND ue.status = 0".
+            " AND (ue.timestart < :timestart OR ue.timestart = 0)".
+            " AND (ue.timeend > :timeend OR ue.timeend = 0)".
+            " AND e.courseid = :courseid".
+            " AND ctx.contextlevel = 50". // Course level.
+            " AND r.archetype = 'student'";
+
+        $params = array();
+        $params['courseid'] = $courseid;
+        $params['timestart'] = $timestart;
+        $params['timeend'] = $timeend;
+
+        return $DB->get_records_sql($sql, $params);
+    }
+
+    /**
      * This returns false for backwards compatibility, but it is really recommended.
      *
      * @since Moodle 3.1
