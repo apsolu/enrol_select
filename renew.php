@@ -107,6 +107,56 @@ if ($open === false) {
 // Javascript.
 $PAGE->requires->js_call_amd('enrol_select/select_renew', 'initialise');
 
+// Détermine quelles sont les activités auxquelles peut se réinscrire l'étudiant.
+$activities = array();
+foreach (apsolu\get_user_reenrolments() as $key => $enrolment) {
+    if ($enrolment->status !== enrol_select_plugin::ACCEPTED) {
+        // On ne conserve que les inscriptions validées.
+        debugging('L\'inscription d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'est pas validée (status: '.$enrolment->status.').', $level = DEBUG_DEVELOPER);
+        continue;
+    }
+
+    $enrol = $DB->get_record('enrol', array('id' => $enrolment->enrolid));
+
+    if ($enrol === false) {
+        // L'instance d'inscription n'existe pas.
+        debugging('L\'instance d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'existe pas.', $level = DEBUG_DEVELOPER);
+        continue;
+    }
+
+    if ($select->can_reenrol($enrol) === false) {
+        // L'utilisateur n'est pas autorisé à se réinscrire.
+        debugging('L\'utilisateur #'.$USER->id.' n\'est pas autorisé à se réinscrire via l\'instance #'.$enrolment->enrolid.' du cours #'.$enrolment->id.'.', $level = DEBUG_DEVELOPER);
+        continue;
+    }
+
+    $targetenrol = $DB->get_record('enrol', array('id' => $enrol->customint6));
+
+    if ($targetenrol === false) {
+        // L'instance de réinscription n'existe pas.
+        debugging('L\'instance de réinscription #'.$targetenrol->id.' du cours #'.$enrolment->id.' n\'existe pas.', $level = DEBUG_DEVELOPER);
+        continue;
+    }
+
+    // Get all available roles for target enrol.
+    $roles = array();
+    foreach ($select->get_available_user_roles($targetenrol) as $role) {
+        $roles[$role->id] = $role->name;
+    }
+
+    if ($roles === array()) {
+        // L'utilisateur ne peut pas s'incrire (problème de cohortes ou de rôles).
+        debugging('L\'utilisateur #'.$USER->id.' ne peut pas s\'inscrire (problème de cohortes ou de rôles).', $level = DEBUG_DEVELOPER);
+        continue;
+    }
+
+    // On enregistre ces données, car elles seront réutilisées plus loin.
+    $enrolment->roles = $roles;
+    $enrolment->targetenrol = $targetenrol;
+
+    $activities[$key] = $enrolment;
+}
+
 $notification = '';
 if (isset($_POST['reenrol'])) {
     // TODO: à supprimer !
@@ -142,9 +192,7 @@ if (isset($_POST['reenrol'])) {
             if (isset($_POST['role'][$enrolid])) {
                 $roleid = $_POST['role'][$enrolid];
 
-                $activities = apsolu\get_real_user_activity_enrolments();
-                $roles = $select->get_available_user_roles($instance);
-                if (isset($activities[$instance->courseid], $roles[$roleid])) {
+                if (isset($activities[$instance->courseid], $activities[$instance->courseid]->roles[$roleid])) {
                     if (isset($CFG->is_siuaps_rennes) === true) {
                         // Inscription liste définitive.
                         $select->enrol_user($instance, $USER->id, $roleid, $instance->customint7, $instance->customint8, $status = ENROL_INSTANCE_ENABLED, $recovergrades = null);
@@ -162,9 +210,7 @@ if (isset($_POST['reenrol'])) {
                     $reasons = array();
                     if (!isset($activities[$instance->courseid])) {
                         $reasons[] = 'non inscrit dans le cours #'.$instance->courseid;
-                    }
-
-                    if (!isset($roles[$roleid])) {
+                    } else if (!isset($activities[$instance->courseid]->roles[$roleid])) {
                         $reasons[] = 'non autorisé pour le rôle #'.$roleid;
                     }
 
@@ -195,34 +241,9 @@ if (isset($_POST['reenrol'])) {
 
 $enrolments = array();
 $enrolments_count = 0;
-foreach (apsolu\get_user_reenrolments() as $enrolment) {
-    if ($enrolment->status !== enrol_select_plugin::ACCEPTED) {
-        // On ne conserve que les inscriptions validées.
-        debugging('L\'inscription d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'est pas validée (status: '.$enrolment->status.').', $level = DEBUG_DEVELOPER);
-        continue;
-    }
-
-    $enrol = $DB->get_record('enrol', array('id' => $enrolment->enrolid));
-
-    if ($enrol === false) {
-        // L'instance d'inscription n'existe pas.
-        debugging('L\'instance d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'existe pas.', $level = DEBUG_DEVELOPER);
-        continue;
-    }
-
-    if ($select->can_reenrol($enrol) === false) {
-        // L'utilisateur n'est pas autorisé à se réinscrire.
-        debugging('L\'utilisateur #'.$USER->id.' n\'est pas autorisé à se réinscrire via l\'instance #'.$enrolment->enrolid.' du cours #'.$enrolment->id.'.', $level = DEBUG_DEVELOPER);
-        continue;
-    }
-
-    $targetenrol = $DB->get_record('enrol', array('id' => $enrol->customint6));
-
-    if ($targetenrol === false) {
-        // L'instance de réinscription n'existe pas.
-        debugging('L\'instance de réinscription #'.$targetenrol->id.' du cours #'.$enrolment->id.' n\'existe pas.', $level = DEBUG_DEVELOPER);
-        continue;
-    }
+foreach ($activities as $enrolment) {
+    $roles = $enrolment->roles;
+    $targetenrol = $enrolment->targetenrol;
 
     // Contact teachers.
     $enrolment->teachers = array();
@@ -243,18 +264,6 @@ foreach (apsolu\get_user_reenrolments() as $enrolment) {
                 $enrolment->count_teachers++;
             }
         }
-    }
-
-    // Get all available roles for target enrol.
-    $roles = array();
-    foreach ($select->get_available_user_roles($targetenrol) as $role) {
-        $roles[$role->id] = $role->name;
-    }
-
-    if ($roles === array()) {
-        // L'utilisateur ne peut pas s'incrire (problème de cohortes ou de rôles).
-        debugging('L\'utilisateur #'.$USER->id.' ne peut pas s\'inscrire (problème de cohortes ou de rôles).', $level = DEBUG_DEVELOPER);
-        continue;
     }
 
     // Set current role for user.
