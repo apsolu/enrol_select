@@ -159,9 +159,6 @@ foreach (apsolu\get_user_reenrolments() as $key => $enrolment) {
 
 $notification = '';
 if (isset($_POST['reenrol'])) {
-    // TODO: à supprimer !
-    $logfile = '/log/applis/renew.log';
-
     // Parcours les réponses.
     $mail_content = array();
     foreach ($_POST['renew'] as $enrolid => $renew) {
@@ -170,7 +167,7 @@ if (isset($_POST['reenrol'])) {
         $log = strftime('%c').' '.$USER->firstname.' '.$USER->lastname.' ('.$USER->email.' #id '.$USER->id.')';
 
         if (!$instance) {
-            file_put_contents($logfile, 'ERROR: '.$log.' invalid instance #id '.$enrolid.PHP_EOL, FILE_APPEND);
+            debugging('ERROR: '.$log.' invalid instance #id '.$enrolid, $level = NO_DEBUG_DISPLAY);
             continue;
         }
 
@@ -186,7 +183,7 @@ if (isset($_POST['reenrol'])) {
             $mail_content[] = get_string('reenrolmentstop', 'enrol_select', $course);
 
             // Ajouter une ligne de log.
-            file_put_contents($logfile, $log.' unenrol from '.$instance->id.PHP_EOL, FILE_APPEND);
+            debugging($log.' unenrol from instanceid '.$instance->id, $level = NO_DEBUG_DISPLAY);
         } else if ($renew === '1') {
             // Inscrire l'utilisateur...
             if (isset($_POST['role'][$enrolid])) {
@@ -204,7 +201,7 @@ if (isset($_POST['reenrol'])) {
                     $mail_content[] = get_string('reenrolmentcontinue', 'enrol_select', $course);
 
                     // Ajouter une ligne de log.
-                    file_put_contents($logfile, $log.' enrol into instanceid '.$instance->id.', roleid '.$roleid.PHP_EOL, FILE_APPEND);
+                    debugging($log.' enrol into instanceid '.$instance->id.', roleid '.$roleid, $level = NO_DEBUG_DISPLAY);
                 } else {
                     // Ajouter une ligne de log.
                     $reasons = array();
@@ -214,7 +211,7 @@ if (isset($_POST['reenrol'])) {
                         $reasons[] = 'non autorisé pour le rôle #'.$roleid;
                     }
 
-                    file_put_contents($logfile, 'ERROR: '.$log.' can\'t enrol instanceid '.$instance->id.', roleid '.$roleid.' :: '.implode(', ', $reasons).PHP_EOL, FILE_APPEND);
+                    debugging('ERROR: '.$log.' can\'t enrol instanceid '.$instance->id.', roleid '.$roleid.' :: '.implode(', ', $reasons), $level = NO_DEBUG_DISPLAY);
                 }
             }
         }
