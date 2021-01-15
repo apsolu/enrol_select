@@ -23,6 +23,12 @@
  */
 
 $string['date_diverging_from_calendar_date'] = 'Date divergente par rapport à la date du calendrier';
+$string['enrollee_accepted_list'] = 'Candidat Inscription';
+$string['enrollee_deleted_list'] = 'Candidat Refusé';
+$string['enrollee_main_list'] = 'Candidat Principale';
+$string['enrollee_wait_list'] = 'Candidat Attente';
+$string['enrollee_wish_list'] = 'Candidat Voeux';
+$string['enrollees'] = 'Inscrits';
 $string['filters_for_managers'] = 'Filtres pour gestionnaires';
 $string['list'] = 'Liste';
 $string['lists'] = 'Listes';
