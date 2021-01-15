@@ -84,9 +84,9 @@ $headers = array(
     get_string('lastname'),
     get_string('firstname'),
     get_string('institution'),
-    'UFR',
+    get_string('ufr', 'local_apsolu'),
     get_string('department'),
-    'LMD',
+    get_string('cycle', 'local_apsolu'),
     get_string('register_type', 'enrol_select'),
     'Date d\'inscription',
 );
