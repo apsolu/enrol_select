@@ -67,11 +67,7 @@ class apsolu_overview_filter_form extends moodleform {
         $mform->setType('enrolenddate', PARAM_INT);
 
         // Champ "enseignants".
-        $options = array(0 => get_string('choosedots'));
-        foreach ($teachers as $teacher) {
-            $options[$teacher->id] = fullname($teacher);
-        }
-        $select = $mform->addElement('select', 'teacherid', get_string('teacher', 'local_apsolu'), $options);
+        $select = $mform->addElement('select', 'teacherid', get_string('teacher', 'local_apsolu'), $teachers);
         $mform->setType('teacherid', PARAM_INT);
 
         // Submit buttons.

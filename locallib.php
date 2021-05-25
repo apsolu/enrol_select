@@ -79,7 +79,8 @@ function get_activities_roles() {
         " FROM {enrol} e".
         " JOIN {apsolu_courses} ac ON ac.id = e.courseid".
         " JOIN {enrol_select_roles} esr ON e.id = esr.enrolid";
-    foreach ($DB->get_recordset_sql($sql) as $record) {
+    $recordset = $DB->get_recordset_sql($sql);
+    foreach ($recordset as $record) {
         if (isset($roles[$record->roleid]) === false) {
             continue;
         }
@@ -89,6 +90,7 @@ function get_activities_roles() {
         }
         $activities[$record->courseid][$record->roleid] = $roles[$record->roleid];
     }
+    $recordset->close();
 
     return $activities;
 }
@@ -104,7 +106,8 @@ function get_activities_teachers() {
         " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50". // Course context.
         " JOIN {apsolu_courses} ac ON ac.id = ctx.instanceid".
         " ORDER BY u.lastname, u.firstname";
-    foreach ($DB->get_recordset_sql($sql) as $record) {
+    $recordset = $DB->get_recordset_sql($sql);
+    foreach ($recordset as $record) {
         if (isset($teachers[$record->courseid]) === false) {
             $teachers[$record->courseid] = array();
         }
@@ -116,6 +119,7 @@ function get_activities_teachers() {
         $user->email = $record->email;
         $teachers[$record->courseid][$record->userid] = $user;
     }
+    $recordset->close();
 
     return $teachers;
 }

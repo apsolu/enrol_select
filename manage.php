@@ -163,7 +163,8 @@ $sql = 'SELECT u.*, ra.roleid, e.name AS enrolname, e.courseid, ue.enrolid, ue.s
     ' AND u.id IN (SELECT ue.userid FROM {user_enrolments} ue JOIN {enrol} e ON e.id = ue.enrolid WHERE e.enrol = "select" AND e.courseid = :courseid)'.
     ' ORDER BY ue.timecreated, u.lastname, u.firstname';
 $users = array();
-foreach ($DB->get_recordset_sql($sql, array('fieldid' => $customfields['apsolucycle']->id, 'courseid' => $course->id)) as $record) {
+$recordset = $DB->get_recordset_sql($sql, array('fieldid' => $customfields['apsolucycle']->id, 'courseid' => $course->id));
+foreach ($recordset as $record) {
     if (isset($roles[$record->roleid]) === false) {
         continue;
     }
@@ -204,6 +205,7 @@ foreach ($DB->get_recordset_sql($sql, array('fieldid' => $customfields['apsolucy
     $users[$record->id]->enrolments[$record->enrolid] = $enrolment;
     $users[$record->id]->count_enrolments++;
 }
+$recordset->close();
 
 // On affecte chaque utilisateur dans le ou les méthodes d'inscription auxquelles il est inscrit.
 foreach ($users as $user) {

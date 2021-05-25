@@ -29,14 +29,22 @@ require_once($CFG->dirroot.'/enrol/select/administration/overview/view_filter_fo
 
 $PAGE->requires->js_call_amd('enrol_select/administration_overview', 'initialise');
 
+// Récupère la liste des enseignants.
 $sql = "SELECT u.*".
     " FROM {user} u".
     " JOIN {role_assignments} ra ON u.id = ra.userid AND ra.roleid = 3". // Teacher.
     " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50". // Course context.
     " JOIN {apsolu_courses} ac ON ac.id = ctx.instanceid".
     " ORDER BY u.lastname, u.firstname";
-$teachers = $DB->get_recordset_sql($sql);
+$recordset = $DB->get_recordset_sql($sql);
 
+$teachers = array(0 => get_string('choosedots'));
+foreach ($recordset as $teacher) {
+    $teachers[$teacher->id] = fullname($teacher);
+}
+$recordset->close();
+
+// Récupère la liste des calendriers.
 $calendars = $DB->get_records('apsolu_calendars');
 
 $mform = new apsolu_overview_filter_form(null, array($calendars, $teachers));

@@ -33,14 +33,14 @@ $sql      = "SELECT e.id, c.fullname AS coursename, e.name AS enrolname, e2.name
                 WHERE e.enrol = 'select'
             ";
 
-$renewals = $DB->get_recordset_sql($sql);
+$recordset = $DB->get_recordset_sql($sql);
 
 $options = array();
 foreach (enrol_select_plugin::$states as $code => $state) {
     $options[$code] = get_string($state.'_list', 'enrol_select');
 }
 
-if ($renewals) {
+if ($recordset) {
     $table = new html_table();
     $table->attributes = array('class' => 'table table-striped');
     $table->head = array(
@@ -51,7 +51,7 @@ if ($renewals) {
         'Liste de réinscription'
         );
 
-    foreach ($renewals as $renewal) {
+    foreach ($recordset as $renewal) {
         // Actions.
         $uid = uniqid();
         $submitlink = $CFG->wwwroot.'/enrol/select/administration.php?tab=renewals&action=submit';
@@ -71,3 +71,5 @@ if ($renewals) {
     echo '<input class="btn btn-primary" type="submit" value="Valider">';
     echo '</form>';
 }
+
+$recordset->close();

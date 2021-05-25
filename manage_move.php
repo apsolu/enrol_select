@@ -115,9 +115,13 @@ if ($mform->is_cancelled()) {
                 $roleid = 0;
 
                 $sql = "SELECT roleid FROM {role_assignments} WHERE component = 'enrol_select' AND itemid = :previousinstance_id AND userid = :userid";
-                foreach ($DB->get_recordset_sql($sql, array('previousinstance_id' => $previousenrolid, 'userid' => $userid)) as $role) {
+
+                $recordset = $DB->get_recordset_sql($sql, array('previousinstance_id' => $previousenrolid, 'userid' => $userid));
+                foreach ($recordset as $role) {
+                    // TODO: pourquoi un foreach pour initialiser la variable roleid ?
                     $roleid = $role->roleid;
                 }
+                $recordset->close();
 
                 $enrolselectplugin->enrol_user($instance, $userid, $roleid, 0, 0, $to, null, null);
             }
