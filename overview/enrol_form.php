@@ -101,7 +101,7 @@ class enrol_select_form extends moodleform {
 
         $attributes = new stdClass();
         $attributes->href = $CFG->wwwroot.'/enrol/select/overview.php';
-        $attributes->class = 'btn btn-default apsolu-cancel-a';
+        $attributes->class = 'btn btn-default btn-secondary apsolu-cancel-a';
         $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu', $attributes));
 
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);

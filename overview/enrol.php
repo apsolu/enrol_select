@@ -241,7 +241,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
         echo '<div class="alert alert-success"><p>'.get_string('unenrolmentsaved', 'enrol_select').'</p></div>';
 
         $href = $CFG->wwwroot.'/enrol/select/overview.php';
-        echo '<p class="text-center"><a class="btn btn-default apsolu-cancel-a" href="'.$href.'">'.get_string('continue').'</a></p>';
+        echo '<p class="text-center"><a class="btn btn-default btn-secondary apsolu-cancel-a" href="'.$href.'">'.get_string('continue').'</a></p>';
     } else {
         // Enrol.
         if (ctype_digit((string) $data->role) === false) {
@@ -335,7 +335,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
             echo '<div class="alert alert-success text-center"><p>'.$message.'</p></div>';
 
             $href = $CFG->wwwroot.'/enrol/select/overview.php';
-            echo '<p class="text-center"><a class="btn btn-default apsolu-cancel-a" href="'.$href.'">'.get_string('continue').'</a></p>';
+            echo '<p class="text-center"><a class="btn btn-default btn-secondary apsolu-cancel-a" href="'.$href.'">'.get_string('continue').'</a></p>';
         } else {
             print_error('error_cannot_enrol', 'enrol_select');
         }

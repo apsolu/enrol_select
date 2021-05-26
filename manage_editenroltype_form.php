@@ -70,7 +70,7 @@ class enrol_select_manage_editenroltype_form extends moodleform {
 
         $attributes = new stdClass();
         $attributes->href = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$instance->id;
-        $attributes->class = 'btn btn-default';
+        $attributes->class = 'btn btn-default btn-secondary';
         $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu', $attributes));
 
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);

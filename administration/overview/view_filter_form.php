@@ -73,7 +73,7 @@ class apsolu_overview_filter_form extends moodleform {
         // Submit buttons.
         $a = new stdClass();
         $a->href = $CFG->wwwroot.'/enrol/select/administration.php?tab=colleges';
-        $a->class = 'btn btn-default';
+        $a->class = 'btn btn-default btn-secondary';
 
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('filter', 'local_apsolu'));
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
