@@ -46,7 +46,7 @@ if ($recordset) {
     $table->head = array(
         '',
         'Nom de l\'activité',
-        'Méthoe d\'inscription actuelle',
+        'Méthode d\'inscription actuelle',
         'Méthode de réinscription',
         'Liste de réinscription'
         );
