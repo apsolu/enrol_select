@@ -24,11 +24,9 @@ use UniversiteRennes2\Apsolu as apsolu;
 
 require_once(__DIR__.'/../../config.php');
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
-require_once($CFG->dirroot.'/enrol/select/manage_notify_form.php');
+require_once($CFG->dirroot.'/local/apsolu/forms/notification_form.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
-$from = required_param('from', PARAM_INT);
-$to = required_param('actions', PARAM_INT);
 if (!isset($_POST['users'])) {
     $_POST['users'] = array();
 }
@@ -56,7 +54,7 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 
 $instancename = $enrolselect->get_instance_name($instance);
 
-$url = new moodle_url('/enrol/select/manage_notify.php', array('enrolid' => $instance->id, 'from' => $from, 'to' => $to));
+$url = new moodle_url('/enrol/select/manage_notify.php', array('enrolid' => $instance->id));
 
 $PAGE->set_url($url->out());
 $PAGE->set_pagelayout('base');
@@ -77,52 +75,21 @@ foreach ($users as $userid => $user) {
     }
 }
 
-$mform = new enrol_select_manage_notify_form($url->out(false), array($instance, $users, $from, $to));
+$actionurl = new moodle_url('/enrol/select/manage_handler.php', array('actions' => $actions, 'enrolid' => $enrolid));
+$redirecturl = new moodle_url('/enrol/select/manage.php', array('enrolid' => $enrolid));
+
+$customdata = array();
+$customdata[] = (object) array('subject' => get_string('enrolcoursesubject', 'enrol_select', $course));
+$customdata[] = $users;
+$customdata[] = $redirecturl;
+$mform = new local_apsolu_notification_form($actionurl, $customdata);
 
 if ($mform->is_cancelled()) {
     redirect($return);
-
 } else if ($data = $mform->get_data()) {
-    if (empty($data->message) === false) {
-        if (isset($data->users[$USER->id]) === false) {
-            // Mets en copie l'auteur du messsage.
-            $data->users[$USER->id] = $USER->id;
-        }
+    $mform->local_apsolu_notify($data->users, $course->id);
 
-        foreach ($data->users as $userid) {
-            $user = $DB->get_record('user', array('id' => $userid));
-
-            if ($user) {
-                $eventdata = new \core\message\message();
-                $eventdata->courseid = $course->id;
-                $eventdata->component = 'enrol_select';
-                $eventdata->name = 'select_notification';
-                $eventdata->userfrom = $USER;
-                $eventdata->userto = $user;
-                $eventdata->subject = get_string('enrolcoursesubject', 'enrol_select', $course);
-                $eventdata->fullmessage = $data->message;
-                $eventdata->fullmessageformat = FORMAT_PLAIN;
-                $eventdata->fullmessagehtml = '';
-                $eventdata->smallmessage = '';
-                $eventdata->notification = 1;
-
-                if (message_send($eventdata) !== false) {
-                    // Ajoute une trace dans les logs.
-                    $event = \enrol_select\event\user_notified::create(array(
-                        'relateduserid' => $userid,
-                        'context' => $context,
-                    ));
-                    $event->trigger();
-                }
-            }
-        }
-
-        $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
-        redirect($url, 'Le ou les utilisateurs ont été notifiés.', 5, \core\output\notification::NOTIFY_SUCCESS);
-    } else {
-        $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
-        redirect($url, 'Le message ne peut pas être vide.', 5, \core\output\notification::NOTIFY_ERROR);
-    }
+    redirect($redirecturl, get_string('notifications_have_been_sent', 'local_apsolu'), 5, \core\output\notification::NOTIFY_SUCCESS);
 }
 
 $pluginname = get_string('pluginname', 'enrol_select');
