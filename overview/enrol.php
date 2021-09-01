@@ -327,12 +327,31 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 }
             }
 
-            $message = get_string('enrolmentsaved', 'enrol_select');
-            if (isset($CFG->is_siuaps_rennes) === true && in_array($data->role, array('9', '10'), true) === true) {
-                $message .= '<br /><strong>Attention il faut aussi faire votre inscription pédagogique dans votre scolarité.</strong>';
+            $message1 = get_string('your_wish_has_been_registered', 'enrol_select');
+            switch ($status) {
+                case enrol_select_plugin::MAIN:
+                    $style = 'success';
+                    $list = strtolower(get_string('main_list', 'enrol_select'));
+                    $message2 = get_string('you_are_on_X_list', 'enrol_select', $list);
+                    $message = sprintf('<p>%s <strong>%s</strong></p>', $message1, $message2);
+                    break;
+                case enrol_select_plugin::WAIT:
+                    $style = 'warning';
+                    $list = strtolower(get_string('wait_list', 'enrol_select'));
+                    $message2 = get_string('you_are_on_X_list', 'enrol_select', $list);
+                    $message = sprintf('<p>%s <strong>%s</strong></p>', $message1, $message2);
+                    break;
+                case enrol_select_plugin::ACCEPTED:
+                default:
+                    $style = 'success';
+                    $message = sprintf('<p>%s</p>', $message1);
             }
 
-            echo '<div class="alert alert-success text-center"><p>'.$message.'</p></div>';
+            if (isset($CFG->is_siuaps_rennes) === true && in_array($data->role, array('9', '10'), true) === true && in_array($status, array(enrol_select_plugin::MAIN, enrol_select_plugin::ACCEPTED), true) === true) {
+                $message .= '<p><strong>Attention il faut aussi faire votre inscription pédagogique dans votre scolarité.</strong></p>';
+            }
+
+            echo sprintf('<div class="alert alert-%s text-center">%s</div>', $style, $message);
 
             $href = $CFG->wwwroot.'/enrol/select/overview.php';
             echo '<p class="text-center"><a class="btn btn-default btn-secondary apsolu-cancel-a" href="'.$href.'">'.get_string('continue').'</a></p>';
