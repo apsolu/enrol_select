@@ -605,7 +605,8 @@ class enrol_select_plugin extends enrol_plugin {
             return;
         }
 
-        $count_main = $DB->count_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::MAIN));
+        $sql = "SELECT COUNT(*) FROM {user_enrolments} WHERE enrolid = :enrolid AND status IN (:main, :accepted)";
+        $count_main = $DB->count_records_sql($sql, array('enrolid' => $instance->id, 'main' => self::MAIN, 'accepted' => self::ACCEPTED));
         if ($count_main >= $instance->customint1) {
             // La liste principale est déjà pleine.
             return;
