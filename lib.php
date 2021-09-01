@@ -590,13 +590,13 @@ class enrol_select_plugin extends enrol_plugin {
         global $DB, $USER;
 
         if ($this->is_enrol_period_active($instance) === false) {
-            // On réalimente la liste principale uniquement si les inscriptions sont ouvertes.
+            // On ne réalimente pas la liste principale si les inscriptions sont closes.
             return;
         }
 
         if ($USER->id !== $userid) {
             // L'utilisateur courant n'est pas l'utilisateur à désinscrire.
-            // Il s'agit probablement d'un enseignant dans la partie management.
+            // Il s'agit probablement d'un enseignant dans la partie management. On ne provoque pas la réalimentation de la liste principale.
             return;
         }
 
@@ -608,7 +608,7 @@ class enrol_select_plugin extends enrol_plugin {
         $sql = "SELECT COUNT(*) FROM {user_enrolments} WHERE enrolid = :enrolid AND status IN (:main, :accepted)";
         $count_main = $DB->count_records_sql($sql, array('enrolid' => $instance->id, 'main' => self::MAIN, 'accepted' => self::ACCEPTED));
         if ($count_main >= $instance->customint1) {
-            // La liste principale est déjà pleine.
+            // La liste principale (et des acceptés) est déjà pleine.
             return;
         }
 
@@ -618,10 +618,13 @@ class enrol_select_plugin extends enrol_plugin {
             return;
         }
 
-        $course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
-
+        // Détermine le nombre d'inscription à transférer de la liste complémentaire à la liste principale.
         $promote = $instance->customint1 - $count_main;
+
+        // Récupère les utilisateurs sur liste complémentaire par ordre d'inscription.
         $waiting_users = $DB->get_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::WAIT), $sort='timecreated DESC');
+
+        $course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
         foreach ($waiting_users as $user) {
             $user->status = self::MAIN;
             $DB->update_record('user_enrolments', $user);
