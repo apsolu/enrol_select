@@ -249,9 +249,9 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
         } else if ($enrolselectplugin->can_enrol($instance, $USER, $data->role)) {
             $timestart = time();
             $timeend = 0;
-            if (in_array($instance->courseid, array(249, 250))) {
+            if (isset($CFG->is_siuaps_rennes) === true && in_array($instance->courseid, array(249, 250))) {
                 // Pour la musculation et la licence FFSU, on accepte d'office les inscriptions.
-                $status = 0;
+                $status = enrol_select_plugin::ACCEPTED;
             } else {
                 $enrolselectplugin->set_available_status($instance, $USER);
                 $status = current($enrolselectplugin->available_status);

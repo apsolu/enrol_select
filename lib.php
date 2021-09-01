@@ -359,7 +359,7 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Check wait list.
-        $waitlistenrolements = $DB->get_records('user_enrolments', array('enrolid' => $instance->id, 'status' => 3), '', 'userid');
+        $waitlistenrolements = $DB->get_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::WAIT), '', 'userid');
         $this->count_wait_list_enrolements = count($waitlistenrolements);
 
         if (isset($user, $waitlistenrolements[$user->id])) {
@@ -420,10 +420,12 @@ class enrol_select_plugin extends enrol_plugin {
             }
         }
 
-        // Dirty hack pour les activités complémentaires !
-        // À virer, et mettre des auto-inscriptions à la place.
-        if ($roleid == 5 || in_array($instance->courseid, array('249', '250'), $strict = true) === true) {
-            return true;
+        if (isset($CFG->is_siuaps_rennes) === true) {
+            // Dirty hack pour les activités complémentaires !
+            // À virer, et mettre des auto-inscriptions à la place.
+            if ($roleid == 5 || in_array($instance->courseid, array('249', '250'), $strict = true) === true) {
+                return true;
+            }
         }
 
         // Check available slots.
@@ -537,7 +539,7 @@ class enrol_select_plugin extends enrol_plugin {
 
             $timestart = 0; // Pas de date de début.
             $timeend = 0; // Pas de date de fin.
-            $status = 0; // Étudiant accepté automatiquement.
+            $status = self::ACCEPTED; // Étudiant accepté automatiquement.
             $roleid = 11; // On force le rôle libre.
         }
 
