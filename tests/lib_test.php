@@ -40,6 +40,67 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         $this->resetAfterTest();
     }
 
+    public function test_get_available_status() {
+        global $DB, $USER;
+
+        $generator = $this->getDataGenerator();
+
+        // Désactive les notifications.
+        set_config('enrol_select_select_notification_disable', 1, 'message');
+
+        // Génère une instance enrol_select.
+        $numberofusers = array(enrol_select_plugin::ACCEPTED => 5, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0);
+        list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
+
+        // Teste que l'utilisateur se voit proposer une place sur liste principale quand les quotas sont absents.
+        $user = $generator->create_user();
+        $this->assertSame('0', $instance->customint3);
+        $this->assertSame(enrol_select_plugin::MAIN, $plugin->get_available_status($instance, $user));
+
+        // On définit un maximum d'inscrits.
+        $instance->customint3 = 1;
+        $instance->customint1 = $numberofusers[enrol_select_plugin::ACCEPTED] + $numberofusers[enrol_select_plugin::MAIN]; // Places sur la liste principale.
+        $instance->customint2 = 2;
+
+        // On ajoute une place sur la liste principale.
+        $instance->customint1++;
+        $DB->update_record('enrol', $instance);
+
+        // Teste que l'utilisateur se voit proposer une place sur liste principale.
+        $this->assertSame(enrol_select_plugin::MAIN, $plugin->get_available_status($instance, $user));
+
+        // On inscrit l'utilisateur.
+        $plugin->enrol_user($instance, $user->id, $roleid = 5, $timestart = 0, $timeend = 0, enrol_select_plugin::MAIN);
+
+        // Teste que l'utilisateur se voit proposer une place sur liste principale.
+        $this->assertSame(enrol_select_plugin::MAIN, $plugin->get_available_status($instance, $user));
+
+        // Teste que l'utilisateur se voit proposer une place sur liste complémentaire.
+        $user = $generator->create_user();
+        $this->assertSame(enrol_select_plugin::WAIT, $plugin->get_available_status($instance, $user));
+
+        // On inscrit l'utilisateur.
+        $plugin->enrol_user($instance, $user->id, $roleid = 5, $timestart = 0, $timeend = 0, enrol_select_plugin::WAIT);
+
+        // Teste que l'utilisateur se voit proposer une place sur liste complémentaire.
+        $this->assertSame(enrol_select_plugin::WAIT, $plugin->get_available_status($instance, $user));
+
+        // Teste que l'utilisateur se voit proposer une place sur liste complémentaire.
+        // Note : sert à tester la première sortie "return self::WAIT;" de la méthode get_available_status()).
+        $user = $generator->create_user();
+        $this->assertSame(enrol_select_plugin::WAIT, $plugin->get_available_status($instance, $user));
+
+        // On inscrit l'utilisateur.
+        $plugin->enrol_user($instance, $user->id, $roleid = 5, $timestart = 0, $timeend = 0, enrol_select_plugin::WAIT);
+
+        // Teste que l'utilisateur se voit proposer une place sur liste complémentaire.
+        $this->assertSame(enrol_select_plugin::WAIT, $plugin->get_available_status($instance, $user));
+
+        // Teste que l'utilisateur se voit proposer aucune place.
+        $user = $generator->create_user();
+        $this->assertFalse($plugin->get_available_status($instance, $user));
+    }
+
     public function test_refill_main_list() {
         global $DB, $USER;
 

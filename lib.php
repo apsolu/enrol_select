@@ -258,6 +258,70 @@ class enrol_select_plugin extends enrol_plugin {
         return has_capability('enrol/select:config', $context);
     }
 
+    /**
+     * Retourne le code de la liste dans laquelle sera enregistré le prochain inscrit.
+     *
+     * TODO: implémenter la possibilité d'inscrire directement un étudiant sur la liste des acceptés.
+     *
+     * @param object     $instance Objet de l'instance de la méthode d'inscription.
+     * @param string|int $userid   Identifiant utilisateur du prochain inscrit.
+     *
+     * @return string|false Retourne false si il n'y a plus de place cette méthode d'inscription par voeux.
+     */
+    public function get_available_status($instance, $user) {
+        global $DB;
+
+        if (empty($instance->customint3) === true) {
+            // Lorsque les quota ne sont pas activés, on retourne le code de la liste principale.
+            return self::MAIN;
+        }
+
+        // Détermine si il y a déjà des utilisateurs sur liste complémentaire.
+        $waitlistenrolements = $DB->get_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::WAIT), '', 'userid');
+        $this->count_wait_list_enrolements = count($waitlistenrolements);
+
+        if (isset($user, $waitlistenrolements[$user->id])) {
+            unset($waitlistenrolements[$user->id]);
+            $countwaitlistenrolements = $this->count_wait_list_enrolements - 1;
+        } else {
+            $countwaitlistenrolements = $this->count_wait_list_enrolements;
+        }
+
+        if ($countwaitlistenrolements >= $instance->customint2) {
+            // Il n'y a plus de place disponible sur la liste complémentaire.
+            return false;
+        }
+
+        if ($countwaitlistenrolements !== 0) {
+            // Il y a déjà des utilisateurs sur liste complémentaire. On est sûr qu'il reste de la place uniquement ici.
+            return self::WAIT;
+        }
+
+        // Détermine si il y a déjà des utilisateurs sur la liste des acceptés et la liste principale.
+        $sql = "SELECT userid".
+            " FROM {user_enrolments}".
+            " WHERE enrolid = :enrolid".
+            " AND status IN (:accepted, :main)";
+        $mainlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $instance->id, 'accepted' => self::ACCEPTED, 'main' => self::MAIN));
+        $this->count_main_list_enrolements = count($mainlistenrolements);
+
+        if (isset($user, $mainlistenrolements[$user->id])) {
+            unset($mainlistenrolements[$user->id]);
+            $countmainlistenrolements = $this->count_main_list_enrolements - 1;
+        } else {
+            $countmainlistenrolements = $this->count_main_list_enrolements;
+        }
+
+
+        if ($countmainlistenrolements < $instance->customint1) {
+            // Il reste des places disponibles sur liste principale.
+            return self::MAIN;
+        }
+
+        // Cas où la liste principale est pleine et la liste complémentaire est vide.
+        return self::WAIT;
+    }
+
     public function get_roles($instance, $context) {
         global $DB;
 
@@ -335,6 +399,8 @@ class enrol_select_plugin extends enrol_plugin {
 
     public function set_available_status($instance, $user = null) {
         global $DB;
+
+        debugging(sprintf('%s() is deprecated. Please see enrol_select_plugin::get_available_status() method instead.', __METHOD__), DEBUG_DEVELOPER);
 
         $this->available_status = array();
 
@@ -429,10 +495,8 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Check available slots.
-        // TODO: la méthode set_available_status() ne gère pas correctement les no quotas.
-        $this->set_available_status($instance, $user);
-        if ($this->available_status === array()) {
-            debugging($this->get_name().' have no free slot anymore.', $level = DEBUG_DEVELOPER);
+        if ($this->get_available_status($instance, $USER) === false) {
+            debugging($this->get_name().' n\'a plus aucune place disponible.', $level = DEBUG_DEVELOPER);
             return false;
         }
 

@@ -253,8 +253,10 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 // Pour la musculation et la licence FFSU, on accepte d'office les inscriptions.
                 $status = enrol_select_plugin::ACCEPTED;
             } else {
-                $enrolselectplugin->set_available_status($instance, $USER);
-                $status = current($enrolselectplugin->available_status);
+                $status = $enrolselectplugin->get_available_status($instance, $USER);
+                if ($status === false) {
+                    print_error('error_no_left_slot', 'enrol_select');
+                }
             }
             $recovergrades = null;
             $enrolselectplugin->enrol_user($instance, $USER->id, $data->role, $timestart, $timeend, $status, $recovergrades);
