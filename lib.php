@@ -451,7 +451,7 @@ class enrol_select_plugin extends enrol_plugin {
     }
 
     public function can_enrol($instance, $user, $roleid) {
-        global $DB;
+        global $DB, $USER;
 
         $today = time();
 
