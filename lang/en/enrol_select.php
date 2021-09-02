@@ -42,6 +42,8 @@ $string['no_available_enrol_methods_desc'] = 'Pour utiliser cette fonctionnalit�
 $string['no_available_prices'] = 'Aucun tarif défini';
 $string['no_available_roles'] = 'Aucun rôle disponible';
 $string['no_quotas'] = 'Aucun quota';
+$string['no_seat_restrictions'] = 'Aucune restriction de place';
+$string['no_places_available'] = 'Aucune place disponible';
 $string['number_of_accepted_enrolments'] = 'Nombre d\'inscriptions acceptées';
 $string['number_of_deleted_enrolments'] = 'Nombre de désinscriptions';
 $string['number_of_enrolments_on_main_list'] = 'Nombre d\'inscriptions sur liste principale';
@@ -51,6 +53,11 @@ $string['overview'] = 'Vue d\'ensemble';
 $string['pluginname'] = 'Inscription par voeux';
 $string['pluginname_desc'] = 'Le plugin d\'inscription par voeux permet aux utilisateurs de choisir les cours qu\'ils veulent suivre. Les cours peuvent être protégés par différents critères (période d\'inscription, taille de la liste principale, cohortes, etc).';
 $string['reenrolment_disabled'] = 'Réinscription désactivée';
+$string['there_are_still_places_on_the_wait_list'] = 'Il reste des places sur liste complémentaire';
+$string['x_place_remaining_on_the_main_list'] = '{$a} place restante sur liste principale';
+$string['x_place_remaining_on_the_wait_list'] = '{$a} place restante sur liste complémentaire';
+$string['x_places_remaining_on_the_main_list'] = '{$a} places restantes sur liste principale';
+$string['x_places_remaining_on_the_wait_list'] = '{$a} places restantes sur liste complémentaire';
 $string['you_are_on_X_list'] = 'Vous êtes sur {$a}.';
 $string['your_wish_has_been_registered'] = 'Votre vœu a été enregistré.';
 
@@ -203,7 +210,7 @@ Vous avez été déplacé de la liste des inscrits à la liste principale.
 
 Cordialement,';
 $string['message_accepted_to_wait'] = str_replace('principale', 'complémentaire', $string['message_accepted_to_main']);
-$string['message_accepted_to_deleted'] = str_replace('principale', 'déinscrits', $string['message_accepted_to_main']);
+$string['message_accepted_to_deleted'] = str_replace('principale', 'désinscrits', $string['message_accepted_to_main']);
 
 $string['message_main_to_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits à la liste principale', 'Votre pré-inscription a été confirmée', $string['message_accepted_to_main']);
 $string['message_main_to_wait'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_wait']);
@@ -217,7 +224,7 @@ Cordialement,';
 $string['message_accepted_to_next_accepted'] = str_replace('principale', 'des inscrits', $string['message_accepted_to_next_main']);
 $string['message_main_to_next_main'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_next_main']);
 $string['message_accepted_to_next_wait'] = str_replace('principale', 'complémentaire', $string['message_accepted_to_next_main']);
-$string['message_accepted_to_next_deleted'] = str_replace('principale', 'déinscrits', $string['message_accepted_to_next_main']);
+$string['message_accepted_to_next_deleted'] = str_replace('principale', 'désinscrits', $string['message_accepted_to_next_main']);
 
 $string['message_main_to_next_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits du semestre précédent à la liste principale du prochain semestre', 'Votre ré-inscription a été confirmée', $string['message_accepted_to_next_main']);
 $string['message_main_to_next_wait'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_next_wait']);

@@ -22,6 +22,8 @@
 
 namespace UniversiteRennes2\Apsolu;
 
+use enrol_select_plugin;
+
 function get_activities($siteid = 0, $categoryid = 0, $categoryname = '', $on_homepage = true) {
     global $DB;
 
@@ -611,62 +613,49 @@ function get_potential_user_activities($time = null, $cohorts = null) {
         $time = time();
 
         if ($enrol->customint3 == 1) {
-            $sql = "SELECT userid".
-                " FROM {user_enrolments}".
-                " WHERE enrolid = :enrolid".
-                " AND status IN (0, 2)".
-                " AND (timestart <= :timestart OR timestart = :startenrol)". // TODO: régler ce problème de date de début !
-                " AND (timeend = 0 OR timeend >= :timeend)";
-            $mainlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $enrol->id, 'timestart' => $time, 'startenrol' => $enrol->customint7, 'timeend' => $time));
+            // Les quotas sont activés.
+            // TODO: refactoriser cette partie avec le script ajax/reload_column_left_places.php.
+            // Calcule le nombre d'inscrits sur la liste des acceptés et sur la liste principale.
+            $sql = "SELECT COUNT(userid) FROM {user_enrolments} WHERE enrolid = :enrolid AND status IN (:accepted, :main)";
+            $conditions =  array('enrolid' => $enrol->id, 'accepted' => enrol_select_plugin::ACCEPTED, 'main' => enrol_select_plugin::MAIN);
+            $course->count_main_list = $DB->count_records_sql($sql, $conditions);
 
-            $course->count_main_list = count($mainlistenrolements);
+            // Récupère le quota de la liste principale.
             $course->max_main_list = $enrol->customint1;
-            $course->user_main_list = isset($mainlistenrolements[$USER->id]);
-            $countmainslots = $course->max_main_list - $course->count_main_list;
-            if ($countmainslots > 1) {
-                $course->left_main_list_str = $countmainslots.' places restantes sur liste principale';
-            } else {
-                $course->left_main_list_str = $countmainslots.' place restante sur liste principale';
-            }
 
-            $sql = "SELECT userid".
-                " FROM {user_enrolments}".
-                " WHERE enrolid = :enrolid".
-                " AND status IN (3)".
-                " AND (timestart <= :timestart OR timestart = :startenrol)". // TODO: régler ce problème de date de début !
-                " AND (timeend = 0 OR timeend >= :timeend)";
-            $waitlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $enrol->id, 'timestart' => $time, 'startenrol' => $enrol->customint7, 'timeend' => $time));
-            $course->count_wait_list = count($waitlistenrolements);
+            // Calcule le nombre d'inscrits sur la liste complémentaire.
+            $conditions =  array('enrolid' => $enrol->id, 'status' => enrol_select_plugin::WAIT);
+            $course->count_wait_list = $DB->count_records('user_enrolments', $conditions);
+
+            // Récupère le quota de la liste complémentaire.
             $course->max_wait_list = $enrol->customint2;
-            $course->user_wait_list = isset($waitlistenrolements[$USER->id]);
-            $countwaitslots = $course->max_wait_list - $course->count_wait_list;
-            // À quoi sert $course->left_wait_list_str ??? Ça ne semble être utilisé nulle part ailleurs...
-            if ($countwaitslots > 1) {
-                $course->left_wait_list_str = $countwaitslots.' places restantes sur liste complémentaire';
-            } else {
-                $course->left_wait_list_str = $countwaitslots.' place restante sur liste complémentaire';
-            }
 
-            $course->user_no_list = !$course->user_main_list && !$course->user_wait_list;
-
-            $ismainlistfull = $course->count_main_list >= $course->max_main_list;
-            $iswaitlistfull = $course->count_wait_list >= $course->max_wait_list;
-            $course->full_registration = $ismainlistfull && $iswaitlistfull;
-
-            if ($course->max_main_list > $course->count_main_list) {
+            if ($course->max_main_list > $course->count_main_list && $course->count_wait_list === 0) {
+                // Si la liste principale n'est pas complète et que la liste d'attente est vide.
                 $count = $course->max_main_list - $course->count_main_list;
-                $course->left_places_str = $count.' places restantes sur liste principale';
+                if ($count > 1) {
+                    $course->left_places_str = get_string('x_places_remaining_on_the_main_list', 'enrol_select', $count);
+                } else {
+                    $course->left_places_str = get_string('x_place_remaining_on_the_main_list', 'enrol_select', $count);
+                }
                 $course->left_places_style = 'success';
+                $course->full_registration = false;
             } else if ($course->max_wait_list > $course->count_wait_list) {
-                $course->left_places_str = 'Il reste des places sur liste complémentaire';
+                // Si la liste complémentaire n'est pas complète.
+                // TODO: faire une option afin de laisser le choix entre afficher le nombre de places restantes sur liste complémentaire
+                // ou afficher un message générique indiquant qu'il reste des places sur liste complémentaire.
+                $course->left_places_str = get_string('there_are_still_places_on_the_wait_list', 'enrol_select');
                 $course->left_places_style = 'warning';
+                $course->full_registration = false;
             } else {
-                $course->left_places_str = 'Aucune place disponible';
+                // Si il ne reste plus de place.
+                $course->left_places_str = get_string('no_places_available', 'enrol_select');
                 $course->left_places_style = 'danger';
+                $course->full_registration = true;
             }
         } else {
-            // Aucun quota.
-            $course->left_places_str = 'Aucune restriction de places';
+            // Les quotas sont désactivés.
+            $course->left_places_str = get_string('no_seat_restrictions', 'enrol_select');
             $course->left_places_style = 'success';
             $course->full_registration = false;
         }

@@ -25,6 +25,7 @@ use UniversiteRennes2\Apsolu as apsolu;
 define('AJAX_SCRIPT', true);
 
 require(__DIR__.'/../../../config.php');
+require_once($CFG->dirroot.'/enrol/select/lib.php');
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
@@ -41,35 +42,46 @@ $enrol = $DB->get_record('enrol', array('id' => $enrolid), '*', MUST_EXIST);
 
 if ($enrol->customint3 == 1) {
     // Les quotas sont activés.
-    $sql = "SELECT userid FROM {user_enrolments} WHERE enrolid = ? AND status IN (0, 2)";
-    $mainlistenrolements = $DB->get_records_sql($sql, array($enrolid));
-    $countmainlist = count($mainlistenrolements);
+    // TODO: refactoriser cette partie avec la fonction get_potential_user_activities() du script locallib.php.
+    // Calcule le nombre d'inscrits sur la liste des acceptés et sur la liste principale.
+    $sql = "SELECT COUNT(userid) FROM {user_enrolments} WHERE enrolid = :enrolid AND status IN (:accepted, :main)";
+    $conditions =  array('enrolid' => $enrol->id, 'accepted' => enrol_select_plugin::ACCEPTED, 'main' => enrol_select_plugin::MAIN);
+    $countmainlist = $DB->count_records_sql($sql, $conditions);
+
+    // Récupère le quota de la liste principale.
     $maxmainlist = $enrol->customint1;
-    $usermainlist = isset($mainlistenrolements[$USER->id]);
-    $leftmainliststr = ($maxmainlist - $countmainlist).' places restantes sur liste principale';
 
-    $waitlistenrolements = $DB->get_records('user_enrolments', array('enrolid' => $enrol->id, 'status' => 3), '', 'userid');
-    $countwaitlist = count($waitlistenrolements);
+    // Calcule le nombre d'inscrits sur la liste complémentaire.
+    $conditions =  array('enrolid' => $enrol->id, 'status' => enrol_select_plugin::WAIT);
+    $countwaitlist = $DB->count_records('user_enrolments', $conditions);
+
+    // Récupère le quota de la liste complémentaire.
     $maxwaitlist = $enrol->customint2;
-    $userwaitlist = isset($waitlistenrolements[$USER->id]);
 
-    $usernolist = !$usermainlist && !$userwaitlist;
-    $fullregistration = ($countmainlist >= $maxmainlist) && ($countwaitlist >= $maxwaitlist);
-    if ($maxmainlist > $countmainlist) {
-        $leftplacesstr = ($maxmainlist - $countmainlist).' places restantes sur liste principale';
+    if ($maxmainlist > $countmainlist && $countwaitlist === 0) {
+        // Si la liste principale n'est pas complète et que la liste d'attente est vide.
+        $count = $maxmainlist - $countmainlist;
+        if ($count > 1) {
+            $leftplacesstr = get_string('x_places_remaining_on_the_main_list', 'enrol_select', $count);
+        } else {
+            $leftplacesstr = get_string('x_place_remaining_on_the_main_list', 'enrol_select', $count);
+        }
         $leftplacesstyle = 'success';
     } else if ($maxwaitlist > $countwaitlist) {
-        // TODO: faire une option afin de laisser le choix entre afficher ou non le nombre de places restantes.
+        // Si la liste complémentaire n'est pas complète.
+        // TODO: faire une option afin de laisser le choix entre afficher le nombre de places restantes sur liste complémentaire
+        // ou afficher un message générique indiquant qu'il reste des places sur liste complémentaire.
         // $leftplacesstr = ($maxwaitlist - $countwaitlist).' places restantes sur liste complémentaire';
-        $leftplacesstr = 'Il reste des places sur liste complémentaire';
+        $leftplacesstr = get_string('there_are_still_places_on_the_wait_list', 'enrol_select');
         $leftplacesstyle = 'warning';
     } else {
-        $leftplacesstr = 'Aucune place disponible';
+        // Si il ne reste plus de place.
+        $leftplacesstr = get_string('no_places_available', 'enrol_select');
         $leftplacesstyle = 'danger';
     }
 } else {
     // Les quotas sont désactivés.
-    $leftplacesstr = 'Aucune restriction de places';
+    $leftplacesstr = get_string('no_seat_restrictions', 'enrol_select');
     $leftplacesstyle = 'success';
 }
 
