@@ -60,7 +60,7 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         // On définit un maximum d'inscrits.
         $instance->customint3 = 1;
         $instance->customint1 = $numberofusers[enrol_select_plugin::ACCEPTED] + $numberofusers[enrol_select_plugin::MAIN]; // Places sur la liste principale.
-        $instance->customint2 = 2;
+        $instance->customint2 = 0;
 
         // On ajoute une place sur la liste principale.
         $instance->customint1++;
@@ -75,8 +75,15 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         // Teste que l'utilisateur se voit proposer une place sur liste principale.
         $this->assertSame(enrol_select_plugin::MAIN, $plugin->get_available_status($instance, $user));
 
-        // Teste que l'utilisateur se voit proposer une place sur liste complémentaire.
+        // Teste que l'utilisateur se voit refuser une place sur liste complémentaire.
         $user = $generator->create_user();
+        $this->assertFalse($plugin->get_available_status($instance, $user));
+
+        // On définit un quota sur la liste complémentaire.
+        $instance->customint2 = 2;
+        $DB->update_record('enrol', $instance);
+
+        // Teste que l'utilisateur se voit proposer une place sur liste complémentaire.
         $this->assertSame(enrol_select_plugin::WAIT, $plugin->get_available_status($instance, $user));
 
         // On inscrit l'utilisateur.
@@ -97,6 +104,46 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         $this->assertSame(enrol_select_plugin::WAIT, $plugin->get_available_status($instance, $user));
 
         // Teste que l'utilisateur se voit proposer aucune place.
+        $user = $generator->create_user();
+        $this->assertFalse($plugin->get_available_status($instance, $user));
+
+        // Teste lorsque que le quota sur liste principale est à 0.
+        $numberofusers = array(enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0);
+        list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
+
+        // On définit un maximum d'inscrits.
+        $instance->customint3 = 1;
+        $instance->customint1 = 0;
+        $instance->customint2 = 1;
+
+        // Teste qu'on arrive directement sur liste complémentaire.
+        $user = $generator->create_user();
+        $this->assertSame(enrol_select_plugin::WAIT, $plugin->get_available_status($instance, $user));
+
+        // On inscrit l'utilisateur.
+        $plugin->enrol_user($instance, $user->id, $roleid = 5, $timestart = 0, $timeend = 0, enrol_select_plugin::WAIT);
+
+        // Teste l'absence de place.
+        $user = $generator->create_user();
+        $this->assertFalse($plugin->get_available_status($instance, $user));
+
+        // Teste lorsque que le quota sur liste secondaire est à 0.
+        $numberofusers = array(enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0);
+        list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
+
+        // On définit un maximum d'inscrits.
+        $instance->customint3 = 1;
+        $instance->customint1 = 1;
+        $instance->customint2 = 0;
+
+        // Teste qu'on arrive directement sur liste complémentaire.
+        $user = $generator->create_user();
+        $this->assertSame(enrol_select_plugin::MAIN, $plugin->get_available_status($instance, $user));
+
+        // On inscrit l'utilisateur.
+        $plugin->enrol_user($instance, $user->id, $roleid = 5, $timestart = 0, $timeend = 0, enrol_select_plugin::MAIN);
+
+        // Teste l'absence de place.
         $user = $generator->create_user();
         $this->assertFalse($plugin->get_available_status($instance, $user));
     }

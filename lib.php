@@ -287,8 +287,8 @@ class enrol_select_plugin extends enrol_plugin {
             $countwaitlistenrolements = $this->count_wait_list_enrolements;
         }
 
-        if ($countwaitlistenrolements >= $instance->customint2) {
-            // Il n'y a plus de place disponible sur la liste complémentaire.
+        if ($countwaitlistenrolements >= $instance->customint2 && empty($instance->customint2) === false) {
+            // Il n'y a plus de place disponible sur la liste complémentaire et les quotas sont définis pour la liste complémentaire.
             return false;
         }
 
@@ -313,13 +313,19 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
 
-        if ($countmainlistenrolements < $instance->customint1) {
-            // Il reste des places disponibles sur liste principale.
+        if ($countmainlistenrolements < $instance->customint1 && empty($instance->customint1) === false) {
+            // Il reste des places disponibles sur liste principale et les quotas sont définis pour la liste complémentaire.
             return self::MAIN;
         }
 
         // Cas où la liste principale est pleine et la liste complémentaire est vide.
-        return self::WAIT;
+        if (empty($instance->customint2) === false) {
+            // Si le quota sur la liste complémentaire n'est pas vide.
+            return self::WAIT;
+        }
+
+        // Il n'y a pas de liste complémentaire. Il n'est plus possible de s'inscrire.
+        return false;
     }
 
     public function get_roles($instance, $context) {
