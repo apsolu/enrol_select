@@ -23,6 +23,8 @@
  */
 
 $string['date_diverging_from_calendar_date'] = 'Date divergente par rapport à la date du calendrier';
+$string['enable_automatic_list_filling'] = 'Activer la remontée de liste automatique';
+$string['enable_automatic_list_filling_help'] = 'Permet de faire remonter un étudiant sur liste complèmentaire dès qu\'une place se libère sur liste principale. L\'action est appliquée seulement lorsqu\'un étudiant se désinscrit en période d\'inscription.';
 $string['enrollee_accepted_list'] = 'Candidat Inscription';
 $string['enrollee_deleted_list'] = 'Candidat Refusé';
 $string['enrollee_main_list'] = 'Candidat Principale';

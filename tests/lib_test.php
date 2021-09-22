@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once __DIR__.'/../lib.php';
+
 /**
  * Classe de tests pour enrol_select_plugin
  *
@@ -41,7 +43,7 @@ class enrol_select_plugin_testcase extends advanced_testcase {
     }
 
     public function test_get_available_status() {
-        global $DB, $USER;
+        global $DB;
 
         $generator = $this->getDataGenerator();
 
@@ -226,5 +228,66 @@ class enrol_select_plugin_testcase extends advanced_testcase {
             $conditions = array('enrolid' => $instance->id, 'status' => $status);
             $this->assertSame($count, $DB->count_records('user_enrolments', $conditions));
         }
+    }
+
+    public function test_unenrol_user() {
+        global $DB, $USER;
+
+        $adminid = $USER->id;
+        $generator = $this->getDataGenerator();
+
+        // Désactive les notifications.
+        set_config('enrol_select_select_notification_disable', 1, 'message');
+
+        // Génère une instance enrol_select.
+        $numberofusers = array(enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 2, enrol_select_plugin::WAIT => 2);
+        list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
+
+        // Active les quotas et la remontée automatique.
+        $instance->customint3 = 1;
+        $instance->customint1 = 2;
+        $instance->customint2 = 2;
+        $instance->customchar2 = '1';
+        $DB->update_record('enrol', $instance);
+
+        // Désinscrit un étudiant.
+        $user = array_shift($users[enrol_select_plugin::MAIN]);
+        $USER->id = $user->id;
+        $plugin->unenrol_user($instance, $user->id);
+
+        // Vérifie que l'utilisateur n'est plus inscrit.
+        $conditions = array('enrolid' => $instance->id, 'userid' => $user->id);
+        $this->assertFalse($DB->get_record('user_enrolments', $conditions));
+
+        // Vérifie que le remplissage n'a pas eu lieu et qu'il y a bien 2 utilisateurs sur liste principale.
+        $conditions = array('enrolid' => $instance->id, 'status' => enrol_select_plugin::MAIN);
+        $this->assertSame(2, $DB->count_records('user_enrolments', $conditions));
+
+        // Vérifie que le remplissage n'a pas eu lieu et qu'il y a bien 2 utilisateurs sur liste complémentaire.
+        $conditions = array('enrolid' => $instance->id, 'status' => enrol_select_plugin::WAIT);
+        $this->assertSame(1, $DB->count_records('user_enrolments', $conditions));
+
+        // Désactive la remontée automatique.
+        $instance->customchar2 = '0';
+        $DB->update_record('enrol', $instance);
+
+        // Désinscrit un utilisateur.
+        $user = array_shift($users[enrol_select_plugin::MAIN]);
+        $USER->id = $user->id;
+        $plugin->unenrol_user($instance, $user->id);
+
+        // Vérifie que l'utilisateur n'est plus inscrit.
+        $conditions = array('enrolid' => $instance->id, 'userid' => $user->id);
+        $this->assertFalse($DB->get_record('user_enrolments', $conditions));
+
+        // Vérifie que le remplissage a eu lieu et qu'il y a maintenant 2 utilisateurs sur liste principale.
+        $conditions = array('enrolid' => $instance->id, 'status' => enrol_select_plugin::MAIN);
+        $this->assertSame(1, $DB->count_records('user_enrolments', $conditions));
+
+        // Vérifie que le remplissage a eu lieu et qu'il reste 1 utilisateur sur liste complémentaire.
+        $conditions = array('enrolid' => $instance->id, 'status' => enrol_select_plugin::WAIT);
+        $this->assertSame(1, $DB->count_records('user_enrolments', $conditions));
+
+        $USER->id = $adminid;
     }
 }

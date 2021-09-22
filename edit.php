@@ -99,6 +99,10 @@ if ($mform->is_cancelled()) {
         $data->customint6 = 0;
     }
 
+    if (isset($data->customchar2) === false) {
+        $data->customchar2 = 0;
+    }
+
     if (empty($data->customchar1) === false && isset($calendars[$data->customchar1]) === true) {
         $calendar = $calendars[$data->customchar1];
         // Note: afin de permettre la réouverture d'inscription en cours d'année, on permet à un utilisateur de diverger avec le calendrier officiel.
@@ -128,6 +132,7 @@ if ($mform->is_cancelled()) {
         $instance->customint7     = $data->customint7;
         $instance->customint8     = $data->customint8;
         $instance->customchar1    = $data->customchar1;
+        $instance->customchar2    = $data->customchar2;
         $instance->enrolstartdate = $data->enrolstartdate;
         $instance->enrolenddate   = $data->enrolenddate;
         $instance->timemodified   = time();
@@ -155,6 +160,7 @@ if ($mform->is_cancelled()) {
             'customint7'      => $data->customint7,
             'customint8'      => $data->customint8,
             'customchar1'     => $data->customchar1,
+            'customchar2'     => $data->customchar2,
             'enrolstartdate'  => $data->enrolstartdate,
             'enrolenddate'    => $data->enrolenddate);
         $instance->id = $plugin->add_instance($course, $fields);

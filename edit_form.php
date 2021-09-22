@@ -103,8 +103,8 @@ class enrol_select_edit_form extends moodleform {
             $mform->addHelpButton('customint6', 'reenrolinstance', 'enrol_select');
         }
 
-        // QUOTA.
-        $mform->addElement('header', 'header', get_string('quotas', 'enrol_select'));
+        // PARAMÈTRES.
+        $mform->addElement('header', 'header', get_string('settings'));
 
         // Activer les quotas.
         $mform->addElement('selectyesno', 'customint3', get_string('enablequotas', 'enrol_select'));
@@ -119,6 +119,11 @@ class enrol_select_edit_form extends moodleform {
         $mform->addElement('text', 'customint2', get_string('max_waiting_places', 'enrol_select'), array('optional' => true));
         $mform->setType('customint2', PARAM_INT);
         $mform->disabledIf('customint2', 'customint3', 'eq', 0);
+
+        // Activer la remontée de liste automatique.
+        $mform->addElement('selectyesno', 'customchar2', get_string('enable_automatic_list_filling', 'enrol_select'));
+        $mform->addHelpButton('customchar2', 'enable_automatic_list_filling', 'enrol_select');
+        $mform->setType('customchar2', PARAM_INT);
 
         // Cohortes.
         $mform->addElement('header', 'header', get_string('cohorts', 'enrol_select'));

@@ -652,8 +652,8 @@ class enrol_select_plugin extends enrol_plugin {
 
         parent::unenrol_user($instance, $userid);
 
-        // TODO: créer une option de paramétrage par instance.
-        if (isset($CFG->is_siuaps_rennes) === true) {
+        // Si la remontée de liste est activée.
+        if (empty($instance->customchar2) === false) {
             $this->refill_main_list($instance, $userid);
         }
     }
