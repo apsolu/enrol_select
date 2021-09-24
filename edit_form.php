@@ -120,6 +120,15 @@ class enrol_select_edit_form extends moodleform {
         $mform->setType('customint2', PARAM_INT);
         $mform->disabledIf('customint2', 'customint3', 'eq', 0);
 
+        // Liste d'inscription par défaut.
+        $options = array();
+        $options[enrol_select_plugin::MAIN] = get_string('main_list', 'enrol_select');
+        $options[enrol_select_plugin::ACCEPTED] = get_string('accepted_list', 'enrol_select');
+
+        $mform->addElement('select', 'customchar3', get_string('default_enrolment_list', 'enrol_select'), $options);
+        $mform->addHelpButton('customchar3', 'default_enrolment_list', 'enrol_select');
+        $mform->setType('customchar3', PARAM_INT);
+
         // Activer la remontée de liste automatique.
         $mform->addElement('selectyesno', 'customchar2', get_string('enable_automatic_list_filling', 'enrol_select'));
         $mform->addHelpButton('customchar2', 'enable_automatic_list_filling', 'enrol_select');

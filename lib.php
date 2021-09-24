@@ -209,6 +209,9 @@ class enrol_select_plugin extends enrol_plugin {
         $fields['customint6']      = 0;  // Reenrol select_enrol instance.
         $fields['customint7']      = 0;  // Course start date.
         $fields['customint8']      = 0;  // Course end date.
+        $fields['customchar1']     = 0;  // Type de calendrier.
+        $fields['customchar2']     = 0;  // Remontée de liste automatique.
+        $fields['customchar3']     = self::MAIN; // Liste sur laquelle inscrire les étudiants.
 
         return $fields;
     }
@@ -261,8 +264,6 @@ class enrol_select_plugin extends enrol_plugin {
     /**
      * Retourne le code de la liste dans laquelle sera enregistré le prochain inscrit.
      *
-     * TODO: implémenter la possibilité d'inscrire directement un étudiant sur la liste des acceptés.
-     *
      * @param object     $instance Objet de l'instance de la méthode d'inscription.
      * @param string|int $userid   Identifiant utilisateur du prochain inscrit.
      *
@@ -273,7 +274,7 @@ class enrol_select_plugin extends enrol_plugin {
 
         if (empty($instance->customint3) === true) {
             // Lorsque les quota ne sont pas activés, on retourne le code de la liste principale.
-            return self::MAIN;
+            return self::get_default_enrolment_list($instance);
         }
 
         // Détermine si il y a déjà des utilisateurs sur liste complémentaire.
@@ -314,8 +315,8 @@ class enrol_select_plugin extends enrol_plugin {
 
 
         if ($countmainlistenrolements < $instance->customint1 && empty($instance->customint1) === false) {
-            // Il reste des places disponibles sur liste principale et les quotas sont définis pour la liste complémentaire.
-            return self::MAIN;
+            // Il reste des places disponibles sur liste principale et les quotas sont définis pour la liste principale.
+            return self::get_default_enrolment_list($instance);
         }
 
         // Cas où la liste principale est pleine et la liste complémentaire est vide.
@@ -326,6 +327,21 @@ class enrol_select_plugin extends enrol_plugin {
 
         // Il n'y a pas de liste complémentaire. Il n'est plus possible de s'inscrire.
         return false;
+    }
+
+    /**
+     * Retourne le code de la liste sur laquelle est inscrit l'utilisateur par défaut.
+     *
+     * @param object $instance Objet de l'instance de la méthode d'inscription.
+     *
+     * @return int Retourne soit self::ACCEPTED, soit self::MAIN.
+     */
+    public static function get_default_enrolment_list($instance) {
+        if ($instance->customchar3 === self::ACCEPTED) {
+            return self::ACCEPTED;
+        }
+
+        return self::MAIN;
     }
 
     public function get_roles($instance, $context) {
@@ -602,29 +618,17 @@ class enrol_select_plugin extends enrol_plugin {
     }
 
     public function enrol_user(stdClass $instance, $userid, $roleid = null, $timestart = 0, $timeend = 0, $status = null, $recovergrades = null) {
-        global $CFG, $DB;
-
-        if (isset($CFG->is_siuaps_rennes) === true && in_array((string) $instance->courseid, array('249', '250'), $strict = true) === true) {
-            // Inscription à la ffsu ou à la musculation.
-
-            $timestart = 0; // Pas de date de début.
-            $timeend = 0; // Pas de date de fin.
-            $status = self::ACCEPTED; // Étudiant accepté automatiquement.
-            $roleid = 11; // On force le rôle libre.
-        }
+        global $DB;
 
         // La méthode parent::enrol_user() ne remplace pas les rôles, mais cumul. Il faut donc faire un traitement différent si il s'agit juste d'un changement de rôle.
         $enrolled = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $userid));
         if ($enrolled === false) {
-            if (isset($CFG->is_siuaps_rennes) === false || in_array((string) $instance->courseid, array('249', '250'), $strict = true) === false) {
-                // Inscription à un cours du SIUAPS.
-                if ($timestart === 0) {
-                    $timestart = $instance->customint7;
-                }
+            if ($timestart === 0) {
+                $timestart = $instance->customint7;
+            }
 
-                if ($timeend === 0) {
-                    $timeend = $instance->customint8;
-                }
+            if ($timeend === 0) {
+                $timeend = $instance->customint8;
             }
 
             parent::enrol_user($instance, $userid, $roleid, $timestart, $timeend, $status, $recovergrades);
@@ -648,8 +652,6 @@ class enrol_select_plugin extends enrol_plugin {
     }
 
     public function unenrol_user(stdClass $instance, $userid) {
-        global $CFG;
-
         parent::unenrol_user($instance, $userid);
 
         // Si la remontée de liste est activée.

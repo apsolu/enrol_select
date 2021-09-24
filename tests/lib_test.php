@@ -148,6 +148,39 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         // Teste l'absence de place.
         $user = $generator->create_user();
         $this->assertFalse($plugin->get_available_status($instance, $user));
+
+        // On bascule sur une inscription sur liste acceptée par défaut.
+        $numberofusers = array(enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0);
+        list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
+        $instance->customchar3 = enrol_select_plugin::ACCEPTED;
+        $instance->customint3 = 0;
+
+        // Teste qu'on arrive directement sur liste des acceptés lorsque les quotas sont désactivés.
+        $user = $generator->create_user();
+        $this->assertSame(enrol_select_plugin::ACCEPTED, $plugin->get_available_status($instance, $user));
+
+        // Teste qu'on arrive directement sur liste des acceptés lorsque les quotas sont activés.
+        $instance->customint1 = 10;
+        $instance->customint2 = 10;
+        $instance->customint3 = 1;
+        $user = $generator->create_user();
+        $this->assertSame(enrol_select_plugin::ACCEPTED, $plugin->get_available_status($instance, $user));
+    }
+
+    public function test_get_default_enrolment_list() {
+        $instance = new stdClass();
+
+        // Teste la valeur enrol_select_plugin::ACCEPTED.
+        $instance->customchar3 = enrol_select_plugin::ACCEPTED;
+        $this->assertSame(enrol_select_plugin::ACCEPTED, enrol_select_plugin::get_default_enrolment_list($instance));
+
+        // Teste la valeur enrol_select_plugin::MAIN.
+        $instance->customchar3 = enrol_select_plugin::MAIN;
+        $this->assertSame(enrol_select_plugin::MAIN, enrol_select_plugin::get_default_enrolment_list($instance));
+
+        // Teste que par défaut la valeur enrol_select_plugin::MAIN soit retournée.
+        $instance->customchar3 = null;
+        $this->assertSame(enrol_select_plugin::MAIN, enrol_select_plugin::get_default_enrolment_list($instance));
     }
 
     public function test_refill_main_list() {

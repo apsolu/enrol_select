@@ -249,14 +249,9 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
         } else if ($enrolselectplugin->can_enrol($instance, $USER, $data->role)) {
             $timestart = time();
             $timeend = 0;
-            if (isset($CFG->is_siuaps_rennes) === true && in_array($instance->courseid, array(249, 250))) {
-                // Pour la musculation et la licence FFSU, on accepte d'office les inscriptions.
-                $status = enrol_select_plugin::ACCEPTED;
-            } else {
-                $status = $enrolselectplugin->get_available_status($instance, $USER);
-                if ($status === false) {
-                    print_error('error_no_left_slot', 'enrol_select');
-                }
+            $status = $enrolselectplugin->get_available_status($instance, $USER);
+            if ($status === false) {
+                print_error('error_no_left_slot', 'enrol_select');
             }
             $recovergrades = null;
             $enrolselectplugin->enrol_user($instance, $USER->id, $data->role, $timestart, $timeend, $status, $recovergrades);
@@ -344,6 +339,9 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                     $message = sprintf('<p>%s <strong>%s</strong></p>', $message1, $message2);
                     break;
                 case enrol_select_plugin::ACCEPTED:
+                    $style = 'success';
+                    $message = sprintf('<p>%s</p>', get_string('your_enrolment_has_been_registered', 'enrol_select'));
+                    break;
                 default:
                     $style = 'success';
                     $message = sprintf('<p>%s</p>', $message1);

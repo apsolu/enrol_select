@@ -23,6 +23,8 @@
  */
 
 $string['date_diverging_from_calendar_date'] = 'Date divergente par rapport à la date du calendrier';
+$string['default_enrolment_list'] = 'Liste d\'inscription par défaut';
+$string['default_enrolment_list_help'] = 'Détermine si les nouvelles inscriptions doivent être automatiquement acceptées. Ce réglage s\'applique tant que les quotas ne sont pas atteints.';
 $string['enable_automatic_list_filling'] = 'Activer la remontée de liste automatique';
 $string['enable_automatic_list_filling_help'] = 'Permet de faire remonter un étudiant sur liste complèmentaire dès qu\'une place se libère sur liste principale. L\'action est appliquée seulement lorsqu\'un étudiant se désinscrit en période d\'inscription.';
 $string['enrollee_accepted_list'] = 'Candidat Inscription';
@@ -61,6 +63,7 @@ $string['x_place_remaining_on_the_wait_list'] = '{$a} place restante sur liste c
 $string['x_places_remaining_on_the_main_list'] = '{$a} places restantes sur liste principale';
 $string['x_places_remaining_on_the_wait_list'] = '{$a} places restantes sur liste complémentaire';
 $string['you_are_on_X_list'] = 'Vous êtes sur {$a}.';
+$string['your_enrolment_has_been_registered'] = 'Votre inscription a été enregistrée.';
 $string['your_wish_has_been_registered'] = 'Votre vœu a été enregistré.';
 
 // Permissions.
