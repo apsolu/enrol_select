@@ -181,6 +181,34 @@ class enrol_select_edit_form extends moodleform {
             $select->setMultiple(true);
         }
 
+        // Messages de bienvenue.
+        $options = array('cols' => '60', 'rows' => '8');
+        $mform->addElement('header', 'header', get_string('welcome_messages', 'enrol_select'));
+
+        // Message pour les inscrits sur la liste des acceptés.
+        $mform->addElement('selectyesno', 'customtext1switch', get_string('send_welcome_message_to_users_on_accepted_list', 'enrol_select'));
+        $mform->addHelpButton('customtext1switch', 'custom_welcome_message', 'enrol_select');
+
+        $mform->addElement('editor', 'customtext1', get_string('custom_welcome_message', 'enrol_select'), $options);
+        $mform->setType('customtext1', PARAM_RAW);
+        $mform->disabledIf('customtext1', 'customtext1switch', 'eq', 0);
+
+        // Message pour les inscrits sur la liste principale.
+        $mform->addElement('selectyesno', 'customtext2switch', get_string('send_welcome_message_to_users_on_main_list', 'enrol_select'));
+        $mform->addHelpButton('customtext2switch', 'custom_welcome_message', 'enrol_select');
+
+        $mform->addElement('editor', 'customtext2', get_string('custom_welcome_message', 'enrol_select'), $options);
+        $mform->setType('customtext2', PARAM_RAW);
+        $mform->disabledIf('customtext2', 'customtext2switch', 'eq', 0);
+
+        // Message pour les inscrits sur la liste complémentaire.
+        $mform->addElement('selectyesno', 'customtext3switch', get_string('send_welcome_message_to_users_on_wait_list', 'enrol_select'));
+        $mform->addHelpButton('customtext3switch', 'custom_welcome_message', 'enrol_select');
+
+        $mform->addElement('editor', 'customtext3', get_string('custom_welcome_message', 'enrol_select'), $options);
+        $mform->setType('customtext3', PARAM_RAW);
+        $mform->disabledIf('customtext3', 'customtext3switch', 'eq', 0);
+
         // Validation.
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);

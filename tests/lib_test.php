@@ -42,6 +42,110 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         $this->resetAfterTest();
     }
 
+    public function test_enrol_user() {
+        global $CFG, $DB, $USER;
+
+        $backupuserid = $USER->id;
+
+        $course = new local_apsolu\core\course();
+        $data = advanced_testcase::getDataGenerator()->get_plugin_generator('local_apsolu')->get_course_data();
+        $course->save($data);
+
+        $plugin = enrol_get_plugin('select');
+        $instanceid = $plugin->add_instance($course, $plugin->get_instance_defaults());
+
+        $instance = $DB->get_record('enrol', array('id' => $instanceid));
+
+        $roleid = '5';
+        $timestart = 0;
+        $timeend = 0;
+        $status = enrol_select_plugin::ACCEPTED;
+
+        // Teste une première inscription.
+        $user = advanced_testcase::getDataGenerator()->create_user();
+
+        $plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend, $status);
+        $userenrolment = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id));
+        $this->assertSame($instance->customint7, $userenrolment->timestart);
+        $this->assertSame($instance->customint8, $userenrolment->timeend);
+
+        // Teste un changement de status et de rôle.
+        $status = enrol_select_plugin::MAIN;
+
+        $plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend, $status);
+        $userenrolment = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id));
+        $this->assertSame($status, $userenrolment->status);
+
+        // Teste un changement de rôle.
+        $roleid = '3';
+
+        $plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend, $status);
+        $context = context_course::instance($instance->courseid);
+        $roleassignment = $DB->get_record('role_assignments', array('component' => 'enrol_select', 'userid' => $user->id, 'contextid' => $context->id, 'itemid' => $instance->id));
+        $this->assertSame($roleid, $roleassignment->roleid);
+
+        // Teste une première inscription avec des dates de début et de fin personnalisées.
+        $user = advanced_testcase::getDataGenerator()->create_user();
+
+        $timestart = '10';
+        $timeend = '20';
+        $plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend, $status);
+
+        $userenrolment = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id));
+        $this->assertSame($timestart, $userenrolment->timestart);
+        $this->assertSame($timeend, $userenrolment->timeend);
+
+        // Désactive la messagerie pour avoir un message de debug.
+        $CFG->messaging = 0;
+
+        // Teste l'envoi des notifications pour la liste des acceptés.
+        $instance->customtext1 = 'accepted';
+        $instance->customtext2 = '';
+        $instance->customtext3 = '';
+        $DB->update_record('enrol', $instance);
+
+        $user = advanced_testcase::getDataGenerator()->create_user();
+        $USER->id = $user->id;
+        $status = enrol_select_plugin::ACCEPTED;
+        $this->assertDebuggingCalled($plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend, $status));
+
+        // Teste l'envoi des notifications pour la liste principale.
+        $instance->customtext1 = '';
+        $instance->customtext2 = 'main';
+        $instance->customtext3 = '';
+        $DB->update_record('enrol', $instance);
+
+        $user = advanced_testcase::getDataGenerator()->create_user();
+        $USER->id = $user->id;
+        $status = enrol_select_plugin::MAIN;
+        $this->assertDebuggingCalled($plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend, $status));
+
+        // Teste l'envoi des notifications pour la liste secondaire.
+        $instance->customtext1 = '';
+        $instance->customtext2 = '';
+        $instance->customtext3 = 'wait';
+        $DB->update_record('enrol', $instance);
+
+        $user = advanced_testcase::getDataGenerator()->create_user();
+        $USER->id = $user->id;
+        $status = enrol_select_plugin::WAIT;
+        $this->assertDebuggingCalled($plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend, $status));
+
+        // Teste l'absence de notification.
+        $instance->customtext1 = '';
+        $instance->customtext2 = '';
+        $instance->customtext3 = '';
+        $DB->update_record('enrol', $instance);
+
+        $user = advanced_testcase::getDataGenerator()->create_user();
+        $USER->id = $user->id;
+        $status = enrol_select_plugin::WAIT;
+        $this->assertDebuggingNotCalled($plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend, $status));
+
+        // Restaure l'identifiant de l'utilisateur courant.
+        $USER->id = $backupuserid;
+    }
+
     public function test_get_available_status() {
         global $DB;
 

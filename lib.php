@@ -212,6 +212,9 @@ class enrol_select_plugin extends enrol_plugin {
         $fields['customchar1']     = 0;  // Type de calendrier.
         $fields['customchar2']     = 0;  // Remontée de liste automatique.
         $fields['customchar3']     = self::MAIN; // Liste sur laquelle inscrire les étudiants.
+        $fields['customtext1']     = ''; // Message de bienvenue pour les inscrits sur liste des acceptés.
+        $fields['customtext2']     = ''; // Message de bienvenue pour les inscrits sur liste principale.
+        $fields['customtext3']     = ''; // Message de bienvenue pour les inscrits sur liste complémentaire.
 
         return $fields;
     }
@@ -618,7 +621,7 @@ class enrol_select_plugin extends enrol_plugin {
     }
 
     public function enrol_user(stdClass $instance, $userid, $roleid = null, $timestart = 0, $timeend = 0, $status = null, $recovergrades = null) {
-        global $DB;
+        global $DB, $USER;
 
         // La méthode parent::enrol_user() ne remplace pas les rôles, mais cumul. Il faut donc faire un traitement différent si il s'agit juste d'un changement de rôle.
         $enrolled = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $userid));
@@ -633,16 +636,51 @@ class enrol_select_plugin extends enrol_plugin {
 
             parent::enrol_user($instance, $userid, $roleid, $timestart, $timeend, $status, $recovergrades);
 
+            // Notifie le nouvel inscrit.
+            if ($userid === $USER->id) {
+                $message = '';
+                switch ($status) {
+                    case self::ACCEPTED:
+                        $message = $instance->customtext1;
+                        break;
+                    case self::MAIN:
+                        $message = $instance->customtext2;
+                        break;
+                    case self::WAIT:
+                        $message = $instance->customtext3;
+                        break;
+                }
+
+                if (empty($message) === false) {
+                    $course = $DB->get_record('course', array('id' => $instance->courseid));
+
+                    $eventdata = new \core\message\message();
+                    $eventdata->name = 'select_notification';
+                    $eventdata->component = 'enrol_select';
+                    $eventdata->userfrom = get_admin();
+                    $eventdata->userto = $userid;
+                    $eventdata->subject = get_string('enrolment_to', 'enrol_select', format_string($course->fullname, $striplinks = true, $course->id));
+                    $eventdata->fullmessage = $message;
+                    $eventdata->fullmessageformat = FORMAT_HTML;
+                    $eventdata->fullmessagehtml = $message;
+                    $eventdata->smallmessage = '';
+                    $eventdata->notification = 1;
+                    $eventdata->courseid = $course->id;
+
+                    message_send($eventdata);
+                }
+            }
+
             return;
         }
 
-        // Traitement dans le cas où on souhaite juste modifier le rôle ou un statut.
-
+        // Traite le cas où on souhaite juste modifier le statut.
         if ($status !== null) {
             $sql = "UPDATE {user_enrolments} SET status = :status, timemodified = :now WHERE enrolid = :enrolid AND userid = :userid";
             $DB->execute($sql, array('status' => $status, 'now' => time(), 'enrolid' => $instance->id, 'userid' => $userid));
         }
 
+        // Traite le cas où on souhaite juste modifier le rôle.
         if ($roleid !== null) {
             $coursecontext = context_course::instance($instance->courseid);
 

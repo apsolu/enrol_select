@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['custom_welcome_message'] = 'Message de bienvenue personnalisé';
+$string['custom_welcome_message_help'] = 'Les utilisateurs recevront un message de bienvenue par courriel lors de leur inscription.';
 $string['date_diverging_from_calendar_date'] = 'Date divergente par rapport à la date du calendrier';
 $string['default_enrolment_list'] = 'Liste d\'inscription par défaut';
 $string['default_enrolment_list_help'] = 'Détermine si les nouvelles inscriptions doivent être automatiquement acceptées. Ce réglage s\'applique tant que les quotas ne sont pas atteints.';
@@ -33,6 +35,7 @@ $string['enrollee_main_list'] = 'Candidat Principale';
 $string['enrollee_wait_list'] = 'Candidat Attente';
 $string['enrollee_wish_list'] = 'Candidat Voeux';
 $string['enrollees'] = 'Inscrits';
+$string['enrolment_to'] = 'Inscription en {$a}';
 $string['filters_for_managers'] = 'Filtres pour gestionnaires';
 $string['list'] = 'Liste';
 $string['lists'] = 'Listes';
@@ -57,7 +60,11 @@ $string['overview'] = 'Vue d\'ensemble';
 $string['pluginname'] = 'Inscription par voeux';
 $string['pluginname_desc'] = 'Le plugin d\'inscription par voeux permet aux utilisateurs de choisir les cours qu\'ils veulent suivre. Les cours peuvent être protégés par différents critères (période d\'inscription, taille de la liste principale, cohortes, etc).';
 $string['reenrolment_disabled'] = 'Réinscription désactivée';
+$string['send_welcome_message_to_users_on_accepted_list'] = 'Envoyer un message aux utilisateurs sur la liste des acceptés';
+$string['send_welcome_message_to_users_on_main_list'] = 'Envoyer un message aux utilisateurs sur liste principale';
+$string['send_welcome_message_to_users_on_wait_list'] = 'Envoyer un message aux utilisateurs sur liste complémentaire';
 $string['there_are_still_places_on_the_wait_list'] = 'Il reste des places sur liste complémentaire';
+$string['welcome_messages'] = 'Messages de bienvenue';
 $string['x_place_remaining_on_the_main_list'] = '{$a} place restante sur liste principale';
 $string['x_place_remaining_on_the_wait_list'] = '{$a} place restante sur liste complémentaire';
 $string['x_places_remaining_on_the_main_list'] = '{$a} places restantes sur liste principale';

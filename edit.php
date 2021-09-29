@@ -81,12 +81,20 @@ foreach ($DB->get_records('enrol', array('courseid' => $course->id, 'enrol' => '
     $enrolmethods[$enrol->id] = $plugin->get_instance_name($enrol);
 }
 
+for ($i = 1; $i < 4; $i++) {
+    // Positionne les attributs pour la gestion des messages de bienvenue.
+    $customtext = sprintf('customtext%d', $i);
+    $customtextswitch = sprintf('customtext%dswitch', $i);
+    $instance->{$customtextswitch} = (int) !empty($instance->{$customtext});
+    $instance->{$customtext} = array('text' => $instance->{$customtext}, 'format' => FORMAT_HTML);
+}
+
 $mform = new enrol_select_edit_form(null, array($instance, $plugin, $context, $cohorts, $roles, $enrolmethods, $calendars, $cards));
 
 if ($mform->is_cancelled()) {
     redirect($return);
 } else if ($data = $mform->get_data()) {
-    // Défini les valeurs par défaut.
+    // Définit les valeurs par défaut.
     if (isset($data->customint4) === false) {
         $data->customint4 = 0;
     }
@@ -105,6 +113,18 @@ if ($mform->is_cancelled()) {
 
     if (isset($data->customchar3) === false) {
         $data->customchar3 = enrol_select_plugin::MAIN;
+    }
+
+    if (empty($data->customtext1switch) === true) {
+        $data->customtext1 = array('text' => '');
+    }
+
+    if (empty($data->customtext2switch) === true) {
+        $data->customtext2 = array('text' => '');
+    }
+
+    if (empty($data->customtext3switch) === true) {
+        $data->customtext3 = array('text' => '');
     }
 
     if (empty($data->customchar1) === false && isset($calendars[$data->customchar1]) === true) {
@@ -138,6 +158,9 @@ if ($mform->is_cancelled()) {
         $instance->customchar1    = $data->customchar1;
         $instance->customchar2    = $data->customchar2;
         $instance->customchar3    = $data->customchar3;
+        $instance->customtext1    = $data->customtext1['text'];
+        $instance->customtext2    = $data->customtext2['text'];
+        $instance->customtext3    = $data->customtext3['text'];
         $instance->enrolstartdate = $data->enrolstartdate;
         $instance->enrolenddate   = $data->enrolenddate;
         $instance->timemodified   = time();
@@ -167,6 +190,9 @@ if ($mform->is_cancelled()) {
             'customchar1'     => $data->customchar1,
             'customchar2'     => $data->customchar2,
             'customchar3'     => $data->customchar3,
+            'customtext1'     => $data->customtext1['text'],
+            'customtext2'     => $data->customtext2['text'],
+            'customtext3'     => $data->customtext3['text'],
             'enrolstartdate'  => $data->enrolstartdate,
             'enrolenddate'    => $data->enrolenddate);
         $instance->id = $plugin->add_instance($course, $fields);
