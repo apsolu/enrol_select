@@ -114,6 +114,7 @@ class enrol_select_edit_form extends moodleform {
         $mform->addElement('selectyesno', 'customchar2', get_string('enable_automatic_list_filling', 'enrol_select'));
         $mform->addHelpButton('customchar2', 'enable_automatic_list_filling', 'enrol_select');
         $mform->setType('customchar2', PARAM_INT);
+        $mform->disabledIf('customchar2', 'customint3', 'eq', 0);
 
         // Nombre de places sur la liste principale.
         $mform->addElement('text', 'customint1', get_string('max_places', 'enrol_select'));
