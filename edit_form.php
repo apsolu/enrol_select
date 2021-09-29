@@ -110,6 +110,11 @@ class enrol_select_edit_form extends moodleform {
         $mform->addElement('selectyesno', 'customint3', get_string('enablequotas', 'enrol_select'));
         $mform->setType('customint3', PARAM_INT);
 
+        // Activer la remontée de liste automatique.
+        $mform->addElement('selectyesno', 'customchar2', get_string('enable_automatic_list_filling', 'enrol_select'));
+        $mform->addHelpButton('customchar2', 'enable_automatic_list_filling', 'enrol_select');
+        $mform->setType('customchar2', PARAM_INT);
+
         // Nombre de places sur la liste principale.
         $mform->addElement('text', 'customint1', get_string('max_places', 'enrol_select'));
         $mform->setType('customint1', PARAM_INT);
@@ -128,11 +133,6 @@ class enrol_select_edit_form extends moodleform {
         $mform->addElement('select', 'customchar3', get_string('default_enrolment_list', 'enrol_select'), $options);
         $mform->addHelpButton('customchar3', 'default_enrolment_list', 'enrol_select');
         $mform->setType('customchar3', PARAM_INT);
-
-        // Activer la remontée de liste automatique.
-        $mform->addElement('selectyesno', 'customchar2', get_string('enable_automatic_list_filling', 'enrol_select'));
-        $mform->addHelpButton('customchar2', 'enable_automatic_list_filling', 'enrol_select');
-        $mform->setType('customchar2', PARAM_INT);
 
         // Cohortes.
         $mform->addElement('header', 'header', get_string('cohorts', 'enrol_select'));
