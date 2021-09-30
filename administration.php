@@ -23,7 +23,7 @@
 require('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
-$tab = optional_param('tab', 'register_types', PARAM_TEXT);
+$tab = optional_param('tab', 'default_settings', PARAM_TEXT);
 $action = optional_param('action', 'view', PARAM_ALPHA);
 
 $tabslist = array();
@@ -39,7 +39,7 @@ foreach ($tabslist as $stringid => $tabname) {
 }
 
 if (!in_array($tab, $tabslist, true)) {
-    $tab = $tabslist[0];
+    $tab = $tabslist['default_settings'];
 }
 
 admin_externalpage_setup('enrol_select_'.$tab);
