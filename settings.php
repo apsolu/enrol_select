@@ -47,6 +47,12 @@ if ($hassiteconfig or has_any_capability($capabilities, context_system::instance
         // Inscriptions.
         $ADMIN->add('apsolu', new admin_category('enrol_select', get_string('enrolments', 'enrol')));
 
+        // Inscriptions > Paramètres.
+        $label = get_string('default_settings', 'enrol_select');
+        $url = new moodle_url('/enrol/select/administration.php?tab=settings');
+        $page = new admin_externalpage('enrol_select_settings', $label, $url, $capabilities);
+        $ADMIN->add('enrol_select', $page);
+
         // Inscriptions > Population.
         $label = get_string('colleges', 'enrol_select');
         $url = new moodle_url('/enrol/select/administration.php?tab=colleges');

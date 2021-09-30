@@ -26,12 +26,16 @@ require_once($CFG->libdir.'/adminlib.php');
 $tab = optional_param('tab', 'register_types', PARAM_TEXT);
 $action = optional_param('action', 'view', PARAM_ALPHA);
 
-$tabslist = array('colleges', 'renewals', 'overview');
+$tabslist = array();
+$tabslist['default_settings'] = 'settings';
+$tabslist['colleges'] = 'colleges';
+$tabslist['renewals'] = 'renewals';
+$tabslist['overview'] = 'overview';
 
 $tabsbar = array();
-foreach ($tabslist as $tabname) {
+foreach ($tabslist as $stringid => $tabname) {
     $url = new moodle_url('/enrol/select/administration.php', array('tab' => $tabname));
-    $tabsbar[] = new tabobject($tabname, $url, get_string($tabname, 'enrol_select'));
+    $tabsbar[] = new tabobject($tabname, $url, get_string($stringid, 'enrol_select'));
 }
 
 if (!in_array($tab, $tabslist, true)) {

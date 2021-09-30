@@ -197,24 +197,40 @@ class enrol_select_plugin extends enrol_plugin {
      * @return array
      */
     public function get_instance_defaults() {
-        $fields = array();
+        $instance = get_config('enrol_select');
 
-        $fields['status']          = ENROL_INSTANCE_ENABLED;  // Enable method or not.
-        $fields['roles']           = array(5);  // Default role.
-        $fields['customint1']      = 20; // Max places on main list.
-        $fields['customint2']      = 10; // Max places on wait list.
-        $fields['customint3']      = 0;  // Enable quota or not.
-        $fields['customint4']      = 0;  // Reenrol start date.
-        $fields['customint5']      = 0;  // Reenrol end date.
-        $fields['customint6']      = 0;  // Reenrol select_enrol instance.
-        $fields['customint7']      = 0;  // Course start date.
-        $fields['customint8']      = 0;  // Course end date.
-        $fields['customchar1']     = 0;  // Type de calendrier.
-        $fields['customchar2']     = 0;  // Remontée de liste automatique.
-        $fields['customchar3']     = self::MAIN; // Liste sur laquelle inscrire les étudiants.
-        $fields['customtext1']     = ''; // Message de bienvenue pour les inscrits sur liste des acceptés.
-        $fields['customtext2']     = ''; // Message de bienvenue pour les inscrits sur liste principale.
-        $fields['customtext3']     = ''; // Message de bienvenue pour les inscrits sur liste complémentaire.
+        if (isset($instance->default_roles) === false) {
+            $instance->default_roles = 5;
+            $instance->default_customint1 = 20;
+            $instance->default_customint2 = 10;
+            $instance->default_customint3 = 0;
+            $instance->default_customchar1 = 0;
+            $instance->default_customchar2 = 0;
+            $instance->default_customchar3 = self::MAIN;
+            $instance->default_customtext1 = '';
+            $instance->default_customtext2 = '';
+            $instance->default_customtext3 = '';
+        }
+
+        $fields = array();
+        $fields['status'] = ENROL_INSTANCE_ENABLED; // Enable method or not.
+        $fields['cohorts'] = explode(',', $instance->default_cohorts); // Cohortes par défaut.
+        $fields['roles'] = explode(',', $instance->default_roles); // Rôles par défaut.
+        $fields['cards'] = explode(',', $instance->default_cards); // Paiements par défaut.
+        $fields['customint1'] = $instance->default_customint1; // Maximum de place sur la liste principale.
+        $fields['customint2'] = $instance->default_customint2; // Maximum de place sur la liste d'attente.
+        $fields['customint3'] = $instance->default_customint3; // Activer les quotas.
+        $fields['customint4'] = 0; // Reenrol start date.
+        $fields['customint5'] = 0; // Reenrol end date.
+        $fields['customint6'] = 0; // Reenrol select_enrol instance.
+        $fields['customint7'] = 0; // Course start date.
+        $fields['customint8'] = 0; // Course end date.
+        $fields['customchar1'] = $instance->default_customchar1; // Type de calendrier.
+        $fields['customchar2'] = $instance->default_customchar2; // Remontée de liste automatique.
+        $fields['customchar3'] = $instance->default_customchar3; // Liste sur laquelle inscrire les étudiants.
+        $fields['customtext1'] = $instance->default_customtext1; // Message de bienvenue pour les inscrits sur liste des acceptés.
+        $fields['customtext2'] = $instance->default_customtext2; // Message de bienvenue pour les inscrits sur liste principale.
+        $fields['customtext3'] = $instance->default_customtext3; // Message de bienvenue pour les inscrits sur liste complémentaire.
 
         return $fields;
     }
