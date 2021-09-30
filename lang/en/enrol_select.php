@@ -112,7 +112,7 @@ $string['reenrolenddatemissingerror'] = 'La date de fin des réinscriptions doit
 $string['cohortonly'] = 'Seulement les membres de la cohorte';
 $string['cohortnonmemberinfo'] = 'Only members of cohort \'{$a}\' can enrol.';
 
-$string['max_places'] = 'Nombre de places sur liste principale';
+$string['max_places'] = 'Nombre de places sur la liste des acceptés et sur la liste principale';
 $string['free_places'] = 'Places disponibles';
 
 $string['overviewtitle'] = 'Inscription aux activités';
