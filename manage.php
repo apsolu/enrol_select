@@ -159,7 +159,6 @@ $sql = 'SELECT u.*, ra.roleid, e.name AS enrolname, e.courseid, ue.enrolid, ue.s
     ' WHERE u.deleted = 0'.
     ' AND e.enrol = "select"'.
     ' AND e.status = 0'.
-    ' AND c.visible = 1'.
     ' AND u.id IN (SELECT ue.userid FROM {user_enrolments} ue JOIN {enrol} e ON e.id = ue.enrolid WHERE e.enrol = "select" AND e.courseid = :courseid)'.
     ' ORDER BY ue.timecreated, u.lastname, u.firstname';
 $users = array();
