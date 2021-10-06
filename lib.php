@@ -200,7 +200,9 @@ class enrol_select_plugin extends enrol_plugin {
         $instance = get_config('enrol_select');
 
         if (isset($instance->default_roles) === false) {
+            $instance->default_cohorts = '';
             $instance->default_roles = 5;
+            $instance->default_cards = '';
             $instance->default_customint1 = 20;
             $instance->default_customint2 = 10;
             $instance->default_customint3 = 0;
