@@ -1,4 +1,4 @@
-<form method="post" action="{{ action }}">
+<form method="post" action="{{ action }}" class="mform">
     <div class="enrol-select-manage-fieldset-div">
         <label for="addselect">{{# str}}users, moodle{{/ str}}</label>
         {{{ potential_users_selector }}}
@@ -8,7 +8,7 @@
         <div>
             <dt>Rôle</dt>
             <dd>
-                <select name="role">
+                <select class="custom-select form-control" name="role">
                     {{# roles}}
                     <option value="{{ id }}">{{ name }}</option>
                     {{/ roles}}
@@ -18,7 +18,7 @@
         <div>
             <dt>Liste</dt>
             <dd>
-                <select name="status">
+                <select class="custom-select form-control" name="status">
                     {{# status}}
                     <option value="{{ id }}">{{ name }}</option>
                     {{/ status}}
@@ -29,6 +29,6 @@
 
     <ul class="list list-inline">
         <li class="list-inline-item"><input class="btn btn-primary" type="submit" value="Inscrire les utilisateurs" /></li>
-        <li class="list-inline-item"><a class="btn btn-default" href="{{cancel}}">{{#str}}cancel{{/str}}</a></li>
+        <li class="list-inline-item"><a class="btn btn-secondary" href="{{cancel}}">{{#str}}cancel{{/str}}</a></li>
     </ul>
 </form>
