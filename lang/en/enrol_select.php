@@ -295,9 +295,6 @@ $string['federation_required_help'] = 'L\'adhésion à l\'association sportive p
 $string['federation_optional'] = 'Adhésion à l\'association sportive (facultatif)';
 $string['federation_optional_help'] = $string['federation_required_help'];
 
-$string['html_role_notifications'] = '<div class="alert alert-info"><p>Seule la première inscription par type de voeux est payante. Les inscriptions suivantes sont gratuites.</p>'.
-    '<p>Exemple: La 1ère inscription en libre (non évaluée) est égale à 40€. La 2nd inscription en libre est gratuite. Vous payerez au total 40€ (et non 80€).</p></div>';
-
 $string['error_no_left_slot'] = 'Il n\'y a pas plus de place disponible pour ce cours.';
 $string['error_reach_wishes_limit'] = 'Vous avez atteint le nombre maximum de voeux.';
 $string['error_reach_wishes_role_limit'] = 'Vous avez atteint le nombre maximum de voeux de type {$a}.';

@@ -15,12 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Page de configuration des collèges.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 use UniversiteRennes2\Apsolu as apsolu;
+
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
 

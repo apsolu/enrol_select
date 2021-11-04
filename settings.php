@@ -17,7 +17,7 @@
 /**
  * Ajoute des entrées dans le menu d'administration du site.
  *
- * @package   local_apsolu
+ * @package   enrol_select
  * @copyright 2020 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

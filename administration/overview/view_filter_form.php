@@ -40,7 +40,7 @@ class apsolu_overview_filter_form extends moodleform {
      * @return void
      */
     public function definition() {
-        global $CFG, $DB;
+        global $CFG;
 
         $mform = $this->_form;
 
@@ -59,15 +59,17 @@ class apsolu_overview_filter_form extends moodleform {
         $mform->setType('calendarid', PARAM_INT);
 
         // Champ "date d'ouverture des inscriptions".
-        $mform->addElement('date_selector', 'enrolstartdate', get_string('enrolstartdate', 'local_apsolu'), array('optional'  => true));
+        $label = get_string('enrolstartdate', 'local_apsolu');
+        $mform->addElement('date_selector', 'enrolstartdate', $label, array('optional'  => true));
         $mform->setType('enrolstartdate', PARAM_INT);
 
         // Champ "date de fermeture des inscriptions".
-        $mform->addElement('date_selector', 'enrolenddate', get_string('enrolenddate', 'local_apsolu'), array('optional'  => true));
+        $label = get_string('enrolenddate', 'local_apsolu');
+        $mform->addElement('date_selector', 'enrolenddate', $label, array('optional'  => true));
         $mform->setType('enrolenddate', PARAM_INT);
 
         // Champ "enseignants".
-        $select = $mform->addElement('select', 'teacherid', get_string('teacher', 'local_apsolu'), $teachers);
+        $mform->addElement('select', 'teacherid', get_string('teacher', 'local_apsolu'), $teachers);
         $mform->setType('teacherid', PARAM_INT);
 
         // Submit buttons.

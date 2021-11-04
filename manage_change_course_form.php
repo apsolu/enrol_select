@@ -15,29 +15,35 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Adds new instance of enrol_select to specified course
- * or edits current instance.
+ * Définition du formulaire pour gérer les changements de cours.
  *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
+/**
+ * Définition du formulaire pour gérer les changements de cours.
+ *
+ * @package    enrol_select
+ * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class enrol_select_manage_change_course_form extends moodleform {
-
+    /**
+     * Définit les champs du formulaire.
+     *
+     * @return void
+     */
     public function definition() {
-        global $CFG, $DB;
+        global $CFG;
 
         $mform = $this->_form;
 
         list($instance, $users, $from, $to, $courses) = $this->_customdata;
-
-        $strto = enrol_select_plugin::$states[$to];
-        $strfrom = enrol_select_plugin::$states[$from];
 
         $label = get_string('users');
 

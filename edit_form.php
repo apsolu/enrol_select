@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Définition du formulaire pour configurer une instance enrol_select d'un cours.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,11 +27,20 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir.'/formslib.php');
 require_once($CFG->dirroot.'/cohort/lib.php');
 
+/**
+ * Définition du formulaire pour configurer une instance enrol_select d'un cours.
+ *
+ * @package    enrol_select
+ * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class enrol_select_edit_form extends moodleform {
-
+    /**
+     * Définit les champs du formulaire.
+     *
+     * @return void
+     */
     public function definition() {
-        global $DB;
-
         $mform = $this->_form;
 
         list($instance, $plugin, $context, $cohorts, $roles, $enrolmethods, $calendars, $cards) = $this->_customdata;
@@ -88,10 +99,12 @@ class enrol_select_edit_form extends moodleform {
         $mform->addElement('header', 'header', get_string('reenroldate', 'enrol_select'));
 
         if (count($enrolmethods) === 1) {
-            $mform->addElement('html', '<div class="alert alert-info">'.get_string('no_available_enrol_methods_desc', 'enrol_select').'</div>');
+            $label = get_string('no_available_enrol_methods_desc', 'enrol_select');
+            $mform->addElement('html', sprintf('<div class="alert alert-info">%s</div>', $label));
         } else {
             // Date de début des réinscriptions.
-            $mform->addElement('date_time_selector', 'customint4', get_string('reenrolstartdate', 'enrol_select'), $datetimeoptions);
+            $label = get_string('reenrolstartdate', 'enrol_select');
+            $mform->addElement('date_time_selector', 'customint4', $label, $datetimeoptions);
             $mform->disabledIf('customint4', 'customchar1', 'ne', 0);
 
             // Date de fin des réinscriptions.
@@ -144,7 +157,8 @@ class enrol_select_edit_form extends moodleform {
         }
 
         if (count($options) === 0) {
-            $mform->addElement('html', '<div class="alert alert-danger">'.get_string('no_available_cohorts', 'enrol_select').'</div>');
+            $label = get_string('no_available_cohorts', 'enrol_select');
+            $mform->addElement('html', sprintf('<div class="alert alert-danger">%s</div>', $label));
         } else {
             $attributes = array('size' => 10);
             $select = $mform->addElement('select', 'cohorts', get_string('selectcohorts', 'enrol_select'), $options, $attributes);
@@ -160,7 +174,8 @@ class enrol_select_edit_form extends moodleform {
         }
 
         if (count($options) === 0) {
-            $mform->addElement('html', '<div class="alert alert-danger">'.get_string('no_available_roles', 'enrol_select').'</div>');
+            $label = get_string('no_available_roles', 'enrol_select');
+            $mform->addElement('html', sprintf('<div class="alert alert-danger">%s</div>', $label));
         } else {
             $select = $mform->addElement('select', 'roles', get_string('registertype', 'enrol_select'), $options, $instance->roles);
             $select->setMultiple(true);
@@ -187,7 +202,8 @@ class enrol_select_edit_form extends moodleform {
         $mform->addElement('header', 'header', get_string('welcome_messages', 'enrol_select'));
 
         // Message pour les inscrits sur la liste des acceptés.
-        $mform->addElement('selectyesno', 'customtext1switch', get_string('send_welcome_message_to_users_on_accepted_list', 'enrol_select'));
+        $label = get_string('send_welcome_message_to_users_on_accepted_list', 'enrol_select');
+        $mform->addElement('selectyesno', 'customtext1switch', $label);
         $mform->addHelpButton('customtext1switch', 'custom_welcome_message', 'enrol_select');
 
         $mform->addElement('editor', 'customtext1', get_string('custom_welcome_message', 'enrol_select'), $options);
@@ -195,7 +211,8 @@ class enrol_select_edit_form extends moodleform {
         $mform->disabledIf('customtext1', 'customtext1switch', 'eq', 0);
 
         // Message pour les inscrits sur la liste principale.
-        $mform->addElement('selectyesno', 'customtext2switch', get_string('send_welcome_message_to_users_on_main_list', 'enrol_select'));
+        $label = get_string('send_welcome_message_to_users_on_main_list', 'enrol_select');
+        $mform->addElement('selectyesno', 'customtext2switch', $label);
         $mform->addHelpButton('customtext2switch', 'custom_welcome_message', 'enrol_select');
 
         $mform->addElement('editor', 'customtext2', get_string('custom_welcome_message', 'enrol_select'), $options);
@@ -203,7 +220,8 @@ class enrol_select_edit_form extends moodleform {
         $mform->disabledIf('customtext2', 'customtext2switch', 'eq', 0);
 
         // Message pour les inscrits sur la liste complémentaire.
-        $mform->addElement('selectyesno', 'customtext3switch', get_string('send_welcome_message_to_users_on_wait_list', 'enrol_select'));
+        $label = get_string('send_welcome_message_to_users_on_wait_list', 'enrol_select');
+        $mform->addElement('selectyesno', 'customtext3switch', $label);
         $mform->addHelpButton('customtext3switch', 'custom_welcome_message', 'enrol_select');
 
         $mform->addElement('editor', 'customtext3', get_string('custom_welcome_message', 'enrol_select'), $options);
@@ -222,11 +240,16 @@ class enrol_select_edit_form extends moodleform {
         $this->set_data($instance);
     }
 
+    /**
+     * Validation.
+     *
+     * @param array $data
+     * @param array $files
+     *
+     * @return array The errors that were found.
+     */
     public function validation($data, $files) {
-        global $DB, $CFG;
         $errors = parent::validation($data, $files);
-
-        list($instance, $plugin, $context) = $this->_customdata;
 
         if ($data['status'] == ENROL_INSTANCE_ENABLED) {
             // Vérifie que la date de fin des inscriptions est bien supérieure à la date de début.

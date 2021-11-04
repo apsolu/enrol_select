@@ -72,7 +72,8 @@ class enrol_select_default_settings_form extends moodleform {
         $mform->disabledIf('default_customint1', 'default_customint3', 'eq', 0);
 
         // Nombre de places sur la liste complémentaire.
-        $mform->addElement('text', 'default_customint2', get_string('max_waiting_places', 'enrol_select'), array('optional' => true));
+        $label = get_string('max_waiting_places', 'enrol_select');
+        $mform->addElement('text', 'default_customint2', $label, array('optional' => true));
         $mform->setType('default_customint2', PARAM_INT);
         $mform->disabledIf('default_customint2', 'default_customint3', 'eq', 0);
 
@@ -94,12 +95,14 @@ class enrol_select_default_settings_form extends moodleform {
         }
 
         if (count($options) === 0) {
-            $mform->addElement('html', '<div class="alert alert-danger">'.get_string('no_available_cohorts', 'enrol_select').'</div>');
+            $label = get_string('no_available_cohorts', 'enrol_select');
+            $mform->addElement('html', sprintf('<div class="alert alert-danger">%s</div>', $label));
             $mform->addElement('hidden', 'default_cohorts', '');
             $mform->setType('default_cohorts', PARAM_ALPHANUM);
         } else {
             $attributes = array('size' => 10);
-            $select = $mform->addElement('select', 'default_cohorts', get_string('selectcohorts', 'enrol_select'), $options, $attributes);
+            $label = get_string('selectcohorts', 'enrol_select');
+            $select = $mform->addElement('select', 'default_cohorts', $label, $options, $attributes);
             $select->setMultiple(true);
         }
 
@@ -112,12 +115,14 @@ class enrol_select_default_settings_form extends moodleform {
         }
 
         if (count($options) === 0) {
-            $mform->addElement('html', '<div class="alert alert-danger">'.get_string('no_available_roles', 'enrol_select').'</div>');
+            $label = get_string('no_available_roles', 'enrol_select');
+            $mform->addElement('html', sprintf('<div class="alert alert-danger">%s</div>'));
             $mform->addElement('hidden', 'default_roles', '');
             $mform->setType('default_roles', PARAM_ALPHANUM);
         } else {
             $attributes = array('size' => 5);
-            $select = $mform->addElement('select', 'default_roles', get_string('registertype', 'enrol_select'), $options, $attributes);
+            $label = get_string('registertype', 'enrol_select');
+            $select = $mform->addElement('select', 'default_roles', $label, $options, $attributes);
             $select->setMultiple(true);
         }
 
@@ -144,15 +149,18 @@ class enrol_select_default_settings_form extends moodleform {
         $mform->addElement('header', 'header', get_string('welcome_messages', 'enrol_select'));
 
         // Message pour les inscrits sur la liste des acceptés.
-        $mform->addElement('selectyesno', 'default_customtext1switch', get_string('send_welcome_message_to_users_on_accepted_list', 'enrol_select'));
+        $label = get_string('send_welcome_message_to_users_on_accepted_list', 'enrol_select');
+        $mform->addElement('selectyesno', 'default_customtext1switch', $label);
         $mform->addHelpButton('default_customtext1switch', 'custom_welcome_message', 'enrol_select');
 
-        $mform->addElement('editor', 'default_customtext1', get_string('custom_welcome_message', 'enrol_select'), $options);
+        $label = get_string('custom_welcome_message', 'enrol_select');
+        $mform->addElement('editor', 'default_customtext1', $label, $options);
         $mform->setType('default_customtext1', PARAM_RAW);
         $mform->disabledIf('default_customtext1', 'default_customtext1switch', 'eq', 0);
 
         // Message pour les inscrits sur la liste principale.
-        $mform->addElement('selectyesno', 'default_customtext2switch', get_string('send_welcome_message_to_users_on_main_list', 'enrol_select'));
+        $label = get_string('send_welcome_message_to_users_on_main_list', 'enrol_select');
+        $mform->addElement('selectyesno', 'default_customtext2switch', $label);
         $mform->addHelpButton('default_customtext2switch', 'custom_welcome_message', 'enrol_select');
 
         $mform->addElement('editor', 'default_customtext2', get_string('custom_welcome_message', 'enrol_select'), $options);
@@ -160,7 +168,8 @@ class enrol_select_default_settings_form extends moodleform {
         $mform->disabledIf('default_customtext2', 'default_customtext2switch', 'eq', 0);
 
         // Message pour les inscrits sur la liste complémentaire.
-        $mform->addElement('selectyesno', 'default_customtext3switch', get_string('send_welcome_message_to_users_on_wait_list', 'enrol_select'));
+        $label = get_string('send_welcome_message_to_users_on_wait_list', 'enrol_select');
+        $mform->addElement('selectyesno', 'default_customtext3switch', $label);
         $mform->addHelpButton('default_customtext3switch', 'custom_welcome_message', 'enrol_select');
 
         $mform->addElement('editor', 'default_customtext3', get_string('custom_welcome_message', 'enrol_select'), $options);

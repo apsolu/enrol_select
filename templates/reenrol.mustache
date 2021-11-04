@@ -1,3 +1,72 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template enrol_select/reenrol
+
+    Template Moodle pour la page des réinscriptions.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * nextenrolment Message HTML indiquant les prochaines inscriptions.
+    * explanation Message HTML indiquant le déroulement des réinscriptions.
+    * notification Notification HTML.
+    * action URL du formulaire.
+    * enrolments_count Nombre d'inscriptions.
+    * enrolments
+        * id Identifiant de la méthode d'inscription.
+        * fullname Nom du cours.
+        * count_teachers Nombre d'enseignants.
+        * teachers
+            * email Email de l'enseignant.
+            * firstname Prénom de l'enseignant.
+            * lastname Nom de l'enseignant.
+        * renew Sélecteur HTML proposant de continuer ou non l'inscription.
+        * roles Sélecteur HTML proposant un rôle.
+
+    Example context (json):
+    {
+        "nextenrolment": "<p>nextenrolment...</p>",
+        "explanation": "<p>explanation...</p>",
+        "notification": "<p>notification...</p>",
+        "action": "https://apsolu.fr",
+        "enrolments_count": 1,
+        "enrolments": [
+            {
+                "id": 2,
+                "fullname": "Tennis mardi 18h00",
+                "count_teachers": 1,
+                "teachers": [
+                    {
+                        "email": "contact@apsolu.fr",
+                        "firstname": "bob",
+                        "lastname": "apsolu"
+                    }
+                ],
+                "renew": "<select><option value=\"1\">Oui</option><option value=\"0\">Non</option></select>",
+                "roles": "<select><option value=\"1\">Évalué</option><option value=\"0\">Non évalué</option></select>"
+            }
+        ]
+    }
+}}
 {{^enrolments_count}}
 	{{#str}}noreenrolment,enrol_select{{/str}}
 	{{{nextenrolment}}}

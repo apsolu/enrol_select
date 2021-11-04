@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Définition du formulaire pour s'inscire à un cours.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,9 +27,18 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/formslib.php');
 
 /**
- * Form class to create or to edit an area.
+ * Définition du formulaire pour s'inscire à un cours.
+ *
+ * @package    enrol_select
+ * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class enrol_select_form extends moodleform {
+    /**
+     * Définit les champs du formulaire.
+     *
+     * @return void
+     */
     protected function definition() {
         global $CFG, $DB;
 
@@ -105,12 +116,6 @@ class enrol_select_form extends moodleform {
         $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu', $attributes));
 
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
-
-        // Static text about roles.
-        if ($instance->complement === false) {
-            // TODO: trouver un moyen d'afficher ce message uniquement sur les activités en option, bonification et libres.
-            // $mform->addElement('html', get_string('html_role_notifications', 'enrol_select'));
-        }
 
         // Hidden fields.
         $mform->addElement('hidden', 'enrolid', $instance->enrolid);

@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Fonctions pour le module enrol_select.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -24,7 +26,17 @@ namespace UniversiteRennes2\Apsolu;
 
 use enrol_select_plugin;
 
-function get_activities($siteid = 0, $categoryid = 0, $categoryname = '', $on_homepage = true) {
+/**
+ * Une fonction à documenter (TODO).
+ *
+ * @param int  $siteid       Identifiant du site de pratique.
+ * @param int  $categoryid   Identifiant de l'activité physique.
+ * @param int  $categoryname Nom de l'activité physique.
+ * @param bool $onhomepage   Témoin indique si l'activité est visible sur la page d'accueil.
+ *
+ * @return array Un tableau d'activités.
+ */
+function get_activities($siteid = 0, $categoryid = 0, $categoryname = '', $onhomepage = true) {
     global $DB;
 
     $params = array();
@@ -45,13 +57,15 @@ function get_activities($siteid = 0, $categoryid = 0, $categoryname = '', $on_ho
         $conditions[] = " AND cc.name LIKE :categoryname";
     }
 
-    if ($on_homepage !== null) {
-        $params['on_homepage'] = intval($on_homepage);
+    if ($onhomepage !== null) {
+        $params['on_homepage'] = intval($onhomepage);
         $conditions[] = " AND ac.on_homepage = :on_homepage";
     }
 
-    $sql = "SELECT c.id, c.fullname, ac.event, ac.weekday, ac.starttime, ac.endtime, cc0.id AS domainid, cc0.name AS domain, cc.id AS sportid, cc.name AS sport, acc.url, cc.description,".
-        " ac.skillid, ask.name AS skill, ac.locationid, al.name AS location, aa.name AS area, aci.name AS site, ac.periodid, ap.generic_name".
+    $sql = "SELECT c.id, c.fullname, ac.event, ac.weekday, ac.starttime, ac.endtime,".
+        " cc0.id AS domainid, cc0.name AS domain, cc.id AS sportid, cc.name AS sport, acc.url, cc.description,".
+        " ac.skillid, ask.name AS skill, ac.locationid, al.name AS location, aa.name AS area,".
+        " aci.name AS site, ac.periodid, ap.generic_name".
         " FROM {course} c".
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
         " JOIN {course_categories} cc ON cc.id = c.category".
@@ -70,6 +84,11 @@ function get_activities($siteid = 0, $categoryid = 0, $categoryname = '', $on_ho
     return $DB->get_records_sql($sql, $params);
 }
 
+/**
+ * Une fonction à documenter (TODO).
+ *
+ * @return array Un tableau d'activités.
+ */
 function get_activities_roles() {
     global $DB;
 
@@ -97,6 +116,11 @@ function get_activities_roles() {
     return $activities;
 }
 
+/**
+ * Une fonction à documenter (TODO).
+ *
+ * @return array Un tableau d'activités.
+ */
 function get_activities_teachers() {
     global $DB;
 
@@ -127,8 +151,9 @@ function get_activities_teachers() {
 }
 
 /**
- * Renvoie tous les groupements d'activités visibles (Sports de raquettes, sports aquatiques, etc)
- * @return array
+ * Renvoie tous les groupements d'activités visibles (Sports de raquettes, sports aquatiques, etc).
+ *
+ * @return array Un tableau de groupements d'activités.
  */
 function get_visible_activities_domains() {
     global $DB;
@@ -142,8 +167,9 @@ function get_visible_activities_domains() {
 }
 
 /**
- * Renvoie toutes les activités visibles (Tennis, Natation, etc)
- * @return array
+ * Renvoie toutes les activités visibles (Tennis, Natation, etc).
+ *
+ * @return array Un tableau d'activités.
  */
 function get_visible_sports() {
     global $DB;
@@ -157,8 +183,9 @@ function get_visible_sports() {
 }
 
 /**
- * Renvoie toutes les activités complémentaires visibles (Musculation, FFSU, etc)
- * @return array
+ * Renvoie toutes les activités complémentaires visibles (Musculation, FFSU, etc).
+ *
+ * @return array Un tableau d'activités complémentaires.
  */
 function get_visible_complements() {
     global $DB;
@@ -172,8 +199,9 @@ function get_visible_complements() {
 }
 
 /**
- * Renvoie tous les rôles basés sur le type STUDENT (sauf le rôle student de base)
- * @return array
+ * Renvoie tous les rôles basés sur le type STUDENT (sauf le rôle student de base).
+ *
+ * @return array Un tableau de rôles basés sur le type STUDENT.
  */
 function get_custom_student_roles() {
     global $DB;
@@ -186,8 +214,10 @@ function get_custom_student_roles() {
 
 /**
  * Renvoie toutes les activités dans lesquelles un utilisateur est inscrit.
- * @param int userid (si null, on prend l'id de l'utilisateur courant)
- * @return array
+ *
+ * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ *
+ * @return array Un tableau contenant la liste des inscriptions.
  */
 function get_user_activity_enrolments($userid = null) {
     global $DB, $USER;
@@ -224,8 +254,10 @@ function get_user_activity_enrolments($userid = null) {
 
 /**
  * Renvoie toutes les activités dans lesquelles un utilisateur est inscrit (sans vérifier les cohortes).
- * @param int userid (si null, on prend l'id de l'utilisateur courant)
- * @return array
+ *
+ * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ *
+ * @return array Un tableau contenant la liste des inscriptions.
  */
 function get_real_user_activity_enrolments($userid = null) {
     global $DB, $USER;
@@ -256,8 +288,11 @@ function get_real_user_activity_enrolments($userid = null) {
 
 /**
  * Renvoie toutes les activités dans lesquelles un utilisateur est inscrit (sans vérifier les cohortes).
- * @param int userid (si null, on prend l'id de l'utilisateur courant)
- * @return array
+ *
+ * @param int|null $userid     Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ * @param bool     $onlyactive Témoin permettant de retourner uniquement les inscriptions actives.
+ *
+ * @return array Un tableau contenant la liste des inscriptions.
  */
 function get_recordset_user_activity_enrolments($userid = null, $onlyactive = true) {
     global $DB, $USER;
@@ -271,7 +306,8 @@ function get_recordset_user_activity_enrolments($userid = null, $onlyactive = tr
     }
 
     $params = array('userid' => $userid);
-    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, e.name AS enrolname, ue.status, ra.roleid, '1' AS paymentcenterid".
+    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, e.name AS enrolname,".
+        " ue.status, ra.roleid, '1' AS paymentcenterid".
         " FROM {course} c".
         " JOIN {course_categories} cc ON cc.id = c.category".
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
@@ -298,8 +334,10 @@ function get_recordset_user_activity_enrolments($userid = null, $onlyactive = tr
 
 /**
  * Renvoie toutes les activités complémentaires dans lesquelles un utilisateur est inscrit et validé.
- * @param int userid (si null, on prend l'id de l'utilisateur courant)
- * @return array
+ *
+ * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ *
+ * @return array Un tableau contenant la liste des inscriptions.
  */
 function get_user_complement_enrolments($userid = null) {
     global $DB, $USER;
@@ -330,10 +368,10 @@ function get_user_complement_enrolments($userid = null) {
 /**
  * Renvoie tous les collèges auxquels appartient l'utilisateur (nombre de voeux possibles, roles, prix, etc).
  *
- * @param int userid : si null, on prend l'id de l'utilisateur courant
- * @param bool count : ajoute le nombre de voeux fait par l'utilisateur pour chaque collège
+ * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ * @param bool     $count  Ajoute le nombre de voeux fait par l'utilisateur pour chaque collège.
  *
- * @return array
+ * @return array Un tableau contenant la liste des collèges d'un utilisateur.
  */
 function get_user_colleges($userid = null, $count = false) {
     global $DB, $USER;
@@ -409,8 +447,10 @@ function get_sum_user_choices($userid = null, $count = false) {
 
 /**
  * Renvoie le total d'inscription par rôle d'un utilisateur.
- * @param int userid : si null, on prend l'id de l'utilisateur courant
- * @return array
+ *
+ * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ *
+ * @return array Un tableau contenant la liste des rôles assignés à un utilisateur.
  */
 function get_count_user_role_assignments($userid = null) {
     global $DB, $USER;
@@ -440,9 +480,11 @@ function get_count_user_role_assignments($userid = null) {
 
 /**
  * Renvoie tous les rôles auxquels un utilisateur peut prétendre.
- * @param int userid : si null, on prend l'id de l'utilisateur courant
- * @param int courseid : si null, on prend tous les rôles possibles
- * @return array
+ *
+ * @param int|null $userid   Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ * @param int|null $courseid Identifiant d'un cours. Si NULL, on prend tous les rôles possibles.
+ *
+ * @return array Un tableau contenant la liste des rôles auxquels un utilisateur peut prétendre.
  */
 function get_potential_user_roles($userid = null, $courseid = null) {
     global $DB, $USER;
@@ -488,6 +530,14 @@ function get_potential_user_roles($userid = null, $courseid = null) {
     return $roles;
 }
 
+/**
+ * Retourne la liste des cours dans lesquels l'utilisateur peut s'inscrire ; même si toutes les places sont prises.
+ *
+ * @param int|null   $time    Timestamp unix permettant aux gestionnaires de simuler une date d'inscription.
+ * @param array|null $cohorts Tableau de cohortes permettant aux gestionnaires de simuler une appartenance à des cohortes.
+ *
+ * @return void
+ */
 function get_potential_user_activities($time = null, $cohorts = null) {
     global $DB, $USER;
 
@@ -574,7 +624,8 @@ function get_potential_user_activities($time = null, $cohorts = null) {
     $enrols = $DB->get_records_sql($sql, $params);
     foreach ($enrols as $enrol) {
         if (!isset($courses[$enrol->courseid])) {
-            debugging(get_string('debug_enrol_invalid_enrolment', 'enrol_select', (object) ['courseid' => $enrol->courseid, 'enrolid' => $enrol->id]), $level = DEBUG_DEVELOPER);
+            $params = (object) ['courseid' => $enrol->courseid, 'enrolid' => $enrol->id];
+            debugging(get_string('debug_enrol_invalid_enrolment', 'enrol_select', $params), $level = DEBUG_DEVELOPER);
             continue;
         }
 
@@ -587,21 +638,24 @@ function get_potential_user_activities($time = null, $cohorts = null) {
 
     foreach ($courses as $courseid => $course) {
         if (!isset($categories[$course->category])) {
-            debugging(get_string('debug_enrol_invalid_category', 'enrol_select', (object) ['courseid' => $course->id, 'categoryid' => $course->category]), $level = DEBUG_DEVELOPER);
+            $params = (object) ['courseid' => $course->id, 'categoryid' => $course->category];
+            debugging(get_string('debug_enrol_invalid_category', 'enrol_select', $params), $level = DEBUG_DEVELOPER);
             unset($courses[$courseid]);
             continue;
         }
 
         // L'utilisateur ne semble pas avoir le droit de s'inscrire à ce cours.
         if (!isset($courses[$courseid]->enrols)) {
-            debugging(get_string('debug_enrol_no_enrolments', 'enrol_select', (object) ['courseid' => $course->id, 'userid' => $USER->id]), $level = DEBUG_DEVELOPER);
+            $params = (object) ['courseid' => $course->id, 'userid' => $USER->id];
+            debugging(get_string('debug_enrol_no_enrolments', 'enrol_select', $params), $level = DEBUG_DEVELOPER);
             unset($courses[$courseid]);
             continue;
         }
 
         // Il y a trop de méthodes !
         if (isset($courses[$courseid]->enrols[1])) {
-            debugging(get_string('debug_enrol_too_many_enrolments', 'enrol_select', (object) ['courseid' => $courseid, 'userid' => $USER->id]), $level = DEBUG_DEVELOPER);
+            $params = (object) ['courseid' => $courseid, 'userid' => $USER->id];
+            debugging(get_string('debug_enrol_too_many_enrolments', 'enrol_select', $params), $level = DEBUG_DEVELOPER);
             unset($courses[$courseid]);
             continue;
         }
@@ -617,14 +671,15 @@ function get_potential_user_activities($time = null, $cohorts = null) {
             // TODO: refactoriser cette partie avec le script ajax/reload_column_left_places.php.
             // Calcule le nombre d'inscrits sur la liste des acceptés et sur la liste principale.
             $sql = "SELECT COUNT(userid) FROM {user_enrolments} WHERE enrolid = :enrolid AND status IN (:accepted, :main)";
-            $conditions =  array('enrolid' => $enrol->id, 'accepted' => enrol_select_plugin::ACCEPTED, 'main' => enrol_select_plugin::MAIN);
+            $conditions = array('enrolid' => $enrol->id, 'accepted' => enrol_select_plugin::ACCEPTED,
+                'main' => enrol_select_plugin::MAIN);
             $course->count_main_list = $DB->count_records_sql($sql, $conditions);
 
             // Récupère le quota de la liste principale.
             $course->max_main_list = $enrol->customint1;
 
             // Calcule le nombre d'inscrits sur la liste complémentaire.
-            $conditions =  array('enrolid' => $enrol->id, 'status' => enrol_select_plugin::WAIT);
+            $conditions = array('enrolid' => $enrol->id, 'status' => enrol_select_plugin::WAIT);
             $course->count_wait_list = $DB->count_records('user_enrolments', $conditions);
 
             // Récupère le quota de la liste complémentaire.
@@ -642,7 +697,8 @@ function get_potential_user_activities($time = null, $cohorts = null) {
                 $course->full_registration = false;
             } else if ($course->max_wait_list > $course->count_wait_list) {
                 // Si la liste complémentaire n'est pas complète.
-                // TODO: faire une option afin de laisser le choix entre afficher le nombre de places restantes sur liste complémentaire
+                // TODO: faire une option afin de laisser le choix entre afficher le nombre
+                // de places restantes sur liste complémentaire
                 // ou afficher un message générique indiquant qu'il reste des places sur liste complémentaire.
                 $course->left_places_str = get_string('there_are_still_places_on_the_wait_list', 'enrol_select');
                 $course->left_places_style = 'warning';
@@ -725,6 +781,11 @@ function get_potential_user_activities($time = null, $cohorts = null) {
     return $courses;
 }
 
+/**
+ * Une fonction à documenter (TODO).
+ *
+ * @return void
+ */
 function get_potential_user_complements() {
     global $DB, $USER;
 
@@ -763,8 +824,12 @@ function get_potential_user_complements() {
     return $courses;
 }
 
-/*
+/**
  * Retourne les activités pour lesquelles l'utilisateur peut potentiellement se réinscrire.
+ *
+ * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
+ *
+ * @return array Un tableau contenant la liste des activités pour lesquelles l'utilisateur peut potentiellement se réinscrire.
  */
 function get_user_reenrolments($userid = null) {
     global $DB, $USER;
@@ -794,6 +859,13 @@ function get_user_reenrolments($userid = null) {
     return $DB->get_records_sql($sql, array('userid' => $userid, 'timestart' => $time, 'timeend' => $time));
 }
 
+/**
+ * Une fonction à documenter (TODO).
+ *
+ * @param array $courses Tableau contenant une liste de cours.
+ *
+ * @return void
+ */
 function generate_filters($courses = array()) {
     $filters = array();
 
@@ -803,7 +875,6 @@ function generate_filters($courses = array()) {
         'sport' => array(),
         'skill' => array(),
         'area' => array(),
-        // 'location' => array(),
         'weekday' => array(),
         'starttime' => array(),
         'endtime' => array(),
@@ -816,7 +887,6 @@ function generate_filters($courses = array()) {
         $elements['sport'][$course->category] = $course->sport;
         $elements['skill'][$course->skillid] = $course->skill;
         $elements['area'][$course->areaid] = $course->area;
-        // $elements['location'][$course->locationid] = $course->location;
         $elements['weekday'][$course->numweekday] = get_string($course->weekday, 'calendar');
         $starttime = substr($course->starttime, 0, 2).'h';
         $elements['starttime'][$starttime] = $starttime;

@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Page d'édition d'une instance enrol_select.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -102,7 +104,7 @@ $enroldata->action = $CFG->wwwroot.'/enrol/select/enrol.php?enrolid='.$enrolid;
 $enroldata->roles = $enrolselect->get_roles($instance, $context);
 
 if ($enroldata->roles === array()) {
-    print_error('error_no_role', 'enrol_select', $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$instance->id);
+    throw new moodle_exception('error_no_role', 'enrol_select', $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$instance->id);
 }
 
 // Pour avoir l'option "libre" en premier...

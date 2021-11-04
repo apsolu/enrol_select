@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Page gérant le déplacement d'une inscription.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,7 +29,7 @@ require_once($CFG->dirroot.'/enrol/select/locallib.php');
 require_once($CFG->dirroot.'/enrol/select/manage_move_form.php');
 require_once($CFG->dirroot.'/local/apsolu/locallib.php');
 
-// managing semester 2 move
+// Managing semester 2 move.
 $previousenrolid = false;
 
 $enrolid = required_param('enrolid', PARAM_INT);
@@ -39,7 +41,7 @@ if (!isset($_POST['users'])) {
 
 $instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
 
-// case of semester 2 enrolment + move
+// Case of semester 2 enrolment + move.
 if (strpos($to, '99') === 0 && $instance->customint6 !== null) {
     $previousenrolid = $enrolid;
     $enrolid         = $instance->customint6;
@@ -114,7 +116,11 @@ if ($mform->is_cancelled()) {
                 $enrolselectplugin = new enrol_select_plugin();
                 $roleid = 0;
 
-                $sql = "SELECT roleid FROM {role_assignments} WHERE component = 'enrol_select' AND itemid = :previousinstance_id AND userid = :userid";
+                $sql = "SELECT roleid".
+                    " FROM {role_assignments}".
+                    " WHERE component = 'enrol_select'".
+                    " AND itemid = :previousinstance_id".
+                    " AND userid = :userid";
 
                 $recordset = $DB->get_recordset_sql($sql, array('previousinstance_id' => $previousenrolid, 'userid' => $userid));
                 foreach ($recordset as $role) {

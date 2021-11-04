@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Page d'affichage de la vue d'ensemble des méthodes d'inscription.
+ *
  * @package   enrol_select
  * @copyright 2020 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -67,7 +69,8 @@ $enrolments = $DB->get_records_sql($sql);
 
 // Liste des méthodes d'inscription.
 $sql = "SELECT e.id, e.name, e.courseid, e.enrolstartdate, e.enrolenddate, e.customint1, e.customint2, e.customint3 AS quota,".
-    " ac.id AS calendarid, ac.name AS calendar, ac.enrolstartdate AS calendar_enrolstartdate, ac.enrolenddate AS calendar_enrolenddate".
+    " ac.id AS calendarid, ac.name AS calendar, ac.enrolstartdate AS calendar_enrolstartdate,".
+    " ac.enrolenddate AS calendar_enrolenddate".
     " FROM {enrol} e".
     " LEFT JOIN {apsolu_calendars} ac ON e.customchar1 = ac.id".
     " WHERE e.enrol = 'select'".
@@ -112,7 +115,8 @@ foreach ($enrols as $enrol) {
     }
 
     if ($courses[$enrol->courseid]->anomalies === 0) {
-        $courses[$enrol->courseid]->anomalies = intval($enrol->invalid_enrolstartdate || $enrol->invalid_enrolenddate || empty($enrol->quota));
+        $courses[$enrol->courseid]->anomalies = intval($enrol->invalid_enrolstartdate ||
+            $enrol->invalid_enrolenddate || empty($enrol->quota));
     }
 
     $courses[$enrol->courseid]->enrols[] = $enrol;
@@ -166,7 +170,8 @@ foreach ($courses as $course) {
         }
 
         // Filtre par date de début d'inscription.
-        if (empty($mdata->enrolstartdate) === false && strftime('%F', $enrol->enrolstartdate) != strftime('%F', $mdata->enrolstartdate)) {
+        if (empty($mdata->enrolstartdate) === false &&
+            strftime('%F', $enrol->enrolstartdate) !== strftime('%F', $mdata->enrolstartdate)) {
             // Le filtre ne correspond pas à la date de début d'inscription sélectionné.
             unset($course->enrols[$id]);
             $course->count_enrols--;
@@ -174,7 +179,8 @@ foreach ($courses as $course) {
         }
 
         // Filtre par date de fin d'inscription.
-        if (empty($mdata->enrolenddate) === false && strftime('%F', $enrol->enrolenddate) != strftime('%F', $mdata->enrolenddate)) {
+        if (empty($mdata->enrolenddate) === false &&
+            strftime('%F', $enrol->enrolenddate) !== strftime('%F', $mdata->enrolenddate)) {
             // Le filtre ne correspond pas à la date de fin d'inscription sélectionné.
             unset($course->enrols[$id]);
             $course->count_enrols--;

@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Adds new instance of enrol_select to specified course
- * or edits current instance.
+ * Page gérant le renouvellement des inscriptions.
  *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
@@ -63,7 +62,7 @@ foreach ($calendars as $calendar) {
         continue;
     }
 
-    if ($calendar->reenrolstartdate <= $time && $calendar->reenrolenddate  >= $time) {
+    if ($calendar->reenrolstartdate <= $time && $calendar->reenrolenddate >= $time) {
         $open = true;
 
         // Détermine la prochaine phase d'inscription.
@@ -72,8 +71,8 @@ foreach ($calendars as $calendar) {
         if (empty($nextenrols) === false) {
             $nextenrol = current($nextenrols);
             if (isset($CFG->is_siuaps_rennes) === false) {
-                // TODO: problème avec Rennes où les UE commencent les inscriptions avant les autres (en décembre au lieu de janvier).
-                // TODO: voir comment mieux gérer ce cas.
+                // TODO: problème avec Rennes où les UE commencent les inscriptions avant les autres (en décembre
+                // au lieu de janvier). À voir comment mieux gérer ce cas.
                 $calendar->nextenrol = $nextenrol->enrolstartdate;
             }
         }
@@ -112,7 +111,9 @@ $activities = array();
 foreach (apsolu\get_user_reenrolments() as $key => $enrolment) {
     if ($enrolment->status !== enrol_select_plugin::ACCEPTED) {
         // On ne conserve que les inscriptions validées.
-        debugging('L\'inscription d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'est pas validée (status: '.$enrolment->status.').', $level = DEBUG_DEVELOPER);
+        $message = 'L\'inscription d\'inscription #'.$enrolment->enrolid.
+            ' du cours #'.$enrolment->id.' n\'est pas validée (status: '.$enrolment->status.').';
+        debugging($message, $level = DEBUG_DEVELOPER);
         continue;
     }
 
@@ -120,13 +121,16 @@ foreach (apsolu\get_user_reenrolments() as $key => $enrolment) {
 
     if ($enrol === false) {
         // L'instance d'inscription n'existe pas.
-        debugging('L\'instance d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'existe pas.', $level = DEBUG_DEVELOPER);
+        $message = 'L\'instance d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'existe pas.';
+        debugging($message, $level = DEBUG_DEVELOPER);
         continue;
     }
 
     if ($select->can_reenrol($enrol) === false) {
         // L'utilisateur n'est pas autorisé à se réinscrire.
-        debugging('L\'utilisateur #'.$USER->id.' n\'est pas autorisé à se réinscrire via l\'instance #'.$enrolment->enrolid.' du cours #'.$enrolment->id.'.', $level = DEBUG_DEVELOPER);
+        $message = 'L\'utilisateur #'.$USER->id.' n\'est pas autorisé à se réinscrire'.
+            ' via l\'instance #'.$enrolment->enrolid.' du cours #'.$enrolment->id.'.';
+        debugging($message, $level = DEBUG_DEVELOPER);
         continue;
     }
 
@@ -134,7 +138,8 @@ foreach (apsolu\get_user_reenrolments() as $key => $enrolment) {
 
     if ($targetenrol === false) {
         // L'instance de réinscription n'existe pas.
-        debugging('L\'instance de réinscription #'.$targetenrol->id.' du cours #'.$enrolment->id.' n\'existe pas.', $level = DEBUG_DEVELOPER);
+        $message = 'L\'instance de réinscription #'.$targetenrol->id.' du cours #'.$enrolment->id.' n\'existe pas.';
+        debugging($message, $level = DEBUG_DEVELOPER);
         continue;
     }
 
@@ -146,7 +151,8 @@ foreach (apsolu\get_user_reenrolments() as $key => $enrolment) {
 
     if ($roles === array()) {
         // L'utilisateur ne peut pas s'incrire (problème de cohortes ou de rôles).
-        debugging('L\'utilisateur #'.$USER->id.' ne peut pas s\'inscrire (problème de cohortes ou de rôles).', $level = DEBUG_DEVELOPER);
+        $message = 'L\'utilisateur #'.$USER->id.' ne peut pas s\'inscrire (problème de cohortes ou de rôles).';
+        debugging($message, $level = DEBUG_DEVELOPER);
         continue;
     }
 
@@ -160,7 +166,7 @@ foreach (apsolu\get_user_reenrolments() as $key => $enrolment) {
 $notification = '';
 if (isset($_POST['reenrol'])) {
     // Parcours les réponses.
-    $mail_content = array();
+    $mailcontent = array();
     foreach ($_POST['renew'] as $enrolid => $renew) {
         $instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'));
 
@@ -180,7 +186,7 @@ if (isset($_POST['reenrol'])) {
             // Désinscrire l'utilisateur...
             $select->unenrol_user($instance, $USER->id);
 
-            $mail_content[] = get_string('reenrolmentstop', 'enrol_select', $course);
+            $mailcontent[] = get_string('reenrolmentstop', 'enrol_select', $course);
 
             // Ajouter une ligne de log.
             debugging($log.' unenrol from instanceid '.$instance->id, $level = NO_DEBUG_DISPLAY);
@@ -192,13 +198,15 @@ if (isset($_POST['reenrol'])) {
                 if (isset($activities[$instance->courseid], $activities[$instance->courseid]->roles[$roleid])) {
                     if (isset($CFG->is_siuaps_rennes) === true) {
                         // Inscription liste définitive.
-                        $select->enrol_user($instance, $USER->id, $roleid, $instance->customint7, $instance->customint8, $status = ENROL_INSTANCE_ENABLED, $recovergrades = null);
+                        $select->enrol_user($instance, $USER->id, $roleid, $instance->customint7, $instance->customint8,
+                            $status = ENROL_INSTANCE_ENABLED, $recovergrades = null);
                     } else {
                         // Inscription liste principale.
-                        $select->enrol_user($instance, $USER->id, $roleid, $instance->customint7, $instance->customint8, $status = 2, $recovergrades = null);
+                        $select->enrol_user($instance, $USER->id, $roleid, $instance->customint7, $instance->customint8,
+                            $status = 2, $recovergrades = null);
                     }
 
-                    $mail_content[] = get_string('reenrolmentcontinue', 'enrol_select', $course);
+                    $mailcontent[] = get_string('reenrolmentcontinue', 'enrol_select', $course);
 
                     // Ajouter une ligne de log.
                     debugging($log.' enrol into instanceid '.$instance->id.', roleid '.$roleid, $level = NO_DEBUG_DISPLAY);
@@ -211,18 +219,20 @@ if (isset($_POST['reenrol'])) {
                         $reasons[] = 'non autorisé pour le rôle #'.$roleid;
                     }
 
-                    debugging('ERROR: '.$log.' can\'t enrol instanceid '.$instance->id.', roleid '.$roleid.' :: '.implode(', ', $reasons), $level = NO_DEBUG_DISPLAY);
+                    $message = 'ERROR: '.$log.' can\'t enrol instanceid '.$instance->id.
+                        ', roleid '.$roleid.' :: '.implode(', ', $reasons);
+                    debugging($message, $level = NO_DEBUG_DISPLAY);
                 }
             }
         }
     }
 
-    if (isset($mail_content[0]) === true) {
+    if (isset($mailcontent[0]) === true) {
         // Notifie l'utilisateur.
-        sort($mail_content);
+        sort($mailcontent);
 
         $list = new stdClass();
-        $list->choices = ' - '.implode(PHP_EOL.' - ', $mail_content);
+        $list->choices = ' - '.implode(PHP_EOL.' - ', $mailcontent);
         $body = get_string('reenrolmentnotification', 'enrol_select', $list);
         $subject = get_string('reenrolmentnotificationsubject', 'enrol_select');
 
@@ -237,7 +247,7 @@ if (isset($_POST['reenrol'])) {
 }
 
 $enrolments = array();
-$enrolments_count = 0;
+$enrolmentscount = 0;
 foreach ($activities as $enrolment) {
     $roles = $enrolment->roles;
     $targetenrol = $enrolment->targetenrol;
@@ -293,18 +303,17 @@ foreach ($activities as $enrolment) {
     }
 
     $enrolments[] = $enrolment;
-    $enrolments_count++;
+    $enrolmentscount++;
 }
 
 $data = new stdClass();
 $data->action = $CFG->wwwroot.'/enrol/select/renew.php';
 $data->enrolments = $enrolments;
-$data->enrolments_count = $enrolments_count;
+$data->enrolments_count = $enrolmentscount;
 $data->notification = $notification;
 
-if ($enrolments_count === 0) {
+if ($enrolmentscount === 0) {
     $strdate = get_string('strftimedaydatetime', 'enrol_select');
-    $semester2_enrol_startdate = get_config('local_apsolu', 'semester2_enrol_startdate');
 
     $data->nextenrolment = '';
     if (isset($calendar->nextenrol) === true) {
@@ -314,8 +323,6 @@ if ($enrolments_count === 0) {
     }
 } else {
     $strdate = get_string('strftimedaydatetime', 'enrol_select');
-    $semester1_reenrol_enddate = get_config('local_apsolu', 'semester1_reenrol_enddate');
-    $semester2_enrol_startdate = get_config('local_apsolu', 'semester2_enrol_startdate');
 
     $explanation = new stdClass();
     $explanation->limit = userdate($calendar->reenrolenddate, $strdate);

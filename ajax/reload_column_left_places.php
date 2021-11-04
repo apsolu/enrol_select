@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Script ajax permettant de recharger la colonne des places restantes sur la page d'inscription.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -45,14 +47,14 @@ if ($enrol->customint3 == 1) {
     // TODO: refactoriser cette partie avec la fonction get_potential_user_activities() du script locallib.php.
     // Calcule le nombre d'inscrits sur la liste des acceptés et sur la liste principale.
     $sql = "SELECT COUNT(userid) FROM {user_enrolments} WHERE enrolid = :enrolid AND status IN (:accepted, :main)";
-    $conditions =  array('enrolid' => $enrol->id, 'accepted' => enrol_select_plugin::ACCEPTED, 'main' => enrol_select_plugin::MAIN);
+    $conditions = array('enrolid' => $enrol->id, 'accepted' => enrol_select_plugin::ACCEPTED, 'main' => enrol_select_plugin::MAIN);
     $countmainlist = $DB->count_records_sql($sql, $conditions);
 
     // Récupère le quota de la liste principale.
     $maxmainlist = $enrol->customint1;
 
     // Calcule le nombre d'inscrits sur la liste complémentaire.
-    $conditions =  array('enrolid' => $enrol->id, 'status' => enrol_select_plugin::WAIT);
+    $conditions = array('enrolid' => $enrol->id, 'status' => enrol_select_plugin::WAIT);
     $countwaitlist = $DB->count_records('user_enrolments', $conditions);
 
     // Récupère le quota de la liste complémentaire.
@@ -69,9 +71,9 @@ if ($enrol->customint3 == 1) {
         $leftplacesstyle = 'success';
     } else if ($maxwaitlist > $countwaitlist) {
         // Si la liste complémentaire n'est pas complète.
-        // TODO: faire une option afin de laisser le choix entre afficher le nombre de places restantes sur liste complémentaire
+        // TODO: faire une option afin de laisser le choix entre afficher le nombre
+        // de places restantes ($maxwaitlist - $countwaitlist) sur liste complémentaire
         // ou afficher un message générique indiquant qu'il reste des places sur liste complémentaire.
-        // $leftplacesstr = ($maxwaitlist - $countwaitlist).' places restantes sur liste complémentaire';
         $leftplacesstr = get_string('there_are_still_places_on_the_wait_list', 'enrol_select');
         $leftplacesstyle = 'warning';
     } else {

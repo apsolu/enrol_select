@@ -1,50 +1,50 @@
-.select2-container{
-	margin: 0 .2em !important;
+.select2-container {
+    margin: 0 .2em !important;
 }
 
 #apsolu-activities-table td {
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 .filters {
-	width: 90%;
+    width: 90%;
 }
 
 button.checkall,
 button.uncheckall {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
-#page-enrol-apsolu-overview .navbar-fixed-top{
-	display: none;
+#page-enrol-apsolu-overview .navbar-fixed-top {
+    display: none;
 }
 
 .apsolu-collapsible,
 .apsolu-expandable {
-	background-position: left;
-	background-repeat: no-repeat;
-	cursor: pointer;
-	padding-left: 21px !important;
+    background-position: left;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    padding-left: 21px !important;
 }
 
 .apsolu-expandable {
-	background-image: url([[pix:t/collapsed]]);
+    background-image: url([[pix:t/collapsed]]);
 }
 
 .apsolu-collapsible {
-	background-image: url([[pix:t/expanded]]);
+    background-image: url([[pix:t/expanded]]);
 }
 
-.apsolu-loading{
-	background-image: url([[pix:i/loading_small]]);
-	background-position: center;
-	background-repeat: no-repeat;
+.apsolu-loading {
+    background-image: url([[pix:i/loading_small]]);
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .apsolu-list-rows-div {
-	padding: 1em;
-	margin: 1em 0;
+    padding: 1em;
+    margin: 1em 0;
 }
 
 .apsolu-manage-users-tab-li {
@@ -52,15 +52,15 @@ button.uncheckall {
 }
 
 .apsolu-sports-description-help-img {
-	padding-left: .5em;
+    padding-left: .5em;
 }
 
 .apsolu-sports-description {
-	display: none;
+    display: none;
 }
 
 #apsolu-enrol-form {
-    background-color: #FFFFFF;
+    background-color: #fff;
     padding: 1.5em;
 }
 
@@ -82,7 +82,7 @@ input[type="radio"][name^="renew"] {
 }
 
 .block_overview_enrolments li:nth-child(even) {
-    background-color: #F0F0FF;
+    background-color: #f0f0ff;
 }
 
 .block_overview_remaining_choices ul {
@@ -96,7 +96,7 @@ input[type="radio"][name^="renew"] {
     width: auto;
 }
 
-#apsolu-activities-table dt:after{
+#apsolu-activities-table dt:after {
     content: ' : ';
 }
 
@@ -104,7 +104,7 @@ input[type="radio"][name^="renew"] {
     margin-left: 0;
 }
 
-@keyframes fadeIn{
+@keyframes fadeIn {
     0% {
         display: none;
         opacity: 0;
@@ -171,7 +171,7 @@ input[type="radio"][name^="renew"] {
 }
 
 .apsolu-inactive-td {
-    background-color: #eeeeee;
+    background-color: #eee;
 }
 
 .apsolu-manage-users-tab-ul,
@@ -182,13 +182,13 @@ input[type="radio"][name^="renew"] {
 }
 
 #page-enrol-select-manage_move textarea[disabled] {
-    background-color: #eeeeee;
+    background-color: #eee;
     cursor: not-allowed;
 }
 
 #apsolu-enrol-select tbody th {
     background-color: #434241;
-    color: #F39C12;
+    color: #f39c12;
     padding: 0 1em;
     line-height: 2em;
 }

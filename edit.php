@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Adds new instance of enrol_select to specified course
- * or edits current instance.
+ * Page pour configurer une instance du module enrol_select.
  *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
@@ -70,7 +69,8 @@ if ($instanceid) {
 $cohorts = $DB->get_records('cohort', $conditions = null, $sort = 'name');
 $roles = apsolu\get_custom_student_roles();
 $cards = $DB->get_records('apsolu_payments_cards', $conditions = null, $sort = 'name');
-$calendars = array((object) array('id' => 0, 'name' => get_string('none'))) + $DB->get_records('apsolu_calendars', $conditions = null, $sort = 'name');
+$calendars = array((object) array('id' => 0, 'name' => get_string('none')));
+$calendars += $DB->get_records('apsolu_calendars', $conditions = null, $sort = 'name');
 $enrolmethods = array(0 => get_string('reenrolment_disabled', 'enrol_select'));
 foreach ($DB->get_records('enrol', array('courseid' => $course->id, 'enrol' => 'select'), 'name') as $enrol) {
     if ($enrol->id === $instance->id) {
@@ -129,8 +129,10 @@ if ($mform->is_cancelled()) {
 
     if (empty($data->customchar1) === false && isset($calendars[$data->customchar1]) === true) {
         $calendar = $calendars[$data->customchar1];
-        // Note: afin de permettre la réouverture d'inscription en cours d'année, on permet à un utilisateur de diverger avec le calendrier officiel.
-        // Par contre, si une modification est effectuée dans le calendrier, les dates d'inscriptions seront écrasées pour tous les cours.
+        // Note: afin de permettre la réouverture d'inscription en cours d'année,
+        // on permet à un utilisateur de diverger avec le calendrier officiel.
+        // Par contre, si une modification est effectuée dans le calendrier,
+        // les dates d'inscriptions seront écrasées pour tous les cours.
         if ($instance->id === null) {
             // On applique les dates du calendrier, seulement lors de la création d'une méthode.
             $data->enrolstartdate = $calendar->enrolstartdate;
@@ -169,7 +171,8 @@ if ($mform->is_cancelled()) {
 
         // Mets à jour les dates d'accès au cours des étudiants.
         $sql = "UPDATE {user_enrolments} SET timestart = :timestart, timeend = :timeend WHERE enrolid = :enrolid";
-        $DB->execute($sql, array('timestart' => $instance->customint7, 'timeend' => $instance->customint8, 'enrolid' => $instance->id));
+        $params = array('timestart' => $instance->customint7, 'timeend' => $instance->customint8, 'enrolid' => $instance->id);
+        $DB->execute($sql, $params);
 
         if ($reset) {
             $context->mark_dirty();

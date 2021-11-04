@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Page gérant les changements des cours.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -78,7 +80,7 @@ foreach ($users as $userid => $user) {
 }
 
 // Cherche les cours contenant une méthode 'select' et où l'utilisateur courant est enseignant...
-// Ne pas faire de jointure sur ra.itemid et e.id
+// Ne pas faire de jointure sur ra.itemid et e.id.
 $sql = "SELECT e.id, e.name, c.id AS courseid, c.fullname".
     " FROM {course} c".
     " JOIN {apsolu_courses} apc ON apc.id = c.id".
@@ -102,7 +104,8 @@ foreach ($DB->get_records_sql($sql, array($USER->id)) as $courseid => $enrolcour
 
 if ($courses === array()) {
     $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
-    redirect($url, 'Vous n\'enseignez que dans un seul cours. Vous ne pouvez pas utiliser cette fonction.', 5, \core\output\notification::NOTIFY_ERROR);
+    $message = 'Vous n\'enseignez que dans un seul cours. Vous ne pouvez pas utiliser cette fonction.';
+    redirect($url, $message, 5, \core\output\notification::NOTIFY_ERROR);
 }
 
 $mform = new enrol_select_manage_change_course_form($url->out(false), array($instance, $users, $from, $to, $courses));
@@ -129,10 +132,12 @@ if ($mform->is_cancelled()) {
             $currentenrol = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $userid));
             $coursecontext = context_course::instance($instance->courseid);
             $sql = "UPDATE {role_assignments} SET roleid = ? WHERE component = 'enrol_select' AND userid = ? AND contextid = ?";
-            $roleassignment = $DB->get_record('role_assignments', array('component' => 'enrol_select', 'userid' => $userid, 'contextid' => $coursecontext->id));
+            $params = array('component' => 'enrol_select', 'userid' => $userid, 'contextid' => $coursecontext->id);
+            $roleassignment = $DB->get_record('role_assignments', $params);
             if ($roleassignment) {
                 $enrolselect->unenrol_user($instance, $userid);
-                $enrolselect->enrol_user($newinstance, $userid, $roleassignment->roleid, $timestart = 0, $timeend = 0, $currentenrol->status, $recovergrades = null);
+                $enrolselect->enrol_user($newinstance, $userid, $roleassignment->roleid, $timestart = 0, $timeend = 0,
+                    $currentenrol->status, $recovergrades = null);
                 $goodmoves++;
             } else {
                 $badmoves++;
@@ -147,16 +152,19 @@ if ($mform->is_cancelled()) {
         }
 
         if ($badmoves === 1) {
-            $notification[] = '1 utilisateur n\'a pas pu être déplacé (soit il est déjà inscrit au cours, soit une erreur est survenue)';
+            $notification[] = '1 utilisateur n\'a pas pu être déplacé (soit il est déjà inscrit au cours,'.
+                ' soit une erreur est survenue)';
         } else if ($badmoves > 1) {
-            $notification[] = $badmoves.' utilisateurs n\'ont pas pu être déplacés (soit ils sont déjà inscrits au cours, soit une erreur est survenue)';
+            $notification[] = $badmoves.' utilisateurs n\'ont pas pu être déplacés (soit ils sont déjà inscrits au cours,'.
+                ' soit une erreur est survenue)';
         }
 
         $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
         redirect($url, implode(' et ', $notification).'.', 5, \core\output\notification::NOTIFY_SUCCESS);
     } else {
         $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
-        redirect($url, 'Ce cours ne semble pas être valide pour cette méthode d\'inscription', 5, \core\output\notification::NOTIFY_ERROR);
+        $message = 'Ce cours ne semble pas être valide pour cette méthode d\'inscription';
+        redirect($url, $message, 5, \core\output\notification::NOTIFY_ERROR);
     }
 }
 

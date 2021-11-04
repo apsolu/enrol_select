@@ -22,7 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require __DIR__.'/../../../config.php';
+require(__DIR__.'/../../../config.php');
+
+require_course_login($site);
 
 $id = optional_param('id', null, PARAM_INT);
 
@@ -31,5 +33,5 @@ if ($id !== null) {
     $redirection .= '?id='.$id;
 }
 
-header('Location: '.$redirection, $repalce = true, $http_response_code = 301);
+header('Location: '.$redirection, $repalce = true, $httpresponsecode = 301);
 exit();

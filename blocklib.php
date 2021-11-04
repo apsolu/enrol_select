@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Fonctions pour le module enrol_select.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -22,6 +24,11 @@
 
 namespace UniversiteRennes2\Apsolu;
 
+/**
+ * Retourne le rendu HTML du bloc comptant le nombre de choix restant sur la page des inscriptions.
+ *
+ * @return string Retourne le rendu HTML du bloc.
+ */
 function get_remaining_choices_block() {
     global $OUTPUT;
 
@@ -52,7 +59,6 @@ function get_remaining_choices_block() {
     }
     $overviewremainingchoicesdata->summary .= '</tbody></table></div>';
 
-
     foreach ($overviewremainingchoicesdata->choices as $index => $choice) {
         if ($choice->maxwish == 0) {
             unset($overviewremainingchoicesdata->choices[$index]);
@@ -61,7 +67,8 @@ function get_remaining_choices_block() {
 
         $choice->description = '';
         if ($choice->count >= $choice->maxwish) {
-            $choice->description = '<p class="alert-success">Vous avez atteint le maximum de voeux avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.</p>';
+            $choice->description = '<p class="alert-success">Vous avez atteint le maximum de voeux avec le statut <b>'.
+                $roles[$choice->roleid]->name.'</b>.</p>';
         } else {
             // Pluriel.
             if ($choice->maxregister > 1) {
@@ -71,7 +78,8 @@ function get_remaining_choices_block() {
             }
 
             if ($choice->minregister == 0) {
-                $choice->description = '<p class="alert-info">Vous pouvez choisir '.$choice->maxregister.' '.$activitiesstr.' avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
+                $choice->description = '<p class="alert-info">Vous pouvez choisir '.$choice->maxregister.' '.
+                    $activitiesstr.' avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
             } else {
                 if ($choice->count < $choice->minregister) {
                     $style = 'alert-danger';
@@ -80,9 +88,11 @@ function get_remaining_choices_block() {
                 }
 
                 if ($choice->minregister === $choice->maxregister) {
-                    $choice->description = '<p class="'.$style.'">Vous pouvez choisir <b>'.$choice->minregister.' '.$activitiesstr.'</b> avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
+                    $choice->description = '<p class="'.$style.'">Vous pouvez choisir <b>'.$choice->minregister.' '.
+                        $activitiesstr.'</b> avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
                 } else {
-                    $choice->description = '<p class="'.$style.'">Vous pouvez choisir <b>entre '.$choice->minregister.' et '.$choice->maxregister.' '.$activitiesstr.'</b> avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
+                    $choice->description = '<p class="'.$style.'">Vous pouvez choisir <b>entre '.$choice->minregister.' et '.
+                        $choice->maxregister.' '.$activitiesstr.'</b> avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
                 }
             }
 
@@ -109,6 +119,11 @@ function get_remaining_choices_block() {
     return $block;
 }
 
+/**
+ * Retourne le rendu HTML du bloc affichant les inscriptions de l'étudiant sur la page des inscriptions.
+ *
+ * @return string Retourne le rendu HTML du bloc.
+ */
 function get_enrolments_block() {
     global $DB, $CFG, $OUTPUT;
 
@@ -149,6 +164,13 @@ function get_enrolments_block() {
     return $block;
 }
 
+/**
+ * Retourne le rendu HTML du bloc permettant de filter les activités sur la page des inscriptions.
+ *
+ * @param array $courses Liste des cours affichés sur la page des inscriptions.
+ *
+ * @return string Retourne le rendu HTML du bloc.
+ */
 function get_filters_block($courses) {
     global $CFG, $OUTPUT;
 

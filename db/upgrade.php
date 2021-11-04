@@ -24,6 +24,12 @@
 
 /**
  * Upgrade procedure.
+ *
+ * @throws moodle_exception If something goes wrong.
+ *
+ * @param int $oldversion Numéro courant de la version du plugin installé.
+ *
+ * @return true If success.
  */
 function xmldb_enrol_select_upgrade($oldversion = 0) {
     global $DB;
@@ -38,13 +44,13 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
         if (!$dbman->table_exists($table)) {
             // Adding fields.
             $table->add_field('id', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null);
-            $table->add_field('name', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, $not_null = false, null, null, null);
-            $table->add_field('maxwish', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, $not_null = false, null, null, null);
-            $table->add_field('minregister', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, $not_null = false, null, null, null);
-            $table->add_field('maxregister', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, $not_null = false, null, null, null);
+            $table->add_field('name', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, $notnull = false, null, null, null);
+            $table->add_field('maxwish', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, $notnull = false, null, null, null);
+            $table->add_field('minregister', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, $notnull = false, null, null, null);
+            $table->add_field('maxregister', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, $notnull = false, null, null, null);
             $table->add_field('userprice', XMLDB_TYPE_FLOAT, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', null);
             $table->add_field('institutionprice', XMLDB_TYPE_FLOAT, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', null);
-            $table->add_field('roleid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, $not_null = false, null, null, null);
+            $table->add_field('roleid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, $notnull = false, null, null, null);
 
             // Adding key.
             $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
@@ -58,8 +64,8 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
         // If the table does not exist, create it along with its fields.
         if (!$dbman->table_exists($table)) {
             // Adding fields.
-            $table->add_field('collegeid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, $not_null = false, null, null, null);
-            $table->add_field('cohortid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, $not_null = false, null, null, null);
+            $table->add_field('collegeid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, $notnull = false, null, null, null);
+            $table->add_field('cohortid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, $notnull = false, null, null, null);
 
             // Adding key.
             $table->add_key('primary', XMLDB_KEY_PRIMARY, array('collegeid', 'cohortid'));
@@ -99,9 +105,11 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
 
     $version = 2017120600;
     if ($oldversion < $version) {
+        $default = null;
+
         // Fix default value for apsolu_colleges.id.
         $table = new xmldb_table('apsolu_colleges');
-        $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE, $default = null, null);
+        $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE, $default, null);
 
         $dbman->change_field_default($table, $field);
 
@@ -113,9 +121,12 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
     if ($oldversion < $version) {
         $table = new xmldb_table('enrol_select_cards');
         if ($dbman->table_exists($table) === false) {
+            $default = null;
+            $sequence = null;
+
             // Adding fields.
-            $table->add_field('enrolid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, $sequence = null, $default = null, null);
-            $table->add_field('cardid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, $sequence = null, $default = null, null);
+            $table->add_field('enrolid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, $sequence, $default, null);
+            $table->add_field('cardid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, $sequence, $default, null);
 
             // Adding key.
             $table->add_key('primary', XMLDB_KEY_PRIMARY, array('enrolid', 'cardid'));

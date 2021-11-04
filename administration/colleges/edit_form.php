@@ -40,7 +40,7 @@ class apsolu_colleges_form extends moodleform {
      * @return void
      */
     public function definition() {
-        global $CFG, $DB;
+        global $CFG;
 
         $mform = $this->_form;
 
@@ -121,7 +121,8 @@ class apsolu_colleges_form extends moodleform {
 
         // Vérifie que le nombre maximum de voeux n'est pas inférieur au nombre minimum de voeux.
         if ($data['maxregister'] < $data['minregister']) {
-            $errors['maxregister'] = get_string('maximum_enrolments_must_be_greater_than_or_equal_to_minimum_enrolments', 'enrol_select');
+            $label = get_string('maximum_enrolments_must_be_greater_than_or_equal_to_minimum_enrolments', 'enrol_select');
+            $errors['maxregister'] = $label;
         }
 
         return $errors;

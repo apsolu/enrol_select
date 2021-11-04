@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Page de gestion des inscriptions du module enrol_select.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -42,7 +44,7 @@ require_login($course);
 $canenrol = has_capability('enrol/select:enrol', $context);
 $canunenrol = has_capability('enrol/select:unenrol', $context);
 
-$is_manager = $DB->get_record('role_assignments', array('contextid' => 1, 'roleid' => 1, 'userid' => $USER->id));
+$ismanager = $DB->get_record('role_assignments', array('contextid' => 1, 'roleid' => 1, 'userid' => $USER->id));
 
 // Note: manage capability not used here because it is used for editing
 // of existing enrolments which is not possible here.
@@ -76,7 +78,7 @@ foreach ($instances as $instance) {
     $enrol->enrol_user_link = $CFG->wwwroot.'/enrol/select/enrol.php?enrolid='.$instance->id;
     $enrol->unenrol_user_link = $CFG->wwwroot.'/enrol/select/unenrol.php?enrolid='.$instance->id;
     $enrol->lists = array();
-    $enrol->lock = ($instance->customint8 < time() && $is_manager === false);
+    $enrol->lock = ($instance->customint8 < time() && $ismanager === false);
 
     // On initialise chaque liste (LP, LC, etc).
     foreach (enrol_select_plugin::$states as $code => $state) {
@@ -98,14 +100,14 @@ foreach ($instances as $instance) {
         $otheroptions['editenroltype'] = get_string('editenroltype', 'enrol_select');
         $otheroptions['changecourse'] = get_string('change_course', 'enrol_select');
 
-        // Current instance
+        // Current instance.
         unset($mainoptions[$code]);
         $selectoptions[] = array('Déplacement au sein de ' . $instance->name => $mainoptions);
 
-        // Other actions than manage_move
+        // Other actions than manage_move.
         $selectoptions[] = array('Autres actions' => $otheroptions);
 
-        // Renewal instance, semester 2
+        // Renewal instance, semester 2.
         if ($nextinstance !== false) {
             $selectoptions[] = array('Réinscription vers ' . $nextinstance->name => $suboptions);
         }
@@ -140,7 +142,8 @@ foreach ($instances as $instance) {
     }
 
     if (time() > $instance->customint8) {
-        // Si la date courante est supérieure à au moins une des dates de fin de cours d'une des instances, c'est que nous sommes au 2ème semestre.
+        // Si la date courante est supérieure à au moins une des dates de fin de cours d'une des instances,
+        // c'est que nous sommes au 2ème semestre.
         $semester2 = true;
     }
 
@@ -148,7 +151,8 @@ foreach ($instances as $instance) {
 }
 
 // On récupère toutes les inscriptions de tous les étudiants inscrits à ce cours.
-$sql = 'SELECT u.*, ra.roleid, e.name AS enrolname, e.courseid, ue.enrolid, ue.status, ue.timecreated, c.fullname, cc.name AS sport, uid1.data AS apsolucycle'.
+$sql = 'SELECT u.*, ra.roleid, e.name AS enrolname, e.courseid, ue.enrolid, ue.status, ue.timecreated,'.
+    ' c.fullname, cc.name AS sport, uid1.data AS apsolucycle'.
     ' FROM {user} u'.
     ' LEFT JOIN {user_info_data} uid1 ON u.id = uid1.userid AND uid1.fieldid = :fieldid'.
     ' JOIN {user_enrolments} ue ON u.id = ue.userid'.
@@ -159,7 +163,13 @@ $sql = 'SELECT u.*, ra.roleid, e.name AS enrolname, e.courseid, ue.enrolid, ue.s
     ' WHERE u.deleted = 0'.
     ' AND e.enrol = "select"'.
     ' AND e.status = 0'.
-    ' AND u.id IN (SELECT ue.userid FROM {user_enrolments} ue JOIN {enrol} e ON e.id = ue.enrolid WHERE e.enrol = "select" AND e.courseid = :courseid)'.
+    ' AND u.id IN ('.
+        ' SELECT ue.userid'.
+        ' FROM {user_enrolments} ue'.
+        ' JOIN {enrol} e ON e.id = ue.enrolid'.
+        ' WHERE e.enrol = "select"'.
+        ' AND e.courseid = :courseid'.
+    ')'.
     ' ORDER BY ue.timecreated, u.lastname, u.firstname';
 $users = array();
 $recordset = $DB->get_recordset_sql($sql, array('fieldid' => $customfields['apsolucycle']->id, 'courseid' => $course->id));
@@ -195,7 +205,7 @@ foreach ($recordset as $record) {
     $enrolment->role = $roles[$record->roleid]->localname;
     $enrolment->timecreated = strftime('%a %d %b à %T', $record->timecreated);
     $enrolment->timecreated_sortable = strftime('%F %T', $record->timecreated);
-    if ($is_manager === false) {
+    if ($ismanager === false) {
         $enrolment->course_url = '';
     } else {
         $enrolment->course_url = new moodle_url('/course/view.php', array('id' => $record->courseid));
@@ -227,14 +237,6 @@ foreach ($users as $user) {
 foreach ($enrols as $enrolid => $enrol) {
     $enrols[$enrolid]->id = $enrolid;
     $enrols[$enrolid]->lists = array_values($enrol->lists);
-    /*
-    // Re-trie les dates, notamment parce qu'elles sont dans le désordre pour le second semestre.
-    foreach ($enrols[$enrolid]->lists as $list) {
-        usort($list->users, function($a, $b) {
-            return $a->timecreated_sortable > $b->timecreated_sortable;
-        });
-    }
-    */
 }
 
 $data->enrols = array_values($enrols);

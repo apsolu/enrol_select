@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Page gérant les notifications.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -89,7 +91,8 @@ if ($mform->is_cancelled()) {
 } else if ($data = $mform->get_data()) {
     $mform->local_apsolu_notify($data->users, $course->id);
 
-    redirect($redirecturl, get_string('notifications_have_been_sent', 'local_apsolu'), 5, \core\output\notification::NOTIFY_SUCCESS);
+    $message = get_string('notifications_have_been_sent', 'local_apsolu');
+    redirect($redirecturl, $message, 5, \core\output\notification::NOTIFY_SUCCESS);
 }
 
 $pluginname = get_string('pluginname', 'enrol_select');

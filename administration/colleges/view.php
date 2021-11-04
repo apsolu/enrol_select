@@ -15,12 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Page d'affichage des collèges.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 use UniversiteRennes2\Apsolu as apsolu;
+
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
 
@@ -56,7 +60,8 @@ if ($colleges) {
         $members = '';
         foreach ($DB->get_records('apsolu_colleges_members', array('collegeid' => $college->id), '', 'cohortid') as $member) {
             if (isset($cohorts[$member->cohortid]) === false) {
-                // TODO: faire en sorte de retirer les cohortes qui n'existe plus. Voir si il y a un event lors de la suppression des cohortes.
+                // TODO: faire en sorte de retirer les cohortes qui n'existe plus.
+                // Voir si il y a un event lors de la suppression des cohortes.
                 continue;
             }
 

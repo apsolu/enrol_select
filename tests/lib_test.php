@@ -25,7 +25,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once __DIR__.'/../lib.php';
+global $CFG;
+
+require_once($CFG->dirroot.'/course/lib.php');
+require_once($CFG->dirroot.'/enrol/select/lib.php');
 
 /**
  * Classe de tests pour enrol_select_plugin
@@ -81,7 +84,13 @@ class enrol_select_plugin_testcase extends advanced_testcase {
 
         $plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend, $status);
         $context = context_course::instance($instance->courseid);
-        $roleassignment = $DB->get_record('role_assignments', array('component' => 'enrol_select', 'userid' => $user->id, 'contextid' => $context->id, 'itemid' => $instance->id));
+        $params = array(
+            'component' => 'enrol_select',
+            'userid' => $user->id,
+            'contextid' => $context->id,
+            'itemid' => $instance->id
+        );
+        $roleassignment = $DB->get_record('role_assignments', $params);
         $this->assertSame($roleid, $roleassignment->roleid);
 
         // Teste une première inscription avec des dates de début et de fin personnalisées.
@@ -163,9 +172,9 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         $this->assertSame('0', $instance->customint3);
         $this->assertSame(enrol_select_plugin::MAIN, $plugin->get_available_status($instance, $user));
 
-        // On définit un maximum d'inscrits.
+        // On active les quotas et définit un maximum d'inscrits sur liste principale.
         $instance->customint3 = 1;
-        $instance->customint1 = $numberofusers[enrol_select_plugin::ACCEPTED] + $numberofusers[enrol_select_plugin::MAIN]; // Places sur la liste principale.
+        $instance->customint1 = $numberofusers[enrol_select_plugin::ACCEPTED] + $numberofusers[enrol_select_plugin::MAIN];
         $instance->customint2 = 0;
 
         // On ajoute une place sur la liste principale.
@@ -328,9 +337,9 @@ class enrol_select_plugin_testcase extends advanced_testcase {
             $this->assertSame($count, $DB->count_records('user_enrolments', $conditions));
         }
 
-        // Active les quotas.
+        // On active les quotas et définit le nombre de places sur liste principale.
         $instance->customint3 = 1;
-        $instance->customint1 = $numberofusers[enrol_select_plugin::ACCEPTED] + $numberofusers[enrol_select_plugin::MAIN]; // Places sur la liste principale.
+        $instance->customint1 = $numberofusers[enrol_select_plugin::ACCEPTED] + $numberofusers[enrol_select_plugin::MAIN];
         $DB->update_record('enrol', $instance);
 
         // Teste que la liste principale n'est pas réalimentée lorsque les inscriptions sont déjà complètes.

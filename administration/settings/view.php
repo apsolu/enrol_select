@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Page d'affichage du paramétrage par défaut des méthodes d'inscription.
+ *
  * @package    enrol_select
  * @copyright  2021 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -64,7 +66,8 @@ for ($i = 1; $i < 4; $i++) {
 $cohorts = $DB->get_records('cohort', $conditions = null, $sort = 'name');
 $roles = \UniversiteRennes2\Apsolu\get_custom_student_roles();
 $cards = $DB->get_records('apsolu_payments_cards', $conditions = null, $sort = 'name');
-$calendars = array((object) array('id' => 0, 'name' => get_string('none'))) + $DB->get_records('apsolu_calendars', $conditions = null, $sort = 'name');
+$calendars = array((object) array('id' => 0, 'name' => get_string('none')));
+$calendars += $DB->get_records('apsolu_calendars', $conditions = null, $sort = 'name');
 
 $customdata = array($defaults, $calendars, $cohorts, $roles, $cards);
 
@@ -88,7 +91,7 @@ if ($data = $mform->get_data()) {
     foreach ($attributes as $attribute) {
         if (isset($data->{$attribute}['text']) === true) {
             set_config($attribute, $data->{$attribute}['text'], 'enrol_select');
-        } elseif (is_array($data->{$attribute}) === true) {
+        } else if (is_array($data->{$attribute}) === true) {
             set_config($attribute, implode(',', $data->{$attribute}), 'enrol_select');
         } else {
             set_config($attribute, $data->{$attribute}, 'enrol_select');

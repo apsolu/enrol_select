@@ -15,12 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Page gérant la validation des renouvèlements de voeux.
+ *
  * @package    enrol_select
  * @copyright  2019 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-foreach($_POST['uids'] as $uid) {
+defined('MOODLE_INTERNAL') || die();
+
+foreach ($_POST['uids'] as $uid) {
     if (isset($_POST[$uid.'_enrol'])) {
         $to = $_POST[$uid.'_action'];
 
@@ -55,7 +59,11 @@ foreach($_POST['uids'] as $uid) {
             $enrolselectplugin = new enrol_select_plugin();
             $roleid = 0;
 
-            $sql = "SELECT roleid FROM {role_assignments} WHERE component = 'enrol_select' AND itemid = :previousinstance_id AND userid = :userid";
+            $sql = "SELECT roleid".
+                " FROM {role_assignments}".
+                " WHERE component = 'enrol_select'".
+                " AND itemid = :previousinstance_id".
+                " AND userid = :userid";
             $recordset = $DB->get_recordset_sql($sql, array('previousinstance_id' => $enrolid, 'userid' => $userid));
             foreach ($recordset as $role) {
                 // TODO: pourquoi un foreach pour initialiser la variable roleid ?

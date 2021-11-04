@@ -15,7 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Classe pour afficher le selecteur d'étudiants.
+ *
  * @package    enrol_select
+ * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -26,10 +29,23 @@ require_once($CFG->dirroot . '/enrol/locallib.php');
 
 /**
  * Enrol candidates.
+ *
+ * @package    enrol_select
+ * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class enrol_select_potential_participant extends user_selector_base {
+    /** @var int|string Identifiant de la méthode d'inscription enrol_select. */
     protected $enrolid;
 
+    /**
+     * Constructor.
+     *
+     * @param string $name the control name/id for use in the HTML.
+     * @param array $options other options needed to construct this selector.
+     *
+     * @return void
+     */
     public function __construct($name, $options) {
         $this->enrolid  = $options['enrolid'];
         parent::__construct($name, $options);
@@ -37,7 +53,9 @@ class enrol_select_potential_participant extends user_selector_base {
 
     /**
      * Candidate users
+     *
      * @param string $search
+     *
      * @return array
      */
     public function find_users($search) {
@@ -85,6 +103,12 @@ class enrol_select_potential_participant extends user_selector_base {
         return array($groupname => $availableusers);
     }
 
+    /**
+     * Note: this function must be implemented if you use the search ajax field
+     *       (e.g. set $options['file'] = '/admin/filecontainingyourclass.php';)
+     *
+     * @return array the options needed to recreate this user_selector.
+     */
     protected function get_options() {
         $options = parent::get_options();
         $options['enrolid'] = $this->enrolid;

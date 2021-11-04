@@ -22,15 +22,40 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
 require_once($CFG->dirroot.'/local/apsolu/locallib.php');
 
+/**
+ * Classe principale du module enrol_select.
+ *
+ * @package    enrol_select
+ * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class enrol_select_plugin extends enrol_plugin {
+    /**
+     * Code du statut accepté.
+     */
     const ACCEPTED = '0';
+
+    /**
+     * Code du statut de la liste principale.
+     */
     const MAIN = '2';
+
+    /**
+     * Code du statut de la liste secondaire.
+     */
     const WAIT = '3';
+
+    /**
+     * Code du statut désinscrit.
+     */
     const DELETED = '4';
 
+    /** @var array Tableau indexé avec les constantes de classe ACCEPTED, MAIN, WAIT et DELETED. */
     public static $states = array(
         self::ACCEPTED => 'accepted',
         self::MAIN => 'main',
@@ -38,6 +63,14 @@ class enrol_select_plugin extends enrol_plugin {
         self::DELETED => 'deleted',
     );
 
+    /**
+     * Retourne la chaine de caractères correspondant à une constante.
+     *
+     * @param int|string  $status Valeur correspondant à une des constantes de classe (ACCEPTED, MAIN, WAIT et DELETED).
+     * @param null|string $type   Valeur pouvant être null, abbr ou short.
+     *
+     * @return string|false Retourne false si le $status n'est pas correct.
+     */
     public static function get_enrolment_list_name($status, $type = null) {
         if ($type !== null ) {
             $type = '_'.$type;
@@ -54,14 +87,21 @@ class enrol_select_plugin extends enrol_plugin {
         return false;
     }
 
+    /**
+     * Returns name of this enrol plugin.
+     *
+     * @return string
+     */
     public function get_name() {
         // Second word in class is always enrol name, sorry, no fancy plugin names with _.
         return 'select';
     }
 
     /**
-     * Returns edit icons for the page with list of instances
+     * Returns edit icons for the page with list of instances.
+     *
      * @param stdClass $instance
+     *
      * @return array
      */
     public function get_action_icons(stdClass $instance) {
@@ -77,7 +117,8 @@ class enrol_select_plugin extends enrol_plugin {
         if (has_capability('enrol/select:enrol', $context) or has_capability('enrol/select:unenrol', $context)) {
             $managelink = new moodle_url("/enrol/select/manage.php", array('enrolid' => $instance->id));
 
-            $pixicon = new pix_icon('t/enrolusers', get_string('enrolusers', 'enrol_manual'), 'core', array('class' => 'iconsmall'));
+            $label = get_string('enrolusers', 'enrol_manual');
+            $pixicon = new pix_icon('t/enrolusers', $label, 'core', array('class' => 'iconsmall'));
             $icons[] = $OUTPUT->action_icon($managelink, $pixicon);
         }
 
@@ -179,7 +220,9 @@ class enrol_select_plugin extends enrol_plugin {
 
     /**
      * Returns link to page which may be used to add new instance of enrolment plugin in course.
+     *
      * @param int $courseid
+     *
      * @return moodle_url page url
      */
     public function get_newinstance_link($courseid) {
@@ -194,6 +237,7 @@ class enrol_select_plugin extends enrol_plugin {
 
     /**
      * Returns defaults for new instances.
+     *
      * @return array
      */
     public function get_instance_defaults() {
@@ -241,6 +285,7 @@ class enrol_select_plugin extends enrol_plugin {
      * Is it possible to hide/show enrol instance via standard UI?
      *
      * @param stdClass $instance
+     *
      * @return bool
      */
     public function can_hide_show_instance($instance) {
@@ -253,6 +298,7 @@ class enrol_select_plugin extends enrol_plugin {
      * Return true if we can add a new instance to this course.
      *
      * @param int $courseid
+     *
      * @return boolean
      */
     public function can_add_instance($courseid) {
@@ -275,6 +321,7 @@ class enrol_select_plugin extends enrol_plugin {
      * Is it possible to delete enrol instance via standard UI?
      *
      * @param object $instance
+     *
      * @return bool
      */
     public function can_delete_instance($instance) {
@@ -285,8 +332,8 @@ class enrol_select_plugin extends enrol_plugin {
     /**
      * Retourne le code de la liste dans laquelle sera enregistré le prochain inscrit.
      *
-     * @param object     $instance Objet de l'instance de la méthode d'inscription.
-     * @param string|int $userid   Identifiant utilisateur du prochain inscrit.
+     * @param object $instance Objet de l'instance de la méthode d'inscription.
+     * @param object $user     Objet représentant le prochain utilisateur inscrit.
      *
      * @return string|false Retourne false si il n'y a plus de place cette méthode d'inscription par voeux.
      */
@@ -299,7 +346,8 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Détermine si il y a déjà des utilisateurs sur liste complémentaire.
-        $waitlistenrolements = $DB->get_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::WAIT), '', 'userid');
+        $params = array('enrolid' => $instance->id, 'status' => self::WAIT);
+        $waitlistenrolements = $DB->get_records('user_enrolments', $params, '', 'userid');
         $this->count_wait_list_enrolements = count($waitlistenrolements);
 
         if (isset($user, $waitlistenrolements[$user->id])) {
@@ -310,7 +358,8 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         if ($countwaitlistenrolements >= $instance->customint2 && empty($instance->customint2) === false) {
-            // Il n'y a plus de place disponible sur la liste complémentaire et les quotas sont définis pour la liste complémentaire.
+            // Il n'y a plus de place disponible sur la liste complémentaire
+            // et les quotas sont définis pour la liste complémentaire.
             return false;
         }
 
@@ -324,7 +373,8 @@ class enrol_select_plugin extends enrol_plugin {
             " FROM {user_enrolments}".
             " WHERE enrolid = :enrolid".
             " AND status IN (:accepted, :main)";
-        $mainlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $instance->id, 'accepted' => self::ACCEPTED, 'main' => self::MAIN));
+        $params = array('enrolid' => $instance->id, 'accepted' => self::ACCEPTED, 'main' => self::MAIN);
+        $mainlistenrolements = $DB->get_records_sql($sql, $params);
         $this->count_main_list_enrolements = count($mainlistenrolements);
 
         if (isset($user, $mainlistenrolements[$user->id])) {
@@ -333,7 +383,6 @@ class enrol_select_plugin extends enrol_plugin {
         } else {
             $countmainlistenrolements = $this->count_main_list_enrolements;
         }
-
 
         if ($countmainlistenrolements < $instance->customint1 && empty($instance->customint1) === false) {
             // Il reste des places disponibles sur liste principale et les quotas sont définis pour la liste principale.
@@ -365,6 +414,14 @@ class enrol_select_plugin extends enrol_plugin {
         return self::MAIN;
     }
 
+    /**
+     * Retourne les rôles disponibles pour une méthode d'inscription donnée et un contexte.
+     *
+     * @param object $instance Objet de l'instance de la méthode d'inscription
+     * @param object $context  Objet représentant un contexte.
+     *
+     * @return array Retourne un tableau de rôles.
+     */
     public function get_roles($instance, $context) {
         global $DB;
 
@@ -387,7 +444,9 @@ class enrol_select_plugin extends enrol_plugin {
      * Retourne le rôle d'un utilisateur pour une méthode d'inscription donnée.
      *
      * @param object $instance Objet de l'instance de la méthode d'inscription
-     * @param int    $userid   Identifiant de l'utilisateur. Si il n'est pas fourni, c'est l'identifiant de l'utilisateur courant qui sera utilisé.
+     * @param int    $userid   Identifiant de l'utilisateur. Si il n'est pas fourni,
+     *                         c'est l'identifiant de l'utilisateur courant qui sera utilisé.
+     *
      * @return object|false Retourne un object du rôle ou false si l'utilisateur n'est pas inscrit via cette méthode.
      */
     public function get_user_role($instance, $userid = null) {
@@ -415,6 +474,15 @@ class enrol_select_plugin extends enrol_plugin {
         return current($roles);
     }
 
+    /**
+     * Retourne les rôles disponibles pour un utilisateur et une méthode d'inscription donnée.
+     *
+     * @param object $instance Objet de l'instance de la méthode d'inscription
+     * @param int    $userid   Identifiant de l'utilisateur. Si il n'est pas fourni,
+     *                         c'est l'identifiant de l'utilisateur courant qui sera utilisé.
+     *
+     * @return array Retourne un tableau de rôles.
+     */
     public function get_available_user_roles($instance, $userid = null) {
         global $DB, $USER;
 
@@ -439,11 +507,20 @@ class enrol_select_plugin extends enrol_plugin {
         return role_fix_names($DB->get_records_sql($sql, $params));
     }
 
-
+    /**
+     * Fonction à documenter (TODO).
+     *
+     * @param object      $instance Objet de l'instance de la méthode d'inscription
+     * @param null|object $user     Identifiant de l'utilisateur. Si il n'est pas fourni,
+     *                              c'est l'identifiant de l'utilisateur courant qui sera utilisé.
+     *
+     * @return void.
+     */
     public function set_available_status($instance, $user = null) {
         global $DB;
 
-        debugging(sprintf('%s() is deprecated. Please see enrol_select_plugin::get_available_status() method instead.', __METHOD__), DEBUG_DEVELOPER);
+        debugging(sprintf('%s() is deprecated. Please see'.
+            ' enrol_select_plugin::get_available_status() method instead.', __METHOD__), DEBUG_DEVELOPER);
 
         $this->available_status = array();
 
@@ -468,7 +545,8 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Check wait list.
-        $waitlistenrolements = $DB->get_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::WAIT), '', 'userid');
+        $params = array('enrolid' => $instance->id, 'status' => self::WAIT);
+        $waitlistenrolements = $DB->get_records('user_enrolments', $params, '', 'userid');
         $this->count_wait_list_enrolements = count($waitlistenrolements);
 
         if (isset($user, $waitlistenrolements[$user->id])) {
@@ -484,6 +562,13 @@ class enrol_select_plugin extends enrol_plugin {
         }
     }
 
+    /**
+     * Détermine si les inscriptions sont ouvertes.
+     *
+     * @param object $instance Objet de l'instance de la méthode d'inscription
+     *
+     * @return bool Vrai si les inscriptions sont ouvertes.
+     */
     public function is_enrol_period_active($instance) {
         $today = time();
 
@@ -493,6 +578,15 @@ class enrol_select_plugin extends enrol_plugin {
         return ($opening && $closing);
     }
 
+    /**
+     * Détermine si un utilisateur peut s'inscrire à une instance.
+     *
+     * @param object     $instance Objet de l'instance de la méthode d'inscription.
+     * @param object     $user     Objet représentant l'utilisateur.
+     * @param int|string $roleid   Identifiant d'un rôle.
+     *
+     * @return bool Vrai si les inscriptions sont ouvertes.
+     */
     public function can_enrol($instance, $user, $roleid) {
         global $CFG, $DB, $USER;
 
@@ -511,7 +605,7 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Check cohorts.
-        if ($instance->customint3 === '1') { // TODO: pourquoi vérifier le paramètre des quotas, pour faire un contrôle sur les cohortes ?
+        if ($instance->customint3 === '1') { // TODO: pourquoi tester si les quotas sont activés pour contrôler les cohortes ?
             $usercohorts = $DB->get_records('cohort_members', array('userid' => $user->id));
             $enrolcohorts = $DB->get_records('enrol_select_cohorts', array('enrolid' => $instance->id), '', 'cohortid');
 
@@ -557,8 +651,6 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         if ($available === false) {
-            // $role = current(role_fix_names(array($roleid => $DB->get_record('role', array('id' => $roleid)))));
-            // debugging(get_string('error_reach_wishes_limit', 'enrol_select', $role->localname), $level = DEBUG_DEVELOPER);
             return false;
         }
 
@@ -571,6 +663,15 @@ class enrol_select_plugin extends enrol_plugin {
         return true;
     }
 
+    /**
+     * Détermine si un utilisateur peut se réinscrire.
+     *
+     * @param object          $instance Objet de l'instance de la méthode d'inscription.
+     * @param null|int|string $userid   Identifiant d'un utilisateur.
+     * @param null|int|string $roleid   Identifiant d'un rôle.
+     *
+     * @return bool Vrai si les inscriptions sont ouvertes.
+     */
     public function can_reenrol($instance, $userid = null, $roleid = null) {
         global $DB, $USER;
 
@@ -638,10 +739,25 @@ class enrol_select_plugin extends enrol_plugin {
         return true;
     }
 
-    public function enrol_user(stdClass $instance, $userid, $roleid = null, $timestart = 0, $timeend = 0, $status = null, $recovergrades = null) {
+    /**
+     * Méthode permettant l'inscription d'un utilisateur à une instance.
+     *
+     * @param stdClass        $instance      Objet de l'instance de la méthode d'inscription.
+     * @param int|string      $userid        Identifiant d'un utilisateur.
+     * @param null|int|string $roleid        Identifiant d'un rôle.
+     * @param int|string      $timestart     Timestamp de début de cours.
+     * @param int|string      $timeend       Timestamp de fin de cours.
+     * @param null|int|string $status        État de l'inscription (accepté, liste principale, liste secondaire, supprimé).
+     * @param null|bool       $recovergrades Récupérer les notes ?
+     *
+     * @return void.
+     */
+    public function enrol_user(stdClass $instance, $userid, $roleid = null, $timestart = 0, $timeend = 0,
+        $status = null, $recovergrades = null) {
         global $DB, $USER;
 
-        // La méthode parent::enrol_user() ne remplace pas les rôles, mais cumul. Il faut donc faire un traitement différent si il s'agit juste d'un changement de rôle.
+        // La méthode parent::enrol_user() ne remplace pas les rôles, mais cumul.
+        // Il faut donc faire un traitement différent si il s'agit juste d'un changement de rôle.
         $enrolled = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $userid));
         if ($enrolled === false) {
             if ($timestart === 0) {
@@ -677,7 +793,8 @@ class enrol_select_plugin extends enrol_plugin {
                     $eventdata->component = 'enrol_select';
                     $eventdata->userfrom = get_admin();
                     $eventdata->userto = $userid;
-                    $eventdata->subject = get_string('enrolment_to', 'enrol_select', format_string($course->fullname, $striplinks = true, $course->id));
+                    $params = format_string($course->fullname, $striplinks = true, $course->id);
+                    $eventdata->subject = get_string('enrolment_to', 'enrol_select', $params);
                     $eventdata->fullmessage = $message;
                     $eventdata->fullmessageformat = FORMAT_HTML;
                     $eventdata->fullmessagehtml = $message;
@@ -694,7 +811,10 @@ class enrol_select_plugin extends enrol_plugin {
 
         // Traite le cas où on souhaite juste modifier le statut.
         if ($status !== null) {
-            $sql = "UPDATE {user_enrolments} SET status = :status, timemodified = :now WHERE enrolid = :enrolid AND userid = :userid";
+            $sql = "UPDATE {user_enrolments}".
+                " SET status = :status, timemodified = :now".
+                " WHERE enrolid = :enrolid".
+                " AND userid = :userid";
             $DB->execute($sql, array('status' => $status, 'now' => time(), 'enrolid' => $instance->id, 'userid' => $userid));
         }
 
@@ -702,11 +822,26 @@ class enrol_select_plugin extends enrol_plugin {
         if ($roleid !== null) {
             $coursecontext = context_course::instance($instance->courseid);
 
-            $sql = "UPDATE {role_assignments} SET roleid = :roleid, timemodified = :now WHERE component = 'enrol_select' AND userid = :userid AND contextid = :contextid AND itemid= :itemid";
-            $DB->execute($sql, array('roleid' => $roleid, 'now' => time(), 'userid' => $userid, 'contextid' => $coursecontext->id, 'itemid' => $instance->id));
+            $sql = "UPDATE {role_assignments}".
+                " SET roleid = :roleid, timemodified = :now".
+                " WHERE component = 'enrol_select'".
+                " AND userid = :userid".
+                " AND contextid = :contextid".
+                " AND itemid= :itemid";
+            $params = array('roleid' => $roleid, 'now' => time(), 'userid' => $userid,
+                'contextid' => $coursecontext->id, 'itemid' => $instance->id);
+            $DB->execute($sql, $params);
         }
     }
 
+    /**
+     * Méthode permettant de déinscrire un utilisateur d'une instance.
+     *
+     * @param stdClass   $instance      Objet de l'instance de la méthode d'inscription.
+     * @param int|string $userid        Identifiant d'un utilisateur.
+     *
+     * @return void.
+     */
     public function unenrol_user(stdClass $instance, $userid) {
         parent::unenrol_user($instance, $userid);
 
@@ -716,6 +851,14 @@ class enrol_select_plugin extends enrol_plugin {
         }
     }
 
+    /**
+     * Réorganise la liste d'inscription principale.
+     *
+     * @param stdClass   $instance      Objet de l'instance de la méthode d'inscription.
+     * @param int|string $userid        Identifiant d'un utilisateur.
+     *
+     * @return void.
+     */
     public function refill_main_list(stdClass $instance, $userid) {
         global $DB, $USER;
 
@@ -726,7 +869,8 @@ class enrol_select_plugin extends enrol_plugin {
 
         if ($USER->id !== $userid) {
             // L'utilisateur courant n'est pas l'utilisateur à désinscrire.
-            // Il s'agit probablement d'un enseignant dans la partie management. On ne provoque pas la réalimentation de la liste principale.
+            // Il s'agit probablement d'un enseignant dans la partie management.
+            // On ne provoque pas la réalimentation de la liste principale.
             return;
         }
 
@@ -736,26 +880,28 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         $sql = "SELECT COUNT(*) FROM {user_enrolments} WHERE enrolid = :enrolid AND status IN (:main, :accepted)";
-        $count_main = $DB->count_records_sql($sql, array('enrolid' => $instance->id, 'main' => self::MAIN, 'accepted' => self::ACCEPTED));
-        if ($count_main >= $instance->customint1) {
+        $params = array('enrolid' => $instance->id, 'main' => self::MAIN, 'accepted' => self::ACCEPTED);
+        $countmain = $DB->count_records_sql($sql, $params);
+        if ($countmain >= $instance->customint1) {
             // La liste principale (et des acceptés) est déjà pleine.
             return;
         }
 
-        $count_wait = $DB->count_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::WAIT));
-        if ($count_wait === 0) {
+        $countwait = $DB->count_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::WAIT));
+        if ($countwait === 0) {
             // La liste complémentaire est vide.
             return;
         }
 
         // Détermine le nombre d'inscription à transférer de la liste complémentaire à la liste principale.
-        $promote = $instance->customint1 - $count_main;
+        $promote = $instance->customint1 - $countmain;
 
         // Récupère les utilisateurs sur liste complémentaire par ordre d'inscription.
-        $waiting_users = $DB->get_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::WAIT), $sort='timecreated DESC');
+        $params = array('enrolid' => $instance->id, 'status' => self::WAIT);
+        $waitingusers = $DB->get_records('user_enrolments', $params, $sort = 'timecreated DESC');
 
         $course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
-        foreach ($waiting_users as $user) {
+        foreach ($waitingusers as $user) {
             $user->status = self::MAIN;
             $DB->update_record('user_enrolments', $user);
 

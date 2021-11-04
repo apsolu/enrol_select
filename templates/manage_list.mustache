@@ -1,3 +1,98 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template enrol_select/manage_list
+
+    Template Moodle pour gérer l'affichage de l'onglet par liste dans le template parent templates/manage.mustache.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * id Identifiant de la méthode d'inscription.
+    * status État de la liste.
+    * wwwroot Correspond à la valeur de la variable Moodle $CFG->wwwroot.
+    * enrolid Identifiant de la méthode d'inscription.
+    * description Description de la liste.
+    * form_action URL du formulaire.
+    * lock Indique si l'instance est verrouillée.
+    * actions Boutons HTML de validation du formulaire.
+    * count_users Nombre d'utilisateurs.
+    * users
+        * id Identifiant de l'utilisateur.
+        * picture Code HTML pour afficher l'avatar de l'utilisateur.
+        * lastname Nom de l'utilisateur.
+        * firstname Prénom de l'utilisateur.
+        * role Identifiant du rôle de l'utilisateur.
+        * institution Nom de l'institution de l'étudiant.
+        * apsolucycle Cycle d'étude de l'utilisateur.
+        * department Nom du département d'étude de l'utilisateur.
+        * count_enrolments Nombre d'inscription de l'utilisateur.
+        * enrolments
+            * fullname Nom complet du cours.
+            * sport Nom de la pratique sportive.
+            * course_url URL du cours.
+            * enrolname Nom de la méthode d'inscription.
+            * state État de l'inscription.
+            * role Rôle pris dans l'inscription.
+            * timecreated Date d'inscription.
+            * timecreated_sortable Date d'inscription dans un format triable alphabétiquement.
+
+    Example context (json):
+    {
+        "id": "1",
+        "status": "main",
+        "wwwroot": "https://apsolu.fr",
+        "enrolid": "8",
+        "description": "Étudiants sur liste principale.",
+        "form_action": "https://apsolu.fr/form",
+        "lock": false,
+        "actions": "<input type=\"submit\" />",
+        "count_users": 1,
+        "users": [
+            {
+                "id": "9",
+                "picture": "<img src=\"https://apsolu.fr/picture\" alt=\"\" />",
+                "lastname": "apsolu",
+                "firstname": "bob",
+                "role": "5",
+                "institution": "Université",
+                "apsolucycle": "L1",
+                "department": "Anglais",
+                "count_enrolments": 1,
+                "enrolments": [
+                    {
+                        "fullname": "Tennis mardi 18h00",
+                        "sport": "Tennis",
+                        "course_url": "https://apsolu.fr/course",
+                        "enrolname": "Inscription S1",
+                        "state": "1",
+                        "role": "5",
+                        "timecreated": "Lundi 18 mai à 12h05",
+                        "timecreated_sortable": "2020-05-18 12:05:47"
+                    }
+                ]
+            }
+        ]
+    }
+}}
 <div aria-labelledby="enrol-{{id}}-list-{{status}}" class="apsolu-manage-users-content-div fade tab-pane" id="enrol-{{id}}-list-{{status}}" role="tabpanel">
 	<ul class="list list-inline text-right apsolu-manage-export-ul">
 		<li class="list-inline-item"><a class="btn btn-primary" href="{{wwwroot}}/enrol/select/export.php?enrolid={{enrolid}}&status={{status}}&format=xls">{{#str}}xls_export, enrol_select{{/str}}</a></li>

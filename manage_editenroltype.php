@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Page de modification du rôle.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -97,7 +99,8 @@ if ($mform->is_cancelled()) {
         redirect($url, 'Le ou les utilisateurs ont été correctement mis à jour.', 5, \core\output\notification::NOTIFY_SUCCESS);
     } else {
         $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
-        redirect($url, 'Ce rôle ne semble pas être valide pour cette méthode d\'inscription', 5, \core\output\notification::NOTIFY_ERROR);
+        $message = 'Ce rôle ne semble pas être valide pour cette méthode d\'inscription';
+        redirect($url, $message, 5, \core\output\notification::NOTIFY_ERROR);
     }
 }
 

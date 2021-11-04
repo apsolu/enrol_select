@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Page gérant les inscriptions des étudiants.
+ *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,9 +28,9 @@ define('APSOLU_FEDERATION_REQUIREMENT_FALSE', 0);
 define('APSOLU_FEDERATION_REQUIREMENT_TRUE', 1);
 define('APSOLU_FEDERATION_REQUIREMENT_OPTIONAL', 2);
 
-require(__DIR__.'/../../../config.php');
-require(__DIR__.'/enrol_form.php');
-require(__DIR__.'/../locallib.php');
+require_once(__DIR__.'/../../../config.php');
+require_once(__DIR__.'/enrol_form.php');
+require_once(__DIR__.'/../locallib.php');
 require_once($CFG->dirroot.'/group/lib.php');
 require_once($CFG->dirroot.'/lib/enrollib.php');
 require_once($CFG->dirroot.'/enrol/select/lib.php');
@@ -119,7 +121,7 @@ if ($complement !== false) {
             $waitlistenrolements = $DB->get_records('user_enrolments', array('enrolid' => $enrol->id, 'status' => 3), '', 'userid');
             if ($enrol->customint2 <= count($waitlistenrolements)) {
                 // Le cours est plein...
-                print_error('error_no_left_slot', 'enrol_select');
+                throw new moodle_exception('error_no_left_slot', 'enrol_select');
             }
         }
 
@@ -170,9 +172,9 @@ if ($complement !== false) {
         if (count($availableuserroles) === 0) {
             if (empty($instance->role) === false) {
                 $role = $DB->get_record('role', array('id' => $instance->role));
-                print_error('error_reach_wishes_role_limit', 'enrol_select', '', $role->name);
+                throw new moodle_exception('error_reach_wishes_role_limit', 'enrol_select', '', $role->name);
             } else {
-                print_error('error_reach_wishes_limit', 'enrol_select');
+                throw new moodle_exception('error_reach_wishes_limit', 'enrol_select');
             }
         }
     } else {
@@ -183,7 +185,8 @@ if ($complement !== false) {
         foreach ($roles as $roleid => $role) {
             $enrolselectplugin = new enrol_select_plugin(); // TODO: à sortir de la boucle.
 
-            if ($enrolselectplugin->can_enrol($enrol, $USER, $roleid) === false) { // TODO: factoriser pour rendre la lecture plus facile...
+            if ($enrolselectplugin->can_enrol($enrol, $USER, $roleid) === false) {
+                // TODO: factoriser pour rendre la lecture plus facile...
                 if ($roleid != $instance->role) {
                     unset($roles[$roleid]);
                 } else {
@@ -236,26 +239,26 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
     if (isset($data->unenrolbutton)) {
         // Unenrol.
         $enrolselectplugin->unenrol_user($instance, $USER->id);
-        // file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$instance->courseid.', action: unenrol course'.PHP_EOL, FILE_APPEND);
 
         echo '<div class="alert alert-success"><p>'.get_string('unenrolmentsaved', 'enrol_select').'</p></div>';
 
         $href = $CFG->wwwroot.'/enrol/select/overview.php';
-        echo '<p class="text-center"><a class="btn btn-default btn-secondary apsolu-cancel-a" href="'.$href.'">'.get_string('continue').'</a></p>';
+        echo '<p class="text-center">'.
+            '<a class="btn btn-default btn-secondary apsolu-cancel-a" href="'.$href.'">'.get_string('continue').'</a>'.
+            '</p>';
     } else {
         // Enrol.
         if (ctype_digit((string) $data->role) === false) {
-            print_error('error_cannot_enrol', 'enrol_select');
+            throw new moodle_exception('error_cannot_enrol', 'enrol_select');
         } else if ($enrolselectplugin->can_enrol($instance, $USER, $data->role)) {
             $timestart = time();
             $timeend = 0;
             $status = $enrolselectplugin->get_available_status($instance, $USER);
             if ($status === false) {
-                print_error('error_no_left_slot', 'enrol_select');
+                throw new moodle_exception('error_no_left_slot', 'enrol_select');
             }
             $recovergrades = null;
             $enrolselectplugin->enrol_user($instance, $USER->id, $data->role, $timestart, $timeend, $status, $recovergrades);
-            // file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$instance->courseid.', role: '.$data->role.', action: enrol course'.PHP_EOL, FILE_APPEND);
 
             if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_TRUE ||
                 ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_OPTIONAL &&
@@ -284,8 +287,8 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                     $federationcourseid = $federationcourse->id;
                     $federationrole = 5; // Student.
                     $federationrole = 11; // Libre.
-                    $enrolselectplugin->enrol_user($federationinstance, $USER->id, $federationrole, $timestart = 0, $timeend = 0, $status = 0, $recovergrades);
-                    // file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$federationcourse->id.', action: enrol course (federation)'.PHP_EOL, FILE_APPEND);
+                    $enrolselectplugin->enrol_user($federationinstance, $USER->id, $federationrole, $timestart = 0, $timeend = 0,
+                        $status = 0, $recovergrades);
                 }
             } else if (isset($data->federation)) {
                 $federationcourseid = $enrol->courseid;
@@ -311,7 +314,6 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                         } else if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_FALSE) {
                             // On désinscrit uniquement du groupe, si on modifie via le formulaire de la licence FFSU.
                             groups_delete_group_members($group->courseid, $USER->id);
-                            // file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$group->courseid.', action: unenrol group #'.$group->id.PHP_EOL, FILE_APPEND);
                         } else {
                             $ismembersomewhere = true;
                         }
@@ -320,7 +322,6 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
 
                 if ($ismember === false && $ismembersomewhere === false) {
                     groups_add_member($group->id, $USER->id);
-                    // file_put_contents('/applis/logs/apsolu_enrol.log', strftime('%c').' user: '.$USER->id.', course: '.$group->courseid.', action: enrol group #'.$group->id.PHP_EOL, FILE_APPEND);
                 }
             }
 
@@ -347,16 +348,22 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                     $message = sprintf('<p>%s</p>', $message1);
             }
 
-            if (isset($CFG->is_siuaps_rennes) === true && in_array($data->role, array('9', '10'), true) === true && in_array($status, array(enrol_select_plugin::MAIN, enrol_select_plugin::ACCEPTED), true) === true) {
-                $message .= '<p><strong>Attention il faut aussi faire votre inscription pédagogique dans votre scolarité.</strong></p>';
+            if (isset($CFG->is_siuaps_rennes) === true &&
+                in_array($data->role, array('9', '10'), true) === true &&
+                in_array($status, array(enrol_select_plugin::MAIN, enrol_select_plugin::ACCEPTED), true) === true) {
+                $message .= '<p>'.
+                    '<strong>Attention il faut aussi faire votre inscription pédagogique dans votre scolarité.</strong>'.
+                    '</p>';
             }
 
             echo sprintf('<div class="alert alert-%s text-center">%s</div>', $style, $message);
 
             $href = $CFG->wwwroot.'/enrol/select/overview.php';
-            echo '<p class="text-center"><a class="btn btn-default btn-secondary apsolu-cancel-a" href="'.$href.'">'.get_string('continue').'</a></p>';
+            echo '<p class="text-center">'.
+                '<a class="btn btn-default btn-secondary apsolu-cancel-a" href="'.$href.'">'.get_string('continue').'</a>'.
+                '</p>';
         } else {
-            print_error('error_cannot_enrol', 'enrol_select');
+            throw new moodle_exception('error_cannot_enrol', 'enrol_select');
         }
     }
 } else {

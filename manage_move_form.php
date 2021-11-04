@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Adds new instance of enrol_select to specified course
- * or edits current instance.
+ * Définition du formulaire pour gérer les déplacements d'inscription.
  *
  * @package    enrol_select
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
@@ -27,10 +26,21 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
+/**
+ * Définition du formulaire pour gérer les déplacements d'inscription.
+ *
+ * @package    enrol_select
+ * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class enrol_select_manage_move_form extends moodleform {
-
+    /**
+     * Définit les champs du formulaire.
+     *
+     * @return void
+     */
     public function definition() {
-        global $CFG, $DB;
+        global $CFG;
 
         $mform = $this->_form;
 
@@ -67,7 +77,8 @@ class enrol_select_manage_move_form extends moodleform {
         $mform->addElement('selectyesno', 'notify', 'Envoyer une notification aux étudiants');
         $mform->setType('notify', PARAM_INT);
 
-        $mform->addElement('textarea', 'message', get_string('send_message', 'enrol_select'), array('rows' => '15', 'cols' => '50'));
+        $attributes = array('rows' => '15', 'cols' => '50');
+        $mform->addElement('textarea', 'message', get_string('send_message', 'enrol_select'), $attributes);
         $mform->setType('message', PARAM_TEXT);
         $mform->setDefault('message', get_string('message_'.$strfrom.'_to_'.$strto, 'enrol_select'));
         $mform->disabledIf('message', 'notify', 'eq', 0);

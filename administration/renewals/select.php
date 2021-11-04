@@ -15,12 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Page affichant la liste des cours disponibles pour le renouvèlement par voeux.
+ *
  * @package    enrol_select
  * @copyright  2019 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 use UniversiteRennes2\Apsolu as apsolu;
+
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/enrol/select/lib.php');
 
@@ -59,7 +63,8 @@ if ($recordset) {
         $selectoptions = html_writer::select($options, $uid . '_action', '0', array('' => 'choosedots'));
 
         $table->data[] = array(
-            '<input type="hidden" name="uids[]" value="'.$uid.'" /><input type="checkbox" name="' . $uid . '_enrol" value="'.$renewal->id.'" />',
+            '<input type="hidden" name="uids[]" value="'.$uid.'" />'.
+            '<input type="checkbox" name="' . $uid . '_enrol" value="'.$renewal->id.'" />',
             $renewal->coursename,
             $renewal->enrolname,
             $renewal->renewalname,
