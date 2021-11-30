@@ -374,6 +374,27 @@ class enrol_select_plugin_testcase extends advanced_testcase {
             $conditions = array('enrolid' => $instance->id, 'status' => $status);
             $this->assertSame($count, $DB->count_records('user_enrolments', $conditions));
         }
+
+        // Augmente le nombre de places sur liste principale.
+        $instance->customint1++;
+        $DB->update_record('enrol', $instance);
+
+        // Teste que la remontée se fait par ordre chronologique.
+        $conditions = array('enrolid' => $instance->id, 'status' => enrol_select_plugin::WAIT);
+        $this->assertSame(1, $DB->count_records('user_enrolments', $conditions));
+
+        $newuser = $generator->create_user();
+        sleep(1);
+        $plugin->enrol_user($instance, $newuser->id, $roleid = 5, $timestart = 0, $timeend = 0, enrol_select_plugin::WAIT);
+
+        $this->assertSame(2, $DB->count_records('user_enrolments', $conditions));
+
+        $plugin->refill_main_list($instance, $USER->id);
+
+        $this->assertSame(1, $DB->count_records('user_enrolments', $conditions));
+
+        $waitingenrolment = $DB->get_record('user_enrolments', $conditions);
+        $this->assertSame($newuser->id, $waitingenrolment->userid);
     }
 
     public function test_unenrol_user() {

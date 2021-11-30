@@ -898,7 +898,7 @@ class enrol_select_plugin extends enrol_plugin {
 
         // Récupère les utilisateurs sur liste complémentaire par ordre d'inscription.
         $params = array('enrolid' => $instance->id, 'status' => self::WAIT);
-        $waitingusers = $DB->get_records('user_enrolments', $params, $sort = 'timecreated DESC');
+        $waitingusers = $DB->get_records('user_enrolments', $params, $sort = 'timecreated ASC');
 
         $course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
         foreach ($waitingusers as $user) {
