@@ -859,19 +859,21 @@ class enrol_select_plugin extends enrol_plugin {
      *
      * @return void.
      */
-    public function refill_main_list(stdClass $instance, $userid) {
+    public function refill_main_list(stdClass $instance, $userid, $forcerefill = false) {
         global $DB, $USER;
 
-        if ($this->is_enrol_period_active($instance) === false) {
-            // On ne réalimente pas la liste principale si les inscriptions sont closes.
-            return;
-        }
+        if ($forcerefill === false) {
+            if ($this->is_enrol_period_active($instance) === false) {
+                // On ne réalimente pas la liste principale si les inscriptions sont closes.
+                return;
+            }
 
-        if ($USER->id !== $userid) {
-            // L'utilisateur courant n'est pas l'utilisateur à désinscrire.
-            // Il s'agit probablement d'un enseignant dans la partie management.
-            // On ne provoque pas la réalimentation de la liste principale.
-            return;
+            if ($USER->id !== $userid) {
+                // L'utilisateur courant n'est pas l'utilisateur à désinscrire.
+                // Il s'agit probablement d'un enseignant dans la partie management.
+                // On ne provoque pas la réalimentation de la liste principale.
+                return;
+            }
         }
 
         if (empty($instance->customint3) === true) {

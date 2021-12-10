@@ -157,6 +157,10 @@ if ($mform->is_cancelled()) {
             }
         }
 
+        if (isset($data->refill) === true && empty($data->refill) === false) {
+            $enrolselectplugin->refill_main_list($instance, $userid = 0, $forcerefill = true);
+        }
+
         $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
         redirect($url, 'Le ou les utilisateurs ont été correctement déplacés.', 5, \core\output\notification::NOTIFY_SUCCESS);
     }

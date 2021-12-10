@@ -83,6 +83,12 @@ class enrol_select_manage_move_form extends moodleform {
         $mform->setDefault('message', get_string('message_'.$strfrom.'_to_'.$strto, 'enrol_select'));
         $mform->disabledIf('message', 'notify', 'eq', 0);
 
+        if (in_array($from, array(enrol_select_plugin::ACCEPTED, enrol_select_plugin::MAIN), $strict =  true) === true &&
+            in_array($to, array(enrol_select_plugin::WAIT, enrol_select_plugin::DELETED), $strict =  true) === true) {
+            $mform->addElement('checkbox', 'refill', 'Forcer la réalimentation des listes');
+            $mform->setType('refill', PARAM_INT);
+        }
+
         $mform->addElement('hidden', 'actions', $to);
         $mform->setType('actions', PARAM_INT);
 
