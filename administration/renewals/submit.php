@@ -53,8 +53,9 @@ foreach ($_POST['uids'] as $uid) {
         $sql = "SELECT u.*".
         " FROM {user} u".
         " JOIN {user_enrolments} ue ON u.id = ue.userid".
-        " WHERE ue.enrolid = ?";
-        $users = $DB->get_records_sql($sql, array($enrolid));
+        " WHERE ue.enrolid = :enrolid".
+        " AND status = :status";
+        $users = $DB->get_records_sql($sql, array('enrolid' => $enrolid, 'status' => enrol_select_plugin::ACCEPTED));
         foreach ($users as $userid => $user) {
             $enrolselectplugin = new enrol_select_plugin();
             $roleid = 0;
