@@ -72,6 +72,7 @@ if ($recordset) {
     }
 
     echo '<form method="post" action="'.$submitlink.'">';
+    echo html_writer::div('Seuls les étudiants inscrits sur la liste des acceptés seront reportés sur la liste de votre choix.', 'alert alert-info');
     echo html_writer::table($table);
     echo '<input class="btn btn-primary" type="submit" value="Valider">';
     echo '</form>';
