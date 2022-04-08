@@ -68,7 +68,12 @@ $PAGE->set_pagelayout('base');
 $PAGE->set_context($context);
 
 $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'id' => $enrolid), '*', MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $enrol->courseid), '*', MUST_EXIST);
+$sql = "SELECT c.*, ac.license, ac.information".
+    " FROM {course} c".
+    " JOIN {apsolu_courses} ac ON c.id = ac.id".
+    " WHERE c.id = :courseid";
+$params = array('courseid' => $enrol->courseid);
+$course = $DB->get_record_sql($sql, $params, $strictness = MUST_EXIST);
 
 $instance = new stdClass();
 $instance->fullname = $course->fullname;
@@ -200,8 +205,7 @@ if ($complement !== false) {
     }
 
     // Détermine si il possible/obligatoire de s'inscrire à la FFSU.
-    $apsolucourse = $DB->get_record('apsolu_courses', array('id' => $enrol->courseid));
-    if ($apsolucourse->license === '1') {
+    if ($course->license === '1') {
         // FFSU obligatoire.
         $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_TRUE;
         $instance->federation = 1;
@@ -357,6 +361,19 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
             }
 
             echo sprintf('<div class="alert alert-%s text-center">%s</div>', $style, $message);
+
+            if (empty($course->information) === false) {
+                // Affiche une information complémentaire.
+                $component = 'local_apsolu';
+                $filearea = 'information';
+                $context = context_course::instance($course->id);
+                $text = $course->information;
+
+                $content = file_rewrite_pluginfile_urls($text, 'pluginfile.php', $context->id, $component, $filearea, $course->id);
+
+                $title = get_string('additional_information', 'local_apsolu');
+                echo sprintf('<p class="font-weight-bold">%s</p><div>%s</div>', $title, $content);
+            }
 
             $href = $CFG->wwwroot.'/enrol/select/overview.php';
             echo '<p class="text-center">'.
