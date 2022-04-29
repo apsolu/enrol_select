@@ -23,10 +23,12 @@
  */
 
 use UniversiteRennes2\Apsolu as apsolu;
+use local_apsolu\core\course;
 
 require('../../config.php');
 require_once('edit_form.php');
 require_once('locallib.php');
+require_once($CFG->libdir.'/gradelib.php');
 
 $courseid = required_param('courseid', PARAM_INT);
 $instanceid = optional_param('id', 0, PARAM_INT);
@@ -39,6 +41,9 @@ require_capability('enrol/select:config', $context);
 
 $PAGE->set_url('/enrol/select/edit.php', array('courseid' => $course->id, 'id' => $instanceid));
 $PAGE->set_pagelayout('admin');
+
+$arguments = array(get_string('warning_changing_calendar_may_result_in_loss_of_data', 'enrol_select'));
+$PAGE->requires->js_call_amd('enrol_select/edit_calendar', 'initialise', $arguments);
 
 $return = new moodle_url('/enrol/instances.php', array('id' => $course->id));
 if (!enrol_is_enabled('select')) {
@@ -221,6 +226,11 @@ if ($mform->is_cancelled()) {
             $DB->execute('INSERT INTO {enrol_select_cards}(enrolid, cardid) VALUES(?, ?)', array($instance->id, $cardid));
         }
     }
+
+    // Génère ou met à jour le carnet de notes.
+    $apsolucourse = new course();
+    $apsolucourse->load($course->id, $required = true);
+    $apsolucourse->set_gradebook();
 
     redirect($return);
 }
