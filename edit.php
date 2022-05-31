@@ -228,9 +228,12 @@ if ($mform->is_cancelled()) {
     }
 
     // Génère ou met à jour le carnet de notes.
-    $apsolucourse = new course();
-    $apsolucourse->load($course->id, $required = true);
-    $apsolucourse->set_gradebook();
+    // TODO: correction temporaire. À supprimer lorsque la gestion des activités complémentaires sera implémentée.
+    if (isset($CFG->is_siuaps_rennes) === false || in_array($enrol->courseid, array('249', '250'), $strict = true) === false) {
+        $apsolucourse = new course();
+        $apsolucourse->load($course->id, $required = true);
+        $apsolucourse->set_gradebook();
+    }
 
     redirect($return);
 }

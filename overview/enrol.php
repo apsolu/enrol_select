@@ -68,12 +68,19 @@ $PAGE->set_pagelayout('base');
 $PAGE->set_context($context);
 
 $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'id' => $enrolid), '*', MUST_EXIST);
-$sql = "SELECT c.*, ac.license, ac.information".
-    " FROM {course} c".
-    " JOIN {apsolu_courses} ac ON c.id = ac.id".
-    " WHERE c.id = :courseid";
-$params = array('courseid' => $enrol->courseid);
-$course = $DB->get_record_sql($sql, $params, $strictness = MUST_EXIST);
+if (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, array('249', '250'), $strict = true) === true) {
+    // TODO: correction temporaire. À supprimer lorsque la gestion des activités complémentaires sera implémentée.
+    $course = $DB->get_record('course', array('id' => $enrol->courseid), '*', MUST_EXIST);
+    $course->license === '0';
+    $course->information = '';
+} else {
+    $sql = "SELECT c.*, ac.license, ac.information".
+        " FROM {course} c".
+        " JOIN {apsolu_courses} ac ON c.id = ac.id".
+        " WHERE c.id = :courseid";
+    $params = array('courseid' => $enrol->courseid);
+    $course = $DB->get_record_sql($sql, $params, $strictness = MUST_EXIST);
+}
 
 $instance = new stdClass();
 $instance->fullname = $course->fullname;
