@@ -49,6 +49,7 @@ $string['no_available_cohorts'] = 'Aucune cohorte disponible';
 $string['no_available_enrol_methods_desc'] = 'Pour utiliser cette fonctionnalité, une deuxième méthode d\'inscription par voeux est nécessaire dans ce cours.';
 $string['no_available_prices'] = 'Aucun tarif défini';
 $string['no_available_roles'] = 'Aucun rôle disponible';
+$string['no_dates'] = 'Aucune date';
 $string['no_quotas'] = 'Aucun quota';
 $string['no_seat_restrictions'] = 'Aucune restriction de place';
 $string['no_places_available'] = 'Aucune place disponible';
