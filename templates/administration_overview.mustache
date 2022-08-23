@@ -76,13 +76,13 @@
 {{#courses}}
     <tr data-anomalies="{{anomalies}}">
         {{^count_enrols}}
-        <td rowspan="1">{{fullname}}</td>
+        <td rowspan="1">{{fullname}}<br /><i>{{area}}, <b>{{city}}</b></i></td>
         <td colspan="8" class="table-active text-center">{{#str}}no_enrols, local_apsolu{{/str}}</td>
         {{/count_enrols}}
 
         {{#count_enrols}}
         {{! Colonne nom du cours. }}
-        <td rowspan="{{count_enrols}}">{{fullname}}</td>
+        <td rowspan="{{count_enrols}}">{{fullname}}<br /><i>{{area}}, <b>{{city}}</b></i></td>
         {{#enrols}}
 
         {{! Colonne nom de l'instance. }}
