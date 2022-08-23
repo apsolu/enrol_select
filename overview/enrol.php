@@ -71,7 +71,7 @@ $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'id'
 if (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, array('249', '250'), $strict = true) === true) {
     // TODO: correction temporaire. À supprimer lorsque la gestion des activités complémentaires sera implémentée.
     $course = $DB->get_record('course', array('id' => $enrol->courseid), '*', MUST_EXIST);
-    $course->license === '0';
+    $course->license = '0';
     $course->information = '';
 } else {
     $sql = "SELECT c.*, ac.license, ac.information".
