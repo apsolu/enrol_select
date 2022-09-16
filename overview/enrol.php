@@ -73,8 +73,9 @@ if (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, array('
     $course = $DB->get_record('course', array('id' => $enrol->courseid), '*', MUST_EXIST);
     $course->license = '0';
     $course->information = '';
+    $course->showpolicy = '0';
 } else {
-    $sql = "SELECT c.*, ac.license, ac.information".
+    $sql = "SELECT c.*, ac.license, ac.information, ac.showpolicy".
         " FROM {course} c".
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
         " WHERE c.id = :courseid";
@@ -85,6 +86,7 @@ if (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, array('
 $instance = new stdClass();
 $instance->fullname = $course->fullname;
 $instance->enrolid = $enrol->id;
+$instance->showpolicy = $course->showpolicy;
 
 // Détermine si l'utilisateur courant est déjà inscrit à ce cours.
 // TODO: à modifer...

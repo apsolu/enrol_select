@@ -86,6 +86,12 @@ class enrol_select_form extends moodleform {
                 $mform->addHelpButton('federation', 'federation_optional', 'enrol_select');
                 $mform->setType('federation', PARAM_INT);
             }
+
+            // Acceptation des recommandations médicales.
+            if (empty($instance->showpolicy) === false && empty($CFG->sitepolicy) === false) {
+                $mform->addElement('checkbox', 'policy', get_string('policyagree', 'enrol_select', $CFG->sitepolicy));
+                $mform->addRule('policy', get_string('required'), 'required', null, 'client');
+            }
         } else {
             // Désinscription.
             $mform->addElement('text', 'role', get_string('role', 'local_apsolu'), array('readonly' => 1, 'size' => '48'));
