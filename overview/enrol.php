@@ -128,15 +128,13 @@ if ($complement !== false) {
 
     // L'utilisateur n'est pas inscrit à ce cours...
     if ($instance->role === '') {
+        $enrolselectplugin = new enrol_select_plugin(); // TODO: factoriser, et ne déclarer qu'une seule fois cette variable.
+
         // Est-ce que le cours est plein ?
-        $sql = "SELECT userid FROM {user_enrolments} WHERE enrolid = ? AND status IN (0, 2)";
-        $mainlistenrolements = $DB->get_records_sql($sql, array($enrol->id));
-        if ($enrol->customint1 <= count($mainlistenrolements)) {
-            $waitlistenrolements = $DB->get_records('user_enrolments', array('enrolid' => $enrol->id, 'status' => 3), '', 'userid');
-            if ($enrol->customint2 <= count($waitlistenrolements)) {
-                // Le cours est plein...
-                throw new moodle_exception('error_no_left_slot', 'enrol_select');
-            }
+        $status = $enrolselectplugin->get_available_status($instance, $USER);
+        if ($status === false) {
+            // Le cours est plein...
+            throw new moodle_exception('error_no_left_slot', 'enrol_select');
         }
 
         // Est-ce que l'utilisateur n'a pas dépassé son quota de voeux...
@@ -148,7 +146,6 @@ if ($complement !== false) {
             }
         }
 
-        $enrolselectplugin = new enrol_select_plugin(); // TODO: factoriser, et ne déclarer qu'une seule fois cette variable.
         if (isset($filtertime, $filtercohorts) === false) {
             // Pour un étudiant.
             $availableuserroles = $enrolselectplugin->get_available_user_roles($enrol, $USER->id);
