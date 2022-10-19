@@ -23,7 +23,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace enrol\select;
+
+use advanced_testcase;
+use context_course;
+use enrol_select_plugin;
+use local_apsolu\core\course;
+use stdClass;
 
 global $CFG;
 
@@ -38,7 +44,7 @@ require_once($CFG->dirroot.'/enrol/select/lib.php');
  * @copyright  2021 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class enrol_select_plugin_testcase extends advanced_testcase {
+class lib_test extends advanced_testcase {
     protected function setUp() : void {
         parent::setUp();
 
@@ -50,7 +56,7 @@ class enrol_select_plugin_testcase extends advanced_testcase {
 
         $backupuserid = $USER->id;
 
-        $course = new local_apsolu\core\course();
+        $course = new course();
         $data = advanced_testcase::getDataGenerator()->get_plugin_generator('local_apsolu')->get_course_data();
         $course->save($data);
 
