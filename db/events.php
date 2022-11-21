@@ -15,25 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details.
- *
- * @package    enrol_select
- * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   enrol_select
+ * @copyright 2022 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-// The current plugin version (Date: YYYYMMDDXX).
-$plugin->version   = 2022112100;
-
-// Requires Moodle 3.11.0.
-$plugin->requires  = 2021051700;
-
-// Full name of the plugin (used for diagnostics).
-$plugin->component = 'enrol_select';
-
-// Dependencies on another plugin.
-$plugin->dependencies = array(
-    'local_apsolu' => '2021072300',
+$observers = array(
+    // Gère la suppression des cohortes depuis l'interface Administration du site > Utilisateurs > Comptes > Cohortes.
+    array(
+        'eventname'   => '\core\event\cohort_deleted',
+        'callback'    => '\enrol_select\observer\cohort::deleted',
+        'includefile' => null,
+        'internal'    => true,
+        'priority'    => 9999,
+    ),
 );
