@@ -199,9 +199,10 @@ class enrol_select_edit_form extends moodleform {
 
         // Messages de bienvenue.
         $options = array('cols' => '60', 'rows' => '8');
-        $mform->addElement('header', 'header', get_string('welcome_messages', 'enrol_select'));
 
         // Message pour les inscrits sur la liste des acceptés.
+        $mform->addElement('header', 'header', get_string('welcome_message_on_accepted_list', 'enrol_select'));
+
         $label = get_string('send_welcome_message_to_users_on_accepted_list', 'enrol_select');
         $mform->addElement('selectyesno', 'customtext1switch', $label);
         $mform->addHelpButton('customtext1switch', 'custom_welcome_message', 'enrol_select');
@@ -211,6 +212,8 @@ class enrol_select_edit_form extends moodleform {
         $mform->disabledIf('customtext1', 'customtext1switch', 'eq', 0);
 
         // Message pour les inscrits sur la liste principale.
+        $mform->addElement('header', 'header', get_string('welcome_message_on_main_list', 'enrol_select'));
+
         $label = get_string('send_welcome_message_to_users_on_main_list', 'enrol_select');
         $mform->addElement('selectyesno', 'customtext2switch', $label);
         $mform->addHelpButton('customtext2switch', 'custom_welcome_message', 'enrol_select');
@@ -220,6 +223,8 @@ class enrol_select_edit_form extends moodleform {
         $mform->disabledIf('customtext2', 'customtext2switch', 'eq', 0);
 
         // Message pour les inscrits sur la liste complémentaire.
+        $mform->addElement('header', 'header', get_string('welcome_message_on_wait_list', 'enrol_select'));
+
         $label = get_string('send_welcome_message_to_users_on_wait_list', 'enrol_select');
         $mform->addElement('selectyesno', 'customtext3switch', $label);
         $mform->addHelpButton('customtext3switch', 'custom_welcome_message', 'enrol_select');
