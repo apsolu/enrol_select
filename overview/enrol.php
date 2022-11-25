@@ -131,7 +131,7 @@ if ($complement !== false) {
         $enrolselectplugin = new enrol_select_plugin(); // TODO: factoriser, et ne déclarer qu'une seule fois cette variable.
 
         // Est-ce que le cours est plein ?
-        $status = $enrolselectplugin->get_available_status($instance, $USER);
+        $status = $enrolselectplugin->get_available_status($enrol, $USER);
         if ($status === false) {
             // Le cours est plein...
             throw new moodle_exception('error_no_left_slot', 'enrol_select');
