@@ -651,6 +651,7 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         if ($available === false) {
+            debugging('L\'utilisateur #'.$user->id.' a atteint sa limite de voeux pour le rôle #'.$roleid, $level = DEBUG_DEVELOPER);
             return false;
         }
 
