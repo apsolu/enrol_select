@@ -38,6 +38,20 @@ $cohorts = $DB->get_records('cohort');
 
 $roles = apsolu\get_custom_student_roles();
 
+$sql = "SELECT c.*".
+    " FROM {cohort} c".
+    " WHERE c.id NOT IN (SELECT cohortid FROM {apsolu_colleges_members})".
+    " ORDER BY c.name";
+$unusedcohorts = array();
+foreach ($DB->get_records_sql($sql) as $cohort) {
+    $unusedcohorts[] = $cohort->name;
+}
+
+if ($unusedcohorts !== array()) {
+    $unusedcohorts = '<li>'.implode('</li><li>', $unusedcohorts).'</li>';
+    echo get_string('college_unused_cohorts', 'enrol_select', $unusedcohorts);
+}
+
 // TODO: utiliser un template mustache.
 $editimage = $OUTPUT->image_url('t/edit');
 $deleteimage = $OUTPUT->image_url('t/delete');
