@@ -588,7 +588,7 @@ class enrol_select_plugin extends enrol_plugin {
      * @return bool Vrai si les inscriptions sont ouvertes.
      */
     public function can_enrol($instance, $user, $roleid) {
-        global $CFG, $DB, $USER;
+        global $CFG, $DB;
 
         $today = time();
 
@@ -632,7 +632,7 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Check available slots.
-        if ($this->get_available_status($instance, $USER) === false) {
+        if ($this->get_available_status($instance, $user) === false) {
             debugging($this->get_name().' n\'a plus aucune place disponible.', $level = DEBUG_DEVELOPER);
             return false;
         }
