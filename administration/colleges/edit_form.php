@@ -112,6 +112,8 @@ class apsolu_colleges_form extends moodleform {
      * @return array The errors that were found.
      */
     public function validation($data, $files) {
+        global $DB;
+
         $errors = parent::validation($data, $files);
 
         // Vérifie que le nombre de voeux n'est pas inférieur au nombre maximum d'inscription.
@@ -123,6 +125,33 @@ class apsolu_colleges_form extends moodleform {
         if ($data['maxregister'] < $data['minregister']) {
             $label = get_string('maximum_enrolments_must_be_greater_than_or_equal_to_minimum_enrolments', 'enrol_select');
             $errors['maxregister'] = $label;
+        }
+
+        // Vérifie qu'une cohorte n'est pas utilisée dans un autre collège et avec un autre role.
+        $conflicts = array();
+
+        $roles = role_fix_names($DB->get_records('role'));
+
+        $sql = "SELECT ac.id, ac.name, ac.roleid, acm.cohortid, c.name AS cohort".
+            " FROM {apsolu_colleges} ac".
+            " JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid".
+            " JOIN {cohort} c ON c.id = acm.cohortid".
+            " JOIN {role} r ON r.id = ac.roleid".
+            " WHERE ac.id != :collegeid".
+            " AND ac.roleid = :roleid";
+        $recordset = $DB->get_recordset_sql($sql, array('collegeid' => $data['id'], 'roleid' => $data['roleid']));
+        foreach ($recordset as $college) {
+            if (in_array($college->cohortid, $data['cohorts'], $strict = true) === false) {
+                continue;
+            }
+
+            $options = array('cohort' => $college->cohort, 'college' => $college->name, 'role' => $roles[$college->roleid]->name);
+            $conflicts[] = get_string('cohort_X_is_already_used_with_role_Y_by_college_Z', 'enrol_select', $options);
+        }
+        $recordset->close();
+
+        if (isset($conflicts[0]) === true) {
+            $errors['cohorts'] = implode('<br />', $conflicts);
         }
 
         return $errors;

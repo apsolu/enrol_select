@@ -24,6 +24,7 @@
 
 $string['messageprovider:select_notification'] = 'Notifications en relation avec les inscriptions';
 
+$string['cohort_X_is_already_used_with_role_Y_by_college_Z'] = 'La cohorte « {$a->cohort} » est déjà utilisée avec le rôle « {$a->role} » par la population « {$a->college} ».';
 $string['custom_welcome_message'] = 'Message de bienvenue personnalisé';
 $string['custom_welcome_message_help'] = 'Les utilisateurs recevront un message de bienvenue par courriel lors de leur inscription.';
 $string['date_diverging_from_calendar_date'] = 'Date divergente par rapport à la date du calendrier';
