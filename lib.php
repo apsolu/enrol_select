@@ -586,7 +586,7 @@ class enrol_select_plugin extends enrol_plugin {
     }
 
     /**
-     * Détermine si un utilisateur peut s'inscrire à une instance.
+     * Détermine si un utilisateur peut s'inscrire à une instance avec un rôle donné.
      *
      * @param object     $instance Objet de l'instance de la méthode d'inscription.
      * @param object     $user     Objet représentant l'utilisateur.
