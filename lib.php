@@ -647,6 +647,7 @@ class enrol_select_plugin extends enrol_plugin {
 
             if ($choice->maxwish == 0 || $choice->count < $choice->maxwish) {
                 $available = true;
+                break;
             }
         }
 
