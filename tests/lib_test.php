@@ -259,6 +259,7 @@ class lib_test extends advanced_testcase {
 
         // Teste qu'on arrive directement sur liste complémentaire.
         $user = $generator->create_user();
+        $mainuser = clone($user);
         $this->assertSame(enrol_select_plugin::MAIN, $plugin->get_available_status($instance, $user));
 
         // On inscrit l'utilisateur.
@@ -267,6 +268,16 @@ class lib_test extends advanced_testcase {
         // Teste l'absence de place.
         $user = $generator->create_user();
         $this->assertFalse($plugin->get_available_status($instance, $user));
+
+        // Ajoute une place sur LC.
+        $instance->customint2 = 1;
+
+        // Teste une inscription sur LC.
+        $this->assertSame(enrol_select_plugin::WAIT, $plugin->get_available_status($instance, $user));
+        $plugin->enrol_user($instance, $user->id, $roleid = 5, $timestart = 0, $timeend = 0, enrol_select_plugin::WAIT);
+
+        // Teste que l'utilisateur sur liste principale se voit toujours attribuer sa place sur LP.
+        $this->assertSame(enrol_select_plugin::MAIN, $plugin->get_available_status($instance, $mainuser));
 
         // On bascule sur une inscription sur liste acceptée par défaut.
         $numberofusers = array(enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0);

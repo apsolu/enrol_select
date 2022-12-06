@@ -345,6 +345,13 @@ class enrol_select_plugin extends enrol_plugin {
             return self::get_default_enrolment_list($instance);
         }
 
+        // Détermine si l'utilisateur est déjà inscrit sur cette instance.
+        $userenrolment = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id));
+        if ($userenrolment !== false) {
+            // Retourne la liste d'inscription actuelle de l'utilisateur.
+            return $userenrolment->status;
+        }
+
         // Détermine si il y a déjà des utilisateurs sur liste complémentaire.
         $params = array('enrolid' => $instance->id, 'status' => self::WAIT);
         $waitlistenrolements = $DB->get_records('user_enrolments', $params, '', 'userid');
