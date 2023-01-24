@@ -68,7 +68,8 @@ class enrol_select_form extends moodleform {
 
             // Federations fields.
             if ($federations !== array()) {
-                $mform->addElement('select', 'federation', get_string('federation', 'local_apsolu'), $federations);
+                $mform->addElement('select', 'federation', get_string('main_sport', 'enrol_select'), $federations);
+                $mform->addRule('federation', get_string('required'), 'required', null, 'client');
                 $mform->setType('federation', PARAM_INT);
             }
 

@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_apsolu\core\course as Course;
 use UniversiteRennes2\Apsolu as apsolu;
 
 require('../../config.php');
@@ -111,6 +112,7 @@ $overviewcomplementsdata = new stdClass();
 $overviewcomplementsdata->complements = array_values(apsolu\get_potential_user_complements());
 $overviewcomplementsdata->count_complements = count($overviewcomplementsdata->complements);
 $overviewcomplementsdata->www_url = $CFG->wwwroot;
+$overviewcomplementsdata->is_siuaps_rennes = isset($CFG->is_siuaps_rennes);
 $overviewcomplementsdata->is_courses_creator = has_capability('moodle/course:create', context_system::instance());
 
 // Set remaining choices block.
@@ -139,7 +141,10 @@ $PAGE->navbar->add(get_string('enrolment', 'enrol_select'));
 
 echo $OUTPUT->header();
 echo $managersfilters;
-if (isset($CFG->is_siuaps_rennes) === true) {
+$federationcourse = Course::get_federation_courseid();
+if ($federationcourse !== false) {
+    $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'courseid' => $federationcourse));
+    $overviewcomplementsdata->federation_enrolid = $enrol->id;
     echo $OUTPUT->render_from_template('enrol_select/overview_complements', $overviewcomplementsdata);
 }
 echo $OUTPUT->render_from_template('enrol_select/overview_activities', $overviewactivitiesdata);

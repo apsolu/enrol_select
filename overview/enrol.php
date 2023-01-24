@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_apsolu\core\course as Course;
+use local_apsolu\core\federation\activity as Activity;
 use UniversiteRennes2\Apsolu as apsolu;
 
 define('APSOLU_FEDERATION_REQUIREMENT_FALSE', 0);
@@ -68,7 +70,9 @@ $PAGE->set_pagelayout('base');
 $PAGE->set_context($context);
 
 $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'id' => $enrolid), '*', MUST_EXIST);
-if (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, array('249', '250'), $strict = true) === true) {
+
+$federationcourse = Course::get_federation_courseid();
+if ($federationcourse === $enrol->courseid || (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, array('249', '250'), $strict = true) === true)) {
     // TODO: correction temporaire. À supprimer lorsque la gestion des activités complémentaires sera implémentée.
     $course = $DB->get_record('course', array('id' => $enrol->courseid), '*', MUST_EXIST);
     $course->license = '0';
@@ -104,14 +108,9 @@ if ($complement !== false) {
     $instance->complement = true;
 
     if ($complement->federation === '1') {
-        $sql = "SELECT cc.id, cc.name".
-            " FROM {course_categories} cc".
-            " JOIN {apsolu_courses_categories} acc ON cc.id = acc.id".
-            " WHERE acc.federation = 1".
-            " ORDER BY cc.name";
-
-        $federations = array();
-        foreach ($DB->get_records_sql($sql) as $federation) {
+        // Récupère la liste des activités FFSU.
+        $federations = array('' => '');
+        foreach (Activity::get_records(array('mainsport' => 1), $sort = 'name') as $federation) {
             $federations[$federation->id] = $federation->name;
         }
 
@@ -216,7 +215,7 @@ if ($complement !== false) {
         $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_TRUE;
         $instance->federation = 1;
     } else {
-        $category = $DB->get_record('apsolu_courses_categories', array('id' => $course->category, 'federation' => 1));
+        $category = $DB->get_record('apsolu_federation_activities', array('categoryid' => $course->category));
         if ($category === false) {
             // FFSU non disponible.
             $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_FALSE;
@@ -276,15 +275,10 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
 
                 $data->federation = $course->category;
 
-                $sql = "SELECT cc.id, cc.name".
-                    " FROM {course_categories} cc".
-                    " JOIN {apsolu_courses_categories} acc ON cc.id = acc.id".
-                    " WHERE acc.federation = 1".
-                    " ORDER BY cc.name";
-
+                // Récupère la liste des activités FFSU.
                 $federations = array();
-                foreach ($DB->get_records_sql($sql) as $federation) {
-                    $federations[$federation->id] = $federation->name;
+                foreach (Activity::get_records() as $federation) {
+                    $federations[$federation->id] = $federation->repositoryname;
                 }
 
                 $federationcourse = $DB->get_record('apsolu_complements', array('federation' => 1));
@@ -352,6 +346,10 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 case enrol_select_plugin::ACCEPTED:
                     $style = 'success';
                     $message = sprintf('<p>%s</p>', get_string('your_enrolment_has_been_registered', 'enrol_select'));
+                    if ($federationcourse === $enrol->courseid) {
+                        $url = new moodle_url('/course/view.php', array('id' => $federationcourse));
+                        $message .= sprintf('<p>%s</p>', get_string('you_can_now_complete_the_membership_application_form', 'enrol_select', (string) $url));
+                    }
                     break;
                 default:
                     $style = 'success';

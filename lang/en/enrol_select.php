@@ -44,6 +44,7 @@ $string['enrolment_to'] = 'Inscription en {$a}';
 $string['filters_for_managers'] = 'Filtres pour gestionnaires';
 $string['list'] = 'Liste';
 $string['lists'] = 'Listes';
+$string['main_sport'] = 'Sport principal';
 $string['maximum_enrolments'] = 'Nombre d\'inscriptions maximum';
 $string['maximum_enrolments_must_be_greater_than_or_equal_to_minimum_enrolments'] = 'Le nombre d\'inscriptions maximum doit être égal ou supérieur au nombre d\'inscriptions minimum.';
 $string['maximum_wishes'] = 'Nombre de voeux maximum';
@@ -82,6 +83,7 @@ $string['x_place_remaining_on_the_wait_list'] = '{$a} place restante sur liste c
 $string['x_places_remaining_on_the_main_list'] = '{$a} places restantes sur liste principale';
 $string['x_places_remaining_on_the_wait_list'] = '{$a} places restantes sur liste complémentaire';
 $string['you_are_on_X_list'] = 'Vous êtes sur {$a}.';
+$string['you_can_now_complete_the_membership_application_form'] = 'Vous pouvez maintenant remplir le <a href="{$a}">formulaire de demande d’adhésion</a> depuis l’espace de l’association sportive / licence FFSU.';
 $string['your_enrolment_has_been_registered'] = 'Votre inscription a été enregistrée.';
 $string['your_wish_has_been_registered'] = 'Votre vœu a été enregistré.';
 
