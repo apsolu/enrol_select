@@ -630,6 +630,11 @@ class enrol_select_plugin extends enrol_plugin {
             }
         }
 
+        if ($instance->courseid === \local_apsolu\core\course::get_federation_courseid()) {
+            // Bidouille moche pour gérer l'inscription à la FFSU.
+            return true;
+        }
+
         if (isset($CFG->is_siuaps_rennes) === true) {
             // Dirty hack pour les activités complémentaires !
             // À virer, et mettre des auto-inscriptions à la place.

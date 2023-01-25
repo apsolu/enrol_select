@@ -40,10 +40,18 @@
     {
         "wwwroot": "https://apsolu.fr",
         "is_courses_creator": false,
+        "is_siuaps_rennes": false,
         "count_complements": 0,
         "complements": []
     }
 }}
+{{^is_siuaps_rennes}}
+<div id="apsolu-complements-div">
+    <h3>{{#str}}membership_of_the_sports_association, local_apsolu{{/str}}</h3>
+    <p><a class="btn btn-success apsolu-enrol-a" data-enrolid="{{federation_enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{federation_enrolid}}">{{#str}}association, local_apsolu{{/str}}</a></p>
+</div>
+{{/is_siuaps_rennes}}
+{{#is_siuaps_rennes}}
 <div id="apsolu-complements-div">
 	<h3>{{#str}}complements_list,enrol_select{{/str}}</h3>
 
@@ -89,3 +97,4 @@
 	</div>
 	{{/count_complements}}
 </div>
+{{/is_siuaps_rennes}}
