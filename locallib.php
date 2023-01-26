@@ -787,7 +787,7 @@ function get_potential_user_activities($time = null, $cohorts = null) {
  * @return void
  */
 function get_potential_user_complements() {
-    global $DB, $USER;
+    global $CFG, $DB, $USER;
 
     $usercomplementenrolments = get_user_complement_enrolments();
 
@@ -811,7 +811,7 @@ function get_potential_user_complements() {
 
     foreach ($courses as $index => $course) {
         $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'courseid' => $course->id));
-        if ($enrol === false) {
+        if ($enrol === false || (isset($CFG->is_siuaps_rennes) === true && $course->id === '249')) {
             unset($courses[$index]);
             continue;
         }
