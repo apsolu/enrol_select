@@ -76,13 +76,13 @@
 {{#courses}}
     <tr data-anomalies="{{anomalies}}">
         {{^count_enrols}}
-        <td rowspan="1">{{fullname}}</td>
+        <td rowspan="1">{{fullname}}<br /><i>{{area}}, <b>{{city}}</b></i></td>
         <td colspan="8" class="table-active text-center">{{#str}}no_enrols, local_apsolu{{/str}}</td>
         {{/count_enrols}}
 
         {{#count_enrols}}
         {{! Colonne nom du cours. }}
-        <td rowspan="{{count_enrols}}">{{fullname}}</td>
+        <td rowspan="{{count_enrols}}">{{fullname}}<br /><i>{{area}}, <b>{{city}}</b></i></td>
         {{#enrols}}
 
         {{! Colonne nom de l'instance. }}
@@ -98,21 +98,45 @@
 
         {{! Colonne date d'ouverture des inscriptions. }}
         {{^invalid_enrolstartdate}}
-        <td>{{#userdate}}{{enrolstartdate}}, {{#str}}strftimedatetimeshort{{/str}}{{/userdate}}</td>
+        <td>
+            {{^enrolstartdate}}
+                {{#str}}no_dates, enrol_select{{/str}}
+            {{/enrolstartdate}}
+            {{#enrolstartdate}}
+                {{#userdate}}{{enrolstartdate}}, {{#str}}strftimedatetimeshort{{/str}}{{/userdate}}
+            {{/enrolstartdate}}
+        </td>
         {{/invalid_enrolstartdate}}
         {{#invalid_enrolstartdate}}
         <td class="table-warning">
-            {{#pix}}i/risk_xss, core, {{#str}}date_diverging_from_calendar_date, enrol_select{{/str}}{{/pix}} {{#userdate}}{{enrolstartdate}}, {{#str}}strftimedatetimeshort{{/str}}{{/userdate}}
+            {{^enrolstartdate}}
+                {{#str}}no_dates, enrol_select{{/str}}
+            {{/enrolstartdate}}
+            {{#enrolstartdate}}
+                {{#pix}}i/risk_xss, core, {{#str}}date_diverging_from_calendar_date, enrol_select{{/str}}{{/pix}} {{#userdate}}{{enrolstartdate}}, {{#str}}strftimedatetimeshort{{/str}}{{/userdate}}
+            {{/enrolstartdate}}
         </td>
         {{/invalid_enrolstartdate}}
 
         {{! Colonne date de fermeture des inscriptions. }}
         {{^invalid_enrolenddate}}
-        <td>{{#userdate}}{{enrolenddate}}, {{#str}}strftimedatetimeshort{{/str}}{{/userdate}}</td>
+        <td>
+            {{^enrolenddate}}
+                {{#str}}no_dates, enrol_select{{/str}}
+            {{/enrolenddate}}
+            {{#enrolenddate}}
+                {{#userdate}}{{enrolenddate}}, {{#str}}strftimedatetimeshort{{/str}}{{/userdate}}
+            {{/enrolenddate}}
+        </td>
         {{/invalid_enrolenddate}}
         {{#invalid_enrolenddate}}
         <td class="table-warning">
-            {{#pix}}i/risk_xss, core, {{#str}}date_diverging_from_calendar_date, enrol_select{{/str}}{{/pix}} {{#userdate}}{{enrolenddate}}, {{#str}}strftimedatetimeshort{{/str}}{{/userdate}}
+            {{^enrolenddate}}
+                {{#str}}no_dates, enrol_select{{/str}}
+            {{/enrolenddate}}
+            {{#enrolenddate}}
+                {{#pix}}i/risk_xss, core, {{#str}}date_diverging_from_calendar_date, enrol_select{{/str}}{{/pix}} {{#userdate}}{{enrolenddate}}, {{#str}}strftimedatetimeshort{{/str}}{{/userdate}}
+            {{/enrolenddate}}
         </td>
         {{/invalid_enrolenddate}}
 

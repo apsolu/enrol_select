@@ -58,7 +58,7 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 $roles = role_fix_names($DB->get_records('role'));
 
 $time = time();
-$params = array('today' => $time, 'courseid' => $course->id);
+$params = array('courseid' => $course->id, 'enrolid' => $instance->id);
 if (isset($exportstatus)) {
     $conditions = ' AND ue.status = :status';
     $params['status'] = $exportstatus;
@@ -73,14 +73,19 @@ $sql = 'SELECT DISTINCT u.*, ra.roleid, ue.timecreated, ue.status'.
     ' JOIN {role} r ON r.id = ra.roleid AND r.archetype = "student"'.
     ' JOIN {context} ctx ON ctx.id = ra.contextid'.
     ' JOIN {enrol} e ON e.id = ra.itemid AND e.id = ue.enrolid AND ctx.instanceid = e.courseid'.
-    ' WHERE (ue.timeend = 0 OR ue.timeend >= :today)'.
+    ' WHERE e.id = :enrolid'.
+    ' AND e.enrol = "select"'.
     ' AND ctx.instanceid = :courseid'.
     ' AND ctx.contextlevel = 50'.$conditions.
     ' ORDER BY ue.status, ue.timecreated, u.lastname, u.firstname, u.institution, u.department';
 $users = $DB->get_records_sql($sql, $params);
 
 // Génération du fichier csv.
-$filename = str_replace(' ', '_', strtolower($course->fullname));
+$instancename = get_string('pluginname', 'enrol_select');
+if (empty($instance->name) === false) {
+    $instancename = $instance->name;
+}
+$filename = clean_filename($course->fullname.'-'.$instancename);
 
 $headers = array(
     get_string('lastname'),

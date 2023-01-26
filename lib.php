@@ -345,6 +345,13 @@ class enrol_select_plugin extends enrol_plugin {
             return self::get_default_enrolment_list($instance);
         }
 
+        // Détermine si l'utilisateur est déjà inscrit sur cette instance.
+        $userenrolment = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id));
+        if ($userenrolment !== false) {
+            // Retourne la liste d'inscription actuelle de l'utilisateur.
+            return $userenrolment->status;
+        }
+
         // Détermine si il y a déjà des utilisateurs sur liste complémentaire.
         $params = array('enrolid' => $instance->id, 'status' => self::WAIT);
         $waitlistenrolements = $DB->get_records('user_enrolments', $params, '', 'userid');
@@ -579,7 +586,7 @@ class enrol_select_plugin extends enrol_plugin {
     }
 
     /**
-     * Détermine si un utilisateur peut s'inscrire à une instance.
+     * Détermine si un utilisateur peut s'inscrire à une instance avec un rôle donné.
      *
      * @param object     $instance Objet de l'instance de la méthode d'inscription.
      * @param object     $user     Objet représentant l'utilisateur.
@@ -588,7 +595,7 @@ class enrol_select_plugin extends enrol_plugin {
      * @return bool Vrai si les inscriptions sont ouvertes.
      */
     public function can_enrol($instance, $user, $roleid) {
-        global $CFG, $DB, $USER;
+        global $CFG, $DB;
 
         $today = time();
 
@@ -623,6 +630,11 @@ class enrol_select_plugin extends enrol_plugin {
             }
         }
 
+        if ($instance->courseid === \local_apsolu\core\course::get_federation_courseid()) {
+            // Bidouille moche pour gérer l'inscription à la FFSU.
+            return true;
+        }
+
         if (isset($CFG->is_siuaps_rennes) === true) {
             // Dirty hack pour les activités complémentaires !
             // À virer, et mettre des auto-inscriptions à la place.
@@ -632,7 +644,7 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Check available slots.
-        if ($this->get_available_status($instance, $USER) === false) {
+        if ($this->get_available_status($instance, $user) === false) {
             debugging($this->get_name().' n\'a plus aucune place disponible.', $level = DEBUG_DEVELOPER);
             return false;
         }
@@ -647,10 +659,12 @@ class enrol_select_plugin extends enrol_plugin {
 
             if ($choice->maxwish == 0 || $choice->count < $choice->maxwish) {
                 $available = true;
+                break;
             }
         }
 
         if ($available === false) {
+            debugging('L\'utilisateur #'.$user->id.' a atteint sa limite de voeux pour le rôle #'.$roleid, $level = DEBUG_DEVELOPER);
             return false;
         }
 

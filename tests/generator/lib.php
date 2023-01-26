@@ -23,9 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
+use local_apsolu\core\course;
 
 /**
  * Data generator class
@@ -51,7 +49,7 @@ class enrol_select_generator extends testing_module_generator {
         global $DB;
 
         // Créer un cours APSOLU.
-        $course = new local_apsolu\core\course();
+        $course = new course();
         $data = advanced_testcase::getDataGenerator()->get_plugin_generator('local_apsolu')->get_course_data();
         $course->save($data);
 

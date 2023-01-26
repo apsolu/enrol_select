@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['messageprovider:select_notification'] = 'Notifications en relation avec les inscriptions';
+
+$string['cohort_X_is_already_used_with_role_Y_by_college_Z'] = 'La cohorte « {$a->cohort} » est déjà utilisée avec le rôle « {$a->role} » par la population « {$a->college} ».';
+$string['college_unused_cohorts'] = '<details class="alert alert-info"><summary class="mb-3">Information</summary><p>Ces cohortes ne sont actuellement pas utilisées dans les populations :</p><ul>{$a}</ul></details>';
 $string['custom_welcome_message'] = 'Message de bienvenue personnalisé';
 $string['custom_welcome_message_help'] = 'Les utilisateurs recevront un message de bienvenue par courriel lors de leur inscription.';
 $string['date_diverging_from_calendar_date'] = 'Date divergente par rapport à la date du calendrier';
@@ -40,6 +44,7 @@ $string['enrolment_to'] = 'Inscription en {$a}';
 $string['filters_for_managers'] = 'Filtres pour gestionnaires';
 $string['list'] = 'Liste';
 $string['lists'] = 'Listes';
+$string['main_sport'] = 'Sport principal';
 $string['maximum_enrolments'] = 'Nombre d\'inscriptions maximum';
 $string['maximum_enrolments_must_be_greater_than_or_equal_to_minimum_enrolments'] = 'Le nombre d\'inscriptions maximum doit être égal ou supérieur au nombre d\'inscriptions minimum.';
 $string['maximum_wishes'] = 'Nombre de voeux maximum';
@@ -49,6 +54,7 @@ $string['no_available_cohorts'] = 'Aucune cohorte disponible';
 $string['no_available_enrol_methods_desc'] = 'Pour utiliser cette fonctionnalité, une deuxième méthode d\'inscription par voeux est nécessaire dans ce cours.';
 $string['no_available_prices'] = 'Aucun tarif défini';
 $string['no_available_roles'] = 'Aucun rôle disponible';
+$string['no_dates'] = 'Aucune date';
 $string['no_quotas'] = 'Aucun quota';
 $string['no_seat_restrictions'] = 'Aucune restriction de place';
 $string['no_places_available'] = 'Aucune place disponible';
@@ -60,6 +66,7 @@ $string['number_of_wishes'] = 'Nombre de voeux';
 $string['overview'] = 'Vue d\'ensemble';
 $string['pluginname'] = 'Inscription par voeux';
 $string['pluginname_desc'] = 'Le plugin d\'inscription par voeux permet aux utilisateurs de choisir les cours qu\'ils veulent suivre. Les cours peuvent être protégés par différents critères (période d\'inscription, taille de la liste principale, cohortes, etc).';
+$string['policyagree'] = 'J\'atteste avoir pris connaissances de <a href="{$a}" target="blank_">ces recommandations médicales</a>.';
 $string['reenrolment_disabled'] = 'Réinscription désactivée';
 $string['send_welcome_message_to_users_on_accepted_list'] = 'Envoyer un message aux utilisateurs sur la liste des acceptés';
 $string['send_welcome_message_to_users_on_main_list'] = 'Envoyer un message aux utilisateurs sur liste principale';
@@ -67,12 +74,16 @@ $string['send_welcome_message_to_users_on_wait_list'] = 'Envoyer un message aux 
 $string['settings'] = 'Paramètres';
 $string['there_are_still_places_on_the_wait_list'] = 'Il reste des places sur liste complémentaire';
 $string['warning_changing_calendar_may_result_in_loss_of_data'] = 'Attention ! La modification du calendrier peut entraîner une perte de données (comme par exemple les notes des étudiants).';
+$string['welcome_message_on_accepted_list'] = 'Message de bienvenue de la liste des acceptés';
+$string['welcome_message_on_main_list'] = 'Message de bienvenue de la liste principale';
+$string['welcome_message_on_wait_list'] = 'Message de bienvenue de la liste complémentaire';
 $string['welcome_messages'] = 'Messages de bienvenue';
 $string['x_place_remaining_on_the_main_list'] = '{$a} place restante sur liste principale';
 $string['x_place_remaining_on_the_wait_list'] = '{$a} place restante sur liste complémentaire';
 $string['x_places_remaining_on_the_main_list'] = '{$a} places restantes sur liste principale';
 $string['x_places_remaining_on_the_wait_list'] = '{$a} places restantes sur liste complémentaire';
 $string['you_are_on_X_list'] = 'Vous êtes sur {$a}.';
+$string['you_can_now_complete_the_membership_application_form'] = 'Vous pouvez maintenant remplir le <a href="{$a}">formulaire de demande d’adhésion</a> depuis l’espace de l’association sportive / licence FFSU.';
 $string['your_enrolment_has_been_registered'] = 'Votre inscription a été enregistrée.';
 $string['your_wish_has_been_registered'] = 'Votre vœu a été enregistré.';
 
@@ -254,7 +265,7 @@ $string['message_deleted_to_next_main'] = str_replace('de la liste des inscrits 
 $string['message_deleted_to_next_wait'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste complémentaire', $string['message_accepted_to_next_main']);
 
 $string['message_wait_to_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits à la liste principale', 'Votre pré-inscription a été confirmée', $string['message_accepted_to_main']);
-$string['message_wait_to_main'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_main']);
+$string['message_wait_to_main'] = str_replace('des inscrits', 'complémentaire', $string['message_accepted_to_main']);
 $string['message_wait_to_deleted'] = str_replace('des inscrits', 'complémentaire', $string['message_accepted_to_deleted']);
 
 $string['message_deleted_to_accepted'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste des inscrits', $string['message_accepted_to_main']);

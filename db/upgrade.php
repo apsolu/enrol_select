@@ -139,5 +139,20 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
         upgrade_plugin_savepoint(true, $version, 'enrol', 'select');
     }
 
+    $version = 2022112100;
+    if ($oldversion < $version) {
+        // Nettoie les tables faisant référence à des cohortes supprimées.
+        $queries = array();
+        $queries[] = "DELETE FROM {apsolu_colleges_members} WHERE cohortid NOT IN (SELECT id FROM {cohort})";
+        $queries[] = "DELETE FROM {enrol_select_cohorts} WHERE cohortid NOT IN (SELECT id FROM {cohort})";
+        $queries[] = "DELETE FROM {enrol_select_cohorts_roles} WHERE cohortid NOT IN (SELECT id FROM {cohort})";
+        foreach ($queries as $sql) {
+            $DB->execute($sql);
+        }
+
+        // Savepoint reached.
+        upgrade_plugin_savepoint(true, $version, 'enrol', 'select');
+    }
+
     return true;
 }

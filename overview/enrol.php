@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_apsolu\core\course as Course;
+use local_apsolu\core\federation\activity as Activity;
 use UniversiteRennes2\Apsolu as apsolu;
 
 define('APSOLU_FEDERATION_REQUIREMENT_FALSE', 0);
@@ -68,13 +70,16 @@ $PAGE->set_pagelayout('base');
 $PAGE->set_context($context);
 
 $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'id' => $enrolid), '*', MUST_EXIST);
-if (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, array('249', '250'), $strict = true) === true) {
+
+$federationcourse = Course::get_federation_courseid();
+if ($federationcourse === $enrol->courseid || (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, array('249', '250'), $strict = true) === true)) {
     // TODO: correction temporaire. À supprimer lorsque la gestion des activités complémentaires sera implémentée.
     $course = $DB->get_record('course', array('id' => $enrol->courseid), '*', MUST_EXIST);
-    $course->license === '0';
+    $course->license = '0';
     $course->information = '';
+    $course->showpolicy = '0';
 } else {
-    $sql = "SELECT c.*, ac.license, ac.information".
+    $sql = "SELECT c.*, ac.license, ac.information, ac.showpolicy".
         " FROM {course} c".
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
         " WHERE c.id = :courseid";
@@ -85,6 +90,7 @@ if (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, array('
 $instance = new stdClass();
 $instance->fullname = $course->fullname;
 $instance->enrolid = $enrol->id;
+$instance->showpolicy = $course->showpolicy;
 
 // Détermine si l'utilisateur courant est déjà inscrit à ce cours.
 // TODO: à modifer...
@@ -102,14 +108,9 @@ if ($complement !== false) {
     $instance->complement = true;
 
     if ($complement->federation === '1') {
-        $sql = "SELECT cc.id, cc.name".
-            " FROM {course_categories} cc".
-            " JOIN {apsolu_courses_categories} acc ON cc.id = acc.id".
-            " WHERE acc.federation = 1".
-            " ORDER BY cc.name";
-
-        $federations = array();
-        foreach ($DB->get_records_sql($sql) as $federation) {
+        // Récupère la liste des activités FFSU.
+        $federations = array('' => '');
+        foreach (Activity::get_records(array('mainsport' => 1), $sort = 'name') as $federation) {
             $federations[$federation->id] = $federation->name;
         }
 
@@ -126,15 +127,13 @@ if ($complement !== false) {
 
     // L'utilisateur n'est pas inscrit à ce cours...
     if ($instance->role === '') {
+        $enrolselectplugin = new enrol_select_plugin(); // TODO: factoriser, et ne déclarer qu'une seule fois cette variable.
+
         // Est-ce que le cours est plein ?
-        $sql = "SELECT userid FROM {user_enrolments} WHERE enrolid = ? AND status IN (0, 2)";
-        $mainlistenrolements = $DB->get_records_sql($sql, array($enrol->id));
-        if ($enrol->customint1 <= count($mainlistenrolements)) {
-            $waitlistenrolements = $DB->get_records('user_enrolments', array('enrolid' => $enrol->id, 'status' => 3), '', 'userid');
-            if ($enrol->customint2 <= count($waitlistenrolements)) {
-                // Le cours est plein...
-                throw new moodle_exception('error_no_left_slot', 'enrol_select');
-            }
+        $status = $enrolselectplugin->get_available_status($enrol, $USER);
+        if ($status === false) {
+            // Le cours est plein...
+            throw new moodle_exception('error_no_left_slot', 'enrol_select');
         }
 
         // Est-ce que l'utilisateur n'a pas dépassé son quota de voeux...
@@ -146,7 +145,6 @@ if ($complement !== false) {
             }
         }
 
-        $enrolselectplugin = new enrol_select_plugin(); // TODO: factoriser, et ne déclarer qu'une seule fois cette variable.
         if (isset($filtertime, $filtercohorts) === false) {
             // Pour un étudiant.
             $availableuserroles = $enrolselectplugin->get_available_user_roles($enrol, $USER->id);
@@ -217,7 +215,7 @@ if ($complement !== false) {
         $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_TRUE;
         $instance->federation = 1;
     } else {
-        $category = $DB->get_record('apsolu_courses_categories', array('id' => $course->category, 'federation' => 1));
+        $category = $DB->get_record('apsolu_federation_activities', array('categoryid' => $course->category));
         if ($category === false) {
             // FFSU non disponible.
             $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_FALSE;
@@ -277,15 +275,10 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
 
                 $data->federation = $course->category;
 
-                $sql = "SELECT cc.id, cc.name".
-                    " FROM {course_categories} cc".
-                    " JOIN {apsolu_courses_categories} acc ON cc.id = acc.id".
-                    " WHERE acc.federation = 1".
-                    " ORDER BY cc.name";
-
+                // Récupère la liste des activités FFSU.
                 $federations = array();
-                foreach ($DB->get_records_sql($sql) as $federation) {
-                    $federations[$federation->id] = $federation->name;
+                foreach (Activity::get_records() as $federation) {
+                    $federations[$federation->id] = $federation->repositoryname;
                 }
 
                 $federationcourse = $DB->get_record('apsolu_complements', array('federation' => 1));
@@ -353,6 +346,10 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 case enrol_select_plugin::ACCEPTED:
                     $style = 'success';
                     $message = sprintf('<p>%s</p>', get_string('your_enrolment_has_been_registered', 'enrol_select'));
+                    if ($federationcourse === $enrol->courseid) {
+                        $url = new moodle_url('/local/apsolu/federation/adhesion/index.php');
+                        $message .= sprintf('<p>%s</p>', get_string('you_can_now_complete_the_membership_application_form', 'enrol_select', (string) $url));
+                    }
                     break;
                 default:
                     $style = 'success';

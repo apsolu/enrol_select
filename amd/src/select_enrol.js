@@ -67,6 +67,7 @@ define(['jquery'], function($) {
                 .always(function() {
                     set_edit_actions();
                     set_cancel_actions();
+                    set_policy_actions();
 
                     $('#apsolu-enrol-form').popup('show');
                 });
@@ -77,7 +78,6 @@ define(['jquery'], function($) {
             function set_edit_actions() {
                 $('#apsolu-enrol-form #id_enrolbutton, #apsolu-enrol-form #id_unenrolbutton, #apsolu-enrol-form #id_editenrol').click(function(event) {
                     event.preventDefault();
-
                     // console.log('click sur un bouton');
 
                     var role = $('#apsolu-enrol-form form select[name=role] option:selected').val();
@@ -90,13 +90,14 @@ define(['jquery'], function($) {
                     if ($(this).attr('id') == 'id_unenrolbutton') {
                         var actions = {_qf__enrol_select_form: 1, sesskey: sesskey, enrolid: enrolid, unenrolbutton: 1};
                     } else if ($(this).attr('id') == 'id_editenrol') {
-                        var actions = {_qf__enrol_select_form: 1, sesskey: sesskey, enrolid: enrolid, editenrol: 1};
+                        var actions = {_qf__enrol_select_form: 1, sesskey: sesskey, enrolid: enrolid, editenrol: 1, policy: 1};
                     } else {
+                        var fullname = $('#apsolu-enrol-form form input[name=fullname]').val();
                         var federation = $('#apsolu-enrol-form form select[name=federation] option:selected').val();
                         if (federation) {
-                            var actions = {fullname: '1', enrolid: enrolid, role: role, federation: federation, enrolbutton: 1, _qf__enrol_select_form: 1, sesskey: sesskey};
+                            var actions = {fullname: fullname, enrolid: enrolid, role: role, federation: federation, enrolbutton: 1, _qf__enrol_select_form: 1, sesskey: sesskey, policy: 1};
                         } else {
-                            var actions = {fullname: '1', enrolid: enrolid, role: role, enrolbutton: 1, _qf__enrol_select_form: 1, sesskey: sesskey};
+                            var actions = {fullname: fullname, enrolid: enrolid, role: role, enrolbutton: 1, _qf__enrol_select_form: 1, sesskey: sesskey, policy: 1};
                         }
                     }
 
@@ -128,6 +129,7 @@ define(['jquery'], function($) {
                         .always(function() {
                             set_edit_actions();
                             set_cancel_actions();
+                            set_policy_actions();
                             reload_ui(enrolid);
                         });
 
@@ -145,6 +147,26 @@ define(['jquery'], function($) {
                     $('#apsolu-enrol-form').popup('hide');
                     // $('#apsolu-enrol-form').remove();
                 });
+            }
+
+            // Désactive le bouton d'inscription si la case des recommandations médicales n'est pas cochée.
+            function set_policy_actions() {
+                var policy = $('#apsolu-enrol-form form input[name=policy]');
+
+                // Si la validation des recommandations médicales sont activées.
+                if (policy.length) {
+                    // Désactive le bouton d'inscription.
+                    $('#apsolu-enrol-form form input[name=enrolbutton]').prop('disabled', true);
+
+                    // Active/désactive le bouton d'inscription lorsqu'on coche/décoche la case des recommandations médicales.
+                    policy.change(function() {
+                        if ($(this).is(':checked')) {
+                            $('#apsolu-enrol-form form input[name=enrolbutton]').prop('disabled', false);
+                        } else {
+                            $('#apsolu-enrol-form form input[name=enrolbutton]').prop('disabled', true);
+                        }
+                    });
+                }
             }
 
             function reload_ui(enrolid) {

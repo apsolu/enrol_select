@@ -53,9 +53,12 @@ $mform = new apsolu_overview_filter_form(null, array($calendars, $teachers));
 $mdata = $mform->get_data();
 
 // Liste des cours.
-$sql = "SELECT c.id, c.fullname, '0' AS count_enrols, '1' AS anomalies".
+$sql = "SELECT c.id, c.fullname, '0' AS count_enrols, '1' AS anomalies, aa.name AS area, city.name AS city".
     " FROM {course} c".
     " JOIN {apsolu_courses} ac ON ac.id = c.id".
+    " JOIN {apsolu_locations} l ON l.id = ac.locationid".
+    " JOIN {apsolu_areas} aa ON aa.id = l.areaid".
+    " JOIN {apsolu_cities} city ON city.id = aa.cityid".
     " JOIN {course_categories} cc ON cc.id = c.category".
     " WHERE c.visible = 1".
     " ORDER BY cc.sortorder, ac.numweekday, ac.starttime";

@@ -23,7 +23,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace enrol\select;
+
+use advanced_testcase;
+use context_course;
+use enrol_select_plugin;
+use local_apsolu\core\course;
+use stdClass;
 
 global $CFG;
 
@@ -38,7 +44,7 @@ require_once($CFG->dirroot.'/enrol/select/lib.php');
  * @copyright  2021 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class enrol_select_plugin_testcase extends advanced_testcase {
+class lib_test extends advanced_testcase {
     protected function setUp() : void {
         parent::setUp();
 
@@ -50,7 +56,7 @@ class enrol_select_plugin_testcase extends advanced_testcase {
 
         $backupuserid = $USER->id;
 
-        $course = new local_apsolu\core\course();
+        $course = new course();
         $data = advanced_testcase::getDataGenerator()->get_plugin_generator('local_apsolu')->get_course_data();
         $course->save($data);
 
@@ -173,9 +179,9 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         $this->assertSame(enrol_select_plugin::MAIN, $plugin->get_available_status($instance, $user));
 
         // On active les quotas et définit un maximum d'inscrits sur liste principale.
-        $instance->customint3 = 1;
-        $instance->customint1 = $numberofusers[enrol_select_plugin::ACCEPTED] + $numberofusers[enrol_select_plugin::MAIN];
-        $instance->customint2 = 0;
+        $instance->customint3 = 1; // Active les quotas.
+        $instance->customint1 = $numberofusers[enrol_select_plugin::ACCEPTED] + $numberofusers[enrol_select_plugin::MAIN]; // Max. places LP.
+        $instance->customint2 = 0; // Max. places LC.
 
         // On ajoute une place sur la liste principale.
         $instance->customint1++;
@@ -187,10 +193,10 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         // On inscrit l'utilisateur.
         $plugin->enrol_user($instance, $user->id, $roleid = 5, $timestart = 0, $timeend = 0, enrol_select_plugin::MAIN);
 
-        // Teste que l'utilisateur se voit proposer une place sur liste principale.
+        // Teste que l'utilisateur se voit proposer la même place sur liste principale.
         $this->assertSame(enrol_select_plugin::MAIN, $plugin->get_available_status($instance, $user));
 
-        // Teste que l'utilisateur se voit refuser une place sur liste complémentaire.
+        // Teste qu'un autre utilisateur se voit refuser une place sur liste complémentaire.
         $user = $generator->create_user();
         $this->assertFalse($plugin->get_available_status($instance, $user));
 
@@ -204,10 +210,10 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         // On inscrit l'utilisateur.
         $plugin->enrol_user($instance, $user->id, $roleid = 5, $timestart = 0, $timeend = 0, enrol_select_plugin::WAIT);
 
-        // Teste que l'utilisateur se voit proposer une place sur liste complémentaire.
+        // Teste que l'utilisateur se voit proposer la même place sur liste complémentaire.
         $this->assertSame(enrol_select_plugin::WAIT, $plugin->get_available_status($instance, $user));
 
-        // Teste que l'utilisateur se voit proposer une place sur liste complémentaire.
+        // Teste qu'un autre utilisateur se voit proposer une place sur liste complémentaire.
         // Note : sert à tester la première sortie "return self::WAIT;" de la méthode get_available_status()).
         $user = $generator->create_user();
         $this->assertSame(enrol_select_plugin::WAIT, $plugin->get_available_status($instance, $user));
@@ -215,10 +221,10 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         // On inscrit l'utilisateur.
         $plugin->enrol_user($instance, $user->id, $roleid = 5, $timestart = 0, $timeend = 0, enrol_select_plugin::WAIT);
 
-        // Teste que l'utilisateur se voit proposer une place sur liste complémentaire.
+        // Teste que l'utilisateur se voit proposer la même place sur liste complémentaire.
         $this->assertSame(enrol_select_plugin::WAIT, $plugin->get_available_status($instance, $user));
 
-        // Teste que l'utilisateur se voit proposer aucune place.
+        // Teste qu'un autre utilisateur se voit proposer aucune place.
         $user = $generator->create_user();
         $this->assertFalse($plugin->get_available_status($instance, $user));
 
@@ -227,9 +233,9 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
 
         // On définit un maximum d'inscrits.
-        $instance->customint3 = 1;
-        $instance->customint1 = 0;
-        $instance->customint2 = 1;
+        $instance->customint3 = 1; // Active les quotas.
+        $instance->customint1 = 0; // Max. places LP.
+        $instance->customint2 = 1; // Max. places LC.
 
         // Teste qu'on arrive directement sur liste complémentaire.
         $user = $generator->create_user();
@@ -238,7 +244,10 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         // On inscrit l'utilisateur.
         $plugin->enrol_user($instance, $user->id, $roleid = 5, $timestart = 0, $timeend = 0, enrol_select_plugin::WAIT);
 
-        // Teste l'absence de place.
+        // Teste que l'utilisateur se voit proposer la même place sur liste complémentaire.
+        $this->assertSame(enrol_select_plugin::WAIT, $plugin->get_available_status($instance, $user));
+
+        // Teste l'absence de place pour un autre utilisateur.
         $user = $generator->create_user();
         $this->assertFalse($plugin->get_available_status($instance, $user));
 
@@ -247,20 +256,34 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
 
         // On définit un maximum d'inscrits.
-        $instance->customint3 = 1;
-        $instance->customint1 = 1;
-        $instance->customint2 = 0;
+        $instance->customint3 = 1; // Active les quotas.
+        $instance->customint1 = 1; // Max. places LP.
+        $instance->customint2 = 0; // Max. places LC.
 
         // Teste qu'on arrive directement sur liste complémentaire.
         $user = $generator->create_user();
+        $mainuser = clone($user);
         $this->assertSame(enrol_select_plugin::MAIN, $plugin->get_available_status($instance, $user));
 
         // On inscrit l'utilisateur.
         $plugin->enrol_user($instance, $user->id, $roleid = 5, $timestart = 0, $timeend = 0, enrol_select_plugin::MAIN);
 
-        // Teste l'absence de place.
+        // Teste que l'utilisateur se voit proposer la même place sur liste principale.
+        $this->assertSame(enrol_select_plugin::MAIN, $plugin->get_available_status($instance, $user));
+
+        // Teste l'absence de place pour un autre utilisateur.
         $user = $generator->create_user();
         $this->assertFalse($plugin->get_available_status($instance, $user));
+
+        // Ajoute une place sur LC.
+        $instance->customint2 = 1;
+
+        // Teste une inscription sur LC.
+        $this->assertSame(enrol_select_plugin::WAIT, $plugin->get_available_status($instance, $user));
+        $plugin->enrol_user($instance, $user->id, $roleid = 5, $timestart = 0, $timeend = 0, enrol_select_plugin::WAIT);
+
+        // Teste que l'utilisateur sur liste principale se voit toujours attribuer sa place sur LP.
+        $this->assertSame(enrol_select_plugin::MAIN, $plugin->get_available_status($instance, $mainuser));
 
         // On bascule sur une inscription sur liste acceptée par défaut.
         $numberofusers = array(enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0);
@@ -273,9 +296,9 @@ class enrol_select_plugin_testcase extends advanced_testcase {
         $this->assertSame(enrol_select_plugin::ACCEPTED, $plugin->get_available_status($instance, $user));
 
         // Teste qu'on arrive directement sur liste des acceptés lorsque les quotas sont activés.
-        $instance->customint1 = 10;
-        $instance->customint2 = 10;
-        $instance->customint3 = 1;
+        $instance->customint1 = 10; // Active les quotas.
+        $instance->customint2 = 10; // Max. places LP.
+        $instance->customint3 = 1; // Max. places LC.
         $user = $generator->create_user();
         $this->assertSame(enrol_select_plugin::ACCEPTED, $plugin->get_available_status($instance, $user));
     }
