@@ -347,7 +347,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                     $style = 'success';
                     $message = sprintf('<p>%s</p>', get_string('your_enrolment_has_been_registered', 'enrol_select'));
                     if ($federationcourse === $enrol->courseid) {
-                        $url = new moodle_url('/course/view.php', array('id' => $federationcourse));
+                        $url = new moodle_url('/local/apsolu/federation/adhesion/index.php');
                         $message .= sprintf('<p>%s</p>', get_string('you_can_now_complete_the_membership_application_form', 'enrol_select', (string) $url));
                     }
                     break;
