@@ -248,7 +248,7 @@ $PAGE->set_heading($course->fullname);
 
 $pluginname = get_string('pluginname', 'enrol_select');
 
-$PAGE->navbar->add(get_string('users'));
+$PAGE->navbar->add($course->shortname, new moodle_url('/course/view.php', array('id' => $course->id)));
 $PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', array('id' => $course->id)));
 $PAGE->navbar->add($pluginname);
 
