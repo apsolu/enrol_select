@@ -203,8 +203,8 @@ foreach ($recordset as $record) {
     $enrolment->state = get_string(enrol_select_plugin::$states[$record->status].'_list_abbr', 'enrol_select');
     $enrolment->status = $record->status;
     $enrolment->role = $roles[$record->roleid]->localname;
-    $enrolment->timecreated = strftime('%a %d %b à %T', $record->timecreated);
-    $enrolment->timecreated_sortable = strftime('%F %T', $record->timecreated);
+    $enrolment->timecreated = userdate($record->timecreated, '%a %d %b à %T');
+    $enrolment->timecreated_sortable = userdate($record->timecreated, '%F %T');
     if ($ismanager === false) {
         $enrolment->course_url = '';
     } else {

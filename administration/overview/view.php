@@ -174,7 +174,7 @@ foreach ($courses as $course) {
 
         // Filtre par date de début d'inscription.
         if (empty($mdata->enrolstartdate) === false &&
-            strftime('%F', $enrol->enrolstartdate) !== strftime('%F', $mdata->enrolstartdate)) {
+            userdate($enrol->enrolstartdate, '%F') !== userdate($mdata->enrolstartdate, '%F')) {
             // Le filtre ne correspond pas à la date de début d'inscription sélectionné.
             unset($course->enrols[$id]);
             $course->count_enrols--;
@@ -183,7 +183,7 @@ foreach ($courses as $course) {
 
         // Filtre par date de fin d'inscription.
         if (empty($mdata->enrolenddate) === false &&
-            strftime('%F', $enrol->enrolenddate) !== strftime('%F', $mdata->enrolenddate)) {
+            userdate($enrol->enrolenddate, '%F') !== userdate($mdata->enrolenddate, '%F')) {
             // Le filtre ne correspond pas à la date de fin d'inscription sélectionné.
             unset($course->enrols[$id]);
             $course->count_enrols--;

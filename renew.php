@@ -170,7 +170,7 @@ if (isset($_POST['reenrol'])) {
     foreach ($_POST['renew'] as $enrolid => $renew) {
         $instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'));
 
-        $log = strftime('%c').' '.$USER->firstname.' '.$USER->lastname.' ('.$USER->email.' #id '.$USER->id.')';
+        $log = userdate(time(), '%c').' '.$USER->firstname.' '.$USER->lastname.' ('.$USER->email.' #id '.$USER->id.')';
 
         if (!$instance) {
             debugging('ERROR: '.$log.' invalid instance #id '.$enrolid, $level = NO_DEBUG_DISPLAY);

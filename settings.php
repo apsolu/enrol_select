@@ -29,7 +29,7 @@ $capabilities = array(
     'moodle/course:create',
 );
 
-if ($hassiteconfig or has_any_capability($capabilities, context_system::instance())) {
+if ($hassiteconfig || has_any_capability($capabilities, context_system::instance())) {
     // Ajoute un noeud Apsolu au menu d'administration.
     if (empty($ADMIN->locate('apsolu')) === true) {
         // Crée le noeud.

@@ -23,13 +23,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol\select;
+namespace enrol_select;
 
 use advanced_testcase;
 use context_course;
 use enrol_select_plugin;
 use local_apsolu\core\course;
 use stdClass;
+
+defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
@@ -45,12 +47,24 @@ require_once($CFG->dirroot.'/enrol/select/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class lib_test extends advanced_testcase {
+    /**
+     * Initialise un environnement de test.
+     *
+     * @return void
+     */
     protected function setUp() : void {
         parent::setUp();
 
         $this->resetAfterTest();
     }
 
+    /**
+     * Teste la méthode enrol_user().
+     *
+     * @covers \enrol_select_plugin::enrol_user()
+     *
+     * @return void
+     */
     public function test_enrol_user() {
         global $CFG, $DB, $USER;
 
@@ -161,6 +175,13 @@ class lib_test extends advanced_testcase {
         $USER->id = $backupuserid;
     }
 
+    /**
+     * Teste la méthode get_available_status().
+     *
+     * @covers \enrol_select_plugin::get_available_status()
+     *
+     * @return void
+     */
     public function test_get_available_status() {
         global $DB;
 
@@ -180,7 +201,8 @@ class lib_test extends advanced_testcase {
 
         // On active les quotas et définit un maximum d'inscrits sur liste principale.
         $instance->customint3 = 1; // Active les quotas.
-        $instance->customint1 = $numberofusers[enrol_select_plugin::ACCEPTED] + $numberofusers[enrol_select_plugin::MAIN]; // Max. places LP.
+        $instance->customint1 = $numberofusers[enrol_select_plugin::ACCEPTED]
+            + $numberofusers[enrol_select_plugin::MAIN]; // Max. places LP.
         $instance->customint2 = 0; // Max. places LC.
 
         // On ajoute une place sur la liste principale.
@@ -303,6 +325,13 @@ class lib_test extends advanced_testcase {
         $this->assertSame(enrol_select_plugin::ACCEPTED, $plugin->get_available_status($instance, $user));
     }
 
+    /**
+     * Teste la méthode get_default_enrolment_list().
+     *
+     * @covers \enrol_select_plugin::get_default_enrolment_list()
+     *
+     * @return void
+     */
     public function test_get_default_enrolment_list() {
         $instance = new stdClass();
 
@@ -319,6 +348,13 @@ class lib_test extends advanced_testcase {
         $this->assertSame(enrol_select_plugin::MAIN, enrol_select_plugin::get_default_enrolment_list($instance));
     }
 
+    /**
+     * Teste la méthode refill_main_list().
+     *
+     * @covers \enrol_select_plugin::refill_main_list()
+     *
+     * @return void
+     */
     public function test_refill_main_list() {
         global $DB, $USER;
 
@@ -420,6 +456,13 @@ class lib_test extends advanced_testcase {
         $this->assertSame($newuser->id, $waitingenrolment->userid);
     }
 
+    /**
+     * Teste la méthode unenrol_user().
+     *
+     * @covers \enrol_select_plugin::unenrol_user()
+     *
+     * @return void
+     */
     public function test_unenrol_user() {
         global $DB, $USER;
 

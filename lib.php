@@ -114,7 +114,7 @@ class enrol_select_plugin extends enrol_plugin {
 
         $icons = array();
 
-        if (has_capability('enrol/select:enrol', $context) or has_capability('enrol/select:unenrol', $context)) {
+        if (has_capability('enrol/select:enrol', $context) || has_capability('enrol/select:unenrol', $context)) {
             $managelink = new moodle_url("/enrol/select/manage.php", array('enrolid' => $instance->id));
 
             $label = get_string('enrolusers', 'enrol_manual');
@@ -228,7 +228,7 @@ class enrol_select_plugin extends enrol_plugin {
     public function get_newinstance_link($courseid) {
         $context = context_course::instance($courseid, MUST_EXIST);
 
-        if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/select:config', $context)) {
+        if (!has_capability('moodle/course:enrolconfig', $context) || !has_capability('enrol/select:config', $context)) {
             return null;
         }
         // Multiple instances supported - different roles with different password.
@@ -305,7 +305,7 @@ class enrol_select_plugin extends enrol_plugin {
         global $DB;
 
         $context = context_course::instance($courseid, MUST_EXIST);
-        if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/manual:config', $context)) {
+        if (!has_capability('moodle/course:enrolconfig', $context) || !has_capability('enrol/manual:config', $context)) {
             return false;
         }
 
@@ -664,7 +664,10 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         if ($available === false) {
-            debugging('L\'utilisateur #'.$user->id.' a atteint sa limite de voeux pour le rôle #'.$roleid, $level = DEBUG_DEVELOPER);
+            $parameters = ['userid' => $user->id, 'roleid' => $roleid];
+            $message = get_string('the_user_X_has_reached_their_wish_limit_for_the_role_Y', 'enrol_select', $parameters);
+
+            debugging($message, $level = DEBUG_DEVELOPER);
             return false;
         }
 

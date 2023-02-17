@@ -64,7 +64,7 @@ $canunenrol = has_capability('enrol/select:unenrol', $context);
 // Note: manage capability not used here because it is used for editing
 // of existing enrolments which is not possible here.
 
-if (!$canenrol and !$canunenrol) {
+if (!$canenrol && !$canunenrol) {
     // No need to invent new error strings here...
     require_capability('enrol/select:enrol', $context);
     require_capability('enrol/select:unenrol', $context);

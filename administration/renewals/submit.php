@@ -39,7 +39,7 @@ foreach ($_POST['uids'] as $uid) {
         $canenrol = has_capability('enrol/select:enrol', $context);
         $canunenrol = has_capability('enrol/select:unenrol', $context);
 
-        if (!$canenrol and !$canunenrol) {
+        if (!$canenrol && !$canunenrol) {
             // No need to invent new error strings here...
             require_capability('enrol/select:enrol', $context);
             require_capability('enrol/select:unenrol', $context);

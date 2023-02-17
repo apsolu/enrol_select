@@ -24,8 +24,6 @@
 
 namespace enrol_select\event;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Event to log user movements.
  *

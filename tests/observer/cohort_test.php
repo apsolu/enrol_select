@@ -25,7 +25,10 @@
 
 namespace enrol_select\observer;
 
+use advanced_testcase;
 use stdclass;
+
+defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
@@ -39,7 +42,12 @@ require_once($CFG->dirroot.'/cohort/lib.php');
  * @copyright  2022 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cohort_test extends \advanced_testcase {
+class cohort_test extends advanced_testcase {
+    /**
+     * Initialise un environnement de test.
+     *
+     * @return void
+     */
     protected function setUp() : void {
         parent::setUp();
 
@@ -48,12 +56,19 @@ class cohort_test extends \advanced_testcase {
         $this->resetAfterTest();
     }
 
+    /**
+     * Teste la méthode deleted().
+     *
+     * @covers \enrol_select\observer\cohort::deleted()
+     *
+     * @return void
+     */
     public function test_deleted() {
         global $DB;
 
-        $count_records1 = $DB->count_records('apsolu_colleges_members');
-        $count_records2 = $DB->count_records('enrol_select_cohorts');
-        $count_records3 = $DB->count_records('enrol_select_cohorts_roles');
+        $countrecords1 = $DB->count_records('apsolu_colleges_members');
+        $countrecords2 = $DB->count_records('enrol_select_cohorts');
+        $countrecords3 = $DB->count_records('enrol_select_cohorts_roles');
 
         // Crée une cohorte.
         $cohort = new stdClass();
@@ -71,14 +86,14 @@ class cohort_test extends \advanced_testcase {
         $sql = "INSERT INTO {enrol_select_cohorts_roles} (roleid, cohortid) VALUES(:roleid, :cohortid)";
         $DB->execute($sql, ['roleid' => 1, 'cohortid' => $cohort->id]);
 
-        $this->assertSame($count_records1 + 1, $DB->count_records('apsolu_colleges_members'));
-        $this->assertSame($count_records2 + 1, $DB->count_records('enrol_select_cohorts'));
-        $this->assertSame($count_records3 + 1, $DB->count_records('enrol_select_cohorts_roles'));
+        $this->assertSame($countrecords1 + 1, $DB->count_records('apsolu_colleges_members'));
+        $this->assertSame($countrecords2 + 1, $DB->count_records('enrol_select_cohorts'));
+        $this->assertSame($countrecords3 + 1, $DB->count_records('enrol_select_cohorts_roles'));
 
         // Teste le bon appel à la classe enrol_select\observer\cohort.
         cohort_delete_cohort($cohort);
-        $this->assertSame($count_records1, $DB->count_records('apsolu_colleges_members'));
-        $this->assertSame($count_records2, $DB->count_records('enrol_select_cohorts'));
-        $this->assertSame($count_records3, $DB->count_records('enrol_select_cohorts_roles'));
+        $this->assertSame($countrecords1, $DB->count_records('apsolu_colleges_members'));
+        $this->assertSame($countrecords2, $DB->count_records('enrol_select_cohorts'));
+        $this->assertSame($countrecords3, $DB->count_records('enrol_select_cohorts_roles'));
     }
 }

@@ -15,10 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Définition des observateurs.
+ *
  * @package   enrol_select
  * @copyright 2022 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
 
 $observers = array(
     // Gère la suppression des cohortes depuis l'interface Administration du site > Utilisateurs > Comptes > Cohortes.

@@ -1,5 +1,5 @@
-.select2-container {
-    margin: 0 .2em !important;
+span.select2-container {
+    margin: 0 .2em;
 }
 
 #apsolu-activities-table td {
@@ -25,7 +25,7 @@ button.uncheckall {
     background-position: left;
     background-repeat: no-repeat;
     cursor: pointer;
-    padding-left: 21px !important;
+    padding-left: 21px;
 }
 
 .apsolu-expandable {
@@ -77,8 +77,8 @@ input[type="radio"][name^="renew"] {
     margin: 0;
 }
 
-.block_overview_enrolments li {
-    padding: 0 .5em !important;
+.block_overview_enrolments.block .list li {
+    padding: 0 .5em;
 }
 
 .block_overview_enrolments li:nth-child(even) {
@@ -151,7 +151,7 @@ input[type="radio"][name^="renew"] {
 
 #page-enrol-select-overview .moodle-dialogue,
 #page-enrol-select-overview .moodle-dialogue-base {
-    z-index: 100002 !important;
+    z-index: 100002;
 }
 
 #page-enrol-select-manage form #addselect {

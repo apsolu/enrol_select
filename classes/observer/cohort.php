@@ -26,8 +26,6 @@ namespace enrol_select\observer;
 
 use core\event\cohort_deleted;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Classe permettant d'écouter les évènements diffusés par Moodle.
  *
