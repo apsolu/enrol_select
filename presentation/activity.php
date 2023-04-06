@@ -24,7 +24,7 @@
 
 require(__DIR__.'/../../../config.php');
 
-require_course_login($site);
+require_course_login($courseid = 1);
 
 $id = optional_param('id', null, PARAM_INT);
 
