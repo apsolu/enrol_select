@@ -757,6 +757,7 @@ function get_potential_user_activities($time = null, $cohorts = null) {
             }
         }
 
+        // Note : ne pas utiliser uasort() pour préserver les index, car mustache ne sait pas parcourir les tableaux associatifs.
         usort($course->role_options, function($a, $b) {
             return $a->sortorder > $b->sortorder;
         });
@@ -892,7 +893,9 @@ function generate_filters($courses = array()) {
         $elements['starttime'][$starttime] = $starttime;
         $endtime = substr($course->endtime, 0, 2).'h';
         $elements['endtime'][$endtime] = $endtime;
-        $elements['role'] = $elements['role'] + $course->role_options;
+        foreach ($course->role_options as $role) {
+            $elements['role'][$role->id] = $role->localname;
+        }
         $elements['city'][$course->cityid] = $course->city;
     }
 
@@ -903,12 +906,6 @@ function generate_filters($courses = array()) {
     foreach ($elements as $type => $element) {
         if ($type === 'weekday') {
             ksort($element);
-        } else if ($type === 'role') {
-            $roles = array();
-            foreach ($element as $role) {
-                $roles[$role->id] = $role->localname;
-            }
-            $element = $roles;
         } else {
             asort($element);
         }
