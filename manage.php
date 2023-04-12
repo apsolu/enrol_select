@@ -78,7 +78,12 @@ foreach ($instances as $instance) {
     $enrol->enrol_user_link = $CFG->wwwroot.'/enrol/select/enrol.php?enrolid='.$instance->id;
     $enrol->unenrol_user_link = $CFG->wwwroot.'/enrol/select/unenrol.php?enrolid='.$instance->id;
     $enrol->lists = array();
-    $enrol->lock = ($instance->customint8 < time() && $ismanager === false);
+    $enrol->lock = ($instance->customint8 < time());
+    if ($ismanager !== false || is_siteadmin() === true) {
+        // Les gestionnaires et les administrateurs peuvent modifier les inscriptions toute l'année.
+        // TODO: créer une permission pour gérer ce point.
+        $enrol->lock = false;
+    }
 
     // On initialise chaque liste (LP, LC, etc).
     foreach (enrol_select_plugin::$states as $code => $state) {
