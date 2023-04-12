@@ -45,6 +45,7 @@ $string['filters_for_managers'] = 'Filtres pour gestionnaires';
 $string['list'] = 'Liste';
 $string['lists'] = 'Listes';
 $string['main_sport'] = 'Sport principal';
+$string['manage_select_enrolments'] = 'Gérer les inscriptions par voeux';
 $string['maximum_enrolments'] = 'Nombre d\'inscriptions maximum';
 $string['maximum_enrolments_must_be_greater_than_or_equal_to_minimum_enrolments'] = 'Le nombre d\'inscriptions maximum doit être égal ou supérieur au nombre d\'inscriptions minimum.';
 $string['maximum_wishes'] = 'Nombre de voeux maximum';

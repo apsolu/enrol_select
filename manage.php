@@ -248,7 +248,7 @@ $data->enrols = array_values($enrols);
 
 $PAGE->set_url('/enrol/select/manage.php', array('enrolid' => $instance->id));
 $PAGE->set_pagelayout('base');
-$PAGE->set_title($enrolselect->get_instance_name($instance));
+$PAGE->set_title(get_string('manage_select_enrolments', 'enrol_select'));
 $PAGE->set_heading($course->fullname);
 
 $pluginname = get_string('pluginname', 'enrol_select');
@@ -260,7 +260,7 @@ $PAGE->navbar->add($pluginname);
 $PAGE->requires->js_call_amd('enrol_select/select_manage_user_selection', 'initialise', array($semester2));
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading('Gestion des voeux');
+echo $OUTPUT->heading(get_string('manage_select_enrolments', 'enrol_select'));
 
 if (isset($notification)) {
     echo $notification;

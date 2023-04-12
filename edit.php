@@ -241,7 +241,7 @@ if ($mform->is_cancelled()) {
 $pluginname = get_string('pluginname', 'enrol_select');
 
 $PAGE->set_heading($course->fullname);
-$PAGE->set_title($plugin->get_instance_name($instance).' - '.$course->fullname);
+$PAGE->set_title($pluginname);
 
 $PAGE->navbar->add(get_string('users'));
 $PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', array('id' => $course->id)));
