@@ -267,6 +267,28 @@ class enrol_select_edit_form extends moodleform {
                 $errors['customint8'] = get_string('courseenddateerror', 'enrol_select');
             }
 
+            // Contrôle que le début des inscriptions démarrent avant le début des cours.
+            if (empty($data['enrolstartdate']) === false && empty($data['customint7']) === false) {
+                if ($data['enrolstartdate'] > $data['customint7']) {
+                    $str = get_string('the_enrol_start_date_must_be_prior_to_the_course_start_date', 'local_apsolu');
+                    $errors['enrolstartdate'] = $str;
+
+                    $str = get_string('the_course_start_date_must_be_after_to_the_enrol_start_date', 'local_apsolu');
+                    $errors['customint7'] = $str;
+                }
+            }
+
+            // Contrôle que la fin des inscriptions se terminent avant la fin des cours.
+            if (empty($data['enrolenddate']) === false && empty($data['customint8']) === false) {
+                if ($data['enrolenddate'] > $data['customint8']) {
+                    $str = get_string('the_enrol_end_date_must_be_prior_to_the_course_end_date', 'local_apsolu');
+                    $errors['enrolenddate'] = $str;
+
+                    $str = get_string('the_course_end_date_must_be_after_to_the_enrol_end_date', 'local_apsolu');
+                    $errors['customint8'] = $str;
+                }
+            }
+
             // Vérifie que la date de fin des réinscriptions est bien supérieure à la date de début.
             if (!empty($data['customint5']) && $data['customint5'] < $data['customint4']) {
                 $errors['customint5'] = get_string('reenrolenddateerror', 'enrol_select');
