@@ -90,7 +90,9 @@
         <h4 class="sr-only">Rôles</h4>
         <ul class="list list-inline text-right">
         {{#roles}}
-            <li class="apsolu-roles-list-li list-inline-item"><span title="{{localname}}" class="apsolu-roles apsolu-roles-{{shortname}}"></span><span>{{localname}}</span></li>
+            <li class="apsolu-roles-list-li list-inline-item">
+                <i aria-hidden="true" class="fa fa-{{fontawesomeid}}{{^fontawesomeid}}check{{/fontawesomeid}} mr-1" style="color: {{color}}{{^color}}gray{{/color}};"></i><span>{{localname}}</span>
+            </li>
         {{/roles}}
         </ul>
     </div>
@@ -176,7 +178,9 @@
                         <td>
                             <ul class="list list-inline text-center">
                             {{#role_options}}
-                                <li class="apsolu-roles-list-li list-inline-item"><span title="{{localname}}" class="apsolu-roles apsolu-roles-{{shortname}}"></span><span class="sr-only">{{localname}}</span></li>
+                                <li class="apsolu-roles-list-li list-inline-item">
+                                    <i aria-hidden="true" class="fa fa-{{fontawesomeid}}{{^fontawesomeid}}check{{/fontawesomeid}} mr-1" style="color: {{color}}{{^color}}gray{{/color}};"></i><span class="sr-only">{{localname}}</span>
+                                </li>
                             {{/role_options}}
                             </ul>
                         </td>

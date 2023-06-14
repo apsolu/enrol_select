@@ -126,29 +126,6 @@ input[type="radio"][name^="renew"] {
     animation: 0.4s ease-in-out 0s normal none 1 running fadeIn;
 }
 
-.apsolu-roles {
-    background-repeat: no-repeat;
-    display: inline-block;
-    height: 16px;
-    width: 16px;
-}
-
-.apsolu-roles-option {
-    background-image: url('[[pix:enrol_select|i/grade_option]]');
-}
-
-.apsolu-roles-bonification {
-    background-image: url('[[pix:enrol_select|i/grade_bonification]]');
-}
-
-.apsolu-roles-libre {
-    background-image: url('[[pix:enrol_select|i/grade_libre]]');
-}
-
-.apsolu-roles-decouverte {
-    background-image: url('[[pix:enrol_select|i/grade_decouverte]]');
-}
-
 #page-enrol-select-overview .moodle-dialogue,
 #page-enrol-select-overview .moodle-dialogue-base {
     z-index: 100002;

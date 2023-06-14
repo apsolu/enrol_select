@@ -92,7 +92,11 @@ function get_activities($siteid = 0, $categoryid = 0, $categoryname = '', $onhom
 function get_activities_roles() {
     global $DB;
 
-    $roles = role_fix_names($DB->get_records('role', array(), 'sortorder'));
+    $sql = "SELECT r.id, r.name, r.shortname, r.description, r.sortorder, r.archetype, ar.color, ar.fontawesomeid".
+        " FROM {role} r".
+        " LEFT JOIN {apsolu_roles} ar ON r.id = ar.id".
+        " ORDER BY sortorder";
+    $roles = role_fix_names($DB->get_records_sql($sql));
 
     $activities = array();
 
@@ -206,7 +210,12 @@ function get_visible_complements() {
 function get_custom_student_roles() {
     global $DB;
 
-    $roles = role_fix_names($DB->get_records('role', array('archetype' => 'student'), 'sortorder'));
+    $sql = "SELECT r.id, r.name, r.shortname, r.description, r.sortorder, r.archetype, ar.color, ar.fontawesomeid".
+        " FROM {role} r".
+        " LEFT JOIN {apsolu_roles} ar ON r.id = ar.id".
+        " WHERE r.archetype = 'student'".
+        " ORDER BY sortorder";
+    $roles = role_fix_names($DB->get_records_sql($sql));
     unset($roles[5]);
 
     return $roles;
