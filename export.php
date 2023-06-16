@@ -98,10 +98,6 @@ $headers = array(
     'Date d\'inscription',
 );
 
-if ($CFG->wwwroot === 'https://mon-espace.siuaps.univ-rennes.fr' || $CFG->debug !== 0) {
-    $headers[] = get_string('paid', 'enrol_select');
-}
-
 if ($CFG->wwwroot === 'https://mon-espace-suapse.univ-lr.fr' || $CFG->debug !== 0) {
     $headers[] = get_string('sportcard', 'local_apsolu');
 }
@@ -120,10 +116,6 @@ $rows = array();
 foreach ($users as $user) {
     $sex = '';
     $birthday = '';
-    $optionpaid = '';
-    $bonificationpaid = '';
-    $librepaid = '';
-    $cardpaid = '';
 
     $userfields = $DB->get_records('user_info_data', array('userid' => $user->id), $sort = '', $columns = 'fieldid, data');
     foreach ($fields as $fieldid => $field) {
@@ -132,10 +124,6 @@ foreach ($users as $user) {
             case 'apsolucycle':
             case 'apsolusex':
             case 'apsolubirthday':
-            case 'optionpaid': // Obsolète.
-            case 'bonificationpaid': // Obsolète.
-            case 'librepaid': // Obsolète.
-            case 'apsolucardpaid':
             case 'apsoluidcardnumber':
                 if (isset($userfields[$fieldid])) {
                     ${$field->shortname} = $userfields[$fieldid]->data;
@@ -168,16 +156,6 @@ foreach ($users as $user) {
     $row[] = (isset($apsolucycle)) ? $apsolucycle : '';
     $row[] = $roles[$user->roleid]->localname;
     $row[] = userdate($user->timecreated);
-
-    if ($CFG->wwwroot === 'https://mon-espace.siuaps.univ-rennes.fr') {
-        if (isset($apsolucardpaid) === true && $apsolucardpaid == 1) {
-            $paid = get_string('yes');
-        } else {
-            $paid = get_string('no');
-        }
-
-        $row[] = $paid;
-    }
 
     if ($CFG->wwwroot === 'https://mon-espace-suapse.univ-lr.fr') {
         $row[] = $apsoluidcardnumber;
