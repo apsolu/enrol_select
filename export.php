@@ -99,6 +99,7 @@ $headers = array(
 );
 
 if ($CFG->wwwroot === 'https://mon-espace-suapse.univ-lr.fr' || $CFG->debug !== 0) {
+    // TODO: à modifier.
     $headers[] = get_string('sportcard', 'local_apsolu');
 }
 
@@ -157,7 +158,8 @@ foreach ($users as $user) {
     $row[] = $roles[$user->roleid]->localname;
     $row[] = userdate($user->timecreated);
 
-    if ($CFG->wwwroot === 'https://mon-espace-suapse.univ-lr.fr') {
+    if ($CFG->wwwroot === 'https://mon-espace-suapse.univ-lr.fr' || $CFG->debug !== 0) {
+        // TODO: à modifier.
         $row[] = $apsoluidcardnumber;
     }
 
