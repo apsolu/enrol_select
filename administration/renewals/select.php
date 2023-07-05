@@ -30,13 +30,12 @@ require_once($CFG->dirroot.'/enrol/select/lib.php');
 
 echo $OUTPUT->heading('Réinscriptions en masse');
 
-$sql      = "SELECT e.id, c.fullname AS coursename, e.name AS enrolname, e2.name AS renewalname
-                FROM mdl_course c
-                JOIN mdl_enrol e ON e.courseid = c.id
-                JOIN mdl_enrol e2 ON e.customint6 = e2.id
-                WHERE e.enrol = 'select'
-            ";
-
+$sql = "SELECT e.id, c.fullname AS coursename, e.name AS enrolname, e2.name AS renewalname
+          FROM mdl_course c
+          JOIN mdl_enrol e ON e.courseid = c.id
+          JOIN mdl_enrol e2 ON e.customint6 = e2.id
+         WHERE e.enrol = 'select'
+      ORDER BY coursename";
 $recordset = $DB->get_recordset_sql($sql);
 
 $options = array();
