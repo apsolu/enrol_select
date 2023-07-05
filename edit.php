@@ -22,7 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use UniversiteRennes2\Apsolu as apsolu;
 use local_apsolu\core\course;
 
 require('../../config.php');
@@ -72,7 +71,7 @@ if ($instanceid) {
 }
 
 $cohorts = $DB->get_records('cohort', $conditions = null, $sort = 'name');
-$roles = apsolu\get_custom_student_roles();
+$roles = enrol_select_get_custom_student_roles();
 $cards = $DB->get_records('apsolu_payments_cards', $conditions = null, $sort = 'name');
 $calendars = array((object) array('id' => 0, 'name' => get_string('none')));
 $calendars += $DB->get_records('apsolu_calendars', $conditions = null, $sort = 'name');

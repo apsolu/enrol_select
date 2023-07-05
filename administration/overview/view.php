@@ -126,7 +126,7 @@ foreach ($enrols as $enrol) {
     $courses[$enrol->courseid]->count_enrols++;
 }
 
-$teachers = UniversiteRennes2\Apsolu\get_activities_teachers();
+$teachers = enrol_select_get_activities_teachers();
 
 $data = new stdClass();
 $data->wwwroot = $CFG->wwwroot;

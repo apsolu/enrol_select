@@ -44,7 +44,7 @@ $enrol = $DB->get_record('enrol', array('id' => $enrolid), '*', MUST_EXIST);
 
 if ($enrol->customint3 == 1) {
     // Les quotas sont activés.
-    // TODO: refactoriser cette partie avec la fonction get_potential_user_activities() du script locallib.php.
+    // TODO: refactoriser cette partie avec la fonction enrol_select_get_potential_user_activities() du script locallib.php.
     // Calcule le nombre d'inscrits sur la liste des acceptés et sur la liste principale.
     $sql = "SELECT COUNT(userid) FROM {user_enrolments} WHERE enrolid = :enrolid AND status IN (:accepted, :main)";
     $conditions = array('enrolid' => $enrol->id, 'accepted' => enrol_select_plugin::ACCEPTED, 'main' => enrol_select_plugin::MAIN);

@@ -22,21 +22,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace UniversiteRennes2\Apsolu;
-
 /**
  * Retourne le rendu HTML du bloc comptant le nombre de choix restant sur la page des inscriptions.
  *
  * @return string Retourne le rendu HTML du bloc.
  */
-function get_remaining_choices_block() {
+function enrol_select_get_remaining_choices_block() {
     global $OUTPUT;
 
-    $roles = get_potential_user_roles();
-    $colleges = get_user_colleges($userid = null);
+    $roles = enrol_select_get_potential_user_roles();
+    $colleges = enrol_select_get_user_colleges($userid = null);
 
-    $overviewremainingchoicesdata = new \stdClass();
-    $overviewremainingchoicesdata->choices = get_sum_user_choices($userid = null, $count = true);
+    $overviewremainingchoicesdata = new stdClass();
+    $overviewremainingchoicesdata->choices = enrol_select_get_sum_user_choices($userid = null, $count = true);
     $overviewremainingchoicesdata->count_choices = 0;
     $overviewremainingchoicesdata->summary = '<div id="apsolu-rules-summary" class="table-responsive">'.
             '<table class="table table-bordered">'.
@@ -111,7 +109,7 @@ function get_remaining_choices_block() {
     $overviewremainingchoicesdata->choices = array_values($overviewremainingchoicesdata->choices);
     $overviewremainingchoicesdata->count_choices = count($overviewremainingchoicesdata->choices);
 
-    $block = new \block_contents();
+    $block = new block_contents();
     $block->title = 'Choix restants';
     $block->attributes['class'] = 'block block_overview_remaining_choices';
     $block->content = $OUTPUT->render_from_template('enrol_select/overview_remaining_choices', $overviewremainingchoicesdata);
@@ -124,20 +122,20 @@ function get_remaining_choices_block() {
  *
  * @return string Retourne le rendu HTML du bloc.
  */
-function get_enrolments_block() {
+function enrol_select_get_enrolments_block() {
     global $DB, $CFG, $OUTPUT;
 
     require_once(__DIR__.'/lib.php');
 
     $roles = role_fix_names($DB->get_records('role'));
 
-    $instance = new \enrol_select_plugin();
+    $instance = new enrol_select_plugin();
 
-    $overviewenrolmentsdata = new \stdClass();
+    $overviewenrolmentsdata = new stdClass();
     $overviewenrolmentsdata->wwwroot = $CFG->wwwroot;
     $overviewenrolmentsdata->activity_enrolments = array();
-    foreach (get_real_user_activity_enrolments() as $enrolment) {
-        if ($enrolment->status === \enrol_select_plugin::DELETED) {
+    foreach (enrol_select_get_real_user_activity_enrolments() as $enrolment) {
+        if ($enrolment->status === enrol_select_plugin::DELETED) {
             continue;
         }
 
@@ -153,10 +151,10 @@ function get_enrolments_block() {
         $overviewenrolmentsdata->activity_enrolments[] = $enrolment;
     }
     $overviewenrolmentsdata->count_activity_enrolments = count($overviewenrolmentsdata->activity_enrolments);
-    $overviewenrolmentsdata->complement_enrolments = array_values(get_user_complement_enrolments());
+    $overviewenrolmentsdata->complement_enrolments = array_values(enrol_select_get_user_complement_enrolments());
     $overviewenrolmentsdata->count_complement_enrolments = count($overviewenrolmentsdata->complement_enrolments);
 
-    $block = new \block_contents();
+    $block = new block_contents();
     $block->title = 'Je souhaite m\'inscrire à...';
     $block->attributes['class'] = 'block block_overview_enrolments';
     $block->content = $OUTPUT->render_from_template('enrol_select/overview_enrolments', $overviewenrolmentsdata);
@@ -171,16 +169,16 @@ function get_enrolments_block() {
  *
  * @return string Retourne le rendu HTML du bloc.
  */
-function get_filters_block($courses) {
+function enrol_select_get_filters_block($courses) {
     global $CFG, $OUTPUT;
 
-    $filters = generate_filters($courses);
+    $filters = enrol_select_generate_filters($courses);
 
-    $overviewfiltersdata = new \stdClass();
+    $overviewfiltersdata = new stdClass();
     $overviewfiltersdata->form = (object) array('action' => $CFG->wwwroot.'/enrol/select/overview.php');
     $overviewfiltersdata->filters = array_values($filters);
 
-    $block = new \block_contents();
+    $block = new block_contents();
     $block->title = get_string('filters', 'admin');
     $block->attributes['class'] = 'block block_book_toc';
     $block->content = $OUTPUT->render_from_template('enrol_select/overview_filters', $overviewfiltersdata);

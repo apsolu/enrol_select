@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use UniversiteRennes2\Apsolu as apsolu;
-
 require('../../config.php');
 require_once($CFG->dirroot.'/enrol/select/lib.php');
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
@@ -108,7 +106,7 @@ $PAGE->requires->js_call_amd('enrol_select/select_renew', 'initialise');
 
 // Détermine quelles sont les activités auxquelles peut se réinscrire l'étudiant.
 $activities = array();
-foreach (apsolu\get_user_reenrolments() as $key => $enrolment) {
+foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
     if ($enrolment->status !== enrol_select_plugin::ACCEPTED) {
         // On ne conserve que les inscriptions validées.
         $message = 'L\'inscription d\'inscription #'.$enrolment->enrolid.

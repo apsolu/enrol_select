@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use UniversiteRennes2\Apsolu as apsolu;
-
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
@@ -36,7 +34,7 @@ echo '<p class="text-right"><a href="'.$url.'" class="btn btn-primary">Créer un
 $colleges = $DB->get_records('apsolu_colleges');
 $cohorts = $DB->get_records('cohort');
 
-$roles = apsolu\get_custom_student_roles();
+$roles = enrol_select_get_custom_student_roles();
 
 $sql = "SELECT c.*".
     " FROM {cohort} c".

@@ -22,10 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace UniversiteRennes2\Apsolu;
-
-use enrol_select_plugin;
-
 /**
  * Une fonction à documenter (TODO).
  *
@@ -36,7 +32,7 @@ use enrol_select_plugin;
  *
  * @return array Un tableau d'activités.
  */
-function get_activities($siteid = 0, $categoryid = 0, $categoryname = '', $onhomepage = true) {
+function enrol_select_get_activities($siteid = 0, $categoryid = 0, $categoryname = '', $onhomepage = true) {
     global $DB;
 
     $params = array();
@@ -89,7 +85,7 @@ function get_activities($siteid = 0, $categoryid = 0, $categoryname = '', $onhom
  *
  * @return array Un tableau d'activités.
  */
-function get_activities_roles() {
+function enrol_select_get_activities_roles() {
     global $DB;
 
     $sql = "SELECT r.id, r.name, r.shortname, r.description, r.sortorder, r.archetype, ar.color, ar.fontawesomeid".
@@ -125,7 +121,7 @@ function get_activities_roles() {
  *
  * @return array Un tableau d'activités.
  */
-function get_activities_teachers() {
+function enrol_select_get_activities_teachers() {
     global $DB;
 
     $teachers = array();
@@ -159,7 +155,7 @@ function get_activities_teachers() {
  *
  * @return array Un tableau de groupements d'activités.
  */
-function get_visible_activities_domains() {
+function enrol_select_get_visible_activities_domains() {
     global $DB;
 
     $sql = "SELECT *".
@@ -175,7 +171,7 @@ function get_visible_activities_domains() {
  *
  * @return array Un tableau d'activités.
  */
-function get_visible_sports() {
+function enrol_select_get_visible_sports() {
     global $DB;
 
     $sql = "SELECT *".
@@ -187,27 +183,11 @@ function get_visible_sports() {
 }
 
 /**
- * Renvoie toutes les activités complémentaires visibles (Musculation, FFSU, etc).
- *
- * @return array Un tableau d'activités complémentaires.
- */
-function get_visible_complements() {
-    global $DB;
-
-    $sql = "SELECT *, FORMAT(ac.price, 2, 'fr_FR') AS price".
-        " FROM {course} c".
-        " JOIN {apsolu_complements} ac ON c.id = ac.id".
-        " WHERE c.visible = 1".
-        " ORDER BY c.fullname";
-    return $DB->get_records_sql($sql);
-}
-
-/**
  * Renvoie tous les rôles basés sur le type STUDENT (sauf le rôle student de base).
  *
  * @return array Un tableau de rôles basés sur le type STUDENT.
  */
-function get_custom_student_roles() {
+function enrol_select_get_custom_student_roles() {
     global $DB;
 
     $sql = "SELECT r.id, r.name, r.shortname, r.description, r.sortorder, r.archetype, ar.color, ar.fontawesomeid".
@@ -228,7 +208,7 @@ function get_custom_student_roles() {
  *
  * @return array Un tableau contenant la liste des inscriptions.
  */
-function get_user_activity_enrolments($userid = null) {
+function enrol_select_get_user_activity_enrolments($userid = null) {
     global $DB, $USER;
 
     if ($userid === null) {
@@ -268,7 +248,7 @@ function get_user_activity_enrolments($userid = null) {
  *
  * @return array Un tableau contenant la liste des inscriptions.
  */
-function get_real_user_activity_enrolments($userid = null) {
+function enrol_select_get_real_user_activity_enrolments($userid = null) {
     global $DB, $USER;
 
     if ($userid === null) {
@@ -303,7 +283,7 @@ function get_real_user_activity_enrolments($userid = null) {
  *
  * @return array Un tableau contenant la liste des inscriptions.
  */
-function get_recordset_user_activity_enrolments($userid = null, $onlyactive = true) {
+function enrol_select_get_recordset_user_activity_enrolments($userid = null, $onlyactive = true) {
     global $DB, $USER;
 
     if ($userid === null) {
@@ -348,7 +328,7 @@ function get_recordset_user_activity_enrolments($userid = null, $onlyactive = tr
  *
  * @return array Un tableau contenant la liste des inscriptions.
  */
-function get_user_complement_enrolments($userid = null) {
+function enrol_select_get_user_complement_enrolments($userid = null) {
     global $DB, $USER;
 
     if ($userid === null) {
@@ -382,7 +362,7 @@ function get_user_complement_enrolments($userid = null) {
  *
  * @return array Un tableau contenant la liste des collèges d'un utilisateur.
  */
-function get_user_colleges($userid = null, $count = false) {
+function enrol_select_get_user_colleges($userid = null, $count = false) {
     global $DB, $USER;
 
     if ($userid === null) {
@@ -399,7 +379,7 @@ function get_user_colleges($userid = null, $count = false) {
     $colleges = $DB->get_records_sql($sql, array($userid));
 
     if ($count === true) {
-        $countuserroles = get_count_user_role_assignments();
+        $countuserroles = enrol_select_get_count_user_role_assignments();
         foreach ($colleges as $college) {
             if (isset($countuserroles[$college->roleid])) {
                 $college->count = $countuserroles[$college->roleid]->count;
@@ -420,7 +400,7 @@ function get_user_colleges($userid = null, $count = false) {
  *
  * @return array
  */
-function get_sum_user_choices($userid = null, $count = false) {
+function enrol_select_get_sum_user_choices($userid = null, $count = false) {
     global $DB, $USER;
 
     if ($userid === null) {
@@ -442,7 +422,7 @@ function get_sum_user_choices($userid = null, $count = false) {
     $roles = $DB->get_records_sql($sql, array($userid));
 
     if ($count === true) {
-        $countuserroles = get_count_user_role_assignments($userid);
+        $countuserroles = enrol_select_get_count_user_role_assignments($userid);
         foreach ($roles as $role) {
             $role->count = 0;
             if (isset($countuserroles[$role->roleid]) === true) {
@@ -461,7 +441,7 @@ function get_sum_user_choices($userid = null, $count = false) {
  *
  * @return array Un tableau contenant la liste des rôles assignés à un utilisateur.
  */
-function get_count_user_role_assignments($userid = null) {
+function enrol_select_get_count_user_role_assignments($userid = null) {
     global $DB, $USER;
 
     if ($userid === null) {
@@ -495,7 +475,7 @@ function get_count_user_role_assignments($userid = null) {
  *
  * @return array Un tableau contenant la liste des rôles auxquels un utilisateur peut prétendre.
  */
-function get_potential_user_roles($userid = null, $courseid = null) {
+function enrol_select_get_potential_user_roles($userid = null, $courseid = null) {
     global $DB, $USER;
 
     if ($userid === null) {
@@ -547,22 +527,22 @@ function get_potential_user_roles($userid = null, $courseid = null) {
  *
  * @return void
  */
-function get_potential_user_activities($time = null, $cohorts = null) {
+function enrol_select_get_potential_user_activities($time = null, $cohorts = null) {
     global $DB, $USER;
 
-    $groupings = get_visible_activities_domains();
-    $categories = get_visible_sports();
+    $groupings = enrol_select_get_visible_activities_domains();
+    $categories = enrol_select_get_visible_sports();
     $skills = $DB->get_records('apsolu_skills');
     $locations = $DB->get_records('apsolu_locations');
     $areas = $DB->get_records('apsolu_areas');
     $cities = $DB->get_records('apsolu_cities');
-    $useractivityenrolments = get_user_activity_enrolments();
-    $roles = get_custom_student_roles();
+    $useractivityenrolments = enrol_select_get_user_activity_enrolments();
+    $roles = enrol_select_get_custom_student_roles();
 
     if ($cohorts === null) {
         // Pour un étudiant.
-        $availableuserroles = get_potential_user_roles();
-        $usercolleges = get_sum_user_choices($userid = null, $count = true);
+        $availableuserroles = enrol_select_get_potential_user_roles();
+        $usercolleges = enrol_select_get_sum_user_choices($userid = null, $count = true);
 
         $unavailableuserroles = array();
         foreach ($usercolleges as $college) {
@@ -796,10 +776,10 @@ function get_potential_user_activities($time = null, $cohorts = null) {
  *
  * @return void
  */
-function get_potential_user_complements() {
+function enrol_select_get_potential_user_complements() {
     global $CFG, $DB, $USER;
 
-    $usercomplementenrolments = get_user_complement_enrolments();
+    $usercomplementenrolments = enrol_select_get_user_complement_enrolments();
 
     $now = time();
 
@@ -841,7 +821,7 @@ function get_potential_user_complements() {
  *
  * @return array Un tableau contenant la liste des activités pour lesquelles l'utilisateur peut potentiellement se réinscrire.
  */
-function get_user_reenrolments($userid = null) {
+function enrol_select_get_user_reenrolments($userid = null) {
     global $DB, $USER;
 
     if ($userid === null) {
@@ -876,7 +856,7 @@ function get_user_reenrolments($userid = null) {
  *
  * @return void
  */
-function generate_filters($courses = array()) {
+function enrol_select_generate_filters($courses = array()) {
     $filters = array();
 
     $elements = array(

@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use UniversiteRennes2\Apsolu as apsolu;
-
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
@@ -35,7 +33,7 @@ require(__DIR__.'/edit_form.php');
 $instance = $DB->get_record('apsolu_colleges', array('id' => $id));
 $cohorts = $DB->get_records('cohort');
 
-$roles = apsolu\get_custom_student_roles();
+$roles = enrol_select_get_custom_student_roles();
 
 if (!$instance) {
     $instance = new stdClass();

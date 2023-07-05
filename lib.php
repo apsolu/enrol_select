@@ -650,7 +650,7 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Check user limit.
-        $userchoices = UniversiteRennes2\Apsolu\get_sum_user_choices($userid = null, $count = true);
+        $userchoices = enrol_select_get_sum_user_choices($userid = null, $count = true);
         $available = false;
         foreach ($userchoices as $choice) {
             if ($choice->roleid != $roleid) {

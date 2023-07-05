@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use UniversiteRennes2\Apsolu as apsolu;
-
 define('AJAX_SCRIPT', true);
 
 require(__DIR__.'/../../../config.php');
@@ -38,5 +36,5 @@ $context = context_user::instance($USER->id);
 $PAGE->set_context($context);
 
 // Generate block content.
-$block = apsolu\get_remaining_choices_block();
+$block = enrol_select_get_remaining_choices_block();
 echo $block->content;

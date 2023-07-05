@@ -24,7 +24,6 @@
 
 use local_apsolu\core\course as Course;
 use local_apsolu\core\federation\activity as Activity;
-use UniversiteRennes2\Apsolu as apsolu;
 
 define('APSOLU_FEDERATION_REQUIREMENT_FALSE', 0);
 define('APSOLU_FEDERATION_REQUIREMENT_TRUE', 1);
@@ -96,7 +95,7 @@ $instance->showpolicy = $course->showpolicy;
 // Détermine si l'utilisateur courant est déjà inscrit à ce cours.
 // TODO: à modifer...
 $instance->role = '';
-foreach (apsolu\get_potential_user_roles($userid = null, $enrol->courseid) as $role) {
+foreach (enrol_select_get_potential_user_roles($userid = null, $enrol->courseid) as $role) {
     $instance->role = $role->id;
 }
 
@@ -138,7 +137,7 @@ if ($complement !== false) {
         }
 
         // Est-ce que l'utilisateur n'a pas dépassé son quota de voeux...
-        $userchoices = apsolu\get_sum_user_choices($userid = null, $count = true);
+        $userchoices = enrol_select_get_sum_user_choices($userid = null, $count = true);
         $unavailableuserroles = array();
         foreach ($userchoices as $choice) {
             if ($choice->maxwish > 0 && $choice->count >= $choice->maxwish) {
@@ -160,7 +159,7 @@ if ($complement !== false) {
             $availableuserroles = role_fix_names($DB->get_records_sql($sql, $filtercohorts));
 
             // Collèges.
-            $unavailableuserroles = apsolu\get_custom_student_roles();
+            $unavailableuserroles = enrol_select_get_custom_student_roles();
             foreach ($availableuserroles as $role) {
                 unset($unavailableuserroles[$role->id]);
             }

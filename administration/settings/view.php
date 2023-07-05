@@ -64,7 +64,7 @@ for ($i = 1; $i < 4; $i++) {
 }
 
 $cohorts = $DB->get_records('cohort', $conditions = null, $sort = 'name');
-$roles = \UniversiteRennes2\Apsolu\get_custom_student_roles();
+$roles = enrol_select_get_custom_student_roles();
 $cards = $DB->get_records('apsolu_payments_cards', $conditions = null, $sort = 'name');
 $calendars = array((object) array('id' => 0, 'name' => get_string('none')));
 $calendars += $DB->get_records('apsolu_calendars', $conditions = null, $sort = 'name');

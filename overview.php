@@ -23,7 +23,6 @@
  */
 
 use local_apsolu\core\course as Course;
-use UniversiteRennes2\Apsolu as apsolu;
 
 require('../../config.php');
 require_once(__DIR__.'/locallib.php');
@@ -75,7 +74,7 @@ if (has_any_capability($capabilities, context_system::instance()) === true) {
 
 // Activities : get all visible courses for current user.
 ob_start();
-$courses = apsolu\get_potential_user_activities($time, $cohorts);
+$courses = enrol_select_get_potential_user_activities($time, $cohorts);
 $debugging = ob_get_clean();
 
 $overviewactivitiesdata = (object) array('activities' => array(), 'count_activities' => 0);
@@ -97,7 +96,7 @@ foreach ($courses as $course) {
     $overviewactivitiesdata->activities[$overviewactivitiesdata->count_activities - 1]->courses[] = $course;
 }
 
-$overviewactivitiesdata->roles = array_values(apsolu\get_custom_student_roles());
+$overviewactivitiesdata->roles = array_values(enrol_select_get_custom_student_roles());
 $overviewactivitiesdata->info_pix_url = $OUTPUT->image_url('i/info');
 $overviewactivitiesdata->marker_pix_url = $OUTPUT->image_url('a/marker', 'enrol_select');
 $overviewactivitiesdata->www_url = $CFG->wwwroot;
@@ -109,20 +108,20 @@ if (isset($time, $cohorts) === true) {
 
 // Complements : get all visible complement courses for current user.
 $overviewcomplementsdata = new stdClass();
-$overviewcomplementsdata->complements = array_values(apsolu\get_potential_user_complements());
+$overviewcomplementsdata->complements = array_values(enrol_select_get_potential_user_complements());
 $overviewcomplementsdata->count_complements = count($overviewcomplementsdata->complements);
 $overviewcomplementsdata->www_url = $CFG->wwwroot;
 $overviewcomplementsdata->is_siuaps_rennes = isset($CFG->is_siuaps_rennes);
 $overviewcomplementsdata->is_courses_creator = has_capability('moodle/course:create', context_system::instance());
 
 // Set remaining choices block.
-$PAGE->blocks->add_fake_block(apsolu\get_remaining_choices_block(), BLOCK_POS_LEFT);
+$PAGE->blocks->add_fake_block(enrol_select_get_remaining_choices_block(), BLOCK_POS_LEFT);
 
 // Set enrolments block.
-$PAGE->blocks->add_fake_block(apsolu\get_enrolments_block(), BLOCK_POS_LEFT);
+$PAGE->blocks->add_fake_block(enrol_select_get_enrolments_block(), BLOCK_POS_LEFT);
 
 // Set filters block.
-$filters = apsolu\get_filters_block($courses);
+$filters = enrol_select_get_filters_block($courses);
 $overviewactivitiesdata->more_than_one_site = $filters->more_than_one_site;
 $PAGE->blocks->add_fake_block($filters, BLOCK_POS_LEFT);
 
