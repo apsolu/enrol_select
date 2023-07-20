@@ -31,7 +31,7 @@ $id = required_param('id', PARAM_INT);
 require(__DIR__.'/edit_form.php');
 
 $instance = $DB->get_record('apsolu_colleges', array('id' => $id));
-$cohorts = $DB->get_records('cohort');
+$cohorts = $DB->get_records('cohort', $conditions = null, $sort = 'name');
 
 $roles = enrol_select_get_custom_student_roles();
 
