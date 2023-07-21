@@ -69,7 +69,7 @@ if ($colleges) {
 
     foreach ($colleges as $college) {
         // Members.
-        $members = '';
+        $members = array();
         foreach ($DB->get_records('apsolu_colleges_members', array('collegeid' => $college->id), '', 'cohortid') as $member) {
             if (isset($cohorts[$member->cohortid]) === false) {
                 // TODO: faire en sorte de retirer les cohortes qui n'existe plus.
@@ -77,11 +77,12 @@ if ($colleges) {
                 continue;
             }
 
-            $members .= '<li>'.$cohorts[$member->cohortid]->name.'</li>';
+            $members[] = '<li>'.$cohorts[$member->cohortid]->name.'</li>';
         }
 
-        if ($members !== '') {
-            $members = '<ul>'.$members.'</ul>';
+        if ($members !== array()) {
+            sort($members);
+            $members = '<ul>'.implode('', $members).'</ul>';
         }
 
         // Actions.
