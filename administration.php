@@ -46,10 +46,14 @@ if (!in_array($tab, $tabslist, true)) {
 
 admin_externalpage_setup('enrol_select_'.$tab);
 
-echo $OUTPUT->header();
-
-echo $OUTPUT->tabtree($tabsbar, $tab);
-
+// Capture le contenu principal de la page.
+ob_start();
 require_once(__DIR__.'/administration/'.$tab.'/index.php');
+$content = ob_get_contents();
+ob_end_clean();
 
+// Affiche la page.
+echo $OUTPUT->header();
+echo $OUTPUT->tabtree($tabsbar, $tab);
+echo $content;
 echo $OUTPUT->footer();

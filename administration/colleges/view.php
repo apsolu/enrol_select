@@ -88,7 +88,10 @@ if ($colleges) {
         // Actions.
         $editlink = $CFG->wwwroot.'/enrol/select/administration.php?tab=colleges&action=edit&id='.$college->id;
         $deletelink = $CFG->wwwroot.'/enrol/select/administration.php?tab=colleges&action=delete&id='.$college->id;
-        $actions = '<ul><li style="display:inline;"><a href="'.$editlink.'"><img src="'.$editimage.'" /></a></li></ul>';
+        $actions = '<ul class="list-inline">
+            <li class="list-inline-item"><a href="'.$editlink.'"><img src="'.$editimage.'" /></a></li>
+            <li class="list-inline-item"><a href="'.$deletelink.'"><img src="'.$deleteimage.'" /></a></li>
+            </ul>';
 
         $table->data[] = array(
             $college->name,
