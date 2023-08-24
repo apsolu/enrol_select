@@ -143,8 +143,12 @@ echo $managersfilters;
 $federationcourse = Course::get_federation_courseid();
 if ($federationcourse !== false) {
     $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'courseid' => $federationcourse));
-    $overviewcomplementsdata->federation_enrolid = $enrol->id;
-    echo $OUTPUT->render_from_template('enrol_select/overview_complements', $overviewcomplementsdata);
+
+    $enrolselectplugin = new enrol_select_plugin();
+    if ($enrolselectplugin->can_enrol($enrol, $USER, null) === true) {
+        $overviewcomplementsdata->federation_enrolid = $enrol->id;
+        echo $OUTPUT->render_from_template('enrol_select/overview_complements', $overviewcomplementsdata);
+    }
 }
 echo $OUTPUT->render_from_template('enrol_select/overview_activities', $overviewactivitiesdata);
 echo $debugging;
