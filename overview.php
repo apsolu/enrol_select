@@ -146,7 +146,7 @@ if ($federationcourse !== false) {
     $federationcourse = $DB->get_record('course', array('id' => $federationcourse));
     if (isset($federationcourse->visible) === true && $federationcourse->visible  === '1') {
         // Vérifie que le cours FFSU est ouvert aux inscriptions.
-        $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'courseid' => $federationcourse));
+        $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'courseid' => $federationcourse->id));
 
         $enrolselectplugin = new enrol_select_plugin();
         if ($enrolselectplugin->can_enrol($enrol, $USER, null) === true) {
