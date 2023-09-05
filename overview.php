@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_apsolu\core\course as Course;
+use local_apsolu\core\federation\course as FederationCourse;
 
 require('../../config.php');
 require_once(__DIR__.'/locallib.php');
@@ -140,19 +140,16 @@ $PAGE->navbar->add(get_string('enrolment', 'enrol_select'));
 
 echo $OUTPUT->header();
 echo $managersfilters;
-$federationcourse = Course::get_federation_courseid();
-if ($federationcourse !== false) {
-    // Vérifie que le cours FFSU est ouvert.
-    $federationcourse = $DB->get_record('course', array('id' => $federationcourse));
-    if (isset($federationcourse->visible) === true && $federationcourse->visible  === '1') {
-        // Vérifie que le cours FFSU est ouvert aux inscriptions.
-        $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'courseid' => $federationcourse->id));
+$federation = new FederationCourse();
+$federationcourse = $federation->get_course();
+if ($federationcourse !== false && $federationcourse->visible  === '1') {
+    // Vérifie que le cours FFSU est ouvert aux inscriptions.
+    $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'courseid' => $federationcourse->id));
 
-        $enrolselectplugin = new enrol_select_plugin();
-        if ($enrolselectplugin->can_enrol($enrol, $USER, null) === true) {
-            $overviewcomplementsdata->federation_enrolid = $enrol->id;
-            echo $OUTPUT->render_from_template('enrol_select/overview_complements', $overviewcomplementsdata);
-        }
+    $enrolselectplugin = new enrol_select_plugin();
+    if ($enrolselectplugin->can_enrol($enrol, $USER, null) === true) {
+        $overviewcomplementsdata->federation_enrolid = $enrol->id;
+        echo $OUTPUT->render_from_template('enrol_select/overview_complements', $overviewcomplementsdata);
     }
 }
 echo $OUTPUT->render_from_template('enrol_select/overview_activities', $overviewactivitiesdata);

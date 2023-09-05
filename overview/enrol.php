@@ -24,6 +24,7 @@
 
 use local_apsolu\core\course as Course;
 use local_apsolu\core\federation\activity as Activity;
+use local_apsolu\core\federation\course as FederationCourse;
 
 define('APSOLU_FEDERATION_REQUIREMENT_FALSE', 0);
 define('APSOLU_FEDERATION_REQUIREMENT_TRUE', 1);
@@ -70,11 +71,12 @@ $PAGE->set_context($context);
 
 $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'id' => $enrolid), '*', MUST_EXIST);
 
-$federationcourseid = Course::get_federation_courseid();
+$federation = new FederationCourse();
+$federationcourseid = $federation->get_courseid();
 if ($federationcourseid === $enrol->courseid ||
     (isset($CFG->is_siuaps_rennes) === true && $enrol->courseid === '250')) {
     // TODO: correction temporaire. À supprimer lorsque la gestion des activités complémentaires sera implémentée.
-    $course = $DB->get_record('course', array('id' => $enrol->courseid), '*', MUST_EXIST);
+    $course = $federation->get_course($required = true);
     $course->license = '0';
     $course->information = '';
     $course->showpolicy = '0';

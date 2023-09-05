@@ -24,6 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use local_apsolu\core\federation\course as FederationCourse;
+
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
 require_once($CFG->dirroot.'/local/apsolu/locallib.php');
 
@@ -630,7 +632,8 @@ class enrol_select_plugin extends enrol_plugin {
             }
         }
 
-        if ($instance->courseid === \local_apsolu\core\course::get_federation_courseid()) {
+        $federationcourse = new FederationCourse();
+        if ($instance->courseid === $federationcourse->get_courseid()) {
             // Bidouille moche pour gérer l'inscription à la FFSU.
             return true;
         }
