@@ -293,10 +293,10 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                     // Do not process.
                     unset($data->federation);
                 } else {
-                    $federationrole = 5; // Student.
-                    $federationrole = 11; // Libre.
-                    $enrolselectplugin->enrol_user($federationinstance, $USER->id, $federationrole, $timestart = 0, $timeend = 0,
-                        $status = 0, $recovergrades);
+                    $conditions = array('enrolid' => $federationinstance->id);
+                    $federationrole = $DB->get_record('enrol_select_roles', $conditions, '*', MUST_EXIST);
+                    $enrolselectplugin->enrol_user($federationinstance, $USER->id, $federationrole->roleid, $timestart = 0,
+                        $timeend = 0, $status = 0, $recovergrades);
                 }
             } else if (isset($data->federation)) {
                 $federationcourseid = $enrol->courseid;
