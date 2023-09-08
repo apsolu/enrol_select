@@ -303,6 +303,11 @@ class enrol_select_edit_form extends moodleform {
             if (!empty($data['customint4']) && empty($data['customint5'])) {
                 $errors['customint5'] = get_string('reenrolenddatemissingerror', 'enrol_select');
             }
+
+            // Contrôle qu'un calendrier est activé lorsqu'au moins une carte de paiement est sélectionnée.
+            if (isset($data['cards'][0]) === true && empty($data['customchar1']) === true) {
+                $errors['customchar1'] = get_string('you_must_set_a_calendar_so_that_payments_can_apply', 'enrol_select');
+            }
         }
 
         return $errors;
