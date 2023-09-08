@@ -142,7 +142,7 @@ echo $OUTPUT->header();
 echo $managersfilters;
 $federation = new FederationCourse();
 $federationcourse = $federation->get_course();
-if ($federationcourse !== false && $federationcourse->visible  === '1') {
+if ($federationcourse !== false && $federationcourse->visible === '1') {
     // Vérifie que le cours FFSU est ouvert aux inscriptions.
     $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'courseid' => $federationcourse->id));
 

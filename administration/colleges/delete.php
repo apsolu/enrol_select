@@ -49,9 +49,7 @@ if ($confirm === $deletehash) {
 
         $transaction->allow_commit();
     } catch (Exception $exception) {
-        // Avec un rollback explicite, Moodle redirige vers la homepage.
-        // $transaction->rollback($exception);
-
+        // On ne peut pas utiliser $transaction->rollback($exception);, car Moodle redirige vers la homepage.
         $message = get_string('an_error_occurred_while_deleting_record', 'local_apsolu');
         redirect($returnurl, $message, null, \core\output\notification::NOTIFY_ERROR);
     }
