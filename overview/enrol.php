@@ -117,8 +117,9 @@ if ($complement !== false) {
         }
 
         // Génère un tableau de type array(5 => 'Adhérent de l\'association').
-        // TODO: ne pas hardcoder le rôle "libre".
-        $roles = array(11 => 'Adhérent de l\'association sportive');
+        $conditions = array('enrolid' => $enrol->id);
+        $federationrole = $DB->get_record('enrol_select_roles', $conditions, '*', MUST_EXIST);
+        $roles = array($federationrole->roleid => 'Adhérent de l\'association sportive');
     } else {
         $roles = array(11 => 'Libre accès');
     }
