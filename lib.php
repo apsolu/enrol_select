@@ -614,22 +614,20 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Check cohorts.
-        if ($instance->customint3 === '1') { // TODO: pourquoi tester si les quotas sont activés pour contrôler les cohortes ?
-            $usercohorts = $DB->get_records('cohort_members', array('userid' => $user->id));
-            $enrolcohorts = $DB->get_records('enrol_select_cohorts', array('enrolid' => $instance->id), '', 'cohortid');
+        $usercohorts = $DB->get_records('cohort_members', array('userid' => $user->id));
+        $enrolcohorts = $DB->get_records('enrol_select_cohorts', array('enrolid' => $instance->id), '', 'cohortid');
 
-            $found = false;
-            foreach ($usercohorts as $cohort) {
-                if (isset($enrolcohorts[$cohort->cohortid])) {
-                    $found = true;
-                    break;
-                }
+        $found = false;
+        foreach ($usercohorts as $cohort) {
+            if (isset($enrolcohorts[$cohort->cohortid])) {
+                $found = true;
+                break;
             }
+        }
 
-            if ($found !== true) {
-                debugging($this->get_name().': '.$user->username.' and enrol cohort mismatch.', $level = DEBUG_DEVELOPER);
-                return false;
-            }
+        if ($found !== true) {
+            debugging($this->get_name().': '.$user->username.' and enrol cohort mismatch.', $level = DEBUG_DEVELOPER);
+            return false;
         }
 
         $federationcourse = new FederationCourse();
