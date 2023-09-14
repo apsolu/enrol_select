@@ -774,10 +774,14 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
 /**
  * Une fonction à documenter (TODO).
  *
- * @return void
+ * @return array
  */
 function enrol_select_get_potential_user_complements() {
     global $CFG, $DB, $USER;
+
+    if (isset($CFG->is_siuaps_rennes) === false) {
+        return array();
+    }
 
     $usercomplementenrolments = enrol_select_get_user_complement_enrolments();
 
