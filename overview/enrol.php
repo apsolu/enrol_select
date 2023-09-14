@@ -73,10 +73,10 @@ $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'id'
 
 $federation = new FederationCourse();
 $federationcourseid = $federation->get_courseid();
-if ($federationcourseid === $enrol->courseid ||
-    (isset($CFG->is_siuaps_rennes) === true && $enrol->courseid === '250')) {
+
+if (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, array('250'), $strict = true) === true) {
     // TODO: correction temporaire. À supprimer lorsque la gestion des activités complémentaires sera implémentée.
-    $course = $federation->get_course($required = true);
+    $course = $DB->get_record('course', array('id' => $enrol->courseid), '*', MUST_EXIST);
     $course->license = '0';
     $course->information = '';
     $course->showpolicy = '0';
@@ -103,26 +103,16 @@ foreach (enrol_select_get_potential_user_roles($userid = null, $enrol->courseid)
 
 $federations = array();
 $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_FALSE;
-$complement = $DB->get_record('apsolu_complements', array('id' => $enrol->courseid));
+$complement = false;
+if (isset($CFG->is_siuaps_rennes) === true) {
+    $complement = $DB->get_record('apsolu_complements', array('id' => $enrol->courseid));
+}
 
 // Vérifie que le cours est ouvert à cet utilisateur.
 if ($complement !== false) {
+    // Pour la musculation sur l'instance de Rennes.
     $instance->complement = true;
-
-    if ($complement->federation === '1') {
-        // Récupère la liste des activités FFSU.
-        $federations = array('' => '');
-        foreach (Activity::get_records(array('mainsport' => 1), $sort = 'name') as $federation) {
-            $federations[$federation->id] = $federation->name;
-        }
-
-        // Génère un tableau de type array(5 => 'Adhérent de l\'association').
-        $conditions = array('enrolid' => $enrol->id);
-        $federationrole = $DB->get_record('enrol_select_roles', $conditions, '*', MUST_EXIST);
-        $roles = array($federationrole->roleid => 'Adhérent de l\'association sportive');
-    } else {
-        $roles = array(11 => 'Libre accès');
-    }
+    $roles = array(11 => 'Libre accès');
 } else {
     $instance->complement = false;
 
@@ -234,7 +224,7 @@ if (isset($edit)) {
 }
 
 // Build form.
-$customdata = array($instance, $roles, $federations, $federationrequirement);
+$customdata = array($instance, $roles, $federationrequirement);
 $actionurl = $CFG->wwwroot.'/enrol/select/overview/enrol.php?enrolid='.$enrolid;
 $mform = new enrol_select_form($actionurl, $customdata);
 
@@ -351,11 +341,6 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 case enrol_select_plugin::ACCEPTED:
                     $style = 'success';
                     $message = sprintf('<p>%s</p>', get_string('your_enrolment_has_been_registered', 'enrol_select'));
-                    if ($federationcourseid === $enrol->courseid) {
-                        $url = new moodle_url('/local/apsolu/federation/adhesion/index.php');
-                        $string = get_string('you_can_now_complete_the_membership_application_form', 'enrol_select', (string) $url);
-                        $message .= sprintf('<p>%s</p>', $string);
-                    }
                     break;
                 default:
                     $style = 'success';

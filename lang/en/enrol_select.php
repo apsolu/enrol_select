@@ -86,7 +86,6 @@ $string['x_place_remaining_on_the_wait_list'] = '{$a} place restante sur liste c
 $string['x_places_remaining_on_the_main_list'] = '{$a} places restantes sur liste principale';
 $string['x_places_remaining_on_the_wait_list'] = '{$a} places restantes sur liste complémentaire';
 $string['you_are_on_X_list'] = 'Vous êtes sur {$a}.';
-$string['you_can_now_complete_the_membership_application_form'] = 'Vous pouvez maintenant remplir le <a href="{$a}">formulaire de demande d’adhésion</a> depuis l’espace de l’association sportive / licence FFSU.';
 $string['you_must_set_a_calendar_so_that_payments_can_apply'] = 'Vous devez définir un calendrier afin que les paiements puissent s’appliquer.';
 $string['your_enrolment_has_been_registered'] = 'Votre inscription a été enregistrée.';
 $string['your_wish_has_been_registered'] = 'Votre vœu a été enregistré.';

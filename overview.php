@@ -140,18 +140,7 @@ $PAGE->navbar->add(get_string('enrolment', 'enrol_select'));
 
 echo $OUTPUT->header();
 echo $managersfilters;
-$federation = new FederationCourse();
-$federationcourse = $federation->get_course();
-if ($federationcourse !== false && $federationcourse->visible === '1') {
-    // Vérifie que le cours FFSU est ouvert aux inscriptions.
-    $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'courseid' => $federationcourse->id));
-
-    $enrolselectplugin = new enrol_select_plugin();
-    if ($enrolselectplugin->can_enrol($enrol, $USER, null) === true) {
-        $overviewcomplementsdata->federation_enrolid = $enrol->id;
-        echo $OUTPUT->render_from_template('enrol_select/overview_complements', $overviewcomplementsdata);
-    }
-}
+echo $OUTPUT->render_from_template('enrol_select/overview_complements', $overviewcomplementsdata);
 echo $OUTPUT->render_from_template('enrol_select/overview_activities', $overviewactivitiesdata);
 echo $debugging;
 echo $OUTPUT->footer();

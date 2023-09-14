@@ -43,7 +43,7 @@ class enrol_select_form extends moodleform {
         global $CFG, $DB;
 
         $mform = $this->_form;
-        list($instance, $roles, $federations, $federationrequirement) = $this->_customdata;
+        list($instance, $roles, $federationrequirement) = $this->_customdata;
 
         // Course field.
         $mform->addElement('text', 'fullname', get_string('course'), array('readonly' => 1, 'size' => '48'));
@@ -67,12 +67,6 @@ class enrol_select_form extends moodleform {
             $mform->setType('role', PARAM_INT);
 
             // Federations fields.
-            if ($federations !== array()) {
-                $mform->addElement('select', 'federation', get_string('main_sport', 'enrol_select'), $federations);
-                $mform->addRule('federation', get_string('required'), 'required', null, 'client');
-                $mform->setType('federation', PARAM_INT);
-            }
-
             if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_TRUE) {
                 $attributes = array('disabled' => 1, 'size' => '48');
                 $mform->addElement('text', 'fakefederation', get_string('federation_required', 'enrol_select'), $attributes);
