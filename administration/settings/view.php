@@ -90,12 +90,22 @@ if ($data = $mform->get_data()) {
 
     foreach ($attributes as $attribute) {
         if (isset($data->{$attribute}['text']) === true) {
-            set_config($attribute, $data->{$attribute}['text'], 'enrol_select');
+            $oldvalue = $defaults->{$attribute}['text'];
+            $newvalue = $data->{$attribute}['text'];
         } else if (is_array($data->{$attribute}) === true) {
-            set_config($attribute, implode(',', $data->{$attribute}), 'enrol_select');
+            $oldvalue = $defaults->{$attribute};
+            $newvalue = implode(',', $data->{$attribute});
         } else {
-            set_config($attribute, $data->{$attribute}, 'enrol_select');
+            $oldvalue = $defaults->{$attribute};
+            $newvalue = $data->{$attribute};
         }
+
+        if ($newvalue == $oldvalue) {
+            continue;
+        }
+
+        add_to_config_log($attribute, $oldvalue, $newvalue, 'enrol_select');
+        set_config($attribute, $newvalue, 'enrol_select');
     }
 
     echo $OUTPUT->notification(get_string('changessaved'), 'notifysuccess');
