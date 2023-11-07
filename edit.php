@@ -54,7 +54,7 @@ $plugin = enrol_get_plugin('select');
 if ($instanceid) {
     $conditions = array('courseid' => $course->id, 'enrol' => 'select', 'id' => $instanceid);
     $instance = $DB->get_record('enrol', $conditions, '*', MUST_EXIST);
-
+    $instance->customdec1 = intval($instance->customdec1);
     $instance->cohorts = array_keys($DB->get_records('enrol_select_cohorts', array('enrolid' => $instance->id), '', 'cohortid'));
     $instance->roles = array_keys($DB->get_records('enrol_select_roles', array('enrolid' => $instance->id), '', 'roleid'));
     $instance->cards = array_keys($DB->get_records('enrol_select_cards', array('enrolid' => $instance->id), '', 'cardid'));
@@ -131,6 +131,11 @@ if ($mform->is_cancelled()) {
         $data->customtext3 = array('text' => '');
     }
 
+    if (empty($data->customint3) === true) {
+        // Réinitialise le champ "remontée de liste automatique" lorsque les quotas sont désactivés.
+        $data->customchar2 = 0;
+    }
+
     if (empty($data->customchar1) === false && isset($calendars[$data->customchar1]) === true) {
         $calendar = $calendars[$data->customchar1];
         // Note: afin de permettre la réouverture d'inscription en cours d'année,
@@ -148,6 +153,11 @@ if ($mform->is_cancelled()) {
         $data->customint8 = $calendar->courseenddate;
     }
 
+    if (isset($data->cards) === false || count($data->cards) === 0) {
+        // Désactive le délai de paiement si aucune carte n'est disponible.
+        $data->customdec1 = 0;
+    }
+
     if ($instance->id) {
         $reset = ($instance->status != $data->status);
 
@@ -161,6 +171,7 @@ if ($mform->is_cancelled()) {
         $instance->customint6     = $data->customint6;
         $instance->customint7     = $data->customint7;
         $instance->customint8     = $data->customint8;
+        $instance->customdec1     = $data->customdec1;
         $instance->customchar1    = $data->customchar1;
         $instance->customchar2    = $data->customchar2;
         $instance->customchar3    = $data->customchar3;
@@ -194,6 +205,7 @@ if ($mform->is_cancelled()) {
             'customint6'      => $data->customint6,
             'customint7'      => $data->customint7,
             'customint8'      => $data->customint8,
+            'customdec1'      => $data->customdec1,
             'customchar1'     => $data->customchar1,
             'customchar2'     => $data->customchar2,
             'customchar3'     => $data->customchar3,

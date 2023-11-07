@@ -34,6 +34,7 @@ $attributes = array(
     'default_customint1', // Maximum de place sur la liste principale.
     'default_customint2', // Maximum de place sur la liste d'attente.
     'default_customint3', // Activer les quotas.
+    'default_customdec1', // Délai de paiement.
     'default_customchar1', // Type de calendrier.
     'default_customchar2', // Remontée de liste automatique.
     'default_customchar3', // Liste sur laquelle inscrire les étudiants.

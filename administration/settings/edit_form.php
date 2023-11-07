@@ -142,6 +142,11 @@ class enrol_select_default_settings_form extends moodleform {
             $attributes = array('size' => 10);
             $select = $mform->addElement('select', 'default_cards', 'Cartes requises', $options, $attributes);
             $select->setMultiple(true);
+
+            $options = ['defaultunit' => MINSECS, 'units' => [MINSECS, HOURSECS]];
+            $mform->addElement('duration', 'default_customdec1', get_string('payment_deadline', 'enrol_select'), $options);
+            $mform->addHelpButton('default_customdec1', 'payment_deadline', 'enrol_select');
+            $mform->setType('default_customdec1', PARAM_INT);
         }
 
         // Messages de bienvenue.
@@ -205,6 +210,27 @@ class enrol_select_default_settings_form extends moodleform {
             $errors['default_customchar1'] = get_string('you_must_set_a_calendar_so_that_payments_can_apply', 'enrol_select');
         }
 
+        // Contrôle que la liste d'inscription par défaut est "acceptée" lorsqu'un délai de paiement est activé.
+        if (isset($data['default_customdec1']) === true && empty($data['default_customdec1']) === false) {
+            $quotaenabled = (isset($data['default_customint3']) === true && empty($data['default_customint3']) === false);
+            if ($quotaenabled === true && (isset($data['default_customchar2']) === false || empty($data['default_customchar2']) === false)) {
+                $label = get_string('the_delay_cannot_be_combined_with_the_automatic_list_filling', 'enrol_select');
+                $errors['default_customdec1'] = $label;
+            }
+
+            if (isset($data['default_customchar3']) === false || $data['default_customchar3'] !== enrol_select_plugin::ACCEPTED) {
+                $errors['default_customdec1'] = get_string('the_delay_cannot_be_set_if_the_default_list_is_accepted', 'enrol_select');
+            }
+        }
+
+        // TODO: à cause d'un problème de stockage de données en base, on empêche de saisir un délai de paiement
+        // supérieur à 99999 secondes.
+        if ($data['default_customdec1'] > 99999) {
+            $label = get_string('it_is_currently_not_possible_to_indicate_a_duration_greater_than_one_day', 'enrol_select');
+            $errors['default_customdec1'] = $label;
+        }
+
         return $errors;
     }
+
 }

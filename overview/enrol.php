@@ -25,6 +25,7 @@
 use local_apsolu\core\course as Course;
 use local_apsolu\core\federation\activity as Activity;
 use local_apsolu\core\federation\course as FederationCourse;
+use UniversiteRennes2\Apsolu\Payment;
 
 define('APSOLU_FEDERATION_REQUIREMENT_FALSE', 0);
 define('APSOLU_FEDERATION_REQUIREMENT_TRUE', 1);
@@ -36,6 +37,7 @@ require_once(__DIR__.'/../locallib.php');
 require_once($CFG->dirroot.'/group/lib.php');
 require_once($CFG->dirroot.'/lib/enrollib.php');
 require_once($CFG->dirroot.'/enrol/select/lib.php');
+require_once($CFG->dirroot.'/local/apsolu/classes/apsolu/payment.php');
 require_once($CFG->dirroot.'/local/apsolu/locallib.php');
 
 // Get params.
@@ -357,6 +359,25 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
 
             echo sprintf('<div class="alert alert-%s text-center">%s</div>', $style, $message);
 
+            // Détermine si les délais sont activés sur la méthode d'inscription et que l'utilisateur est accepté.
+            $paymentbutton = false;
+            if (empty($instance->customdec1) === false && $status === enrol_select_plugin::ACCEPTED) {
+                // Calcule si au moins une carte est due et affiche un message d'avertissement.
+                foreach (Payment::get_user_cards_status_per_course($course->id, $USER->id) as $card) {
+                    if ($card->status !== Payment::DUE) {
+                        continue;
+                    }
+
+                    $paymentbutton = true;
+
+                    $functionalcontact = get_config('local_apsolu', 'functional_contact');
+                    $params = ['deadline' => format_time(intval($instance->customdec1)), 'contact' => $functionalcontact];
+                    $message = get_string('payment_deadline_warning', 'enrol_select', $params);
+                    echo sprintf('<div class="alert alert-danger text-center">%s</div>', $message);
+                    break;
+                }
+            }
+
             if (empty($course->information) === false) {
                 // Affiche une information complémentaire.
                 $component = 'local_apsolu';
@@ -370,10 +391,18 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 echo sprintf('<p class="font-weight-bold">%s</p><div>%s</div>', $title, $content);
             }
 
+            echo '<p class="text-center">';
+
+            if ($paymentbutton === true) {
+                $href = $CFG->wwwroot.'/local/apsolu/payment/index.php';
+                $label = get_string('pay', 'local_apsolu');
+                echo '<a class="btn btn-default btn-primary mr-3" href="'.$href.'">'.$label.'</a>';
+            }
+
             $href = $CFG->wwwroot.'/enrol/select/overview.php';
-            echo '<p class="text-center">'.
-                '<a class="btn btn-default btn-secondary apsolu-cancel-a" href="'.$href.'">'.get_string('continue').'</a>'.
-                '</p>';
+            $label = get_string('continue_my_enrolments', 'enrol_select');
+            echo '<a class="btn btn-default btn-secondary apsolu-cancel-a" href="'.$href.'">'.$label.'</a>';
+            echo '</p>';
         } else {
             throw new moodle_exception('error_cannot_enrol', 'enrol_select');
         }

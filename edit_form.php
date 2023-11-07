@@ -195,6 +195,11 @@ class enrol_select_edit_form extends moodleform {
             $attributes = array('size' => 10);
             $select = $mform->addElement('select', 'cards', 'Cartes requises', $options, $attributes);
             $select->setMultiple(true);
+
+            $options = ['defaultunit' => MINSECS, 'units' => [MINSECS, HOURSECS]];
+            $mform->addElement('duration', 'customdec1', get_string('payment_deadline', 'enrol_select'), $options);
+            $mform->addHelpButton('customdec1', 'payment_deadline', 'enrol_select');
+            $mform->setType('customdec1', PARAM_INT);
         }
 
         // Messages de bienvenue.
@@ -307,6 +312,26 @@ class enrol_select_edit_form extends moodleform {
             // Contrôle qu'un calendrier est activé lorsqu'au moins une carte de paiement est sélectionnée.
             if (isset($data['cards'][0]) === true && empty($data['customchar1']) === true) {
                 $errors['customchar1'] = get_string('you_must_set_a_calendar_so_that_payments_can_apply', 'enrol_select');
+            }
+
+            // Contrôle que la liste d'inscription par défaut est "acceptée" lorsqu'un délai de paiement est activé.
+            if (isset($data['customdec1']) === true && empty($data['customdec1']) === false) {
+                $quotaenabled = (isset($data['customint3']) === true && empty($data['customint3']) === false);
+                if ($quotaenabled === true && (isset($data['customchar2']) === false || empty($data['customchar2']) === false)) {
+                    $label = get_string('the_delay_cannot_be_combined_with_the_automatic_list_filling', 'enrol_select');
+                    $errors['customdec1'] = $label;
+                }
+
+                if (isset($data['customchar3']) === false || $data['customchar3'] !== enrol_select_plugin::ACCEPTED) {
+                    $errors['customdec1'] = get_string('the_delay_cannot_be_set_if_the_default_list_is_accepted', 'enrol_select');
+                }
+
+                // TODO: à cause d'un problème de stockage de données en base, on empêche de saisir un délai de paiement
+                // supérieur à 99999 secondes.
+                if ($data['customdec1'] > 99999) {
+                    $label = get_string('it_is_currently_not_possible_to_indicate_a_duration_greater_than_one_day', 'enrol_select');
+                    $errors['customdec1'] = $label;
+                }
             }
         }
 

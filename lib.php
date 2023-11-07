@@ -252,6 +252,7 @@ class enrol_select_plugin extends enrol_plugin {
             $instance->default_customint1 = 20;
             $instance->default_customint2 = 10;
             $instance->default_customint3 = 0;
+            $instance->default_customdec1 = 0;
             $instance->default_customchar1 = 0;
             $instance->default_customchar2 = 0;
             $instance->default_customchar3 = self::MAIN;
@@ -273,6 +274,7 @@ class enrol_select_plugin extends enrol_plugin {
         $fields['customint6'] = 0; // Reenrol select_enrol instance.
         $fields['customint7'] = 0; // Course start date.
         $fields['customint8'] = 0; // Course end date.
+        $fields['customdec1'] = $instance->default_customdec1; // Délai de paiement.
         $fields['customchar1'] = $instance->default_customchar1; // Type de calendrier.
         $fields['customchar2'] = $instance->default_customchar2; // Remontée de liste automatique.
         $fields['customchar3'] = $instance->default_customchar3; // Liste sur laquelle inscrire les étudiants.
@@ -788,6 +790,18 @@ class enrol_select_plugin extends enrol_plugin {
 
             parent::enrol_user($instance, $userid, $roleid, $timestart, $timeend, $status, $recovergrades);
 
+            // Ajoute une tâche pour contrôler le paiement après l'inscription.
+            if (empty($instance->customdec1) === false && $status === self::ACCEPTED) {
+                $customdata = (object) ['courseid' => $instance->courseid, 'enrolid' => $instance->id];
+
+                $task = new enrol_select\task\check_enrolment_payment();
+                $task->set_next_run_time(time() + intval($instance->customdec1));
+                $task->set_custom_data($customdata);
+                $task->set_userid($userid);
+
+                core\task\manager::queue_adhoc_task($task);
+            }
+
             // Notifie le nouvel inscrit.
             if ($userid === $USER->id) {
                 $message = '';
@@ -861,11 +875,33 @@ class enrol_select_plugin extends enrol_plugin {
      * @return void.
      */
     public function unenrol_user(stdClass $instance, $userid) {
+        global $DB;
+
         parent::unenrol_user($instance, $userid);
 
         // Si la remontée de liste est activée.
         if (empty($instance->customchar2) === false) {
             $this->refill_main_list($instance, $userid);
+        }
+
+        // Si les paiements à l'inscription sont activées.
+        if (empty($instance->customdec1) === false) {
+            // On supprime la tâche adhoc associée à l'utilisateur.
+            $classname = '\enrol_select\task\check_enrolment_payment';
+            $params = ['component' => 'enrol_select', 'classname' => $classname, 'userid' => $userid];
+            $tasks = $DB->get_records('task_adhoc', $params);
+            foreach ($tasks as $taskid => $task) {
+                $customdata = json_decode($task->customdata);
+                if (isset($customdata->enrolid) === false) {
+                    continue;
+                }
+
+                if ($customdata->enrolid !== $instance->id) {
+                    continue;
+                }
+
+                $DB->delete_records('task_adhoc', ['id' => $taskid]);
+            }
         }
     }
 

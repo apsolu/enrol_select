@@ -24,16 +24,18 @@
 
 $string['messageprovider:select_notification'] = 'Notifications en relation avec les inscriptions';
 
+$string['check_enrolment_payment'] = 'Contrôle le paiement d’une inscription';
 $string['cohort_X_is_already_used_with_role_Y_by_college_Z'] = 'La cohorte « {$a->cohort} » est déjà utilisée avec le rôle « {$a->role} » par la population « {$a->college} ».';
 $string['college_unused_cohorts'] = '<details class="alert alert-info"><summary class="mb-3">Information</summary><p>Ces cohortes ne sont actuellement pas utilisées dans les populations :</p><ul>{$a}</ul></details>';
+$string['continue_my_enrolments'] = 'Continuer mes inscriptions';
 $string['custom_welcome_message'] = 'Message de bienvenue personnalisé';
 $string['custom_welcome_message_help'] = 'Les utilisateurs recevront un message de bienvenue par courriel lors de leur inscription.';
 $string['date_diverging_from_calendar_date'] = 'Date divergente par rapport à la date du calendrier';
 $string['default_enrolment_list'] = 'Liste d’inscription par défaut';
-$string['default_enrolment_list_help'] = 'Détermine si les nouvelles inscriptions doivent être automatiquement acceptées. Ce réglage s’applique tant que les quotas ne sont pas atteints.';
+$string['default_enrolment_list_help'] = 'Détermine si les nouvelles inscriptions doivent être automatiquement acceptées. Ce réglage s’applique tant que les quotas ne sont pas atteints. Pour l’utilisation de l’option « Délai de paiement », la valeur de cette option doit être « Liste des étudiants acceptés ».';
 $string['default_settings'] = 'Paramétrage par défaut';
 $string['enable_automatic_list_filling'] = 'Activer la remontée de liste automatique';
-$string['enable_automatic_list_filling_help'] = 'Permet de faire remonter un étudiant sur liste complémentaire dès qu’une place se libère sur liste principale. L’action est appliquée seulement lorsqu’un étudiant se désinscrit en période d’inscription.';
+$string['enable_automatic_list_filling_help'] = 'Permet de faire remonter un étudiant sur liste complémentaire dès qu’une place se libère sur liste principale. L’action est appliquée seulement lorsqu’un étudiant se désinscrit en période d’inscription. Cette option n’est pas compatible avec l’option « Délai de paiement ».';
 $string['enrollee_accepted_list'] = 'Candidat Inscription';
 $string['enrollee_deleted_list'] = 'Candidat Refusé';
 $string['enrollee_main_list'] = 'Candidat Principale';
@@ -42,6 +44,7 @@ $string['enrollee_wish_list'] = 'Candidat Voeux';
 $string['enrollees'] = 'Inscrits';
 $string['enrolment_to'] = 'Inscription en {$a}';
 $string['filters_for_managers'] = 'Filtres pour gestionnaires';
+$string['it_is_currently_not_possible_to_indicate_a_duration_greater_than_one_day'] = 'Pour des raisons techniques, il n’est pour le moment pas possible d’indiquer une durée supérieure à 27 heures.';
 $string['list'] = 'Liste';
 $string['lists'] = 'Listes';
 $string['main_sport'] = 'Sport principal';
@@ -66,6 +69,12 @@ $string['number_of_enrolments_on_waiting_list'] = 'Nombre d’inscriptions sur l
 $string['number_of_wishes'] = 'Nombre de voeux';
 $string['only_students_on_the_accepted_list_will_be_transferred_to_the_list_of_your_choice'] = 'Seuls les étudiants inscrits sur la liste des acceptés seront reportés sur la liste de votre choix.';
 $string['overview'] = 'Vue d’ensemble';
+$string['payment_deadline'] = 'Délai de paiement';
+$string['payment_deadline_help'] = 'Ce paramètre accorde un délai de paiement à l’utilisateur. Si ce délai n’est pas respecté, APSOLU désinscrira automatiquement l’utilisateur du cours.
+
+Pour désactiver cette fonctionnalité, il suffit de mettre la valeur de ce champ à 0.';
+$string['payment_deadline_warning'] = '<p><strong>Attention : il vous reste {$a->deadline} pour payer. Passé ce délai, votre inscription sera automatiquement annulée !</strong></p>
+<p>Si vous ne pouvez pas payer en ligne, merci de contacter votre secrétariat par téléphone ou par courriel à l’adresse {$a->contact}.</p>';
 $string['pluginname'] = 'Inscription par voeux';
 $string['pluginname_desc'] = 'Le plugin d’inscription par voeux permet aux utilisateurs de choisir les cours qu’ils veulent suivre. Les cours peuvent être protégés par différents critères (période d’inscription, taille de la liste principale, cohortes, etc).';
 $string['policyagree'] = 'J’atteste avoir pris connaissances de <a href="{$a}" target="blank_">ces recommandations médicales</a>.';
@@ -74,8 +83,19 @@ $string['send_welcome_message_to_users_on_accepted_list'] = 'Envoyer un message 
 $string['send_welcome_message_to_users_on_main_list'] = 'Envoyer un message aux utilisateurs sur liste principale';
 $string['send_welcome_message_to_users_on_wait_list'] = 'Envoyer un message aux utilisateurs sur liste complémentaire';
 $string['settings'] = 'Paramètres';
+$string['the_delay_cannot_be_combined_with_the_automatic_list_filling'] = 'L’option « délai de paiement » ne peut pas être combinée avec l’option de « remontée de liste automatique ».';
+$string['the_delay_cannot_be_set_if_the_default_list_is_accepted'] = 'L’option « délai de paiement » ne peut pas être définie si l’option « liste d’inscription par défaut » n’a pas la valeur « liste des étudiants acceptés ».';
 $string['there_are_still_places_on_the_wait_list'] = 'Il reste des places sur liste complémentaire';
 $string['the_user_X_has_reached_their_wish_limit_for_the_role_Y'] = 'L’utilisateur #{$a->userid} a atteint sa limite de voeux pour le rôle #{$a->roleid}.';
+$string['unenrolment_from'] = 'Désinscription de {$a}';
+$string['unenrolment_message'] = '<p>Bonjour,</p>
+<p>Vous avez été désinscrit du cours {$a->coursename}.</p>
+<p>Vous n’avez pas payé les frais d’inscription suivants :</p>
+<ul>
+    <li>{$a->cards}</li>
+</ul>
+<p>Au besoin, n’hésitez pas à nous contacter via l’adresse {$a->contact}.</p>
+<p>Cordialement,</p>';
 $string['warning_changing_calendar_may_result_in_loss_of_data'] = 'Attention ! La modification du calendrier peut entraîner une perte de données (comme par exemple les notes des étudiants).';
 $string['welcome_message_on_accepted_list'] = 'Message de bienvenue de la liste des acceptés';
 $string['welcome_message_on_main_list'] = 'Message de bienvenue de la liste principale';
