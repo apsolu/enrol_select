@@ -188,4 +188,23 @@ class enrol_select_default_settings_form extends moodleform {
         // Set default values.
         $this->set_data($defaults);
     }
+
+    /**
+     * Validation.
+     *
+     * @param array $data
+     * @param array $files
+     *
+     * @return array The errors that were found.
+     */
+    public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
+
+        // Contrôle qu'un calendrier est activé lorsqu'au moins une carte de paiement est sélectionnée.
+        if (isset($data['default_cards'][0]) === true && empty($data['default_customchar1']) === true) {
+            $errors['default_customchar1'] = get_string('you_must_set_a_calendar_so_that_payments_can_apply', 'enrol_select');
+        }
+
+        return $errors;
+    }
 }
