@@ -30,7 +30,7 @@ $id = required_param('id', PARAM_INT);
 
 require(__DIR__.'/edit_form.php');
 
-$instance = $DB->get_record('apsolu_colleges', array('id' => $id));
+$instance = $DB->get_record('apsolu_colleges', ['id' => $id]);
 $cohorts = $DB->get_records('cohort', $conditions = null, $sort = 'name');
 
 $roles = enrol_select_get_custom_student_roles();
@@ -40,12 +40,12 @@ if (!$instance) {
     $instance->id = 0;
     $instance->name = '';
     $instance->roleid = '';
-    $instance->cohorts = array();
+    $instance->cohorts = [];
 } else {
-    $instance->cohorts = array_keys($DB->get_records('apsolu_colleges_members', array('collegeid' => $id), '', 'cohortid'));
+    $instance->cohorts = array_keys($DB->get_records('apsolu_colleges_members', ['collegeid' => $id], '', 'cohortid'));
 }
 
-$mform = new apsolu_colleges_form(null, array($instance, $roles, $cohorts));
+$mform = new apsolu_colleges_form(null, [$instance, $roles, $cohorts]);
 
 if ($data = $mform->get_data()) {
     if ($data->id == 0) {
@@ -54,12 +54,12 @@ if ($data = $mform->get_data()) {
         $DB->update_record('apsolu_colleges', $data);
     }
 
-    $DB->delete_records('apsolu_colleges_members', array('collegeid' => $data->id));
+    $DB->delete_records('apsolu_colleges_members', ['collegeid' => $data->id]);
 
     if (isset($data->cohorts)) {
         foreach ($data->cohorts as $cohortid) {
             $sql = "INSERT INTO {apsolu_colleges_members}(collegeid, cohortid) VALUES(?, ?)";
-            $DB->execute($sql, array($data->id, $cohortid));
+            $DB->execute($sql, [$data->id, $cohortid]);
         }
     }
 

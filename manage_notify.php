@@ -30,11 +30,11 @@ require_once($CFG->dirroot.'/local/apsolu/forms/notification_form.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 if (!isset($_POST['users'])) {
-    $_POST['users'] = array();
+    $_POST['users'] = [];
 }
 
-$instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
+$instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'select'], '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $instance->courseid], '*', MUST_EXIST);
 $context = context_course::instance($course->id, MUST_EXIST);
 
 require_login($course);
@@ -56,7 +56,7 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 
 $instancename = $enrolselect->get_instance_name($instance);
 
-$url = new moodle_url('/enrol/select/manage_notify.php', array('enrolid' => $instance->id));
+$url = new moodle_url('/enrol/select/manage_notify.php', ['enrolid' => $instance->id]);
 
 $PAGE->set_url($url->out());
 $PAGE->set_pagelayout('base');
@@ -68,7 +68,7 @@ $sql = "SELECT u.*".
     " FROM {user} u".
     " JOIN {user_enrolments} ue ON u.id = ue.userid".
     " WHERE ue.enrolid = ?";
-$users = $DB->get_records_sql($sql, array($enrolid));
+$users = $DB->get_records_sql($sql, [$enrolid]);
 foreach ($users as $userid => $user) {
     $index = array_search((string)$userid, $_POST['users'], true);
 
@@ -77,11 +77,11 @@ foreach ($users as $userid => $user) {
     }
 }
 
-$actionurl = new moodle_url('/enrol/select/manage_handler.php', array('actions' => $actions, 'enrolid' => $enrolid));
-$redirecturl = new moodle_url('/enrol/select/manage.php', array('enrolid' => $enrolid));
+$actionurl = new moodle_url('/enrol/select/manage_handler.php', ['actions' => $actions, 'enrolid' => $enrolid]);
+$redirecturl = new moodle_url('/enrol/select/manage.php', ['enrolid' => $enrolid]);
 
-$customdata = array();
-$customdata[] = (object) array('subject' => get_string('enrolcoursesubject', 'enrol_select', $course));
+$customdata = [];
+$customdata[] = (object) ['subject' => get_string('enrolcoursesubject', 'enrol_select', $course)];
 $customdata[] = $users;
 $customdata[] = $redirecturl;
 $mform = new local_apsolu_notification_form($actionurl, $customdata);
@@ -98,8 +98,8 @@ if ($mform->is_cancelled()) {
 $pluginname = get_string('pluginname', 'enrol_select');
 
 $PAGE->navbar->add(get_string('users'));
-$PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', array('id' => $enrolid)));
-$PAGE->navbar->add($pluginname, new moodle_url('/enrol/select/manage.php', array('enrolid' => $enrolid)));
+$PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', ['id' => $enrolid]));
+$PAGE->navbar->add($pluginname, new moodle_url('/enrol/select/manage.php', ['enrolid' => $enrolid]));
 $PAGE->navbar->add(get_string('notifications'));
 
 echo $OUTPUT->header();

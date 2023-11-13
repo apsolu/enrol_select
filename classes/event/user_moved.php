@@ -69,7 +69,7 @@ class user_moved extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('enrol/select/manage.php', array('enrolid' => 'value'));
+        return new \moodle_url('enrol/select/manage.php', ['enrolid' => 'value']);
     }
 
     /**
@@ -79,7 +79,7 @@ class user_moved extends \core\event\base {
      */
     public function get_legacy_logdata() {
         // Override if you are migrating an add_to_log() call.
-        return array($this->courseid, 'enrol_select', 'moved', '...........', $this->objectid, $this->contextinstanceid);
+        return [$this->courseid, 'enrol_select', 'moved', '...........', $this->objectid, $this->contextinstanceid];
     }
 
     /**

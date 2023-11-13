@@ -24,13 +24,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$observers = array(
+$observers = [
     // Gère la suppression des cohortes depuis l'interface Administration du site > Utilisateurs > Comptes > Cohortes.
-    array(
+    [
         'eventname'   => '\core\event\cohort_deleted',
         'callback'    => '\enrol_select\observer\cohort::deleted',
         'includefile' => null,
         'internal'    => true,
         'priority'    => 9999,
-    ),
-);
+    ],
+];

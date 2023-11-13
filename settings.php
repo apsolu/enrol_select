@@ -24,10 +24,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
+$capabilities = [
     'moodle/category:manage',
     'moodle/course:create',
-);
+];
 
 if ($hassiteconfig || has_any_capability($capabilities, context_system::instance())) {
     // Ajoute un noeud Apsolu au menu d'administration.

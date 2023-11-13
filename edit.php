@@ -32,19 +32,19 @@ require_once($CFG->libdir.'/gradelib.php');
 $courseid = required_param('courseid', PARAM_INT);
 $instanceid = optional_param('id', 0, PARAM_INT);
 
-$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 $context = context_course::instance($course->id, MUST_EXIST);
 
 require_login($course);
 require_capability('enrol/select:config', $context);
 
-$PAGE->set_url('/enrol/select/edit.php', array('courseid' => $course->id, 'id' => $instanceid));
+$PAGE->set_url('/enrol/select/edit.php', ['courseid' => $course->id, 'id' => $instanceid]);
 $PAGE->set_pagelayout('admin');
 
-$arguments = array(get_string('warning_changing_calendar_may_result_in_loss_of_data', 'enrol_select'));
+$arguments = [get_string('warning_changing_calendar_may_result_in_loss_of_data', 'enrol_select')];
 $PAGE->requires->js_call_amd('enrol_select/edit_calendar', 'initialise', $arguments);
 
-$return = new moodle_url('/enrol/instances.php', array('id' => $course->id));
+$return = new moodle_url('/enrol/instances.php', ['id' => $course->id]);
 if (!enrol_is_enabled('select')) {
     redirect($return);
 }
@@ -52,16 +52,16 @@ if (!enrol_is_enabled('select')) {
 $plugin = enrol_get_plugin('select');
 
 if ($instanceid) {
-    $conditions = array('courseid' => $course->id, 'enrol' => 'select', 'id' => $instanceid);
+    $conditions = ['courseid' => $course->id, 'enrol' => 'select', 'id' => $instanceid];
     $instance = $DB->get_record('enrol', $conditions, '*', MUST_EXIST);
     $instance->customdec1 = intval($instance->customdec1);
-    $instance->cohorts = array_keys($DB->get_records('enrol_select_cohorts', array('enrolid' => $instance->id), '', 'cohortid'));
-    $instance->roles = array_keys($DB->get_records('enrol_select_roles', array('enrolid' => $instance->id), '', 'roleid'));
-    $instance->cards = array_keys($DB->get_records('enrol_select_cards', array('enrolid' => $instance->id), '', 'cardid'));
+    $instance->cohorts = array_keys($DB->get_records('enrol_select_cohorts', ['enrolid' => $instance->id], '', 'cohortid'));
+    $instance->roles = array_keys($DB->get_records('enrol_select_roles', ['enrolid' => $instance->id], '', 'roleid'));
+    $instance->cards = array_keys($DB->get_records('enrol_select_cards', ['enrolid' => $instance->id], '', 'cardid'));
 } else {
     require_capability('moodle/course:enrolconfig', $context);
     // No instance yet, we have to add new instance.
-    navigation_node::override_active_url(new moodle_url('/enrol/instances.php', array('id' => $course->id)));
+    navigation_node::override_active_url(new moodle_url('/enrol/instances.php', ['id' => $course->id]));
 
     $instance = (object) $plugin->get_instance_defaults();
     $instance->id       = null;
@@ -73,10 +73,10 @@ if ($instanceid) {
 $cohorts = $DB->get_records('cohort', $conditions = null, $sort = 'name');
 $roles = enrol_select_get_custom_student_roles();
 $cards = $DB->get_records('apsolu_payments_cards', $conditions = null, $sort = 'name');
-$calendars = array((object) array('id' => 0, 'name' => get_string('none')));
+$calendars = [(object) ['id' => 0, 'name' => get_string('none')]];
 $calendars += $DB->get_records('apsolu_calendars', $conditions = null, $sort = 'name');
-$enrolmethods = array(0 => get_string('reenrolment_disabled', 'enrol_select'));
-foreach ($DB->get_records('enrol', array('courseid' => $course->id, 'enrol' => 'select'), 'name') as $enrol) {
+$enrolmethods = [0 => get_string('reenrolment_disabled', 'enrol_select')];
+foreach ($DB->get_records('enrol', ['courseid' => $course->id, 'enrol' => 'select'], 'name') as $enrol) {
     if ($enrol->id === $instance->id) {
         // On ne met pas sa propre instance dans la liste des méthodes disponibles à la réinscription.
         continue;
@@ -90,10 +90,10 @@ for ($i = 1; $i < 4; $i++) {
     $customtext = sprintf('customtext%d', $i);
     $customtextswitch = sprintf('customtext%dswitch', $i);
     $instance->{$customtextswitch} = (int) !empty($instance->{$customtext});
-    $instance->{$customtext} = array('text' => $instance->{$customtext}, 'format' => FORMAT_HTML);
+    $instance->{$customtext} = ['text' => $instance->{$customtext}, 'format' => FORMAT_HTML];
 }
 
-$mform = new enrol_select_edit_form(null, array($instance, $plugin, $context, $cohorts, $roles, $enrolmethods, $calendars, $cards));
+$mform = new enrol_select_edit_form(null, [$instance, $plugin, $context, $cohorts, $roles, $enrolmethods, $calendars, $cards]);
 
 if ($mform->is_cancelled()) {
     redirect($return);
@@ -120,15 +120,15 @@ if ($mform->is_cancelled()) {
     }
 
     if (empty($data->customtext1switch) === true) {
-        $data->customtext1 = array('text' => '');
+        $data->customtext1 = ['text' => ''];
     }
 
     if (empty($data->customtext2switch) === true) {
-        $data->customtext2 = array('text' => '');
+        $data->customtext2 = ['text' => ''];
     }
 
     if (empty($data->customtext3switch) === true) {
-        $data->customtext3 = array('text' => '');
+        $data->customtext3 = ['text' => ''];
     }
 
     if (empty($data->customint3) === true) {
@@ -186,7 +186,7 @@ if ($mform->is_cancelled()) {
 
         // Mets à jour les dates d'accès au cours des étudiants.
         $sql = "UPDATE {user_enrolments} SET timestart = :timestart, timeend = :timeend WHERE enrolid = :enrolid";
-        $params = array('timestart' => $instance->customint7, 'timeend' => $instance->customint8, 'enrolid' => $instance->id);
+        $params = ['timestart' => $instance->customint7, 'timeend' => $instance->customint8, 'enrolid' => $instance->id];
         $DB->execute($sql, $params);
 
         if ($reset) {
@@ -194,7 +194,7 @@ if ($mform->is_cancelled()) {
         }
 
     } else {
-        $fields = array(
+        $fields = [
             'status'          => ENROL_INSTANCE_ENABLED,
             'name'            => $data->name,
             'customint1'      => $data->customint1,
@@ -213,28 +213,29 @@ if ($mform->is_cancelled()) {
             'customtext2'     => $data->customtext2['text'],
             'customtext3'     => $data->customtext3['text'],
             'enrolstartdate'  => $data->enrolstartdate,
-            'enrolenddate'    => $data->enrolenddate);
+            'enrolenddate'    => $data->enrolenddate,
+        ];
         $instance->id = $plugin->add_instance($course, $fields);
     }
 
-    $DB->delete_records('enrol_select_cohorts', array('enrolid' => $instance->id));
+    $DB->delete_records('enrol_select_cohorts', ['enrolid' => $instance->id]);
     if (isset($data->cohorts) === true) {
         foreach ($data->cohorts as $cohortid) {
-            $DB->execute('INSERT INTO {enrol_select_cohorts}(enrolid, cohortid) VALUES(?, ?)', array($instance->id, $cohortid));
+            $DB->execute('INSERT INTO {enrol_select_cohorts}(enrolid, cohortid) VALUES(?, ?)', [$instance->id, $cohortid]);
         }
     }
 
-    $DB->delete_records('enrol_select_roles', array('enrolid' => $instance->id));
+    $DB->delete_records('enrol_select_roles', ['enrolid' => $instance->id]);
     if (isset($data->roles) === true) {
         foreach ($data->roles as $roleid) {
-            $DB->execute('INSERT INTO {enrol_select_roles}(enrolid, roleid) VALUES(?, ?)', array($instance->id, $roleid));
+            $DB->execute('INSERT INTO {enrol_select_roles}(enrolid, roleid) VALUES(?, ?)', [$instance->id, $roleid]);
         }
     }
 
-    $DB->delete_records('enrol_select_cards', array('enrolid' => $instance->id));
+    $DB->delete_records('enrol_select_cards', ['enrolid' => $instance->id]);
     if (isset($data->cards) === true) {
         foreach ($data->cards as $cardid) {
-            $DB->execute('INSERT INTO {enrol_select_cards}(enrolid, cardid) VALUES(?, ?)', array($instance->id, $cardid));
+            $DB->execute('INSERT INTO {enrol_select_cards}(enrolid, cardid) VALUES(?, ?)', [$instance->id, $cardid]);
         }
     }
 
@@ -255,7 +256,7 @@ $PAGE->set_heading($course->fullname);
 $PAGE->set_title($pluginname);
 
 $PAGE->navbar->add(get_string('users'));
-$PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', array('id' => $course->id)));
+$PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', ['id' => $course->id]));
 $PAGE->navbar->add($pluginname);
 
 echo $OUTPUT->header();

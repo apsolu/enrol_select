@@ -24,6 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$messageproviders = array (
-    'select_notification' => array(),
-);
+$messageproviders = [
+    'select_notification' => [],
+];

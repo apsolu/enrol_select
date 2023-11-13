@@ -45,25 +45,27 @@ class enrol_select_edit_form extends moodleform {
 
         list($instance, $plugin, $context, $cohorts, $roles, $enrolmethods, $calendars, $cards) = $this->_customdata;
 
-        $datetimeoptions = array('optional' => true);
+        $datetimeoptions = ['optional' => true];
 
         // GÉNÉRAL.
         $mform->addElement('header', 'header', get_string('general'));
 
         // Activer la méthode d'inscription.
         // Note: pas de selectyesno parce que la valeur de mdl_enrol.status est inversée par rapport à la logique.
-        $options = array(ENROL_INSTANCE_ENABLED  => get_string('yes'),
-                         ENROL_INSTANCE_DISABLED => get_string('no'));
+        $options = [
+            ENROL_INSTANCE_ENABLED  => get_string('yes'),
+            ENROL_INSTANCE_DISABLED => get_string('no'),
+        ];
         $mform->addElement('select', 'status', get_string('enableinstance', 'enrol_select'), $options);
 
         // Nom de la méthode.
-        $nameattribs = array('size' => '20', 'maxlength' => '255');
+        $nameattribs = ['size' => '20', 'maxlength' => '255'];
         $mform->addElement('text', 'name', get_string('custominstancename', 'enrol'), $nameattribs);
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'server');
 
         // Calendrier utilisé.
-        $options = array();
+        $options = [];
         foreach ($calendars as $calendar) {
             $options[$calendar->id] = $calendar->name;
         }
@@ -135,12 +137,12 @@ class enrol_select_edit_form extends moodleform {
         $mform->disabledIf('customint1', 'customint3', 'eq', 0);
 
         // Nombre de places sur la liste complémentaire.
-        $mform->addElement('text', 'customint2', get_string('max_waiting_places', 'enrol_select'), array('optional' => true));
+        $mform->addElement('text', 'customint2', get_string('max_waiting_places', 'enrol_select'), ['optional' => true]);
         $mform->setType('customint2', PARAM_INT);
         $mform->disabledIf('customint2', 'customint3', 'eq', 0);
 
         // Liste d'inscription par défaut.
-        $options = array();
+        $options = [];
         $options[enrol_select_plugin::MAIN] = get_string('main_list', 'enrol_select');
         $options[enrol_select_plugin::ACCEPTED] = get_string('accepted_list', 'enrol_select');
 
@@ -151,7 +153,7 @@ class enrol_select_edit_form extends moodleform {
         // Cohortes.
         $mform->addElement('header', 'header', get_string('cohorts', 'enrol_select'));
 
-        $options = array();
+        $options = [];
         foreach ($cohorts as $cohort) {
             $options[$cohort->id] = $cohort->name;
         }
@@ -160,7 +162,7 @@ class enrol_select_edit_form extends moodleform {
             $label = get_string('no_available_cohorts', 'enrol_select');
             $mform->addElement('html', sprintf('<div class="alert alert-danger">%s</div>', $label));
         } else {
-            $attributes = array('size' => 10);
+            $attributes = ['size' => 10];
             $select = $mform->addElement('select', 'cohorts', get_string('selectcohorts', 'enrol_select'), $options, $attributes);
             $select->setMultiple(true);
         }
@@ -168,7 +170,7 @@ class enrol_select_edit_form extends moodleform {
         // Rôles.
         $mform->addElement('header', 'header', get_string('roles'));
 
-        $options = array();
+        $options = [];
         foreach ($roles as $role) {
             $options[$role->id] = $role->localname;
         }
@@ -184,7 +186,7 @@ class enrol_select_edit_form extends moodleform {
         // Paiements.
         $mform->addElement('header', 'header', get_string('payments'));
 
-        $options = array();
+        $options = [];
         foreach ($cards as $card) {
             $options[$card->id] = $card->fullname;
         }
@@ -192,7 +194,7 @@ class enrol_select_edit_form extends moodleform {
         if (count($options) === 0) {
             $mform->addElement('html', '<div class="alert alert-info">'.get_string('no_available_prices', 'enrol_select').'</div>');
         } else {
-            $attributes = array('size' => 10);
+            $attributes = ['size' => 10];
             $select = $mform->addElement('select', 'cards', 'Cartes requises', $options, $attributes);
             $select->setMultiple(true);
 
@@ -203,7 +205,7 @@ class enrol_select_edit_form extends moodleform {
         }
 
         // Messages de bienvenue.
-        $options = array('cols' => '60', 'rows' => '8');
+        $options = ['cols' => '60', 'rows' => '8'];
 
         // Message pour les inscrits sur la liste des acceptés.
         $mform->addElement('header', 'header', get_string('welcome_message_on_accepted_list', 'enrol_select'));

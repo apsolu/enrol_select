@@ -46,14 +46,14 @@ class enrol_select_form extends moodleform {
         list($instance, $roles, $federationrequirement) = $this->_customdata;
 
         // Course field.
-        $mform->addElement('text', 'fullname', get_string('course'), array('readonly' => 1, 'size' => '48'));
+        $mform->addElement('text', 'fullname', get_string('course'), ['readonly' => 1, 'size' => '48']);
         $mform->setType('fullname', PARAM_TEXT);
 
         // Roles field.
         if (empty($instance->role) || isset($instance->edit)) {
             // Inscription ou modification d'inscription.
             if (count($roles) === 1) {
-                $attributes = array('disabled' => 1, 'size' => '48');
+                $attributes = ['disabled' => 1, 'size' => '48'];
                 $mform->addElement('text', 'fakerole', get_string('role', 'local_apsolu'), $attributes);
                 $mform->setType('fakerole', PARAM_TEXT);
                 $mform->setDefault('fakerole', current($roles));
@@ -68,7 +68,7 @@ class enrol_select_form extends moodleform {
 
             // Federations fields.
             if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_TRUE) {
-                $attributes = array('disabled' => 1, 'size' => '48');
+                $attributes = ['disabled' => 1, 'size' => '48'];
                 $mform->addElement('text', 'fakefederation', get_string('federation_required', 'enrol_select'), $attributes);
                 $mform->addHelpButton('fakefederation', 'federation_required', 'enrol_select');
                 $mform->setType('fakefederation', PARAM_TEXT);
@@ -89,7 +89,7 @@ class enrol_select_form extends moodleform {
             }
         } else {
             // Désinscription.
-            $mform->addElement('text', 'role', get_string('role', 'local_apsolu'), array('readonly' => 1, 'size' => '48'));
+            $mform->addElement('text', 'role', get_string('role', 'local_apsolu'), ['readonly' => 1, 'size' => '48']);
             $mform->setType('role', PARAM_TEXT);
             $instance->role = $roles[$instance->role];
         }
@@ -116,7 +116,7 @@ class enrol_select_form extends moodleform {
         $attributes->class = 'btn btn-default btn-secondary apsolu-cancel-a';
         $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu', $attributes));
 
-        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
+        $mform->addGroup($buttonarray, 'buttonar', '', [' '], false);
 
         // Hidden fields.
         $mform->addElement('hidden', 'enrolid', $instance->enrolid);

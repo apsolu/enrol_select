@@ -46,10 +46,10 @@ $edit = optional_param('editenrol', null, PARAM_TEXT);
 $filtertime = null;
 $filtercohorts = null;
 
-$capabilities = array(
+$capabilities = [
     'moodle/category:manage',
     'moodle/course:create',
-);
+];
 
 if (has_any_capability($capabilities, context_system::instance()) === true) {
     $filtertime = optional_param('time', null, PARAM_INT);
@@ -71,14 +71,14 @@ $PAGE->set_pagelayout('base');
 
 $PAGE->set_context($context);
 
-$enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'id' => $enrolid), '*', MUST_EXIST);
+$enrol = $DB->get_record('enrol', ['enrol' => 'select', 'status' => 0, 'id' => $enrolid], '*', MUST_EXIST);
 
 $federation = new FederationCourse();
 $federationcourseid = $federation->get_courseid();
 
-if (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, array('250'), $strict = true) === true) {
+if (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, ['250'], $strict = true) === true) {
     // TODO: correction temporaire. À supprimer lorsque la gestion des activités complémentaires sera implémentée.
-    $course = $DB->get_record('course', array('id' => $enrol->courseid), '*', MUST_EXIST);
+    $course = $DB->get_record('course', ['id' => $enrol->courseid], '*', MUST_EXIST);
     $course->license = '0';
     $course->information = '';
     $course->showpolicy = '0';
@@ -87,7 +87,7 @@ if (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, array('
         " FROM {course} c".
         " JOIN {apsolu_courses} ac ON c.id = ac.id".
         " WHERE c.id = :courseid";
-    $params = array('courseid' => $enrol->courseid);
+    $params = ['courseid' => $enrol->courseid];
     $course = $DB->get_record_sql($sql, $params, $strictness = MUST_EXIST);
 }
 
@@ -103,18 +103,18 @@ foreach (enrol_select_get_potential_user_roles($userid = null, $enrol->courseid)
     $instance->role = $role->id;
 }
 
-$federations = array();
+$federations = [];
 $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_FALSE;
 $complement = false;
 if (isset($CFG->is_siuaps_rennes) === true) {
-    $complement = $DB->get_record('apsolu_complements', array('id' => $enrol->courseid));
+    $complement = $DB->get_record('apsolu_complements', ['id' => $enrol->courseid]);
 }
 
 // Vérifie que le cours est ouvert à cet utilisateur.
 if ($complement !== false) {
     // Pour la musculation sur l'instance de Rennes.
     $instance->complement = true;
-    $roles = array(11 => 'Libre accès');
+    $roles = [11 => 'Libre accès'];
 } else {
     $instance->complement = false;
 
@@ -133,7 +133,7 @@ if ($complement !== false) {
 
         // Est-ce que l'utilisateur n'a pas dépassé son quota de voeux...
         $userchoices = enrol_select_get_sum_user_choices($userid = null, $count = true);
-        $unavailableuserroles = array();
+        $unavailableuserroles = [];
         foreach ($userchoices as $choice) {
             if ($choice->maxwish > 0 && $choice->count >= $choice->maxwish) {
                 $unavailableuserroles[$choice->roleid] = $choice->roleid;
@@ -160,8 +160,8 @@ if ($complement !== false) {
             }
         }
 
-        $courseroles = $DB->get_records('enrol_select_roles', array('enrolid' => $enrol->id), '', 'roleid');
-        $roles = array();
+        $courseroles = $DB->get_records('enrol_select_roles', ['enrolid' => $enrol->id], '', 'roleid');
+        $roles = [];
         foreach ($availableuserroles as $roleid => $rolename) {
             if (!isset($courseroles[$roleid])) {
                 // L'utilisateur peut s'inscrire à un type d'inscription qui n'est pas proposé dans ce cours.
@@ -176,7 +176,7 @@ if ($complement !== false) {
 
         if (count($availableuserroles) === 0) {
             if (empty($instance->role) === false) {
-                $role = $DB->get_record('role', array('id' => $instance->role));
+                $role = $DB->get_record('role', ['id' => $instance->role]);
                 throw new moodle_exception('error_reach_wishes_role_limit', 'enrol_select', '', $role->name);
             } else {
                 throw new moodle_exception('error_reach_wishes_limit', 'enrol_select');
@@ -210,7 +210,7 @@ if ($complement !== false) {
         $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_TRUE;
         $instance->federation = 1;
     } else {
-        $category = $DB->get_record('apsolu_federation_activities', array('categoryid' => $course->category));
+        $category = $DB->get_record('apsolu_federation_activities', ['categoryid' => $course->category]);
         if ($category === false) {
             // FFSU non disponible.
             $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_FALSE;
@@ -226,7 +226,7 @@ if (isset($edit)) {
 }
 
 // Build form.
-$customdata = array($instance, $roles, $federationrequirement);
+$customdata = [$instance, $roles, $federationrequirement];
 $actionurl = $CFG->wwwroot.'/enrol/select/overview/enrol.php?enrolid='.$enrolid;
 $mform = new enrol_select_form($actionurl, $customdata);
 
@@ -271,14 +271,14 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 $data->federation = $course->category;
 
                 // Récupère la liste des activités FFSU.
-                $federations = array();
+                $federations = [];
                 foreach (Activity::get_records() as $federation) {
                     $federations[$federation->id] = $federation->repositoryname;
                 }
 
                 $federationinstance = false;
                 if ($federationcourseid !== false) {
-                    $conditions = array('enrol' => 'select', 'status' => 0, 'courseid' => $federationcourseid);
+                    $conditions = ['enrol' => 'select', 'status' => 0, 'courseid' => $federationcourseid];
                     $federationinstance = $DB->get_record('enrol', $conditions);
                 }
 
@@ -286,7 +286,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                     // Do not process.
                     unset($data->federation);
                 } else {
-                    $conditions = array('enrolid' => $federationinstance->id);
+                    $conditions = ['enrolid' => $federationinstance->id];
                     $federationrole = $DB->get_record('enrol_select_roles', $conditions, '*', MUST_EXIST);
                     $enrolselectplugin->enrol_user($federationinstance, $USER->id, $federationrole->roleid, $timestart = 0,
                         $timeend = 0, $status = 0, $recovergrades);
@@ -350,8 +350,8 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
             }
 
             if (isset($CFG->is_siuaps_rennes) === true &&
-                in_array($data->role, array('9', '10'), true) === true &&
-                in_array($status, array(enrol_select_plugin::MAIN, enrol_select_plugin::ACCEPTED), true) === true) {
+                in_array($data->role, ['9', '10'], true) === true &&
+                in_array($status, [enrol_select_plugin::MAIN, enrol_select_plugin::ACCEPTED], true) === true) {
                 $message .= '<p>'.
                     '<strong>Attention il faut aussi faire votre inscription pédagogique dans votre scolarité.</strong>'.
                     '</p>';

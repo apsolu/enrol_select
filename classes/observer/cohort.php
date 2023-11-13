@@ -45,12 +45,12 @@ class cohort {
         global $DB;
 
         // Supprime les références de la cohorte supprimée dans la table apsolu_colleges_members.
-        $DB->delete_records('apsolu_colleges_members', array('cohortid' => $event->objectid));
+        $DB->delete_records('apsolu_colleges_members', ['cohortid' => $event->objectid]);
 
         // Supprime les références de la cohorte supprimée dans la table enrol_select_cohorts.
-        $DB->delete_records('enrol_select_cohorts', array('cohortid' => $event->objectid));
+        $DB->delete_records('enrol_select_cohorts', ['cohortid' => $event->objectid]);
 
         // Supprime les références de la cohorte supprimée dans la table enrol_select_cohorts_roles.
-        $DB->delete_records('enrol_select_cohorts_roles', array('cohortid' => $event->objectid));
+        $DB->delete_records('enrol_select_cohorts_roles', ['cohortid' => $event->objectid]);
     }
 }

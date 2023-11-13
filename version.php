@@ -34,9 +34,9 @@ $plugin->requires = 2022041900.00;
 $plugin->component = 'enrol_select';
 
 // Dependencies on another plugin.
-$plugin->dependencies = array(
+$plugin->dependencies = [
     'local_apsolu' => '2023012500',
-);
+];
 
 // The plugin is a stable version.
 $plugin->maturity = MATURITY_STABLE;

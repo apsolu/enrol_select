@@ -53,7 +53,7 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
             $table->add_field('roleid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, $notnull = false, null, null, null);
 
             // Adding key.
-            $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
             // Create table.
             $dbman->create_table($table);
@@ -68,7 +68,7 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
             $table->add_field('cohortid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, $notnull = false, null, null, null);
 
             // Adding key.
-            $table->add_key('primary', XMLDB_KEY_PRIMARY, array('collegeid', 'cohortid'));
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['collegeid', 'cohortid']);
 
             // Create table.
             $dbman->create_table($table);
@@ -81,17 +81,17 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
     $version = 2017030100;
     if ($oldversion < $version) {
         // Add missing indexes !
-        $tables = array();
-        $tables['apsolu_colleges'] = array('roleid');
-        $tables['apsolu_colleges_members'] = array('collegeid', 'cohortid');
-        $tables['enrol_select_roles'] = array('enrolid', 'roleid');
-        $tables['enrol_select_cohorts'] = array('enrolid', 'cohortid');
-        $tables['enrol_select_cohorts_roles'] = array('roleid', 'cohortid');
+        $tables = [];
+        $tables['apsolu_colleges'] = ['roleid'];
+        $tables['apsolu_colleges_members'] = ['collegeid', 'cohortid'];
+        $tables['enrol_select_roles'] = ['enrolid', 'roleid'];
+        $tables['enrol_select_cohorts'] = ['enrolid', 'cohortid'];
+        $tables['enrol_select_cohorts_roles'] = ['roleid', 'cohortid'];
 
         foreach ($tables as $tablename => $indexes) {
             $table = new xmldb_table($tablename);
             foreach ($indexes as $indexname) {
-                $index = new xmldb_index($indexname, XMLDB_INDEX_NOTUNIQUE, array($indexname));
+                $index = new xmldb_index($indexname, XMLDB_INDEX_NOTUNIQUE, [$indexname]);
 
                 if (!$dbman->index_exists($table, $index)) {
                     $dbman->add_index($table, $index);
@@ -129,7 +129,7 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
             $table->add_field('cardid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, $sequence, $default, null);
 
             // Adding key.
-            $table->add_key('primary', XMLDB_KEY_PRIMARY, array('enrolid', 'cardid'));
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['enrolid', 'cardid']);
 
             // Create table.
             $dbman->create_table($table);
@@ -142,7 +142,7 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
     $version = 2022112100;
     if ($oldversion < $version) {
         // Nettoie les tables faisant référence à des cohortes supprimées.
-        $queries = array();
+        $queries = [];
         $queries[] = "DELETE FROM {apsolu_colleges_members} WHERE cohortid NOT IN (SELECT id FROM {cohort})";
         $queries[] = "DELETE FROM {enrol_select_cohorts} WHERE cohortid NOT IN (SELECT id FROM {cohort})";
         $queries[] = "DELETE FROM {enrol_select_cohorts_roles} WHERE cohortid NOT IN (SELECT id FROM {cohort})";

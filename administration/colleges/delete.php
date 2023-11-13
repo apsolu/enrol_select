@@ -27,10 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 $id = required_param('id', PARAM_INT);
 $confirm = optional_param('confirm', '', PARAM_ALPHANUM); // Confirmation hash.
 
-$url = new moodle_url('/enrol/select/administration.php', array('tab' => 'colleges', 'action' => 'delete', 'id' => $id));
-$returnurl = new moodle_url('/enrol/select/administration.php', array('tab' => 'colleges'));
+$url = new moodle_url('/enrol/select/administration.php', ['tab' => 'colleges', 'action' => 'delete', 'id' => $id]);
+$returnurl = new moodle_url('/enrol/select/administration.php', ['tab' => 'colleges']);
 
-$instance = $DB->get_record('apsolu_colleges', array('id' => $id), '*', MUST_EXIST);
+$instance = $DB->get_record('apsolu_colleges', ['id' => $id], '*', MUST_EXIST);
 $deletehash = md5($calendar->id);
 
 if ($confirm === $deletehash) {
@@ -42,10 +42,10 @@ if ($confirm === $deletehash) {
 
         // Supprime tous les associations collegeid/cohortid.
         $sql = "DELETE FROM {apsolu_colleges_members} WHERE collegeid = :collegeid";
-        $DB->execute($sql, array('collegeid' => $instance->id));
+        $DB->execute($sql, ['collegeid' => $instance->id]);
 
         // Supprime la population.
-        $DB->delete_records('apsolu_colleges', array('id' => $instance->id));
+        $DB->delete_records('apsolu_colleges', ['id' => $instance->id]);
 
         $transaction->allow_commit();
     } catch (Exception $exception) {
@@ -64,7 +64,7 @@ $data->message = get_string('do_you_want_to_delete_college', 'local_apsolu', $in
 $message = $OUTPUT->render_from_template('local_apsolu/courses_form_delete_message', $data);
 
 // Bouton de validation.
-$urlarguments = array('tab' => 'colleges', 'action' => 'delete', 'id' => $id, 'confirm' => $deletehash);
+$urlarguments = ['tab' => 'colleges', 'action' => 'delete', 'id' => $id, 'confirm' => $deletehash];
 $confirmurl = new moodle_url('/enrol/select/administration.php', $urlarguments);
 $confirmbutton = new single_button($confirmurl, get_string('delete'), 'post');
 

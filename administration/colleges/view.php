@@ -40,12 +40,12 @@ $sql = "SELECT c.*".
     " FROM {cohort} c".
     " WHERE c.id NOT IN (SELECT cohortid FROM {apsolu_colleges_members})".
     " ORDER BY c.name";
-$unusedcohorts = array();
+$unusedcohorts = [];
 foreach ($DB->get_records_sql($sql) as $cohort) {
     $unusedcohorts[] = $cohort->name;
 }
 
-if ($unusedcohorts !== array()) {
+if ($unusedcohorts !== []) {
     $unusedcohorts = '<li>'.implode('</li><li>', $unusedcohorts).'</li>';
     echo get_string('college_unused_cohorts', 'enrol_select', $unusedcohorts);
 }
@@ -56,21 +56,21 @@ $deleteimage = $OUTPUT->image_url('t/delete');
 
 if ($colleges) {
     $table = new html_table();
-    $table->attributes = array('class' => 'table table-striped');
-    $table->head = array(
+    $table->attributes = ['class' => 'table table-striped'];
+    $table->head = [
         'nom de la population',
         'roles',
         get_string('maximum_wishes', 'enrol_select'),
         get_string('minimum_enrolments', 'enrol_select'),
         get_string('maximum_enrolments', 'enrol_select'),
         'cohortes',
-        'actions'
-        );
+        'actions',
+        ];
 
     foreach ($colleges as $college) {
         // Members.
-        $members = array();
-        foreach ($DB->get_records('apsolu_colleges_members', array('collegeid' => $college->id), '', 'cohortid') as $member) {
+        $members = [];
+        foreach ($DB->get_records('apsolu_colleges_members', ['collegeid' => $college->id], '', 'cohortid') as $member) {
             if (isset($cohorts[$member->cohortid]) === false) {
                 // TODO: faire en sorte de retirer les cohortes qui n'existe plus.
                 // Voir si il y a un event lors de la suppression des cohortes.
@@ -80,7 +80,7 @@ if ($colleges) {
             $members[] = '<li>'.$cohorts[$member->cohortid]->name.'</li>';
         }
 
-        if ($members !== array()) {
+        if ($members !== []) {
             sort($members);
             $members = '<ul>'.implode('', $members).'</ul>';
         }
@@ -93,14 +93,15 @@ if ($colleges) {
             <li class="list-inline-item"><a href="'.$deletelink.'"><img src="'.$deleteimage.'" /></a></li>
             </ul>';
 
-        $table->data[] = array(
+        $table->data[] = [
             $college->name,
             $roles[$college->roleid]->name,
             $college->maxwish,
             $college->minregister,
             $college->maxregister,
             $members,
-            $actions);
+            $actions,
+        ];
     }
 
     echo html_writer::table($table);

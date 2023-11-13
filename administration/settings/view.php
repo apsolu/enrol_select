@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot.'/enrol/select/administration/settings/edit_form.php');
 
 // Build form.
-$attributes = array(
+$attributes = [
     'default_cohorts', // Cohortes par défaut.
     'default_roles', // Rôles par défaut.
     'default_cards', // Paiements par défaut.
@@ -41,7 +41,7 @@ $attributes = array(
     'default_customtext1', // Message de bienvenue pour les inscrits sur liste des acceptés.
     'default_customtext2', // Message de bienvenue pour les inscrits sur liste principale.
     'default_customtext3', // Message de bienvenue pour les inscrits sur liste complémentaire.
-    );
+    ];
 
 $config = get_config('enrol_select');
 
@@ -61,16 +61,16 @@ for ($i = 1; $i < 4; $i++) {
     $customtext = sprintf('default_customtext%d', $i);
     $customtextswitch = sprintf('default_customtext%dswitch', $i);
     $defaults->{$customtextswitch} = (int) !empty($defaults->{$customtext});
-    $defaults->{$customtext} = array('text' => $defaults->{$customtext}, 'format' => FORMAT_HTML);
+    $defaults->{$customtext} = ['text' => $defaults->{$customtext}, 'format' => FORMAT_HTML];
 }
 
 $cohorts = $DB->get_records('cohort', $conditions = null, $sort = 'name');
 $roles = enrol_select_get_custom_student_roles();
 $cards = $DB->get_records('apsolu_payments_cards', $conditions = null, $sort = 'name');
-$calendars = array((object) array('id' => 0, 'name' => get_string('none')));
+$calendars = [(object) ['id' => 0, 'name' => get_string('none')]];
 $calendars += $DB->get_records('apsolu_calendars', $conditions = null, $sort = 'name');
 
-$customdata = array($defaults, $calendars, $cohorts, $roles, $cards);
+$customdata = [$defaults, $calendars, $cohorts, $roles, $cards];
 
 $mform = new enrol_select_default_settings_form(null, $customdata);
 
@@ -78,15 +78,15 @@ echo $OUTPUT->heading(get_string('default_settings', 'enrol_select'));
 
 if ($data = $mform->get_data()) {
     if (empty($data->default_customtext1switch) === true) {
-        $data->default_customtext1 = array('text' => '');
+        $data->default_customtext1 = ['text' => ''];
     }
 
     if (empty($data->default_customtext2switch) === true) {
-        $data->default_customtext2 = array('text' => '');
+        $data->default_customtext2 = ['text' => ''];
     }
 
     if (empty($data->default_customtext3switch) === true) {
-        $data->default_customtext3 = array('text' => '');
+        $data->default_customtext3 = ['text' => ''];
     }
 
     foreach ($attributes as $attribute) {

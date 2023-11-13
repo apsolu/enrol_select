@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$actions = array('select', 'submit');
+$actions = ['select', 'submit'];
 
 if (!in_array($action, $actions, true)) {
     $action = 'select';

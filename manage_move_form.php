@@ -77,7 +77,7 @@ class enrol_select_manage_move_form extends moodleform {
         $mform->addElement('selectyesno', 'notify', 'Envoyer une notification aux étudiants');
         $mform->setType('notify', PARAM_INT);
 
-        $attributes = array('rows' => '15', 'cols' => '50');
+        $attributes = ['rows' => '15', 'cols' => '50'];
         $mform->addElement('textarea', 'message', get_string('send_message', 'enrol_select'), $attributes);
         $mform->setType('message', PARAM_TEXT);
         $mform->setDefault('message', get_string('message_'.$strfrom.'_to_'.$strto, 'enrol_select'));
@@ -94,6 +94,6 @@ class enrol_select_manage_move_form extends moodleform {
         $attributes->class = 'btn btn-default btn-secondary';
         $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu', $attributes));
 
-        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
+        $mform->addGroup($buttonarray, 'buttonar', '', [' '], false);
     }
 }

@@ -35,8 +35,8 @@
 function enrol_select_get_activities($siteid = 0, $categoryid = 0, $categoryname = '', $onhomepage = true) {
     global $DB;
 
-    $params = array();
-    $conditions = array();
+    $params = [];
+    $conditions = [];
 
     if (empty($siteid) === false) {
         $params['siteid'] = $siteid;
@@ -94,7 +94,7 @@ function enrol_select_get_activities_roles() {
         " ORDER BY sortorder";
     $roles = role_fix_names($DB->get_records_sql($sql));
 
-    $activities = array();
+    $activities = [];
 
     $sql = "SELECT e.courseid, esr.roleid".
         " FROM {enrol} e".
@@ -107,7 +107,7 @@ function enrol_select_get_activities_roles() {
         }
 
         if (isset($activities[$record->courseid]) === false) {
-            $activities[$record->courseid] = array();
+            $activities[$record->courseid] = [];
         }
         $activities[$record->courseid][$record->roleid] = $roles[$record->roleid];
     }
@@ -124,7 +124,7 @@ function enrol_select_get_activities_roles() {
 function enrol_select_get_activities_teachers() {
     global $DB;
 
-    $teachers = array();
+    $teachers = [];
 
     $sql = "SELECT u.id AS userid, u.firstname, u.lastname, u.email, ac.id AS courseid".
         " FROM {user} u".
@@ -135,7 +135,7 @@ function enrol_select_get_activities_teachers() {
     $recordset = $DB->get_recordset_sql($sql);
     foreach ($recordset as $record) {
         if (isset($teachers[$record->courseid]) === false) {
-            $teachers[$record->courseid] = array();
+            $teachers[$record->courseid] = [];
         }
 
         $user = new \stdClass();
@@ -238,7 +238,7 @@ function enrol_select_get_user_activity_enrolments($userid = null) {
         " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
         " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
         " ORDER BY c.fullname";
-    return $DB->get_records_sql($sql, array('userid' => $userid, 'timestart' => $time, 'timeend' => $time));
+    return $DB->get_records_sql($sql, ['userid' => $userid, 'timestart' => $time, 'timeend' => $time]);
 }
 
 /**
@@ -272,7 +272,7 @@ function enrol_select_get_real_user_activity_enrolments($userid = null) {
         " AND e.enrolstartdate <= :timestart". // Date de début des inscriptions.
         " AND e.customint8 >= :timeend". // Date de fin des cours.
         " ORDER BY c.fullname";
-    return $DB->get_records_sql($sql, array('userid' => $userid, 'timestart' => $time, 'timeend' => $time));
+    return $DB->get_records_sql($sql, ['userid' => $userid, 'timestart' => $time, 'timeend' => $time]);
 }
 
 /**
@@ -294,7 +294,7 @@ function enrol_select_get_recordset_user_activity_enrolments($userid = null, $on
         $time = time();
     }
 
-    $params = array('userid' => $userid);
+    $params = ['userid' => $userid];
     $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, e.name AS enrolname,".
         " ue.status, ra.roleid, '1' AS paymentcenterid".
         " FROM {course} c".
@@ -351,7 +351,7 @@ function enrol_select_get_user_complement_enrolments($userid = null) {
         " AND c.visible=1".
         " ORDER BY c.fullname";
 
-    return $DB->get_records_sql($sql, array($userid));
+    return $DB->get_records_sql($sql, [$userid]);
 }
 
 /**
@@ -376,7 +376,7 @@ function enrol_select_get_user_colleges($userid = null, $count = false) {
         " JOIN {cohort} ct ON ct.id = acm.cohortid".
         " JOIN {cohort_members} cm ON ct.id = cm.cohortid".
         " WHERE cm.userid = ?";
-    $colleges = $DB->get_records_sql($sql, array($userid));
+    $colleges = $DB->get_records_sql($sql, [$userid]);
 
     if ($count === true) {
         $countuserroles = enrol_select_get_count_user_role_assignments();
@@ -419,7 +419,7 @@ function enrol_select_get_sum_user_choices($userid = null, $count = false) {
             " WHERE cm.userid = ?".
         " )".
         " GROUP BY ac.roleid";
-    $roles = $DB->get_records_sql($sql, array($userid));
+    $roles = $DB->get_records_sql($sql, [$userid]);
 
     if ($count === true) {
         $countuserroles = enrol_select_get_count_user_role_assignments($userid);
@@ -464,7 +464,7 @@ function enrol_select_get_count_user_role_assignments($userid = null) {
         " AND e.enrolstartdate <= :timestart". // Date de début des inscriptions.
         " AND e.customint8 >= :timeend". // Date de fin des cours.
         " GROUP BY ra.roleid";
-    return $DB->get_records_sql($sql, array('userid' => $userid, 'timestart' => $time, 'timeend' => $time));
+    return $DB->get_records_sql($sql, ['userid' => $userid, 'timestart' => $time, 'timeend' => $time]);
 }
 
 /**
@@ -489,7 +489,7 @@ function enrol_select_get_potential_user_roles($userid = null, $courseid = null)
             " JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid".
             " JOIN {cohort_members} cm ON cm.cohortid = acm.cohortid".
             " WHERE cm.userid=?";
-        $params = array($userid);
+        $params = [$userid];
     } else {
         $time = time();
 
@@ -507,7 +507,7 @@ function enrol_select_get_potential_user_roles($userid = null, $courseid = null)
             " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
             " AND c.id = :courseid".
             " AND ctx.contextlevel = 50";
-        $params = array('userid' => $userid, 'timestart' => $time, 'timeend' => $time, 'courseid' => $courseid);
+        $params = ['userid' => $userid, 'timestart' => $time, 'timeend' => $time, 'courseid' => $courseid];
     }
 
     $roles = role_fix_names($DB->get_records_sql($sql, $params));
@@ -544,7 +544,7 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
         $availableuserroles = enrol_select_get_potential_user_roles();
         $usercolleges = enrol_select_get_sum_user_choices($userid = null, $count = true);
 
-        $unavailableuserroles = array();
+        $unavailableuserroles = [];
         foreach ($usercolleges as $college) {
             if ($college->maxwish > 0 && $college->count >= $college->maxwish) {
                 $unavailableuserroles[$college->roleid] = $college->roleid;
@@ -594,13 +594,13 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
         " AND e.status = 0".
         " AND (e.enrolstartdate = 0 OR e.enrolstartdate < :enrolstartdate)".
         " AND (e.enrolenddate = 0 OR e.enrolenddate > :enrolenddate)";
-    $params = array('enrolstartdate' => $now, 'enrolenddate' => $now);
+    $params = ['enrolstartdate' => $now, 'enrolenddate' => $now];
 
     if ($cohorts === null) {
         $sql .= " AND cm.userid = :userid";
         $params['userid'] = $USER->id;
     } else {
-        $insql = array();
+        $insql = [];
         foreach ($cohorts as $index => $cohortid) {
             $insql[] = ":cohort".$index;
             $params['cohort'.$index] = $cohortid;
@@ -619,7 +619,7 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
         }
 
         if (!isset($courses[$enrol->courseid]->enrols)) {
-            $courses[$enrol->courseid]->enrols = array();
+            $courses[$enrol->courseid]->enrols = [];
         }
 
         $courses[$enrol->courseid]->enrols[] = $enrol;
@@ -660,15 +660,18 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
             // TODO: refactoriser cette partie avec le script ajax/reload_column_left_places.php.
             // Calcule le nombre d'inscrits sur la liste des acceptés et sur la liste principale.
             $sql = "SELECT COUNT(userid) FROM {user_enrolments} WHERE enrolid = :enrolid AND status IN (:accepted, :main)";
-            $conditions = array('enrolid' => $enrol->id, 'accepted' => enrol_select_plugin::ACCEPTED,
-                'main' => enrol_select_plugin::MAIN);
+            $conditions = [
+                'enrolid' => $enrol->id,
+                'accepted' => enrol_select_plugin::ACCEPTED,
+                'main' => enrol_select_plugin::MAIN,
+            ];
             $course->count_main_list = $DB->count_records_sql($sql, $conditions);
 
             // Récupère le quota de la liste principale.
             $course->max_main_list = $enrol->customint1;
 
             // Calcule le nombre d'inscrits sur la liste complémentaire.
-            $conditions = array('enrolid' => $enrol->id, 'status' => enrol_select_plugin::WAIT);
+            $conditions = ['enrolid' => $enrol->id, 'status' => enrol_select_plugin::WAIT];
             $course->count_wait_list = $DB->count_records('user_enrolments', $conditions);
 
             // Récupère le quota de la liste complémentaire.
@@ -708,15 +711,15 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
         // TODO: est-ce que l'utilisateur peut accéder à tous les types ?
 
         // Récupère tous les rôles acceptés par ce cours.
-        $selectroles = $DB->get_records('enrol_select_roles', array('enrolid' => $enrol->id), '', 'roleid');
-        $course->role_options = array();
+        $selectroles = $DB->get_records('enrol_select_roles', ['enrolid' => $enrol->id], '', 'roleid');
+        $course->role_options = [];
         foreach ($selectroles as $role) {
             if (isset($roles[$role->roleid])) {
                 $course->role_options[$role->roleid] = $roles[$role->roleid];
             }
         }
 
-        if ($course->role_options === array()) {
+        if ($course->role_options === []) {
             debugging('Course #'.$course->id.': no role for enrol #'.$enrol->id, $level = DEBUG_DEVELOPER);
             unset($courses[$courseid]);
             continue;
@@ -780,7 +783,7 @@ function enrol_select_get_potential_user_complements() {
     global $CFG, $DB, $USER;
 
     if (isset($CFG->is_siuaps_rennes) === false) {
-        return array();
+        return [];
     }
 
     $usercomplementenrolments = enrol_select_get_user_complement_enrolments();
@@ -801,10 +804,10 @@ function enrol_select_get_potential_user_complements() {
         " AND cm.userid=?".
         " AND c.visible=1".
         " ORDER BY c.fullname";
-    $courses = $DB->get_records_sql($sql, array($now, $now, $USER->id));
+    $courses = $DB->get_records_sql($sql, [$now, $now, $USER->id]);
 
     foreach ($courses as $index => $course) {
-        $enrol = $DB->get_record('enrol', array('enrol' => 'select', 'status' => 0, 'courseid' => $course->id));
+        $enrol = $DB->get_record('enrol', ['enrol' => 'select', 'status' => 0, 'courseid' => $course->id]);
         if ($enrol === false || (isset($CFG->is_siuaps_rennes) === true && $course->id === '249')) {
             unset($courses[$index]);
             continue;
@@ -850,7 +853,7 @@ function enrol_select_get_user_reenrolments($userid = null) {
         " AND (e.customint4 = 0 OR e.customint4 <= :timestart)". // Date de début des réinscriptions.
         " AND (e.customint5 = 0 OR e.customint5 >= :timeend)". // Date de fin des réinscriptions.
         " ORDER BY c.fullname";
-    return $DB->get_records_sql($sql, array('userid' => $userid, 'timestart' => $time, 'timeend' => $time));
+    return $DB->get_records_sql($sql, ['userid' => $userid, 'timestart' => $time, 'timeend' => $time]);
 }
 
 /**
@@ -860,20 +863,20 @@ function enrol_select_get_user_reenrolments($userid = null) {
  *
  * @return void
  */
-function enrol_select_generate_filters($courses = array()) {
-    $filters = array();
+function enrol_select_generate_filters($courses = []) {
+    $filters = [];
 
-    $elements = array(
-        'city' => array(),
-        'category' => array(),
-        'sport' => array(),
-        'skill' => array(),
-        'area' => array(),
-        'weekday' => array(),
-        'starttime' => array(),
-        'endtime' => array(),
-        'role' => array(),
-    );
+    $elements = [
+        'city' => [],
+        'category' => [],
+        'sport' => [],
+        'skill' => [],
+        'area' => [],
+        'weekday' => [],
+        'starttime' => [],
+        'endtime' => [],
+        'role' => [],
+    ];
 
     foreach ($courses as $course) {
         // Set elements.
@@ -902,14 +905,14 @@ function enrol_select_generate_filters($courses = array()) {
         } else {
             asort($element);
         }
-        $attributes = array(
+        $attributes = [
             'data-column-name' => $type,
             'data-placeholder' => get_string($type, 'local_apsolu'),
             'data-allow-clear' => 'true',
             'style' => 'margin: 0 1em',
             'multiple' => 'true',
-            'class' => 'filters'
-        );
+            'class' => 'filters',
+        ];
         $filters[$type] = \html_writer::select($element, 'filters['.$type.']', $selected = '', $nothing = '', $attributes);
     }
 

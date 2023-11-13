@@ -28,15 +28,15 @@ require_once($CFG->libdir.'/adminlib.php');
 $tab = optional_param('tab', 'default_settings', PARAM_TEXT);
 $action = optional_param('action', 'view', PARAM_ALPHA);
 
-$tabslist = array();
+$tabslist = [];
 $tabslist['default_settings'] = 'settings';
 $tabslist['colleges'] = 'colleges';
 $tabslist['renewals'] = 'renewals';
 $tabslist['overview'] = 'overview';
 
-$tabsbar = array();
+$tabsbar = [];
 foreach ($tabslist as $stringid => $tabname) {
-    $url = new moodle_url('/enrol/select/administration.php', array('tab' => $tabname));
+    $url = new moodle_url('/enrol/select/administration.php', ['tab' => $tabname]);
     $tabsbar[] = new tabobject($tabname, $url, get_string($stringid, 'enrol_select'));
 }
 

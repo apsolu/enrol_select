@@ -33,11 +33,11 @@ $enrolid = required_param('enrolid', PARAM_INT);
 $from = required_param('from', PARAM_INT);
 $to = required_param('actions', PARAM_INT);
 if (!isset($_POST['users'])) {
-    $_POST['users'] = array();
+    $_POST['users'] = [];
 }
 
-$instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
+$instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'select'], '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $instance->courseid], '*', MUST_EXIST);
 $context = context_course::instance($course->id, MUST_EXIST);
 
 require_login($course);
@@ -59,7 +59,7 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 
 $instancename = $enrolselect->get_instance_name($instance);
 
-$url = new moodle_url('/enrol/select/manage_editenroltype.php', array('enrolid' => $instance->id, 'from' => $from, 'to' => $to));
+$url = new moodle_url('/enrol/select/manage_editenroltype.php', ['enrolid' => $instance->id, 'from' => $from, 'to' => $to]);
 
 $PAGE->set_url($url->out());
 $PAGE->set_pagelayout('base');
@@ -71,7 +71,7 @@ $sql = "SELECT u.*".
     " FROM {user} u".
     " JOIN {user_enrolments} ue ON u.id = ue.userid".
     " WHERE ue.enrolid = ?";
-$users = $DB->get_records_sql($sql, array($enrolid));
+$users = $DB->get_records_sql($sql, [$enrolid]);
 foreach ($users as $userid => $user) {
     $index = array_search((string)$userid, $_POST['users'], true);
 
@@ -80,11 +80,11 @@ foreach ($users as $userid => $user) {
     }
 }
 
-$roles = array();
+$roles = [];
 foreach ($enrolselect->get_roles($instance, $context) as $role) {
     $roles[$role->id] = $role->name;
 }
-$mform = new enrol_select_manage_editenroltype_form($url->out(false), array($instance, $users, $from, $to, $roles));
+$mform = new enrol_select_manage_editenroltype_form($url->out(false), [$instance, $users, $from, $to, $roles]);
 
 if ($mform->is_cancelled()) {
     redirect($return);
@@ -107,8 +107,8 @@ if ($mform->is_cancelled()) {
 $pluginname = get_string('pluginname', 'enrol_select');
 
 $PAGE->navbar->add(get_string('users'));
-$PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', array('id' => $enrolid)));
-$PAGE->navbar->add($pluginname, new moodle_url('/enrol/select/manage.php', array('enrolid' => $enrolid)));
+$PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', ['id' => $enrolid]));
+$PAGE->navbar->add($pluginname, new moodle_url('/enrol/select/manage.php', ['enrolid' => $enrolid]));
 $PAGE->navbar->add(get_string('notifications'));
 
 echo $OUTPUT->header();

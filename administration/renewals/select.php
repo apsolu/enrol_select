@@ -38,36 +38,37 @@ $sql = "SELECT e.id, c.fullname AS coursename, e.name AS enrolname, e2.name AS r
       ORDER BY coursename";
 $recordset = $DB->get_recordset_sql($sql);
 
-$options = array();
+$options = [];
 foreach (enrol_select_plugin::$states as $code => $state) {
     $options[$code] = get_string($state.'_list', 'enrol_select');
 }
 
 if ($recordset) {
     $table = new html_table();
-    $table->attributes = array('class' => 'table table-striped');
-    $table->head = array(
+    $table->attributes = ['class' => 'table table-striped'];
+    $table->head = [
         '',
         'Nom de l\'activité',
         'Méthode d\'inscription actuelle',
         'Méthode de réinscription',
-        'Liste de réinscription'
-        );
+        'Liste de réinscription',
+        ];
 
     foreach ($recordset as $renewal) {
         // Actions.
         $uid = uniqid();
         $submitlink = $CFG->wwwroot.'/enrol/select/administration.php?tab=renewals&action=submit';
         $actions = '<ul><li style="display:inline;"><a href="'.$submitlink.'">Valider les réinscriptions en masse</a></li></ul>';
-        $selectoptions = html_writer::select($options, $uid . '_action', '0', array('' => 'choosedots'));
+        $selectoptions = html_writer::select($options, $uid . '_action', '0', ['' => 'choosedots']);
 
-        $table->data[] = array(
+        $table->data[] = [
             '<input type="hidden" name="uids[]" value="'.$uid.'" />'.
             '<input type="checkbox" name="' . $uid . '_enrol" value="'.$renewal->id.'" />',
             $renewal->coursename,
             $renewal->enrolname,
             $renewal->renewalname,
-            $selectoptions);
+            $selectoptions,
+        ];
     }
 
     $information = get_string('only_students_on_the_accepted_list_will_be_transferred_to_the_list_of_your_choice', 'enrol_select');

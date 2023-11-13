@@ -45,18 +45,18 @@ class overview_managers_filters_form extends moodleform {
 
         $mform = $this->_form;
 
-        $datetimeoptions = array('optional' => true);
+        $datetimeoptions = ['optional' => true];
 
         // Date du jour.
         $mform->addElement('date_time_selector', 'now', get_string('date'));
         $mform->addRule('now', get_string('required'), 'required', null, 'client');
 
         // Cohortes.
-        $cohorts = array();
-        foreach ($DB->get_records('cohort', $params = array(), $sort = 'name') as $cohort) {
+        $cohorts = [];
+        foreach ($DB->get_records('cohort', $params = [], $sort = 'name') as $cohort) {
             $cohorts[$cohort->id] = $cohort->name;
         }
-        $attributes = array('size' => 10);
+        $attributes = ['size' => 10];
         $select = $mform->addElement('select', 'cohorts', get_string('selectcohorts', 'enrol_select'), $cohorts, $attributes);
         $select->setMultiple(true);
         $mform->addRule('cohorts', get_string('required'), 'required', null, 'client');

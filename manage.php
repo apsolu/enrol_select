@@ -31,12 +31,12 @@ require_once($CFG->dirroot.'/user/profile/lib.php');
 $enrolid = optional_param('enrolid', null, PARAM_INT);
 
 if ($enrolid !== null) {
-    $instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
+    $instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'select'], '*', MUST_EXIST);
     $courseid = $instance->courseid;
 } else {
     $courseid = required_param('courseid', PARAM_INT);
 }
-$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 $context = context_course::instance($course->id, MUST_EXIST);
 
 require_login($course);
@@ -44,7 +44,7 @@ require_login($course);
 $canenrol = has_capability('enrol/select:enrol', $context);
 $canunenrol = has_capability('enrol/select:unenrol', $context);
 
-$ismanager = $DB->get_record('role_assignments', array('contextid' => 1, 'roleid' => 1, 'userid' => $USER->id));
+$ismanager = $DB->get_record('role_assignments', ['contextid' => 1, 'roleid' => 1, 'userid' => $USER->id]);
 
 // Note: manage capability not used here because it is used for editing
 // of existing enrolments which is not possible here.
@@ -61,13 +61,13 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 $data = new stdClass();
 $data->wwwroot = $CFG->wwwroot;
 $data->canunenrol = $canunenrol;
-$data->enrols = array();
+$data->enrols = [];
 
 $roles = role_fix_names($DB->get_records('role'));
-$instances = $DB->get_records('enrol', array('enrol' => 'select', 'courseid' => $course->id), $sort = 'name');
+$instances = $DB->get_records('enrol', ['enrol' => 'select', 'courseid' => $course->id], $sort = 'name');
 $customfields = CustomFields::getCustomFields();
 
-$enrols = array();
+$enrols = [];
 $semester2 = false;
 
 // Initialise chaque instance du cours utilisant la méthode enrol_select.
@@ -77,7 +77,7 @@ foreach ($instances as $instance) {
     $enrol->enrolid = $instance->id;
     $enrol->enrol_user_link = $CFG->wwwroot.'/enrol/select/enrol.php?enrolid='.$instance->id;
     $enrol->unenrol_user_link = $CFG->wwwroot.'/enrol/select/unenrol.php?enrolid='.$instance->id;
-    $enrol->lists = array();
+    $enrol->lists = [];
     $enrol->lock = ($instance->customint8 < time());
     if ($ismanager !== false || is_siteadmin() === true) {
         // Les gestionnaires et les administrateurs peuvent modifier les inscriptions toute l'année.
@@ -87,12 +87,12 @@ foreach ($instances as $instance) {
 
     // On initialise chaque liste (LP, LC, etc).
     foreach (enrol_select_plugin::$states as $code => $state) {
-        $nextinstance = $DB->get_record('enrol', array('id' => $instance->customint6, 'enrol' => 'select'), '*', IGNORE_MISSING);
+        $nextinstance = $DB->get_record('enrol', ['id' => $instance->customint6, 'enrol' => 'select'], '*', IGNORE_MISSING);
 
-        $selectoptions = array();
-        $mainoptions   = array();
-        $suboptions    = array();
-        $otheroptions  = array();
+        $selectoptions = [];
+        $mainoptions   = [];
+        $suboptions    = [];
+        $otheroptions  = [];
 
         foreach (enrol_select_plugin::$states as $scode => $sstate) {
             $mainoptions[$scode] = get_string('move_to_'.$sstate, 'enrol_select');
@@ -107,14 +107,14 @@ foreach ($instances as $instance) {
 
         // Current instance.
         unset($mainoptions[$code]);
-        $selectoptions[] = array('Déplacement au sein de ' . $instance->name => $mainoptions);
+        $selectoptions[] = ['Déplacement au sein de ' . $instance->name => $mainoptions];
 
         // Other actions than manage_move.
-        $selectoptions[] = array('Autres actions' => $otheroptions);
+        $selectoptions[] = ['Autres actions' => $otheroptions];
 
         // Renewal instance, semester 2.
         if ($nextinstance !== false) {
-            $selectoptions[] = array('Réinscription vers ' . $nextinstance->name => $suboptions);
+            $selectoptions[] = ['Réinscription vers ' . $nextinstance->name => $suboptions];
         }
 
         $list = new stdClass();
@@ -123,7 +123,7 @@ foreach ($instances as $instance) {
         $list->status = $code;
         $list->form_action = $CFG->wwwroot.'/enrol/select/manage_handler.php?enrolid='.$instance->id;
         $list->enrol_user_link = $CFG->wwwroot.'/enrol/select/add.php?enrolid='.$instance->id.'&status='.$code;
-        $list->users = array();
+        $list->users = [];
         $list->count_users = 0;
 
         switch ($code) {
@@ -137,10 +137,10 @@ foreach ($instances as $instance) {
                 $list->max_users = false;
         }
 
-        $htmlselectattributes = array('id' => 'to-'.$state, 'class' => 'select_options');
-        $list->actions = '<p>'.html_writer::tag('label', get_string("withselectedusers"), array('for' => 'to-'.$state)).
-            html_writer::select($selectoptions, 'actions', '', array('' => 'choosedots'), $htmlselectattributes).
-            html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'from', 'value' => $code)).
+        $htmlselectattributes = ['id' => 'to-'.$state, 'class' => 'select_options'];
+        $list->actions = '<p>'.html_writer::tag('label', get_string("withselectedusers"), ['for' => 'to-'.$state]).
+            html_writer::select($selectoptions, 'actions', '', ['' => 'choosedots'], $htmlselectattributes).
+            html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'from', 'value' => $code]).
             '</p>';
 
         $enrol->lists[$code] = $list;
@@ -176,8 +176,8 @@ $sql = 'SELECT u.*, ra.roleid, e.name AS enrolname, e.courseid, ue.enrolid, ue.s
         ' AND e.courseid = :courseid'.
     ')'.
     ' ORDER BY ue.timecreated, u.lastname, u.firstname';
-$users = array();
-$recordset = $DB->get_recordset_sql($sql, array('fieldid' => $customfields['apsolucycle']->id, 'courseid' => $course->id));
+$users = [];
+$recordset = $DB->get_recordset_sql($sql, ['fieldid' => $customfields['apsolucycle']->id, 'courseid' => $course->id]);
 foreach ($recordset as $record) {
     if (isset($roles[$record->roleid]) === false) {
         continue;
@@ -185,8 +185,8 @@ foreach ($recordset as $record) {
 
     if (isset($users[$record->id]) === false) {
         // On initialise le profile utilisateur (photo, inscriptions, etc).
-        $record->picture = $OUTPUT->user_picture($record, array('size' => 30, 'courseid' => $course->id));
-        $record->enrolments = array();
+        $record->picture = $OUTPUT->user_picture($record, ['size' => 30, 'courseid' => $course->id]);
+        $record->enrolments = [];
         $record->count_enrolments = 0;
 
         $users[$record->id] = $record;
@@ -213,7 +213,7 @@ foreach ($recordset as $record) {
     if ($ismanager === false) {
         $enrolment->course_url = '';
     } else {
-        $enrolment->course_url = new moodle_url('/course/view.php', array('id' => $record->courseid));
+        $enrolment->course_url = new moodle_url('/course/view.php', ['id' => $record->courseid]);
     }
 
     $users[$record->id]->enrolments[$record->enrolid] = $enrolment;
@@ -246,18 +246,18 @@ foreach ($enrols as $enrolid => $enrol) {
 
 $data->enrols = array_values($enrols);
 
-$PAGE->set_url('/enrol/select/manage.php', array('enrolid' => $instance->id));
+$PAGE->set_url('/enrol/select/manage.php', ['enrolid' => $instance->id]);
 $PAGE->set_pagelayout('base');
 $PAGE->set_title(get_string('manage_select_enrolments', 'enrol_select'));
 $PAGE->set_heading($course->fullname);
 
 $pluginname = get_string('pluginname', 'enrol_select');
 
-$PAGE->navbar->add($course->shortname, new moodle_url('/course/view.php', array('id' => $course->id)));
-$PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', array('id' => $course->id)));
+$PAGE->navbar->add($course->shortname, new moodle_url('/course/view.php', ['id' => $course->id]));
+$PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', ['id' => $course->id]));
 $PAGE->navbar->add($pluginname);
 
-$PAGE->requires->js_call_amd('enrol_select/select_manage_user_selection', 'initialise', array($semester2));
+$PAGE->requires->js_call_amd('enrol_select/select_manage_user_selection', 'initialise', [$semester2]);
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('manage_select_enrolments', 'enrol_select'));

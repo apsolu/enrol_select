@@ -50,7 +50,7 @@ $time = time();
 
 $open = false;
 $nextopen = 0;
-$calendars = $DB->get_records('apsolu_calendars', $conditions = array(), $sort = 'reenrolstartdate');
+$calendars = $DB->get_records('apsolu_calendars', $conditions = [], $sort = 'reenrolstartdate');
 foreach ($calendars as $calendar) {
     if (empty($calendar->reenrolstartdate) === true) {
         continue;
@@ -65,7 +65,7 @@ foreach ($calendars as $calendar) {
 
         // Détermine la prochaine phase d'inscription.
         $sql = "SELECT * FROM {apsolu_calendars} WHERE enrolstartdate > :now ORDER BY enrolstartdate";
-        $nextenrols = $DB->get_records_sql($sql, array('now' => $time));
+        $nextenrols = $DB->get_records_sql($sql, ['now' => $time]);
         if (empty($nextenrols) === false) {
             $nextenrol = current($nextenrols);
             if (isset($CFG->is_siuaps_rennes) === false) {
@@ -105,7 +105,7 @@ if ($open === false) {
 $PAGE->requires->js_call_amd('enrol_select/select_renew', 'initialise');
 
 // Détermine quelles sont les activités auxquelles peut se réinscrire l'étudiant.
-$activities = array();
+$activities = [];
 foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
     if ($enrolment->status !== enrol_select_plugin::ACCEPTED) {
         // On ne conserve que les inscriptions validées.
@@ -115,7 +115,7 @@ foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
         continue;
     }
 
-    $enrol = $DB->get_record('enrol', array('id' => $enrolment->enrolid));
+    $enrol = $DB->get_record('enrol', ['id' => $enrolment->enrolid]);
 
     if ($enrol === false) {
         // L'instance d'inscription n'existe pas.
@@ -132,7 +132,7 @@ foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
         continue;
     }
 
-    $targetenrol = $DB->get_record('enrol', array('id' => $enrol->customint6));
+    $targetenrol = $DB->get_record('enrol', ['id' => $enrol->customint6]);
 
     if ($targetenrol === false) {
         // L'instance de réinscription n'existe pas.
@@ -142,12 +142,12 @@ foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
     }
 
     // Get all available roles for target enrol.
-    $roles = array();
+    $roles = [];
     foreach ($select->get_available_user_roles($targetenrol) as $role) {
         $roles[$role->id] = $role->name;
     }
 
-    if ($roles === array()) {
+    if ($roles === []) {
         // L'utilisateur ne peut pas s'incrire (problème de cohortes ou de rôles).
         $message = 'L\'utilisateur #'.$USER->id.' ne peut pas s\'inscrire (problème de cohortes ou de rôles).';
         debugging($message, $level = DEBUG_DEVELOPER);
@@ -164,9 +164,9 @@ foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
 $notification = '';
 if (isset($_POST['reenrol'])) {
     // Parcours les réponses.
-    $mailcontent = array();
+    $mailcontent = [];
     foreach ($_POST['renew'] as $enrolid => $renew) {
-        $instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'));
+        $instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'select']);
 
         $log = userdate(time(), '%c').' '.$USER->firstname.' '.$USER->lastname.' ('.$USER->email.' #id '.$USER->id.')';
 
@@ -175,7 +175,7 @@ if (isset($_POST['reenrol'])) {
             continue;
         }
 
-        $course = $DB->get_record('course', array('id' => $instance->courseid));
+        $course = $DB->get_record('course', ['id' => $instance->courseid]);
         if ($course === false) {
             continue;
         }
@@ -210,7 +210,7 @@ if (isset($_POST['reenrol'])) {
                     debugging($log.' enrol into instanceid '.$instance->id.', roleid '.$roleid, $level = NO_DEBUG_DISPLAY);
                 } else {
                     // Ajouter une ligne de log.
-                    $reasons = array();
+                    $reasons = [];
                     if (!isset($activities[$instance->courseid])) {
                         $reasons[] = 'non inscrit dans le cours #'.$instance->courseid;
                     } else if (!isset($activities[$instance->courseid]->roles[$roleid])) {
@@ -244,14 +244,14 @@ if (isset($_POST['reenrol'])) {
     $notification = $OUTPUT->notification(get_string('savedreenrolment', 'enrol_select', $savedreenrolment), 'notifysuccess');
 }
 
-$enrolments = array();
+$enrolments = [];
 $enrolmentscount = 0;
 foreach ($activities as $enrolment) {
     $roles = $enrolment->roles;
     $targetenrol = $enrolment->targetenrol;
 
     // Contact teachers.
-    $enrolment->teachers = array();
+    $enrolment->teachers = [];
     $enrolment->count_teachers = 0;
 
     $sql = "SELECT ra.*".
@@ -260,9 +260,9 @@ foreach ($activities as $enrolment) {
         " WHERE c.instanceid = :courseid".
         " AND c.contextlevel = 50".
         " AND ra.roleid = 3";
-    $assignments = $DB->get_records_sql($sql, array('courseid' => $targetenrol->courseid));
+    $assignments = $DB->get_records_sql($sql, ['courseid' => $targetenrol->courseid]);
     foreach ($assignments as $assignment) {
-        $teacher = $DB->get_record('user', array('id' => $assignment->userid, 'deleted' => 0));
+        $teacher = $DB->get_record('user', ['id' => $assignment->userid, 'deleted' => 0]);
         if ($teacher) {
             if (stripos($teacher->email, '@uhb.fr') === false) {
                 $enrolment->teachers[] = $teacher;
@@ -287,7 +287,7 @@ foreach ($activities as $enrolment) {
     $attributes = null;
 
     $enrolment->renew = '';
-    foreach (array(1 => get_string('yes'), 0 => get_string('no')) as $value => $label) {
+    foreach ([1 => get_string('yes'), 0 => get_string('no')] as $value => $label) {
         $checked = ($renew == $value);
         $checkbox = html_writer::checkbox($name = 'renew['.$targetenrol->id.']', $value, $checked, $label, $attributes);
         $enrolment->renew .= str_replace('checkbox', 'radio', $checkbox);

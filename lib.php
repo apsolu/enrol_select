@@ -58,12 +58,12 @@ class enrol_select_plugin extends enrol_plugin {
     const DELETED = '4';
 
     /** @var array Tableau indexé avec les constantes de classe ACCEPTED, MAIN, WAIT et DELETED. */
-    public static $states = array(
+    public static $states = [
         self::ACCEPTED => 'accepted',
         self::MAIN => 'main',
         self::WAIT => 'wait',
         self::DELETED => 'deleted',
-    );
+    ];
 
     /**
      * Retourne la chaine de caractères correspondant à une constante.
@@ -114,20 +114,20 @@ class enrol_select_plugin extends enrol_plugin {
         }
         $context = context_course::instance($instance->courseid);
 
-        $icons = array();
+        $icons = [];
 
         if (has_capability('enrol/select:enrol', $context) || has_capability('enrol/select:unenrol', $context)) {
-            $managelink = new moodle_url("/enrol/select/manage.php", array('enrolid' => $instance->id));
+            $managelink = new moodle_url("/enrol/select/manage.php", ['enrolid' => $instance->id]);
 
             $label = get_string('enrolusers', 'enrol_manual');
-            $pixicon = new pix_icon('t/enrolusers', $label, 'core', array('class' => 'iconsmall'));
+            $pixicon = new pix_icon('t/enrolusers', $label, 'core', ['class' => 'iconsmall']);
             $icons[] = $OUTPUT->action_icon($managelink, $pixicon);
         }
 
         if (has_capability('enrol/select:config', $context)) {
-            $editlink = new moodle_url("/enrol/select/edit.php", array('courseid' => $instance->courseid, 'id' => $instance->id));
+            $editlink = new moodle_url("/enrol/select/edit.php", ['courseid' => $instance->courseid, 'id' => $instance->id]);
             $icons[] = $OUTPUT->action_icon($editlink, new pix_icon('t/edit', get_string('edit'), 'core',
-                array('class' => 'iconsmall')));
+                ['class' => 'iconsmall']));
         }
 
         return $icons;
@@ -173,7 +173,7 @@ class enrol_select_plugin extends enrol_plugin {
             " AND ctx.contextlevel = 50". // Course level.
             " AND r.archetype = 'student'";
 
-        $params = array();
+        $params = [];
         $params['courseid'] = $courseid;
         $params['timestart'] = $timestart;
         $params['timeend'] = $timeend;
@@ -202,7 +202,7 @@ class enrol_select_plugin extends enrol_plugin {
      */
     public function edit_instance_form($instance, MoodleQuickForm $mform, $context) {
         // TODO: ne pas utiliser ce hook moche.
-        redirect(new moodle_url('/enrol/select/edit.php', array('courseid' => $instance->courseid, 'id' => $instance->id)));
+        redirect(new moodle_url('/enrol/select/edit.php', ['courseid' => $instance->courseid, 'id' => $instance->id]));
     }
 
     /**
@@ -234,7 +234,7 @@ class enrol_select_plugin extends enrol_plugin {
             return null;
         }
         // Multiple instances supported - different roles with different password.
-        return new moodle_url('/enrol/select/edit.php', array('courseid' => $courseid));
+        return new moodle_url('/enrol/select/edit.php', ['courseid' => $courseid]);
     }
 
     /**
@@ -261,7 +261,7 @@ class enrol_select_plugin extends enrol_plugin {
             $instance->default_customtext3 = '';
         }
 
-        $fields = array();
+        $fields = [];
         $fields['status'] = ENROL_INSTANCE_ENABLED; // Enable method or not.
         $fields['cohorts'] = explode(',', $instance->default_cohorts); // Cohortes par défaut.
         $fields['roles'] = explode(',', $instance->default_roles); // Rôles par défaut.
@@ -313,7 +313,7 @@ class enrol_select_plugin extends enrol_plugin {
             return false;
         }
 
-        if ($DB->record_exists('enrol', array('courseid' => $courseid, 'enrol' => 'manual'))) {
+        if ($DB->record_exists('enrol', ['courseid' => $courseid, 'enrol' => 'manual'])) {
             // Multiple instances not supported.
             return false;
         }
@@ -350,14 +350,14 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Détermine si l'utilisateur est déjà inscrit sur cette instance.
-        $userenrolment = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id));
+        $userenrolment = $DB->get_record('user_enrolments', ['enrolid' => $instance->id, 'userid' => $user->id]);
         if ($userenrolment !== false) {
             // Retourne la liste d'inscription actuelle de l'utilisateur.
             return $userenrolment->status;
         }
 
         // Détermine si il y a déjà des utilisateurs sur liste complémentaire.
-        $params = array('enrolid' => $instance->id, 'status' => self::WAIT);
+        $params = ['enrolid' => $instance->id, 'status' => self::WAIT];
         $waitlistenrolements = $DB->get_records('user_enrolments', $params, '', 'userid');
         $this->count_wait_list_enrolements = count($waitlistenrolements);
 
@@ -384,7 +384,7 @@ class enrol_select_plugin extends enrol_plugin {
             " FROM {user_enrolments}".
             " WHERE enrolid = :enrolid".
             " AND status IN (:accepted, :main)";
-        $params = array('enrolid' => $instance->id, 'accepted' => self::ACCEPTED, 'main' => self::MAIN);
+        $params = ['enrolid' => $instance->id, 'accepted' => self::ACCEPTED, 'main' => self::MAIN];
         $mainlistenrolements = $DB->get_records_sql($sql, $params);
         $this->count_main_list_enrolements = count($mainlistenrolements);
 
@@ -436,7 +436,7 @@ class enrol_select_plugin extends enrol_plugin {
     public function get_roles($instance, $context) {
         global $DB;
 
-        $roles = $DB->get_records('enrol_select_roles', array('enrolid' => $instance->id), '', 'roleid');
+        $roles = $DB->get_records('enrol_select_roles', ['enrolid' => $instance->id], '', 'roleid');
         foreach (get_assignable_roles($context, ROLENAME_BOTH) as $id => $role) {
             if (!isset($roles[$id])) {
                 unset($roles[$id]);
@@ -478,7 +478,7 @@ class enrol_select_plugin extends enrol_plugin {
             " AND e.status = 0". // Active.
             " AND ue.userid = :userid".
             " AND ctx.contextlevel = 50";
-        $params = array('enrolid' => $instance->id, 'userid' => $userid);
+        $params = ['enrolid' => $instance->id, 'userid' => $userid];
 
         $roles = role_fix_names($DB->get_records_sql($sql, $params));
 
@@ -513,7 +513,7 @@ class enrol_select_plugin extends enrol_plugin {
             " AND e.enrol = 'select'".
             " AND e.status = 0". // Active.
             " AND cm.userid = :userid";
-        $params = array('enrolid' => $instance->id, 'userid' => $userid);
+        $params = ['enrolid' => $instance->id, 'userid' => $userid];
 
         return role_fix_names($DB->get_records_sql($sql, $params));
     }
@@ -533,14 +533,14 @@ class enrol_select_plugin extends enrol_plugin {
         debugging(sprintf('%s() is deprecated. Please see'.
             ' enrol_select_plugin::get_available_status() method instead.', __METHOD__), DEBUG_DEVELOPER);
 
-        $this->available_status = array();
+        $this->available_status = [];
 
         // Check main list.
         $sql = "SELECT userid".
             " FROM {user_enrolments}".
             " WHERE enrolid = :enrolid".
             " AND status IN (0, 2)";
-        $mainlistenrolements = $DB->get_records_sql($sql, array('enrolid' => $instance->id));
+        $mainlistenrolements = $DB->get_records_sql($sql, ['enrolid' => $instance->id]);
         $this->count_main_list_enrolements = count($mainlistenrolements);
 
         if (isset($user, $mainlistenrolements[$user->id])) {
@@ -556,7 +556,7 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Check wait list.
-        $params = array('enrolid' => $instance->id, 'status' => self::WAIT);
+        $params = ['enrolid' => $instance->id, 'status' => self::WAIT];
         $waitlistenrolements = $DB->get_records('user_enrolments', $params, '', 'userid');
         $this->count_wait_list_enrolements = count($waitlistenrolements);
 
@@ -616,8 +616,8 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Check cohorts.
-        $usercohorts = $DB->get_records('cohort_members', array('userid' => $user->id));
-        $enrolcohorts = $DB->get_records('enrol_select_cohorts', array('enrolid' => $instance->id), '', 'cohortid');
+        $usercohorts = $DB->get_records('cohort_members', ['userid' => $user->id]);
+        $enrolcohorts = $DB->get_records('enrol_select_cohorts', ['enrolid' => $instance->id], '', 'cohortid');
 
         $found = false;
         foreach ($usercohorts as $cohort) {
@@ -641,7 +641,7 @@ class enrol_select_plugin extends enrol_plugin {
         if (isset($CFG->is_siuaps_rennes) === true) {
             // Dirty hack pour les activités complémentaires !
             // À virer, et mettre des auto-inscriptions à la place.
-            if ($roleid == 5 || in_array($instance->courseid, array('249', '250'), $strict = true) === true) {
+            if ($roleid == 5 || in_array($instance->courseid, ['249', '250'], $strict = true) === true) {
                 return true;
             }
         }
@@ -675,7 +675,7 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Check role.
-        if ($DB->get_record('enrol_select_roles', array('enrolid' => $instance->id, 'roleid' => $roleid)) === false) {
+        if ($DB->get_record('enrol_select_roles', ['enrolid' => $instance->id, 'roleid' => $roleid]) === false) {
             debugging($this->get_name().': roleid #'.$roleid.' is not available.', $level = DEBUG_DEVELOPER);
             return false;
         }
@@ -708,7 +708,7 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Check reenrol exists.
-        $enrol = $DB->get_record('enrol', array('id' => $instance->customint6, 'enrol' => 'select'));
+        $enrol = $DB->get_record('enrol', ['id' => $instance->customint6, 'enrol' => 'select']);
         if ($enrol === false) {
             debugging($this->get_name().' reenrol id #'.$instance->customint6.' does not exist', $level = DEBUG_DEVELOPER);
             return false;
@@ -728,8 +728,8 @@ class enrol_select_plugin extends enrol_plugin {
 
         // Check cohorts.
         if ($instance->customint3 === '1') {
-            $usercohorts = $DB->get_records('cohort_members', array('userid' => $userid));
-            $enrolcohorts = $DB->get_records('enrol_select_cohorts', array('enrolid' => $instance->id), '', 'cohortid');
+            $usercohorts = $DB->get_records('cohort_members', ['userid' => $userid]);
+            $enrolcohorts = $DB->get_records('enrol_select_cohorts', ['enrolid' => $instance->id], '', 'cohortid');
 
             $found = false;
             foreach ($usercohorts as $cohort) {
@@ -750,7 +750,7 @@ class enrol_select_plugin extends enrol_plugin {
 
         // Check role.
         if ($roleid !== null) {
-            if ($DB->get_record('enrol_select_roles', array('enrolid' => $instance->id, 'roleid' => $roleid)) === false) {
+            if ($DB->get_record('enrol_select_roles', ['enrolid' => $instance->id, 'roleid' => $roleid]) === false) {
                 debugging($this->get_name().': roleid #'.$roleid.' is not available.', $level = DEBUG_DEVELOPER);
                 return false;
             }
@@ -778,7 +778,7 @@ class enrol_select_plugin extends enrol_plugin {
 
         // La méthode parent::enrol_user() ne remplace pas les rôles, mais cumul.
         // Il faut donc faire un traitement différent si il s'agit juste d'un changement de rôle.
-        $enrolled = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $userid));
+        $enrolled = $DB->get_record('user_enrolments', ['enrolid' => $instance->id, 'userid' => $userid]);
         if ($enrolled === false) {
             if ($timestart === 0) {
                 $timestart = $instance->customint7;
@@ -818,7 +818,7 @@ class enrol_select_plugin extends enrol_plugin {
                 }
 
                 if (empty($message) === false) {
-                    $course = $DB->get_record('course', array('id' => $instance->courseid));
+                    $course = $DB->get_record('course', ['id' => $instance->courseid]);
 
                     $eventdata = new \core\message\message();
                     $eventdata->name = 'select_notification';
@@ -847,7 +847,7 @@ class enrol_select_plugin extends enrol_plugin {
                 " SET status = :status, timemodified = :now".
                 " WHERE enrolid = :enrolid".
                 " AND userid = :userid";
-            $DB->execute($sql, array('status' => $status, 'now' => time(), 'enrolid' => $instance->id, 'userid' => $userid));
+            $DB->execute($sql, ['status' => $status, 'now' => time(), 'enrolid' => $instance->id, 'userid' => $userid]);
         }
 
         // Traite le cas où on souhaite juste modifier le rôle.
@@ -860,8 +860,13 @@ class enrol_select_plugin extends enrol_plugin {
                 " AND userid = :userid".
                 " AND contextid = :contextid".
                 " AND itemid= :itemid";
-            $params = array('roleid' => $roleid, 'now' => time(), 'userid' => $userid,
-                'contextid' => $coursecontext->id, 'itemid' => $instance->id);
+            $params = [
+                'roleid' => $roleid,
+                'now' => time(),
+                'userid' => $userid,
+                'contextid' => $coursecontext->id,
+                'itemid' => $instance->id,
+            ];
             $DB->execute($sql, $params);
         }
     }
@@ -934,14 +939,14 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         $sql = "SELECT COUNT(*) FROM {user_enrolments} WHERE enrolid = :enrolid AND status IN (:main, :accepted)";
-        $params = array('enrolid' => $instance->id, 'main' => self::MAIN, 'accepted' => self::ACCEPTED);
+        $params = ['enrolid' => $instance->id, 'main' => self::MAIN, 'accepted' => self::ACCEPTED];
         $countmain = $DB->count_records_sql($sql, $params);
         if ($countmain >= $instance->customint1) {
             // La liste principale (et des acceptés) est déjà pleine.
             return;
         }
 
-        $countwait = $DB->count_records('user_enrolments', array('enrolid' => $instance->id, 'status' => self::WAIT));
+        $countwait = $DB->count_records('user_enrolments', ['enrolid' => $instance->id, 'status' => self::WAIT]);
         if ($countwait === 0) {
             // La liste complémentaire est vide.
             return;
@@ -951,10 +956,10 @@ class enrol_select_plugin extends enrol_plugin {
         $promote = $instance->customint1 - $countmain;
 
         // Récupère les utilisateurs sur liste complémentaire par ordre d'inscription.
-        $params = array('enrolid' => $instance->id, 'status' => self::WAIT);
+        $params = ['enrolid' => $instance->id, 'status' => self::WAIT];
         $waitingusers = $DB->get_records('user_enrolments', $params, $sort = 'timecreated ASC');
 
-        $course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
+        $course = $DB->get_record('course', ['id' => $instance->courseid], '*', MUST_EXIST);
         foreach ($waitingusers as $user) {
             $user->status = self::MAIN;
             $DB->update_record('user_enrolments', $user);
@@ -965,7 +970,7 @@ class enrol_select_plugin extends enrol_plugin {
             $eventdata->component = 'enrol_select';
             $eventdata->name = 'select_notification';
             $eventdata->userfrom = core_user::get_noreply_user();
-            $eventdata->userto = $DB->get_record('user', array('id' => $user->userid));
+            $eventdata->userto = $DB->get_record('user', ['id' => $user->userid]);
             $eventdata->subject = get_string('enrolcoursesubject', 'enrol_select', $course);
             $eventdata->fullmessage = get_string('message_promote', 'enrol_select');
             $eventdata->fullmessageformat = FORMAT_PLAIN;

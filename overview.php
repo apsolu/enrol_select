@@ -45,10 +45,10 @@ $PAGE->set_title(get_string('pluginname', 'enrol_select'));
 
 $select = enrol_get_plugin('select');
 
-$capabilities = array(
+$capabilities = [
     'moodle/category:manage',
     'moodle/course:create',
-);
+];
 
 $time = null;
 $cohorts = null;
@@ -77,7 +77,7 @@ ob_start();
 $courses = enrol_select_get_potential_user_activities($time, $cohorts);
 $debugging = ob_get_clean();
 
-$overviewactivitiesdata = (object) array('activities' => array(), 'count_activities' => 0);
+$overviewactivitiesdata = (object) ['activities' => [], 'count_activities' => 0];
 
 $currentactivity = null;
 foreach ($courses as $course) {
@@ -89,7 +89,7 @@ foreach ($courses as $course) {
         $overviewactivitiesdata->activities[$overviewactivitiesdata->count_activities]->sportid = $course->sportid;
         $overviewactivitiesdata->activities[$overviewactivitiesdata->count_activities]->name = $course->sport;
         $overviewactivitiesdata->activities[$overviewactivitiesdata->count_activities]->description = $course->description;
-        $overviewactivitiesdata->activities[$overviewactivitiesdata->count_activities]->courses = array();
+        $overviewactivitiesdata->activities[$overviewactivitiesdata->count_activities]->courses = [];
         $overviewactivitiesdata->count_activities++;
     }
 
@@ -133,7 +133,7 @@ $PAGE->requires->css(new moodle_url($CFG->wwwroot.'/enrol/select/styles/ol.css')
 $PAGE->requires->js_call_amd('enrol_select/select_mapping', 'initialise');
 $PAGE->requires->js_call_amd('enrol_select/select_filter', 'initialise');
 $PAGE->requires->js_call_amd('enrol_select/select_overview', 'initialise');
-$PAGE->requires->js_call_amd('enrol_select/select_enrol', 'initialise', array('url' => $CFG->wwwroot));
+$PAGE->requires->js_call_amd('enrol_select/select_enrol', 'initialise', ['url' => $CFG->wwwroot]);
 
 // Navigation.
 $PAGE->navbar->add(get_string('enrolment', 'enrol_select'));

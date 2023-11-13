@@ -45,7 +45,7 @@ class enrol_select_generator extends testing_module_generator {
      *
      * @return array
      */
-    public function create_enrol_instance(array $users = array()) {
+    public function create_enrol_instance(array $users = []) {
         global $DB;
 
         // Créer un cours APSOLU.
@@ -57,11 +57,11 @@ class enrol_select_generator extends testing_module_generator {
         $plugin = enrol_get_plugin('select');
         $instanceid = $plugin->add_instance($course, $plugin->get_instance_defaults());
 
-        $instance = $DB->get_record('enrol', array('id' => $instanceid));
+        $instance = $DB->get_record('enrol', ['id' => $instanceid]);
 
-        $enroledusers = array();
+        $enroledusers = [];
         foreach ($users as $status => $numberofusers) {
-            $users[$status] = array();
+            $users[$status] = [];
             for ($i = 0; $i < $numberofusers; $i++) {
                 $user = advanced_testcase::getDataGenerator()->create_user();
 
@@ -70,6 +70,6 @@ class enrol_select_generator extends testing_module_generator {
             }
         }
 
-        return array($plugin, $instance, $users);
+        return [$plugin, $instance, $users];
     }
 }

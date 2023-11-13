@@ -77,7 +77,7 @@ class lib_test extends advanced_testcase {
         $plugin = enrol_get_plugin('select');
         $instanceid = $plugin->add_instance($course, $plugin->get_instance_defaults());
 
-        $instance = $DB->get_record('enrol', array('id' => $instanceid));
+        $instance = $DB->get_record('enrol', ['id' => $instanceid]);
 
         $roleid = '5';
         $timestart = 0;
@@ -88,7 +88,7 @@ class lib_test extends advanced_testcase {
         $user = advanced_testcase::getDataGenerator()->create_user();
 
         $plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend, $status);
-        $userenrolment = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id));
+        $userenrolment = $DB->get_record('user_enrolments', ['enrolid' => $instance->id, 'userid' => $user->id]);
         $this->assertSame($instance->customint7, $userenrolment->timestart);
         $this->assertSame($instance->customint8, $userenrolment->timeend);
 
@@ -96,7 +96,7 @@ class lib_test extends advanced_testcase {
         $status = enrol_select_plugin::MAIN;
 
         $plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend, $status);
-        $userenrolment = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id));
+        $userenrolment = $DB->get_record('user_enrolments', ['enrolid' => $instance->id, 'userid' => $user->id]);
         $this->assertSame($status, $userenrolment->status);
 
         // Teste un changement de rôle.
@@ -104,12 +104,12 @@ class lib_test extends advanced_testcase {
 
         $plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend, $status);
         $context = context_course::instance($instance->courseid);
-        $params = array(
+        $params = [
             'component' => 'enrol_select',
             'userid' => $user->id,
             'contextid' => $context->id,
-            'itemid' => $instance->id
-        );
+            'itemid' => $instance->id,
+        ];
         $roleassignment = $DB->get_record('role_assignments', $params);
         $this->assertSame($roleid, $roleassignment->roleid);
 
@@ -120,7 +120,7 @@ class lib_test extends advanced_testcase {
         $timeend = '20';
         $plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend, $status);
 
-        $userenrolment = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id));
+        $userenrolment = $DB->get_record('user_enrolments', ['enrolid' => $instance->id, 'userid' => $user->id]);
         $this->assertSame($timestart, $userenrolment->timestart);
         $this->assertSame($timeend, $userenrolment->timeend);
 
@@ -191,7 +191,7 @@ class lib_test extends advanced_testcase {
         set_config('enrol_select_select_notification_disable', 1, 'message');
 
         // Génère une instance enrol_select.
-        $numberofusers = array(enrol_select_plugin::ACCEPTED => 5, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0);
+        $numberofusers = [enrol_select_plugin::ACCEPTED => 5, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0];
         list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
 
         // Teste que l'utilisateur se voit proposer une place sur liste principale quand les quotas sont absents.
@@ -251,7 +251,7 @@ class lib_test extends advanced_testcase {
         $this->assertFalse($plugin->get_available_status($instance, $user));
 
         // Teste lorsque que le quota sur liste principale est à 0.
-        $numberofusers = array(enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0);
+        $numberofusers = [enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0];
         list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
 
         // On définit un maximum d'inscrits.
@@ -274,7 +274,7 @@ class lib_test extends advanced_testcase {
         $this->assertFalse($plugin->get_available_status($instance, $user));
 
         // Teste lorsque que le quota sur liste secondaire est à 0.
-        $numberofusers = array(enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0);
+        $numberofusers = [enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0];
         list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
 
         // On définit un maximum d'inscrits.
@@ -308,7 +308,7 @@ class lib_test extends advanced_testcase {
         $this->assertSame(enrol_select_plugin::MAIN, $plugin->get_available_status($instance, $mainuser));
 
         // On bascule sur une inscription sur liste acceptée par défaut.
-        $numberofusers = array(enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0);
+        $numberofusers = [enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0];
         list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
         $instance->customchar3 = enrol_select_plugin::ACCEPTED;
         $instance->customint3 = 0;
@@ -364,7 +364,7 @@ class lib_test extends advanced_testcase {
         set_config('enrol_select_select_notification_disable', 1, 'message');
 
         // Génère une instance enrol_select.
-        $numberofusers = array(enrol_select_plugin::ACCEPTED => 5, enrol_select_plugin::MAIN => 5, enrol_select_plugin::WAIT => 0);
+        $numberofusers = [enrol_select_plugin::ACCEPTED => 5, enrol_select_plugin::MAIN => 5, enrol_select_plugin::WAIT => 0];
         list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
 
         // Teste que la liste principale n'est pas réalimentée lorsque les inscriptions sont closes.
@@ -374,7 +374,7 @@ class lib_test extends advanced_testcase {
 
         $plugin->refill_main_list($instance, $USER->id);
         foreach ($numberofusers as $status => $count) {
-            $conditions = array('enrolid' => $instance->id, 'status' => $status);
+            $conditions = ['enrolid' => $instance->id, 'status' => $status];
             $this->assertSame($count, $DB->count_records('user_enrolments', $conditions));
         }
 
@@ -385,14 +385,14 @@ class lib_test extends advanced_testcase {
         // Teste que la liste principale n'est pas réalimentée lorsqu'un enseignant fait une modification.
         $plugin->refill_main_list($instance, -1);
         foreach ($numberofusers as $status => $count) {
-            $conditions = array('enrolid' => $instance->id, 'status' => $status);
+            $conditions = ['enrolid' => $instance->id, 'status' => $status];
             $this->assertSame($count, $DB->count_records('user_enrolments', $conditions));
         }
 
         // Teste que la liste principale n'est pas réalimentée lorsque les quotas ne sont pas activés.
         $plugin->refill_main_list($instance, $USER->id);
         foreach ($numberofusers as $status => $count) {
-            $conditions = array('enrolid' => $instance->id, 'status' => $status);
+            $conditions = ['enrolid' => $instance->id, 'status' => $status];
             $this->assertSame($count, $DB->count_records('user_enrolments', $conditions));
         }
 
@@ -404,7 +404,7 @@ class lib_test extends advanced_testcase {
         // Teste que la liste principale n'est pas réalimentée lorsque les inscriptions sont déjà complètes.
         $plugin->refill_main_list($instance, $USER->id);
         foreach ($numberofusers as $status => $count) {
-            $conditions = array('enrolid' => $instance->id, 'status' => $status);
+            $conditions = ['enrolid' => $instance->id, 'status' => $status];
             $this->assertSame($count, $DB->count_records('user_enrolments', $conditions));
         }
 
@@ -416,7 +416,7 @@ class lib_test extends advanced_testcase {
         // Teste que la liste principale n'est pas réalimentée lorsque la liste d'attente est vide.
         $plugin->refill_main_list($instance, $USER->id);
         foreach ($numberofusers as $status => $count) {
-            $conditions = array('enrolid' => $instance->id, 'status' => $status);
+            $conditions = ['enrolid' => $instance->id, 'status' => $status];
             $this->assertSame($count, $DB->count_records('user_enrolments', $conditions));
         }
 
@@ -427,10 +427,10 @@ class lib_test extends advanced_testcase {
         }
 
         // Teste que les utilisateurs passent de la liste complémentaire à la principale lorsqu'il y a des places disponibles.
-        $numberofusers = array(enrol_select_plugin::ACCEPTED => 5, enrol_select_plugin::MAIN => 9, enrol_select_plugin::WAIT => 1);
+        $numberofusers = [enrol_select_plugin::ACCEPTED => 5, enrol_select_plugin::MAIN => 9, enrol_select_plugin::WAIT => 1];
         $plugin->refill_main_list($instance, $USER->id);
         foreach ($numberofusers as $status => $count) {
-            $conditions = array('enrolid' => $instance->id, 'status' => $status);
+            $conditions = ['enrolid' => $instance->id, 'status' => $status];
             $this->assertSame($count, $DB->count_records('user_enrolments', $conditions));
         }
 
@@ -439,7 +439,7 @@ class lib_test extends advanced_testcase {
         $DB->update_record('enrol', $instance);
 
         // Teste que la remontée se fait par ordre chronologique.
-        $conditions = array('enrolid' => $instance->id, 'status' => enrol_select_plugin::WAIT);
+        $conditions = ['enrolid' => $instance->id, 'status' => enrol_select_plugin::WAIT];
         $this->assertSame(1, $DB->count_records('user_enrolments', $conditions));
 
         $newuser = $generator->create_user();
@@ -473,7 +473,7 @@ class lib_test extends advanced_testcase {
         set_config('enrol_select_select_notification_disable', 1, 'message');
 
         // Génère une instance enrol_select.
-        $numberofusers = array(enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 2, enrol_select_plugin::WAIT => 2);
+        $numberofusers = [enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 2, enrol_select_plugin::WAIT => 2];
         list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
 
         // Active les quotas et la remontée automatique.
@@ -489,15 +489,15 @@ class lib_test extends advanced_testcase {
         $plugin->unenrol_user($instance, $user->id);
 
         // Vérifie que l'utilisateur n'est plus inscrit.
-        $conditions = array('enrolid' => $instance->id, 'userid' => $user->id);
+        $conditions = ['enrolid' => $instance->id, 'userid' => $user->id];
         $this->assertFalse($DB->get_record('user_enrolments', $conditions));
 
         // Vérifie que le remplissage n'a pas eu lieu et qu'il y a bien 2 utilisateurs sur liste principale.
-        $conditions = array('enrolid' => $instance->id, 'status' => enrol_select_plugin::MAIN);
+        $conditions = ['enrolid' => $instance->id, 'status' => enrol_select_plugin::MAIN];
         $this->assertSame(2, $DB->count_records('user_enrolments', $conditions));
 
         // Vérifie que le remplissage n'a pas eu lieu et qu'il y a bien 2 utilisateurs sur liste complémentaire.
-        $conditions = array('enrolid' => $instance->id, 'status' => enrol_select_plugin::WAIT);
+        $conditions = ['enrolid' => $instance->id, 'status' => enrol_select_plugin::WAIT];
         $this->assertSame(1, $DB->count_records('user_enrolments', $conditions));
 
         // Désactive la remontée automatique.
@@ -510,15 +510,15 @@ class lib_test extends advanced_testcase {
         $plugin->unenrol_user($instance, $user->id);
 
         // Vérifie que l'utilisateur n'est plus inscrit.
-        $conditions = array('enrolid' => $instance->id, 'userid' => $user->id);
+        $conditions = ['enrolid' => $instance->id, 'userid' => $user->id];
         $this->assertFalse($DB->get_record('user_enrolments', $conditions));
 
         // Vérifie que le remplissage a eu lieu et qu'il y a maintenant 2 utilisateurs sur liste principale.
-        $conditions = array('enrolid' => $instance->id, 'status' => enrol_select_plugin::MAIN);
+        $conditions = ['enrolid' => $instance->id, 'status' => enrol_select_plugin::MAIN];
         $this->assertSame(1, $DB->count_records('user_enrolments', $conditions));
 
         // Vérifie que le remplissage a eu lieu et qu'il reste 1 utilisateur sur liste complémentaire.
-        $conditions = array('enrolid' => $instance->id, 'status' => enrol_select_plugin::WAIT);
+        $conditions = ['enrolid' => $instance->id, 'status' => enrol_select_plugin::WAIT];
         $this->assertSame(1, $DB->count_records('user_enrolments', $conditions));
 
         $USER->id = $adminid;

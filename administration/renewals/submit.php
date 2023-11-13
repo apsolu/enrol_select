@@ -29,12 +29,12 @@ foreach ($_POST['uids'] as $uid) {
         $to = $_POST[$uid.'_action'];
 
         $enrolid = $_POST[$uid.'_enrol'];
-        $instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
+        $instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'select'], '*', MUST_EXIST);
 
         $nextenrolid     = $instance->customint6;
-        $nextinstance    = $DB->get_record('enrol', array('id' => $nextenrolid, 'enrol' => 'select'), '*', MUST_EXIST);
+        $nextinstance    = $DB->get_record('enrol', ['id' => $nextenrolid, 'enrol' => 'select'], '*', MUST_EXIST);
 
-        $course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
+        $course = $DB->get_record('course', ['id' => $instance->courseid], '*', MUST_EXIST);
         $context = context_course::instance($course->id, MUST_EXIST);
         $canenrol = has_capability('enrol/select:enrol', $context);
         $canunenrol = has_capability('enrol/select:unenrol', $context);
@@ -55,7 +55,7 @@ foreach ($_POST['uids'] as $uid) {
         " JOIN {user_enrolments} ue ON u.id = ue.userid".
         " WHERE ue.enrolid = :enrolid".
         " AND status = :status";
-        $users = $DB->get_records_sql($sql, array('enrolid' => $enrolid, 'status' => enrol_select_plugin::ACCEPTED));
+        $users = $DB->get_records_sql($sql, ['enrolid' => $enrolid, 'status' => enrol_select_plugin::ACCEPTED]);
         foreach ($users as $userid => $user) {
             $enrolselectplugin = new enrol_select_plugin();
             $roleid = 0;
@@ -65,7 +65,7 @@ foreach ($_POST['uids'] as $uid) {
                 " WHERE component = 'enrol_select'".
                 " AND itemid = :previousinstance_id".
                 " AND userid = :userid";
-            $recordset = $DB->get_recordset_sql($sql, array('previousinstance_id' => $enrolid, 'userid' => $userid));
+            $recordset = $DB->get_recordset_sql($sql, ['previousinstance_id' => $enrolid, 'userid' => $userid]);
             foreach ($recordset as $role) {
                 // TODO: pourquoi un foreach pour initialiser la variable roleid ?
                 $roleid = $role->roleid;

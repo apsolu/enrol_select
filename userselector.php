@@ -84,7 +84,7 @@ class enrol_select_potential_participant extends user_selector_base {
         $availableusers = $DB->get_records_sql($fields . $sql . $order, array_merge($params, $sortparams));
 
         if (empty($availableusers)) {
-            return array();
+            return [];
         }
 
         foreach ($availableusers as $availableuser) {
@@ -100,7 +100,7 @@ class enrol_select_potential_participant extends user_selector_base {
             $groupname = get_string('enrolcandidates', 'enrol');
         }
 
-        return array($groupname => $availableusers);
+        return [$groupname => $availableusers];
     }
 
     /**

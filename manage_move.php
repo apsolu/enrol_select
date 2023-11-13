@@ -36,25 +36,25 @@ $enrolid = required_param('enrolid', PARAM_INT);
 $from = required_param('from', PARAM_INT);
 $to = required_param('actions', PARAM_INT);
 if (!isset($_POST['users'])) {
-    $_POST['users'] = array();
+    $_POST['users'] = [];
 }
 
-$instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
+$instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'select'], '*', MUST_EXIST);
 
 // Case of semester 2 enrolment + move.
 if (strpos($to, '99') === 0 && $instance->customint6 !== null) {
     $previousenrolid = $enrolid;
     $enrolid         = $instance->customint6;
-    $instance        = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
+    $instance        = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'select'], '*', MUST_EXIST);
     $to              = str_replace('99', '', $to);
 }
 
 if (isset($_POST['previousenrolid']) && $_POST['previousenrolid'] > 0) {
     $previousenrolid  = $_POST['previousenrolid'];
-    $previousinstance = $DB->get_record('enrol', array('id' => $previousenrolid, 'enrol' => 'select'), '*', MUST_EXIST);
+    $previousinstance = $DB->get_record('enrol', ['id' => $previousenrolid, 'enrol' => 'select'], '*', MUST_EXIST);
 }
 
-$course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $instance->courseid], '*', MUST_EXIST);
 $context = context_course::instance($course->id, MUST_EXIST);
 
 require_login($course);
@@ -76,7 +76,7 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 
 $instancename = $enrolselect->get_instance_name($instance);
 
-$url = new moodle_url('/enrol/select/manage_move.php', array('enrolid' => $instance->id, 'from' => $from, 'to' => $to));
+$url = new moodle_url('/enrol/select/manage_move.php', ['enrolid' => $instance->id, 'from' => $from, 'to' => $to]);
 
 $PAGE->set_url($url->out());
 $PAGE->set_pagelayout('base');
@@ -90,7 +90,7 @@ $sql = "SELECT u.*".
     " FROM {user} u".
     " JOIN {user_enrolments} ue ON u.id = ue.userid".
     " WHERE ue.enrolid = ?";
-$users = $DB->get_records_sql($sql, array($usersenrolid));
+$users = $DB->get_records_sql($sql, [$usersenrolid]);
 foreach ($users as $userid => $user) {
     $index = array_search((string)$userid, $_POST['users'], true);
 
@@ -99,7 +99,7 @@ foreach ($users as $userid => $user) {
     }
 }
 
-$mform = new enrol_select_manage_move_form($url->out(false), array($instance, $users, $from, $to, $previousenrolid));
+$mform = new enrol_select_manage_move_form($url->out(false), [$instance, $users, $from, $to, $previousenrolid]);
 
 if ($mform->is_cancelled()) {
     redirect($return);
@@ -109,7 +109,7 @@ if ($mform->is_cancelled()) {
         foreach ($data->users as $userid) {
             if ($previousenrolid === false) {
                 $sql = "UPDATE {user_enrolments} SET status=? WHERE userid=? AND enrolid=?";
-                $DB->execute($sql, array($to, $userid, $enrolid));
+                $DB->execute($sql, [$to, $userid, $enrolid]);
             }
 
             if ($previousenrolid && $previousinstance) {
@@ -122,7 +122,7 @@ if ($mform->is_cancelled()) {
                     " AND itemid = :previousinstance_id".
                     " AND userid = :userid";
 
-                $recordset = $DB->get_recordset_sql($sql, array('previousinstance_id' => $previousenrolid, 'userid' => $userid));
+                $recordset = $DB->get_recordset_sql($sql, ['previousinstance_id' => $previousenrolid, 'userid' => $userid]);
                 foreach ($recordset as $role) {
                     // TODO: pourquoi un foreach pour initialiser la variable roleid ?
                     $roleid = $role->roleid;
@@ -132,11 +132,11 @@ if ($mform->is_cancelled()) {
                 $enrolselectplugin->enrol_user($instance, $userid, $roleid, 0, 0, $to, null, null);
             }
 
-            $event = \enrol_select\event\user_moved::create(array(
+            $event = \enrol_select\event\user_moved::create([
                 'relateduserid' => $userid,
-                'other' => array('status' => $to),
-                'context' => $context
-            ));
+                'other' => ['status' => $to],
+                'context' => $context,
+            ]);
             $event->trigger();
 
             if ($data->notify == 1 && !empty($data->message)) {
@@ -145,7 +145,7 @@ if ($mform->is_cancelled()) {
                 $eventdata->component = 'enrol_select';
                 $eventdata->name = 'select_notification';
                 $eventdata->userfrom = $USER;
-                $eventdata->userto = $DB->get_record('user', array('id' => $userid));
+                $eventdata->userto = $DB->get_record('user', ['id' => $userid]);
                 $eventdata->subject = get_string('enrolcoursesubject', 'enrol_select', $course);
                 $eventdata->fullmessage = $data->message;
                 $eventdata->fullmessageformat = FORMAT_PLAIN;
@@ -165,8 +165,8 @@ if ($mform->is_cancelled()) {
 $pluginname = get_string('pluginname', 'enrol_select');
 
 $PAGE->navbar->add(get_string('users'));
-$PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', array('id' => $enrolid)));
-$PAGE->navbar->add($pluginname, new moodle_url('/enrol/select/manage.php', array('enrolid' => $enrolid)));
+$PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', ['id' => $enrolid]));
+$PAGE->navbar->add($pluginname, new moodle_url('/enrol/select/manage.php', ['enrolid' => $enrolid]));
 $PAGE->navbar->add(get_string('move_to', 'enrol_select'));
 
 echo $OUTPUT->header();

@@ -48,7 +48,7 @@ class enrol_select_default_settings_form extends moodleform {
         $mform->addElement('header', 'header', get_string('general'));
 
         // Calendrier utilisé.
-        $options = array();
+        $options = [];
         foreach ($calendars as $calendar) {
             $options[$calendar->id] = $calendar->name;
         }
@@ -73,12 +73,12 @@ class enrol_select_default_settings_form extends moodleform {
 
         // Nombre de places sur la liste complémentaire.
         $label = get_string('max_waiting_places', 'enrol_select');
-        $mform->addElement('text', 'default_customint2', $label, array('optional' => true));
+        $mform->addElement('text', 'default_customint2', $label, ['optional' => true]);
         $mform->setType('default_customint2', PARAM_INT);
         $mform->disabledIf('default_customint2', 'default_customint3', 'eq', 0);
 
         // Liste d'inscription par défaut.
-        $options = array();
+        $options = [];
         $options[enrol_select_plugin::MAIN] = get_string('main_list', 'enrol_select');
         $options[enrol_select_plugin::ACCEPTED] = get_string('accepted_list', 'enrol_select');
 
@@ -89,7 +89,7 @@ class enrol_select_default_settings_form extends moodleform {
         // Cohortes.
         $mform->addElement('header', 'header', get_string('cohorts', 'enrol_select'));
 
-        $options = array();
+        $options = [];
         foreach ($cohorts as $cohort) {
             $options[$cohort->id] = $cohort->name;
         }
@@ -100,7 +100,7 @@ class enrol_select_default_settings_form extends moodleform {
             $mform->addElement('hidden', 'default_cohorts', '');
             $mform->setType('default_cohorts', PARAM_ALPHANUM);
         } else {
-            $attributes = array('size' => 10);
+            $attributes = ['size' => 10];
             $label = get_string('selectcohorts', 'enrol_select');
             $select = $mform->addElement('select', 'default_cohorts', $label, $options, $attributes);
             $select->setMultiple(true);
@@ -109,7 +109,7 @@ class enrol_select_default_settings_form extends moodleform {
         // Rôles.
         $mform->addElement('header', 'header', get_string('roles'));
 
-        $options = array();
+        $options = [];
         foreach ($roles as $role) {
             $options[$role->id] = $role->localname;
         }
@@ -120,7 +120,7 @@ class enrol_select_default_settings_form extends moodleform {
             $mform->addElement('hidden', 'default_roles', '');
             $mform->setType('default_roles', PARAM_ALPHANUM);
         } else {
-            $attributes = array('size' => 5);
+            $attributes = ['size' => 5];
             $label = get_string('registertype', 'enrol_select');
             $select = $mform->addElement('select', 'default_roles', $label, $options, $attributes);
             $select->setMultiple(true);
@@ -129,7 +129,7 @@ class enrol_select_default_settings_form extends moodleform {
         // Paiements.
         $mform->addElement('header', 'header', get_string('payments'));
 
-        $options = array();
+        $options = [];
         foreach ($cards as $card) {
             $options[$card->id] = $card->fullname;
         }
@@ -139,7 +139,7 @@ class enrol_select_default_settings_form extends moodleform {
             $mform->addElement('hidden', 'default_cards', '');
             $mform->setType('default_cards', PARAM_ALPHANUM);
         } else {
-            $attributes = array('size' => 10);
+            $attributes = ['size' => 10];
             $select = $mform->addElement('select', 'default_cards', 'Cartes requises', $options, $attributes);
             $select->setMultiple(true);
 
@@ -150,7 +150,7 @@ class enrol_select_default_settings_form extends moodleform {
         }
 
         // Messages de bienvenue.
-        $options = array('cols' => '60', 'rows' => '8');
+        $options = ['cols' => '60', 'rows' => '8'];
         $mform->addElement('header', 'header', get_string('welcome_messages', 'enrol_select'));
 
         // Message pour les inscrits sur la liste des acceptés.
@@ -184,7 +184,7 @@ class enrol_select_default_settings_form extends moodleform {
         // Submit buttons.
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('savechanges'));
 
-        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
+        $mform->addGroup($buttonarray, 'buttonar', '', [' '], false);
 
         // Hidden fields.
         $mform->addElement('hidden', 'tab', 'settings');
@@ -213,13 +213,15 @@ class enrol_select_default_settings_form extends moodleform {
         // Contrôle que la liste d'inscription par défaut est "acceptée" lorsqu'un délai de paiement est activé.
         if (isset($data['default_customdec1']) === true && empty($data['default_customdec1']) === false) {
             $quotaenabled = (isset($data['default_customint3']) === true && empty($data['default_customint3']) === false);
-            if ($quotaenabled === true && (isset($data['default_customchar2']) === false || empty($data['default_customchar2']) === false)) {
+            if ($quotaenabled === true &&
+                (isset($data['default_customchar2']) === false || empty($data['default_customchar2']) === false)) {
                 $label = get_string('the_delay_cannot_be_combined_with_the_automatic_list_filling', 'enrol_select');
                 $errors['default_customdec1'] = $label;
             }
 
             if (isset($data['default_customchar3']) === false || $data['default_customchar3'] !== enrol_select_plugin::ACCEPTED) {
-                $errors['default_customdec1'] = get_string('the_delay_cannot_be_set_if_the_default_list_is_accepted', 'enrol_select');
+                $errors['default_customdec1'] = get_string('the_delay_cannot_be_set_if_the_default_list_is_accepted',
+                    'enrol_select');
             }
         }
 

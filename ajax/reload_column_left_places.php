@@ -40,21 +40,21 @@ $context = context_user::instance($USER->id);
 $PAGE->set_context($context);
 
 // Generate column content.
-$enrol = $DB->get_record('enrol', array('id' => $enrolid), '*', MUST_EXIST);
+$enrol = $DB->get_record('enrol', ['id' => $enrolid], '*', MUST_EXIST);
 
 if ($enrol->customint3 == 1) {
     // Les quotas sont activés.
     // TODO: refactoriser cette partie avec la fonction enrol_select_get_potential_user_activities() du script locallib.php.
     // Calcule le nombre d'inscrits sur la liste des acceptés et sur la liste principale.
     $sql = "SELECT COUNT(userid) FROM {user_enrolments} WHERE enrolid = :enrolid AND status IN (:accepted, :main)";
-    $conditions = array('enrolid' => $enrol->id, 'accepted' => enrol_select_plugin::ACCEPTED, 'main' => enrol_select_plugin::MAIN);
+    $conditions = ['enrolid' => $enrol->id, 'accepted' => enrol_select_plugin::ACCEPTED, 'main' => enrol_select_plugin::MAIN];
     $countmainlist = $DB->count_records_sql($sql, $conditions);
 
     // Récupère le quota de la liste principale.
     $maxmainlist = $enrol->customint1;
 
     // Calcule le nombre d'inscrits sur la liste complémentaire.
-    $conditions = array('enrolid' => $enrol->id, 'status' => enrol_select_plugin::WAIT);
+    $conditions = ['enrolid' => $enrol->id, 'status' => enrol_select_plugin::WAIT];
     $countwaitlist = $DB->count_records('user_enrolments', $conditions);
 
     // Récupère le quota de la liste complémentaire.

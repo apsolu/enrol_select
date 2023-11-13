@@ -40,7 +40,7 @@ $sql = "SELECT u.*".
     " ORDER BY u.lastname, u.firstname";
 $recordset = $DB->get_recordset_sql($sql);
 
-$teachers = array(0 => get_string('choosedots'));
+$teachers = [0 => get_string('choosedots')];
 foreach ($recordset as $teacher) {
     $teachers[$teacher->id] = fullname($teacher);
 }
@@ -49,7 +49,7 @@ $recordset->close();
 // Récupère la liste des calendriers.
 $calendars = $DB->get_records('apsolu_calendars');
 
-$mform = new apsolu_overview_filter_form(null, array($calendars, $teachers));
+$mform = new apsolu_overview_filter_form(null, [$calendars, $teachers]);
 $mdata = $mform->get_data();
 
 // Liste des cours.
@@ -88,7 +88,7 @@ foreach ($enrols as $enrol) {
     }
 
     if (isset($courses[$enrol->courseid]->enrols) === false) {
-        $courses[$enrol->courseid]->enrols = array();
+        $courses[$enrol->courseid]->enrols = [];
         $courses[$enrol->courseid]->count_enrols = 0;
         $courses[$enrol->courseid]->anomalies = 0;
     }
@@ -130,7 +130,7 @@ $teachers = enrol_select_get_activities_teachers();
 
 $data = new stdClass();
 $data->wwwroot = $CFG->wwwroot;
-$data->courses = array();
+$data->courses = [];
 $data->count_courses = 0;
 $data->form = $mform->render();
 $data->filters = isset($mdata->course);

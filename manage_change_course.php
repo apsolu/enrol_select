@@ -32,11 +32,11 @@ $enrolid = required_param('enrolid', PARAM_INT);
 $from = required_param('from', PARAM_INT);
 $to = required_param('actions', PARAM_INT);
 if (!isset($_POST['users'])) {
-    $_POST['users'] = array();
+    $_POST['users'] = [];
 }
 
-$instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
+$instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'select'], '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $instance->courseid], '*', MUST_EXIST);
 $context = context_course::instance($course->id, MUST_EXIST);
 
 require_login($course);
@@ -58,7 +58,7 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 
 $instancename = $enrolselect->get_instance_name($instance);
 
-$url = new moodle_url('/enrol/select/manage_change_course.php', array('enrolid' => $instance->id, 'from' => $from, 'to' => $to));
+$url = new moodle_url('/enrol/select/manage_change_course.php', ['enrolid' => $instance->id, 'from' => $from, 'to' => $to]);
 
 $PAGE->set_url($url->out());
 $PAGE->set_pagelayout('base');
@@ -70,7 +70,7 @@ $sql = "SELECT u.*".
     " FROM {user} u".
     " JOIN {user_enrolments} ue ON u.id = ue.userid".
     " WHERE ue.enrolid = ?";
-$users = $DB->get_records_sql($sql, array($enrolid));
+$users = $DB->get_records_sql($sql, [$enrolid]);
 foreach ($users as $userid => $user) {
     $index = array_search((string)$userid, $_POST['users'], true);
 
@@ -89,8 +89,8 @@ $sql = "SELECT e.id, e.name, c.id AS courseid, c.fullname".
     " JOIN {enrol} e ON c.id = e.courseid AND e.status = 0 AND e.enrol = 'select'".
     " WHERE ra.userid = ?".
     " ORDER BY c.fullname";
-$courses = array();
-foreach ($DB->get_records_sql($sql, array($USER->id)) as $courseid => $enrolcourse) {
+$courses = [];
+foreach ($DB->get_records_sql($sql, [$USER->id]) as $courseid => $enrolcourse) {
     if ($course->id == $enrolcourse->courseid) {
         continue;
     }
@@ -102,13 +102,13 @@ foreach ($DB->get_records_sql($sql, array($USER->id)) as $courseid => $enrolcour
     }
 }
 
-if ($courses === array()) {
+if ($courses === []) {
     $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
     $message = 'Vous n\'enseignez que dans un seul cours. Vous ne pouvez pas utiliser cette fonction.';
     redirect($url, $message, 5, \core\output\notification::NOTIFY_ERROR);
 }
 
-$mform = new enrol_select_manage_change_course_form($url->out(false), array($instance, $users, $from, $to, $courses));
+$mform = new enrol_select_manage_change_course_form($url->out(false), [$instance, $users, $from, $to, $courses]);
 
 if ($mform->is_cancelled()) {
     redirect($return);
@@ -118,21 +118,21 @@ if ($mform->is_cancelled()) {
         $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
         redirect($url, 'Impossible de déplacer dans le même cours', 5, \core\output\notification::NOTIFY_ERROR);
     } else if (isset($courses[$data->courseid])) {
-        $newinstance = $DB->get_record('enrol', array('id' => $data->courseid, 'enrol' => 'select'), '*', MUST_EXIST);
+        $newinstance = $DB->get_record('enrol', ['id' => $data->courseid, 'enrol' => 'select'], '*', MUST_EXIST);
 
         $badmoves = 0;
         $goodmoves = 0;
         foreach ($data->users as $userid) {
-            $newenrol = $DB->get_record('user_enrolments', array('enrolid' => $newinstance->id, 'userid' => $userid));
+            $newenrol = $DB->get_record('user_enrolments', ['enrolid' => $newinstance->id, 'userid' => $userid]);
             if ($newenrol) {
                 $badmoves++;
                 continue;
             }
 
-            $currentenrol = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $userid));
+            $currentenrol = $DB->get_record('user_enrolments', ['enrolid' => $instance->id, 'userid' => $userid]);
             $coursecontext = context_course::instance($instance->courseid);
             $sql = "UPDATE {role_assignments} SET roleid = ? WHERE component = 'enrol_select' AND userid = ? AND contextid = ?";
-            $params = array('component' => 'enrol_select', 'userid' => $userid, 'contextid' => $coursecontext->id);
+            $params = ['component' => 'enrol_select', 'userid' => $userid, 'contextid' => $coursecontext->id];
             $roleassignment = $DB->get_record('role_assignments', $params);
             if ($roleassignment) {
                 $enrolselect->unenrol_user($instance, $userid);
@@ -144,7 +144,7 @@ if ($mform->is_cancelled()) {
             }
         }
 
-        $notification = array();
+        $notification = [];
         if ($goodmoves === 1) {
             $notification[] = '1 utilisateur a été déplacé';
         } else if ($goodmoves > 1) {
@@ -171,8 +171,8 @@ if ($mform->is_cancelled()) {
 $pluginname = get_string('pluginname', 'enrol_select');
 
 $PAGE->navbar->add(get_string('users'));
-$PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', array('id' => $enrolid)));
-$PAGE->navbar->add($pluginname, new moodle_url('/enrol/select/manage.php', array('enrolid' => $enrolid)));
+$PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', ['id' => $enrolid]));
+$PAGE->navbar->add($pluginname, new moodle_url('/enrol/select/manage.php', ['enrolid' => $enrolid]));
 $PAGE->navbar->add(get_string('notifications'));
 
 echo $OUTPUT->header();

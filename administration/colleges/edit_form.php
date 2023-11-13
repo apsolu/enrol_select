@@ -46,25 +46,25 @@ class apsolu_colleges_form extends moodleform {
 
         list($data, $roles, $cohorts) = $this->_customdata;
 
-        $nameattribs = array('size' => '20', 'maxlength' => '255');
+        $nameattribs = ['size' => '20', 'maxlength' => '255'];
         $mform->addElement('text', 'name', 'Libellé de la population', $nameattribs);
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'server');
         $mform->addRule('name', get_string('required'), 'required', null, 'client');
 
         // Roles.
-        $options = array();
+        $options = [];
         foreach ($roles as $role) {
             $options[$role->id] = $role->localname;
         }
         $mform->addElement('select', 'roleid', 'Sélectionner un rôle', $options);
 
         // Cohorts.
-        $options = array();
+        $options = [];
         foreach ($cohorts as $cohort) {
             $options[$cohort->id] = $cohort->name;
         }
-        $select = $mform->addElement('select', 'cohorts', 'Sélectionner les cohortes', $options, array('size' => 10));
+        $select = $mform->addElement('select', 'cohorts', 'Sélectionner les cohortes', $options, ['size' => 10]);
         $select->setMultiple(true);
 
         // Limite de voeux.
@@ -89,7 +89,7 @@ class apsolu_colleges_form extends moodleform {
 
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('save', 'admin'));
         $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu', $a));
-        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
+        $mform->addGroup($buttonarray, 'buttonar', '', [' '], false);
 
         $mform->addElement('hidden', 'id', $data->id);
         $mform->setType('id', PARAM_INT);
@@ -128,7 +128,7 @@ class apsolu_colleges_form extends moodleform {
         }
 
         // Vérifie qu'une cohorte n'est pas utilisée dans un autre collège et avec un autre role.
-        $conflicts = array();
+        $conflicts = [];
 
         $roles = role_fix_names($DB->get_records('role'));
 
@@ -139,13 +139,13 @@ class apsolu_colleges_form extends moodleform {
             " JOIN {role} r ON r.id = ac.roleid".
             " WHERE ac.id != :collegeid".
             " AND ac.roleid = :roleid";
-        $recordset = $DB->get_recordset_sql($sql, array('collegeid' => $data['id'], 'roleid' => $data['roleid']));
+        $recordset = $DB->get_recordset_sql($sql, ['collegeid' => $data['id'], 'roleid' => $data['roleid']]);
         foreach ($recordset as $college) {
             if (in_array($college->cohortid, $data['cohorts'], $strict = true) === false) {
                 continue;
             }
 
-            $options = array('cohort' => $college->cohort, 'college' => $college->name, 'role' => $roles[$college->roleid]->name);
+            $options = ['cohort' => $college->cohort, 'college' => $college->name, 'role' => $roles[$college->roleid]->name];
             $conflicts[] = get_string('cohort_X_is_already_used_with_role_Y_by_college_Z', 'enrol_select', $options);
         }
         $recordset->close();

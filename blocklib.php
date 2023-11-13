@@ -133,7 +133,7 @@ function enrol_select_get_enrolments_block() {
 
     $overviewenrolmentsdata = new stdClass();
     $overviewenrolmentsdata->wwwroot = $CFG->wwwroot;
-    $overviewenrolmentsdata->activity_enrolments = array();
+    $overviewenrolmentsdata->activity_enrolments = [];
     foreach (enrol_select_get_real_user_activity_enrolments() as $enrolment) {
         if ($enrolment->status === enrol_select_plugin::DELETED) {
             continue;
@@ -141,7 +141,7 @@ function enrol_select_get_enrolments_block() {
 
         $enrolment->role = $roles[$enrolment->roleid]->localname;
 
-        $enrol = $DB->get_record('enrol', array('id' => $enrolment->enrolid));
+        $enrol = $DB->get_record('enrol', ['id' => $enrolment->enrolid]);
         if ($enrol) {
             $enrolment->is_enrol_period_active = $instance->is_enrol_period_active($enrol);
         } else {
@@ -175,7 +175,7 @@ function enrol_select_get_filters_block($courses) {
     $filters = enrol_select_generate_filters($courses);
 
     $overviewfiltersdata = new stdClass();
-    $overviewfiltersdata->form = (object) array('action' => $CFG->wwwroot.'/enrol/select/overview.php');
+    $overviewfiltersdata->form = (object) ['action' => $CFG->wwwroot.'/enrol/select/overview.php'];
     $overviewfiltersdata->filters = array_values($filters);
 
     $block = new block_contents();

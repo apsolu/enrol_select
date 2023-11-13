@@ -74,7 +74,11 @@ class check_enrolment_payment extends \core\task\adhoc_task {
         $enrolselectplugin = new enrol_select_plugin();
 
         // Détermine si l'utilisateur est toujours inscrit.
-        $conditions = ['enrolid' => $customdata->enrolid, 'userid' => $this->get_userid(), 'status' => $enrolselectplugin::ACCEPTED];
+        $conditions = [
+            'enrolid' => $customdata->enrolid,
+            'userid' => $this->get_userid(),
+            'status' => $enrolselectplugin::ACCEPTED,
+        ];
         if ($DB->count_records('user_enrolments', $conditions) === 0) {
             // L'utilisateur n'est plus inscrit à ce cours.
             return;

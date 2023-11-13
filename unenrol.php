@@ -28,8 +28,8 @@ require_once($CFG->dirroot.'/enrol/select/locallib.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 
-$instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
+$instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'select'], '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $instance->courseid], '*', MUST_EXIST);
 $context = context_course::instance($course->id, MUST_EXIST);
 
 require_login($course);
@@ -50,7 +50,7 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 
 $instancename = $enrolselect->get_instance_name($instance);
 
-$PAGE->set_url('/enrol/select/manage.php', array('enrolid' => $instance->id));
+$PAGE->set_url('/enrol/select/manage.php', ['enrolid' => $instance->id]);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title($enrolselect->get_instance_name($instance));
 $PAGE->set_heading($course->fullname);
@@ -58,8 +58,8 @@ $PAGE->set_heading($course->fullname);
 $pluginname = get_string('pluginname', 'enrol_select');
 
 $PAGE->navbar->add(get_string('users'));
-$PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', array('id' => $course->id)));
-$PAGE->navbar->add($pluginname, new moodle_url('/enrol/select/manage.php', array('enrolid' => $instance->id)));
+$PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', ['id' => $course->id]));
+$PAGE->navbar->add($pluginname, new moodle_url('/enrol/select/manage.php', ['enrolid' => $instance->id]));
 $PAGE->navbar->add($instancename);
 
 if (isset($_POST['removeselect'])) {
@@ -79,7 +79,7 @@ if (isset($_POST['removeselect'])) {
 }
 
 // Create the user selector objects.
-$options = array('enrolid' => $enrolid, 'accesscontext' => $context);
+$options = ['enrolid' => $enrolid, 'accesscontext' => $context];
 $currentuserselector = new enrol_manual_current_participant('removeselect', $options);
 ob_start();
 $currentuserselector->display();
@@ -96,7 +96,7 @@ if (isset($notification)) {
 $enroldata = new stdClass();
 $enroldata->action = $CFG->wwwroot.'/enrol/select/unenrol.php?enrolid='.$enrolid;
 $enroldata->current_users_selector = $userselector;
-$enroldata->cancel = new moodle_url('/enrol/select/manage.php', array('enrolid' => $instance->id));
+$enroldata->cancel = new moodle_url('/enrol/select/manage.php', ['enrolid' => $instance->id]);
 
 echo $OUTPUT->render_from_template('enrol_select/manage_unenrol', $enroldata);
 

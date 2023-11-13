@@ -51,7 +51,7 @@ class apsolu_overview_filter_form extends moodleform {
         $mform->setType('course', PARAM_TEXT);
 
         // Champ "calendriers".
-        $options = array(0 => get_string('choosedots'));
+        $options = [0 => get_string('choosedots')];
         foreach ($calendars as $calendar) {
             $options[$calendar->id] = $calendar->name;
         }
@@ -60,12 +60,12 @@ class apsolu_overview_filter_form extends moodleform {
 
         // Champ "date d'ouverture des inscriptions".
         $label = get_string('enrolstartdate', 'local_apsolu');
-        $mform->addElement('date_selector', 'enrolstartdate', $label, array('optional'  => true));
+        $mform->addElement('date_selector', 'enrolstartdate', $label, ['optional'  => true]);
         $mform->setType('enrolstartdate', PARAM_INT);
 
         // Champ "date de fermeture des inscriptions".
         $label = get_string('enrolenddate', 'local_apsolu');
-        $mform->addElement('date_selector', 'enrolenddate', $label, array('optional'  => true));
+        $mform->addElement('date_selector', 'enrolenddate', $label, ['optional'  => true]);
         $mform->setType('enrolenddate', PARAM_INT);
 
         // Champ "enseignants".
@@ -78,7 +78,7 @@ class apsolu_overview_filter_form extends moodleform {
         $a->class = 'btn btn-default btn-secondary';
 
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('filter', 'local_apsolu'));
-        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
+        $mform->addGroup($buttonarray, 'buttonar', '', [' '], false);
 
         $mform->addElement('hidden', 'tab', 'overview');
         $mform->setType('tab', PARAM_ALPHA);

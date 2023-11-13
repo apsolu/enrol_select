@@ -34,8 +34,8 @@ $enrolid = required_param('enrolid', PARAM_INT);
 $exportformat = optional_param('format', 'xls', PARAM_ALPHA);
 $exportstatus = optional_param('status', null, PARAM_INT);
 
-$instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'select'), '*', MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
+$instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'select'], '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $instance->courseid], '*', MUST_EXIST);
 $context = context_course::instance($course->id, MUST_EXIST);
 
 require_login($course);
@@ -58,7 +58,7 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 $roles = role_fix_names($DB->get_records('role'));
 
 $time = time();
-$params = array('courseid' => $course->id, 'enrolid' => $instance->id);
+$params = ['courseid' => $course->id, 'enrolid' => $instance->id];
 if (isset($exportstatus)) {
     $conditions = ' AND ue.status = :status';
     $params['status'] = $exportstatus;
@@ -87,7 +87,7 @@ if (empty($instance->name) === false) {
 }
 $filename = clean_filename($course->fullname.'-'.$instancename);
 
-$headers = array(
+$headers = [
     get_string('lastname'),
     get_string('firstname'),
     get_string('institution'),
@@ -96,7 +96,7 @@ $headers = array(
     get_string('cycle', 'local_apsolu'),
     get_string('register_type', 'enrol_select'),
     'Date d\'inscription',
-);
+];
 
 if ($CFG->wwwroot === 'https://mon-espace-suapse.univ-lr.fr' || $CFG->debug !== 0) {
     // TODO: à modifier.
@@ -113,12 +113,12 @@ $headers[] = 'texte libre';
 
 $fields = $DB->get_records('user_info_field');
 
-$rows = array();
+$rows = [];
 foreach ($users as $user) {
     $sex = '';
     $birthday = '';
 
-    $userfields = $DB->get_records('user_info_data', array('userid' => $user->id), $sort = '', $columns = 'fieldid, data');
+    $userfields = $DB->get_records('user_info_data', ['userid' => $user->id], $sort = '', $columns = 'fieldid, data');
     foreach ($fields as $fieldid => $field) {
         switch($field->shortname) {
             case 'apsoluufr':
@@ -148,7 +148,7 @@ foreach ($users as $user) {
         $age = '';
     }
 
-    $row = array();
+    $row = [];
     $row[] = $user->lastname;
     $row[] = $user->firstname;
     $row[] = $user->institution;
@@ -187,10 +187,10 @@ switch ($exportformat) {
 
         if (class_exists('PHPExcel_Style_Border') === true) {
             // Jusqu'à Moodle 3.7.x.
-            $properties = array('border' => PHPExcel_Style_Border::BORDER_THIN);
+            $properties = ['border' => PHPExcel_Style_Border::BORDER_THIN];
         } else {
             // Depuis Moodle 3.8.x.
-            $properties = array('border' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $properties = ['border' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN];
         }
 
         $excelformat = new MoodleExcelFormat($properties);
