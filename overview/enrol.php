@@ -361,6 +361,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
 
             // Détermine si les délais sont activés sur la méthode d'inscription et que l'utilisateur est accepté.
             $paymentbutton = false;
+            $instance->customdec1 = intval($instance->customdec1);
             if (empty($instance->customdec1) === false && $status === enrol_select_plugin::ACCEPTED) {
                 // Calcule si au moins une carte est due et affiche un message d'avertissement.
                 foreach (Payment::get_user_cards_status_per_course($course->id, $USER->id) as $card) {
@@ -371,7 +372,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                     $paymentbutton = true;
 
                     $functionalcontact = get_config('local_apsolu', 'functional_contact');
-                    $params = ['deadline' => format_time(intval($instance->customdec1)), 'contact' => $functionalcontact];
+                    $params = ['deadline' => format_time($instance->customdec1), 'contact' => $functionalcontact];
                     $message = get_string('payment_deadline_warning', 'enrol_select', $params);
                     echo sprintf('<div class="alert alert-danger text-center">%s</div>', $message);
                     break;

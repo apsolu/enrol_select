@@ -791,11 +791,12 @@ class enrol_select_plugin extends enrol_plugin {
             parent::enrol_user($instance, $userid, $roleid, $timestart, $timeend, $status, $recovergrades);
 
             // Ajoute une tâche pour contrôler le paiement après l'inscription.
+            $instance->customdec1 = intval($instance->customdec1);
             if (empty($instance->customdec1) === false && $status === self::ACCEPTED) {
                 $customdata = (object) ['courseid' => $instance->courseid, 'enrolid' => $instance->id];
 
                 $task = new enrol_select\task\check_enrolment_payment();
-                $task->set_next_run_time(time() + intval($instance->customdec1));
+                $task->set_next_run_time(time() + $instance->customdec1);
                 $task->set_custom_data($customdata);
                 $task->set_userid($userid);
 
@@ -890,6 +891,7 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Si les paiements à l'inscription sont activées.
+        $instance->customdec1 = intval($instance->customdec1);
         if (empty($instance->customdec1) === false) {
             // On supprime la tâche adhoc associée à l'utilisateur.
             $classname = '\enrol_select\task\check_enrolment_payment';
