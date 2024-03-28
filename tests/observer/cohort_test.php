@@ -48,7 +48,7 @@ class cohort_test extends advanced_testcase {
      *
      * @return void
      */
-    protected function setUp() : void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->setAdminUser();
