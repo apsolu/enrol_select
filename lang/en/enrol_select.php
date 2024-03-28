@@ -101,6 +101,7 @@ $string['welcome_message_on_accepted_list'] = 'Message de bienvenue de la liste 
 $string['welcome_message_on_main_list'] = 'Message de bienvenue de la liste principale';
 $string['welcome_message_on_wait_list'] = 'Message de bienvenue de la liste complémentaire';
 $string['welcome_messages'] = 'Messages de bienvenue';
+$string['x_enrolment_s'] = '{$a} inscription(s)';
 $string['x_place_remaining_on_the_main_list'] = '{$a} place restante sur liste principale';
 $string['x_place_remaining_on_the_wait_list'] = '{$a} place restante sur liste complémentaire';
 $string['x_places_remaining_on_the_main_list'] = '{$a} places restantes sur liste principale';
