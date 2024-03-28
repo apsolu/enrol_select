@@ -127,10 +127,10 @@ foreach ($instances as $instance) {
         $list->count_users = 0;
 
         switch ($code) {
-            case 2:
+            case enrol_select_plugin::MAIN:
                 $list->max_users = $instance->customint1;
                 break;
-            case 3:
+            case enrol_select_plugin::WAIT:
                 $list->max_users = $instance->customint2;
                 break;
             default:
