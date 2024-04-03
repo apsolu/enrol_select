@@ -257,6 +257,13 @@ $PAGE->navbar->add($course->shortname, new moodle_url('/course/view.php', ['id' 
 $PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', ['id' => $course->id]));
 $PAGE->navbar->add($pluginname);
 
+$options = [];
+$options['sortLocaleCompare'] = true;
+$options['widthFixed'] = true;
+$options['widgets'] = ['filter', 'stickyHeaders'];
+$options['widgetOptions'] = ['stickyHeaders_filteredToTop' => true, 'stickyHeaders_offset' => '50px'];
+$PAGE->requires->js_call_amd('local_apsolu/sort', 'initialise', [$options]);
+
 $PAGE->requires->js_call_amd('enrol_select/select_manage_user_selection', 'initialise', [$semester2]);
 
 echo $OUTPUT->header();

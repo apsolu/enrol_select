@@ -104,15 +104,16 @@
 
 	{{#count_users}}
 	<form action="{{form_action}}" method="post" id="participantsform">
-		<table class="table table-responsive table-striped table-sortable">
+		<div class="table-responsive">
+		<table class="table table-striped table-sortable">
 			<thead>
 				<tr>
-					<th>{{#str}}select, enrol_select{{/str}}
+					<th class="filter-false sorter-false">{{#str}}select, enrol_select{{/str}}
 					{{^lock}}
 						<br />(<button type="button" class="btn btn-link checkall">{{#str}}all{{/str}}</button> / <button type="button" class="btn btn-link uncheckall">{{#str}}none{{/str}}</button>)
 					{{/lock}}
 					</th>
-					<th>{{#str}}pictureofuser{{/str}}</th>
+					<th class="filter-false sorter-false">{{#str}}pictureofuser{{/str}}</th>
 					<th>{{#str}}lastname{{/str}}</th>
 					<th>{{#str}}firstname{{/str}}</th>
 					<th>{{#str}}register_type, enrol_select{{/str}}</th>
@@ -152,6 +153,7 @@
 				{{/users}}
 			</tbody>
 		</table>
+		</div>
 
 		{{^lock}}
 		<p>{{{actions}}}</p>
