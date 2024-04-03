@@ -163,37 +163,6 @@ input[type="radio"][name^="renew"] {
     cursor: not-allowed;
 }
 
-#apsolu-enrol-select tbody th {
-    background-color: #434241;
-    color: #f39c12;
-    padding: 0 1em;
-    line-height: 2em;
-}
-
-#apsolu-enrol-select .hide {
-    display: none;
-}
-
-#apsolu-enrol-select tbody ul {
-    margin: 0;
-}
-
-#apsolu-enrol-select tbody ul li {
-    white-space: nowrap;
-}
-
-#apsolu-enrol-select .apsolu-modal-sports-descriptions {
-    z-index: 4040;
-}
-
-#apsolu-enrol-select .apsolu-modal-sports-descriptions-button,
-#apsolu-enrol-select .apsolu-modal-sports-descriptions-button:focus,
-#apsolu-enrol-select .apsolu-modal-sports-descriptions-button:hover {
-    background: none;
-    border: none;
-    line-height: 1.5;
-}
-
 #page-enrol-select-overview #id_unenrolbutton {
     background-color: #d9534f;
     border-color: #d9534f;
