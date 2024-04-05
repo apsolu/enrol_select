@@ -57,21 +57,21 @@ define(['jquery', 'local_apsolu/jquery.tablesorter'], function($) {
 
             // Gère les liens permettant de cocher toutes les checkboxes.
             $('.checkall').click(function() {
-                var form = $(this).parents(':eq(5)');
+                var form = $(this).closest('.participants-form');
                 form.find("input[type='checkbox']").prop('checked', true);
                 form.find('select[name="actions"]').prop('disabled', false);
             });
 
             // Gère les liens permettant de décocher toutes les checkboxes.
             $('.uncheckall').click(function() {
-                var form = $(this).parents(':eq(5)');
+                var form = $(this).closest('.participants-form');
                 form.find("input[type='checkbox']").prop('checked', false);
                 form.find('select[name="actions"]').prop('disabled', true);
             });
 
             // Active ou désactive le menu déroulant permettant de faire des actions sur les utilisateurs sélectionnés.
             $('.apsolu-select-manage-users-input-checkbox').change(function() {
-                var form = $(this).parents(':eq(5)');
+                var form = $(this).closest('.participants-form');
                 if (form.find(".apsolu-select-manage-users-input-checkbox:checked").length == 0) {
                     form.find('select[name="actions"],input[name="send_message"]').prop('disabled', true);
                 } else {
