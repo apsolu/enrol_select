@@ -139,13 +139,17 @@
 					<td>{{institution}}</td>
 					<td>{{apsolucycle}}</td>
 					<td>{{department}}</td>
-					<td class="{{count_enrolments}}">
+					<td>
+						{{! Affiche toutes les inscriptions de l'étudiant. }}
 						{{#count_enrolments}}
-						<ul class="list-unstyled">
-							{{#enrolments}}
-							<li><abbr title="{{fullname}}">{{sport}}</abbr>{{#course_url}} <a href="{{course_url}}">{{#pix}}i/course, core, {{#str}}course{{/str}}{{/pix}}</a>{{/course_url}} ({{enrolname}}/{{state}}/{{role}})</li>
-							{{/enrolments}}
-						</ul>
+						<details>
+							<summary>{{#str}}x_enrolment_s, enrol_select, {{count_enrolments}}{{/str}}</summary>
+							<ul class="list-unstyledx">
+								{{#enrolments}}
+								<li><abbr title="{{fullname}}">{{sport}}</abbr>{{#course_url}} <a href="{{course_url}}">{{#pix}}i/course, core, {{#str}}course{{/str}}{{/pix}}</a>{{/course_url}} ({{enrolname}}/{{state}}/{{role}})</li>
+								{{/enrolments}}
+							</ul>
+						</details>
 						{{/count_enrolments}}
 					</td>
 					<td><span title="{{timecreated}}">{{timecreated_sortable}}</span></td>
