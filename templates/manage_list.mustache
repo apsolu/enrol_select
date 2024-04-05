@@ -120,7 +120,7 @@
 					<th>{{#str}}institution{{/str}}</th>
 					<th>{{#str}}fields_apsolucycle, local_apsolu{{/str}}</th>
 					<th>{{#str}}department{{/str}}</th>
-					<th>{{#str}}all_registers, enrol_select{{/str}}</th>
+					<th>{{#str}}additional_information, local_apsolu{{/str}}</th>
 					<th>{{#str}}register_date, enrol_select{{/str}}</th>
 				</tr>
 			</thead>
@@ -151,6 +151,15 @@
 							</ul>
 						</details>
 						{{/count_enrolments}}
+
+						{{! Affiche l'état des paiements de l'étudiant pour ce cours. }}
+						{{#count_payments}}
+						<ul class="list-unstyled mt-3">
+							{{#payments}}
+							<li>{{{.}}}</li>
+							{{/payments}}
+						</ul>
+						{{/count_payments}}
 					</td>
 					<td><span title="{{timecreated}}">{{timecreated_sortable}}</span></td>
 				</tr>

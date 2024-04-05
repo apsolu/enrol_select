@@ -22,11 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use UniversiteRennes2\Apsolu\Payment;
 use local_apsolu\core\customfields as CustomFields;
 
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/locallib.php');
 require_once($CFG->dirroot.'/user/profile/lib.php');
+require_once($CFG->dirroot.'/local/apsolu/classes/apsolu/payment.php');
 
 $enrolid = optional_param('enrolid', null, PARAM_INT);
 
@@ -155,6 +157,10 @@ foreach ($instances as $instance) {
     $enrols[$instance->id] = $enrol;
 }
 
+// On récupère l'état de paiement des utilisateurs du cours.
+$payments = Payment::get_users_cards_status_per_course($course->id);
+$paymentspix = Payment::get_statuses_images();
+
 // On récupère toutes les inscriptions de tous les étudiants inscrits à ce cours.
 $sql = 'SELECT u.*, ra.roleid, e.name AS enrolname, e.courseid, ue.enrolid, ue.status, ue.timecreated,'.
     ' c.fullname, cc.name AS sport, uid1.data AS apsolucycle'.
@@ -188,6 +194,14 @@ foreach ($recordset as $record) {
         $record->picture = $OUTPUT->user_picture($record, ['size' => 30, 'courseid' => $course->id]);
         $record->enrolments = [];
         $record->count_enrolments = 0;
+        $record->payments = [];
+        $record->count_payments = 0;
+        if (isset($payments[$record->id]) === true) {
+            foreach ($payments[$record->id] as $payment) {
+                $record->payments[] = $paymentspix[$payment->status]->image.' '.$payment->name;
+                $record->count_payments++;
+            }
+        }
 
         $users[$record->id] = $record;
     }
