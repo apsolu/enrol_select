@@ -24,6 +24,7 @@
 
 use UniversiteRennes2\Apsolu\Payment;
 use local_apsolu\core\customfields as CustomFields;
+use local_apsolu\core\role as Role;
 
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/locallib.php');
@@ -65,7 +66,7 @@ $data->wwwroot = $CFG->wwwroot;
 $data->canunenrol = $canunenrol;
 $data->enrols = [];
 
-$roles = role_fix_names($DB->get_records('role'));
+$roles = Role::get_records();
 $instances = $DB->get_records('enrol', ['enrol' => 'select', 'courseid' => $course->id], $sort = 'name');
 $customfields = CustomFields::getCustomFields();
 
@@ -192,8 +193,10 @@ foreach ($recordset as $record) {
     if (isset($users[$record->id]) === false) {
         // On initialise le profile utilisateur (photo, inscriptions, etc).
         $record->picture = $OUTPUT->user_picture($record, ['size' => 30, 'courseid' => $course->id]);
-        $record->enrolments = [];
-        $record->count_enrolments = 0;
+        $record->accepted_enrolments = [];
+        $record->count_accepted_enrolments = 0;
+        $record->other_enrolments = [];
+        $record->count_other_enrolments = 0;
         $record->payments = [];
         $record->count_payments = 0;
         if (isset($payments[$record->id]) === true) {
@@ -209,7 +212,7 @@ foreach ($recordset as $record) {
     $enrolment = new stdClass();
     $enrolment->fullname = $record->fullname;
     $enrolment->sport = $record->sport;
-    $enrolment->role = $roles[$record->roleid]->localname;
+    $enrolment->role = $roles[$record->roleid]->name;
 
     // TODO: utiliser la nouvelle table.
     if (stripos($record->enrolname, 'semestre 1') !== false) {
@@ -221,7 +224,6 @@ foreach ($recordset as $record) {
     }
     $enrolment->state = get_string(enrol_select_plugin::$states[$record->status].'_list_abbr', 'enrol_select');
     $enrolment->status = $record->status;
-    $enrolment->role = $roles[$record->roleid]->localname;
     $enrolment->timecreated = userdate($record->timecreated, '%a %d %b à %T');
     $enrolment->timecreated_sortable = userdate($record->timecreated, '%F %T');
     if ($ismanager === false) {
@@ -230,26 +232,34 @@ foreach ($recordset as $record) {
         $enrolment->course_url = new moodle_url('/course/view.php', ['id' => $record->courseid]);
     }
 
-    $users[$record->id]->enrolments[$record->enrolid] = $enrolment;
-    $users[$record->id]->count_enrolments++;
+    if ($enrolment->status === enrol_select_plugin::ACCEPTED) {
+        $users[$record->id]->accepted_enrolments[$record->enrolid] = $enrolment;
+        $users[$record->id]->count_accepted_enrolments++;
+    } else {
+        $users[$record->id]->other_enrolments[$record->enrolid] = $enrolment;
+        $users[$record->id]->count_other_enrolments++;
+    }
 }
 $recordset->close();
 
 // On affecte chaque utilisateur dans le ou les méthodes d'inscription auxquelles il est inscrit.
 foreach ($users as $user) {
-    $enrolments = $user->enrolments;
-    $user->enrolments = array_values($user->enrolments);
+    $enrolments = $user->accepted_enrolments + $user->other_enrolments;
+    $user->accepted_enrolments = array_values($user->accepted_enrolments);
+    $user->other_enrolments = array_values($user->other_enrolments);
 
     foreach ($enrolments as $enrolid => $enrolment) {
-        if (isset($enrols[$enrolid]) === true) {
-            // On stocke le rôle et la date d'inscription pour cet utilisateur.
-            $user->role = $enrolment->role;
-            $user->timecreated = $enrolment->timecreated;
-            $user->timecreated_sortable = $enrolment->timecreated_sortable;
-
-            $enrols[$enrolid]->lists[$enrolment->status]->users[] = clone $user;
-            $enrols[$enrolid]->lists[$enrolment->status]->count_users++;
+        if (isset($enrols[$enrolid]) === false) {
+            continue;
         }
+
+        // On stocke le rôle et la date d'inscription pour cet utilisateur.
+        $user->role = $enrolment->role;
+        $user->timecreated = $enrolment->timecreated;
+        $user->timecreated_sortable = $enrolment->timecreated_sortable;
+
+        $enrols[$enrolid]->lists[$enrolment->status]->users[] = clone $user;
+        $enrols[$enrolid]->lists[$enrolment->status]->count_users++;
     }
 }
 

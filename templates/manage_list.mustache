@@ -140,17 +140,29 @@
 					<td>{{apsolucycle}}</td>
 					<td>{{department}}</td>
 					<td>
-						{{! Affiche toutes les inscriptions de l'étudiant. }}
-						{{#count_enrolments}}
+						{{! Affiche toutes les inscriptions acceptées de l'étudiant. }}
+						{{#count_accepted_enrolments}}
 						<details>
-							<summary>{{#str}}x_enrolment_s, enrol_select, {{count_enrolments}}{{/str}}</summary>
+							<summary>{{#str}}x_accepted_enrolment_s, enrol_select, {{count_accepted_enrolments}}{{/str}}</summary>
 							<ul class="list-unstyledx">
-								{{#enrolments}}
-								<li><abbr title="{{fullname}}">{{sport}}</abbr>{{#course_url}} <a href="{{course_url}}">{{#pix}}i/course, core, {{#str}}course{{/str}}{{/pix}}</a>{{/course_url}} ({{enrolname}}/{{state}}/{{role}})</li>
-								{{/enrolments}}
+								{{#accepted_enrolments}}
+								<li><abbr title="{{fullname}}">{{sport}}</abbr>{{#course_url}} <a href="{{course_url}}">{{#pix}}i/course, core, {{#str}}course{{/str}}{{/pix}}</a>{{/course_url}} ({{enrolname}}/{{role}})</li>
+								{{/accepted_enrolments}}
 							</ul>
 						</details>
-						{{/count_enrolments}}
+						{{/count_accepted_enrolments}}
+
+						{{! Affiche toutes les autres inscriptions de l'étudiant. }}
+						{{#count_other_enrolments}}
+						<details>
+							<summary>{{#str}}x_other_enrolment_s, enrol_select, {{count_other_enrolments}}{{/str}}</summary>
+							<ul class="list-unstyledx">
+								{{#other_enrolments}}
+								<li><abbr title="{{fullname}}">{{sport}}</abbr>{{#course_url}} <a href="{{course_url}}">{{#pix}}i/course, core, {{#str}}course{{/str}}{{/pix}}</a>{{/course_url}} ({{enrolname}}/{{state}}/{{role}})</li>
+								{{/other_enrolments}}
+							</ul>
+						</details>
+						{{/count_other_enrolments}}
 
 						{{! Affiche l'état des paiements de l'étudiant pour ce cours. }}
 						{{#count_payments}}
