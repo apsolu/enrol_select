@@ -46,7 +46,7 @@ require_once($CFG->dirroot.'/enrol/select/lib.php');
  * @copyright  2021 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class lib_test extends advanced_testcase {
+final class lib_test extends advanced_testcase {
     /**
      * Initialise un environnement de test.
      *
@@ -65,7 +65,7 @@ class lib_test extends advanced_testcase {
      *
      * @return void
      */
-    public function test_enrol_user() {
+    public function test_enrol_user(): void {
         global $CFG, $DB, $USER;
 
         $backupuserid = $USER->id;
@@ -182,7 +182,7 @@ class lib_test extends advanced_testcase {
      *
      * @return void
      */
-    public function test_get_available_status() {
+    public function test_get_available_status(): void {
         global $DB;
 
         $generator = $this->getDataGenerator();
@@ -332,7 +332,7 @@ class lib_test extends advanced_testcase {
      *
      * @return void
      */
-    public function test_get_default_enrolment_list() {
+    public function test_get_default_enrolment_list(): void {
         $instance = new stdClass();
 
         // Teste la valeur enrol_select_plugin::ACCEPTED.
@@ -355,7 +355,7 @@ class lib_test extends advanced_testcase {
      *
      * @return void
      */
-    public function test_refill_main_list() {
+    public function test_refill_main_list(): void {
         global $DB, $USER;
 
         $generator = $this->getDataGenerator();
@@ -463,7 +463,7 @@ class lib_test extends advanced_testcase {
      *
      * @return void
      */
-    public function test_unenrol_user() {
+    public function test_unenrol_user(): void {
         global $DB, $USER;
 
         $adminid = $USER->id;

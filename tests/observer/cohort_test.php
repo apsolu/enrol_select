@@ -42,7 +42,7 @@ require_once($CFG->dirroot.'/cohort/lib.php');
  * @copyright  2022 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cohort_test extends advanced_testcase {
+final class cohort_test extends advanced_testcase {
     /**
      * Initialise un environnement de test.
      *
@@ -63,7 +63,7 @@ class cohort_test extends advanced_testcase {
      *
      * @return void
      */
-    public function test_deleted() {
+    public function test_deleted(): void {
         global $DB;
 
         $countrecords1 = $DB->count_records('apsolu_colleges_members');

@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// phpcs:disable moodle.Files.LangFilesOrdering.DuplicatedKey
+// phpcs:disable moodle.Files.LangFilesOrdering.IncorrectOrder
+// phpcs:disable moodle.Files.LangFilesOrdering.UnexpectedComment
+
 $string['messageprovider:select_notification'] = 'Notifications en relation avec les inscriptions';
 
 $string['check_enrolment_payment'] = 'Contrôle le paiement d’une inscription';
@@ -113,7 +117,7 @@ $string['your_enrolment_has_been_registered'] = 'Votre inscription a été enreg
 $string['your_wish_has_been_registered'] = 'Votre vœu a été enregistré.';
 
 // Permissions.
-$string['select:config'] = 'Configurer les instances d’'.strtolower($string['pluginname']);
+$string['select:config'] = 'Configurer les instances d’inscription par voeux';
 $string['select:enrol'] = 'Inscrire des utilisateurs';
 $string['select:manage'] = 'Gérer les utilisateurs inscrits';
 $string['select:unenrol'] = 'Désinscrire du cours les utilisateurs';
