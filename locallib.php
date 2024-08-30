@@ -623,6 +623,47 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
         $courses[$enrol->courseid]->enrols[] = $enrol;
     }
 
+    // Calcule le nombre d'inscrits sur les listes d'inscription.
+    $availability = [];
+
+    $sql = "SELECT ue.enrolid, ue.status, COUNT(userid) AS count
+             FROM {enrol} e
+             JOIN {user_enrolments} ue ON e.id = ue.enrolid
+            WHERE e.enrol = 'select'
+           GROUP BY ue.enrolid, ue.status";
+    $recordset = $DB->get_recordset_sql($sql);
+    foreach ($recordset as $record) {
+        if (isset($availability[$record->enrolid]) === false) {
+            $availability[$record->enrolid] = new stdClass();
+            $availability[$record->enrolid]->main = 0;
+            $availability[$record->enrolid]->wait = 0;
+        }
+
+        switch ($record->status) {
+            case enrol_select_plugin::ACCEPTED:
+            case enrol_select_plugin::MAIN:
+                $availability[$record->enrolid]->main += $record->count;
+                break;
+            case enrol_select_plugin::WAIT:
+                $availability[$record->enrolid]->wait += $record->count;
+        }
+    }
+    $recordset->close();
+
+    // Récupère tous les rôles acceptés par cours.
+    $selectroles = [];
+
+    $recordset = $DB->get_recordset('enrol_select_roles');
+    foreach ($recordset as $record) {
+        if (isset($selectroles[$record->enrolid]) === false) {
+            $selectroles[$record->enrolid] = [];
+        }
+
+        $selectroles[$record->enrolid][] = $record->roleid;
+    }
+    $recordset->close();
+
+    // Parcourt chaque créneau horaire.
     foreach ($courses as $courseid => $course) {
         if (!isset($categories[$course->category])) {
             $params = (object) ['courseid' => $course->id, 'categoryid' => $course->category];
@@ -656,21 +697,14 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
         if ($enrol->customint3 == 1) {
             // Les quotas sont activés.
             // TODO: refactoriser cette partie avec le script ajax/reload_column_left_places.php.
-            // Calcule le nombre d'inscrits sur la liste des acceptés et sur la liste principale.
-            $sql = "SELECT COUNT(userid) FROM {user_enrolments} WHERE enrolid = :enrolid AND status IN (:accepted, :main)";
-            $conditions = [
-                'enrolid' => $enrol->id,
-                'accepted' => enrol_select_plugin::ACCEPTED,
-                'main' => enrol_select_plugin::MAIN,
-            ];
-            $course->count_main_list = $DB->count_records_sql($sql, $conditions);
+            // Récupère le nombre d'inscrits sur la liste des acceptés et sur la liste principale.
+            $course->count_main_list = $availability[$enrol->id]->main ?? 0;
 
             // Récupère le quota de la liste principale.
             $course->max_main_list = $enrol->customint1;
 
-            // Calcule le nombre d'inscrits sur la liste complémentaire.
-            $conditions = ['enrolid' => $enrol->id, 'status' => enrol_select_plugin::WAIT];
-            $course->count_wait_list = $DB->count_records('user_enrolments', $conditions);
+            // Récupère le nombre d'inscrits sur la liste complémentaire.
+            $course->count_wait_list = $availability[$enrol->id]->wait ?? 0;
 
             // Récupère le quota de la liste complémentaire.
             $course->max_wait_list = $enrol->customint2;
@@ -709,11 +743,12 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
         // TODO: est-ce que l'utilisateur peut accéder à tous les types ?
 
         // Récupère tous les rôles acceptés par ce cours.
-        $selectroles = $DB->get_records('enrol_select_roles', ['enrolid' => $enrol->id], '', 'roleid');
         $course->role_options = [];
-        foreach ($selectroles as $role) {
-            if (isset($roles[$role->roleid])) {
-                $course->role_options[$role->roleid] = $roles[$role->roleid];
+        if (isset($selectroles[$enrol->id]) === true) {
+            foreach ($selectroles[$enrol->id] as $roleid) {
+                if (isset($roles[$roleid])) {
+                    $course->role_options[$roleid] = $roles[$roleid];
+                }
             }
         }
 
