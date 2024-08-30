@@ -483,38 +483,36 @@ function enrol_select_get_potential_user_roles($userid = null, $courseid = null)
     }
 
     if ($courseid === null) {
-        $sql = "SELECT DISTINCT r.*".
-            " FROM {role} r".
-            " JOIN {apsolu_colleges} ac ON r.id = ac.roleid".
-            " JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid".
-            " JOIN {cohort_members} cm ON cm.cohortid = acm.cohortid".
-            " WHERE cm.userid=?";
-        $params = [$userid];
+        $sql = "SELECT DISTINCT r.*
+                  FROM {role} r
+                  JOIN {apsolu_colleges} ac ON r.id = ac.roleid
+                  JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid
+                  JOIN {cohort_members} cm ON cm.cohortid = acm.cohortid
+                 WHERE cm.userid = :userid
+              ORDER BY r.sortorder";
+        $params = ['userid' => $userid];
     } else {
         $time = time();
 
-        $sql = "SELECT r.*".
-            " FROM {role} r".
-            " JOIN {role_assignments} ra ON r.id = ra.roleid".
-            " JOIN {context} ctx ON ctx.id = ra.contextid".
-            " JOIN {course} c ON c.id = ctx.instanceid".
-            " JOIN {enrol} e ON c.id = e.courseid AND ra.itemid = e.id".
-            " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid".
-            " WHERE e.enrol = 'select'".
-            " AND e.status = 0". // Active.
-            " AND ue.userid = :userid".
-            " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
-            " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
-            " AND c.id = :courseid".
-            " AND ctx.contextlevel = 50";
+        $sql = "SELECT r.*
+                  FROM {role} r
+                  JOIN {role_assignments} ra ON r.id = ra.roleid
+                  JOIN {context} ctx ON ctx.id = ra.contextid
+                  JOIN {course} c ON c.id = ctx.instanceid
+                  JOIN {enrol} e ON c.id = e.courseid AND ra.itemid = e.id
+                  JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid
+                 WHERE e.enrol = 'select'
+                   AND e.status = 0
+                   AND ue.userid = :userid
+                   AND (ue.timestart = 0 OR ue.timestart <= :timestart)
+                   AND (ue.timeend = 0 OR ue.timeend >= :timeend)
+                   AND c.id = :courseid
+                   AND ctx.contextlevel = 50
+              ORDER BY r.sortorder";
         $params = ['userid' => $userid, 'timestart' => $time, 'timeend' => $time, 'courseid' => $courseid];
     }
 
     $roles = role_fix_names($DB->get_records_sql($sql, $params));
-
-    uasort($roles, function($a, $b) {
-        return $a->sortorder > $b->sortorder;
-    });
 
     return $roles;
 }
@@ -751,7 +749,7 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
 
         // Note : ne pas utiliser uasort() pour préserver les index, car mustache ne sait pas parcourir les tableaux associatifs.
         usort($course->role_options, function($a, $b) {
-            return $a->sortorder > $b->sortorder;
+            return ($a->sortorder < $b->sortorder) ? -1 : 1;
         });
 
         $course->grouping = $groupings[$categories[$course->category]->parent]->name;

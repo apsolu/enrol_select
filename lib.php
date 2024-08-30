@@ -36,6 +36,7 @@ require_once($CFG->dirroot.'/local/apsolu/locallib.php');
  * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+#[\AllowDynamicProperties]
 class enrol_select_plugin extends enrol_plugin {
     /**
      * Code du statut accepté.

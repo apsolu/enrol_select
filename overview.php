@@ -122,8 +122,8 @@ $PAGE->blocks->add_fake_block(enrol_select_get_enrolments_block(), BLOCK_POS_LEF
 
 // Set filters block.
 $filters = enrol_select_get_filters_block($courses);
-$overviewactivitiesdata->more_than_one_site = $filters->more_than_one_site;
-$PAGE->blocks->add_fake_block($filters, BLOCK_POS_LEFT);
+$overviewactivitiesdata->more_than_one_site = $filters['more_than_one_site'];
+$PAGE->blocks->add_fake_block($filters['block'], BLOCK_POS_LEFT);
 
 // CSS.
 $PAGE->requires->css(new moodle_url($CFG->wwwroot.'/enrol/select/styles/select2.min.css'));

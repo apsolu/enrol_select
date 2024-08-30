@@ -167,7 +167,7 @@ function enrol_select_get_enrolments_block() {
  *
  * @param array $courses Liste des cours affichés sur la page des inscriptions.
  *
- * @return string Retourne le rendu HTML du bloc.
+ * @return array L'index "block" retourne le code HTML du bloc, l'index "more_than_one_site" indique si l'instance a plus d'un site.
  */
 function enrol_select_get_filters_block($courses) {
     global $CFG, $OUTPUT;
@@ -182,7 +182,6 @@ function enrol_select_get_filters_block($courses) {
     $block->title = get_string('filters', 'admin');
     $block->attributes['class'] = 'block block_book_toc';
     $block->content = $OUTPUT->render_from_template('enrol_select/overview_filters', $overviewfiltersdata);
-    $block->more_than_one_site = isset($filters['city']);
 
-    return $block;
+    return ['block' => $block, 'more_than_one_site' => isset($filters['city'])];
 }
