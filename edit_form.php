@@ -328,6 +328,11 @@ class enrol_select_edit_form extends moodleform {
                     $errors['customdec1'] = get_string('the_delay_cannot_be_set_if_the_default_list_is_accepted', 'enrol_select');
                 }
 
+                if ($data['customdec1'] < 1200) {
+                    $label = get_string('the_delay_cannot_be_set_to_a_value_of_less_than_20_minutes', 'enrol_select');
+                    $errors['customdec1'] = $label;
+                }
+
                 // TODO: à cause d'un problème de stockage de données en base, on empêche de saisir un délai de paiement
                 // supérieur à 99999 secondes.
                 if ($data['customdec1'] > 99999) {
