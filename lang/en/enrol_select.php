@@ -46,6 +46,7 @@ $string['enrollee_main_list'] = 'Candidat Principale';
 $string['enrollee_wait_list'] = 'Candidat Attente';
 $string['enrollee_wish_list'] = 'Candidat Voeux';
 $string['enrollees'] = 'Inscrits';
+$string['enrolment_list'] = 'Liste d’inscription';
 $string['enrolment_to'] = 'Inscription en {$a}';
 $string['filters_for_managers'] = 'Filtres pour gestionnaires';
 $string['it_is_currently_not_possible_to_indicate_a_duration_greater_than_one_day'] = 'Pour des raisons techniques, il n’est pour le moment pas possible d’indiquer une durée supérieure à 27 heures.';
