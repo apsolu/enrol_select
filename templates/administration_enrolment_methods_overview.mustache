@@ -55,7 +55,7 @@
 {{/count_courses}}
 
 {{#count_courses}}
-<table class="table table-bordered" id="table-enrolments-overview">
+<table class="table table-borderless table-hover" id="table-enrolments-overview">
 <thead>
     <tr>
         <th rowspan="2">{{#str}}courses, local_apsolu{{/str}}</th>
@@ -74,7 +74,7 @@
 </thead>
 <tbody>
 {{#courses}}
-    <tr data-anomalies="{{anomalies}}">
+    <tr class="border-top" data-anomalies="{{anomalies}}">
         {{^count_enrols}}
         <td rowspan="1">{{fullname}}<br /><i>{{area}}, <b>{{city}}</b></i></td>
         <td colspan="8" class="table-active text-center">{{#str}}no_enrols, local_apsolu{{/str}}</td>
@@ -141,7 +141,7 @@
         {{/invalid_enrolenddate}}
 
         {{! Colonne des inscrits acceptés. }}
-        <td>{{count_accepted_list}}</td>
+        <td{{#available_places}} class="table-success"{{/available_places}}>{{count_accepted_list}}</td>
 
         {{! Colonne des inscrits sur LP/LC. }}
         {{^quota}}

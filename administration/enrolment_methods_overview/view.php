@@ -117,6 +117,11 @@ foreach ($enrols as $enrol) {
         $enrol->{$variable} = $enrolments[$key]->count;
     }
 
+    $enrol->available_places = false;
+    if (empty($enrol->quota) === true || ($enrol->count_accepted_list + $enrol->count_main_list) < $enrol->customint1) {
+        $enrol->available_places = true;
+    }
+
     if ($courses[$enrol->courseid]->anomalies === 0) {
         $courses[$enrol->courseid]->anomalies = intval($enrol->invalid_enrolstartdate ||
             $enrol->invalid_enrolenddate || empty($enrol->quota));
