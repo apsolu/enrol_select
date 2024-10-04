@@ -32,7 +32,8 @@ $tabslist = [];
 $tabslist['default_settings'] = 'settings';
 $tabslist['colleges'] = 'colleges';
 $tabslist['renewals'] = 'renewals';
-$tabslist['overview'] = 'overview';
+$tabslist['enrolments_overview'] = 'enrolments_overview';
+$tabslist['enrolment_methods_overview'] = 'enrolment_methods_overview';
 
 $tabsbar = [];
 foreach ($tabslist as $stringid => $tabname) {

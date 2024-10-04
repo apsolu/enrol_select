@@ -80,7 +80,7 @@ class apsolu_overview_filter_form extends moodleform {
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('filter', 'local_apsolu'));
         $mform->addGroup($buttonarray, 'buttonar', '', [' '], false);
 
-        $mform->addElement('hidden', 'tab', 'overview');
+        $mform->addElement('hidden', 'tab', 'enrolment_methods_overview');
         $mform->setType('tab', PARAM_ALPHA);
     }
 }

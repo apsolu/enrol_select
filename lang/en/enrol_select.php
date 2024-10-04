@@ -48,6 +48,8 @@ $string['enrollee_wish_list'] = 'Candidat Voeux';
 $string['enrollees'] = 'Inscrits';
 $string['enrolment_list'] = 'Liste d’inscription';
 $string['enrolment_to'] = 'Inscription en {$a}';
+$string['enrolment_methods_overview'] = 'Vue d\'ensemble des méthodes d\'inscription';
+$string['enrolments_overview'] = 'Vue d\'ensemble des inscriptions';
 $string['filters_for_managers'] = 'Filtres pour gestionnaires';
 $string['it_is_currently_not_possible_to_indicate_a_duration_greater_than_one_day'] = 'Pour des raisons techniques, il n’est pour le moment pas possible d’indiquer une durée supérieure à 27 heures.';
 $string['list'] = 'Liste';
@@ -181,6 +183,7 @@ $string['types'] = 'Cours évalué';
 $string['wishes'] = 'Voeux';
 $string['roles'] = 'Rôles';
 $string['prices'] = 'Tarification';
+$string['college'] = 'Population';
 $string['colleges'] = 'Population';
 $string['renewals'] = 'Réinscriptions en masse';
 
@@ -205,6 +208,7 @@ $string['deleted_description'] = 'Liste des étudiants désinscrits. Ils n’ont
 $string['error:enrol'] = 'Impossible de vous inscrire à ce cours';
 
 $string['enrolment'] = 'Inscription';
+$string['enrolments'] = 'Inscriptions';
 $string['enrolmentsaved'] = 'Vœu enregistré';
 $string['unenrolmentsaved'] = 'Désinscription effectuée';
 $string['enrol'] = 'S’inscrire';

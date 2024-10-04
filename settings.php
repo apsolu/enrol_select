@@ -65,10 +65,16 @@ if ($hassiteconfig || has_any_capability($capabilities, context_system::instance
         $page = new admin_externalpage('enrol_select_renewals', $label, $url, $capabilities);
         $ADMIN->add('enrol_select', $page);
 
-        // Inscriptions > Vue d'ensemble.
-        $label = get_string('overview', 'local_apsolu');
-        $url = new moodle_url('/enrol/select/administration.php?tab=overview');
-        $page = new admin_externalpage('enrol_select_overview', $label, $url, $capabilities);
+        // Inscriptions > Vue d'ensemble des inscriptions.
+        $label = get_string('enrolments_overview', 'enrol_select');
+        $url = new moodle_url('/enrol/select/administration.php?tab=enrolments_overview');
+        $page = new admin_externalpage('enrol_select_enrolments_overview', $label, $url, $capabilities);
+        $ADMIN->add('enrol_select', $page);
+
+        // Inscriptions > Vue d'ensemble des méthodes d'inscription.
+        $label = get_string('enrolment_methods_overview', 'enrol_select');
+        $url = new moodle_url('/enrol/select/administration.php?tab=enrolment_methods_overview');
+        $page = new admin_externalpage('enrol_select_enrolment_methods_overview', $label, $url, $capabilities);
         $ADMIN->add('enrol_select', $page);
     }
 }

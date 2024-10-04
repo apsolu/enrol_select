@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 // Fichier chargé automatiquement pour les administrateurs, mais pas pour les gestionnaires visiblement.
 require_once($CFG->dirroot.'/enrol/select/lib.php');
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
-require_once($CFG->dirroot.'/enrol/select/administration/overview/view_filter_form.php');
+require_once($CFG->dirroot.'/enrol/select/administration/enrolment_methods_overview/view_filter_form.php');
 
 $PAGE->requires->js_call_amd('enrol_select/administration_overview', 'initialise');
 
@@ -200,4 +200,4 @@ foreach ($courses as $course) {
     }
 }
 
-echo $OUTPUT->render_from_template('enrol_select/administration_overview', $data);
+echo $OUTPUT->render_from_template('enrol_select/administration_enrolment_methods_overview', $data);
