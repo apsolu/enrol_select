@@ -69,7 +69,7 @@ class user_notified extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('enrol/select/manage.php', ['enrolid' => 'value']);
+        return new \moodle_url('/enrol/select/manage.php', ['enrolid' => 'value']);
     }
 
     /**
