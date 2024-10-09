@@ -33,4 +33,12 @@ $observers = [
         'internal'    => true,
         'priority'    => 9999,
     ],
+    // Gère les désinscriptions sur le cours FFSU.
+    [
+        'eventname'   => '\core\event\user_enrolment_deleted',
+        'callback'    => '\enrol_select\observer\user_enrolment::deleted',
+        'includefile' => null,
+        'internal'    => true,
+        'priority'    => 9999,
+    ],
 ];
