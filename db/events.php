@@ -33,6 +33,14 @@ $observers = [
         'internal'    => true,
         'priority'    => 9999,
     ],
+    // Gère la suppression des méthodes d'inscription.
+    [
+        'eventname'   => '\core\event\enrol_instance_deleted',
+        'callback'    => '\enrol_select\observer\enrol_instance::deleted',
+        'includefile' => null,
+        'internal'    => true,
+        'priority'    => 9999,
+    ],
     // Gère la suppression des rôles depuis l'interface Administration du site > Utilisateurs > Permissions > Définition des roles.
     [
         'eventname'   => '\core\event\role_deleted',

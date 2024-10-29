@@ -156,8 +156,12 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
 
     // Modification à appliquer lors de la prochaine mise à jour.
     if (false) {
-        // Nettoie les tables faisant référence à des roles supprimées.
         $queries = [];
+        // Nettoie les tables faisant référence à des méthodes d'inscription supprimées.
+        $queries[] = "DELETE FROM {enrol_select_cards} WHERE enrolid NOT IN (SELECT id FROM {enrol})";
+        $queries[] = "DELETE FROM {enrol_select_cohorts} WHERE enrolid NOT IN (SELECT id FROM {enrol})";
+        $queries[] = "DELETE FROM {enrol_select_roles} WHERE enrolid NOT IN (SELECT id FROM {enrol})";
+        // Nettoie les tables faisant référence à des roles supprimés.
         $queries[] = "DELETE FROM {enrol_select_roles} WHERE roleid NOT IN (SELECT id FROM {role})";
         $queries[] = "DELETE FROM {enrol_select_cohorts_roles} WHERE roleid NOT IN (SELECT id FROM {role})";
         foreach ($queries as $sql) {
