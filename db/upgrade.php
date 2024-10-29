@@ -154,5 +154,19 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
         upgrade_plugin_savepoint(true, $version, 'enrol', 'select');
     }
 
+    // Modification à appliquer lors de la prochaine mise à jour.
+    if (false) {
+        // Nettoie les tables faisant référence à des roles supprimées.
+        $queries = [];
+        $queries[] = "DELETE FROM {enrol_select_roles} WHERE roleid NOT IN (SELECT id FROM {role})";
+        $queries[] = "DELETE FROM {enrol_select_cohorts_roles} WHERE roleid NOT IN (SELECT id FROM {role})";
+        foreach ($queries as $sql) {
+            $DB->execute($sql);
+        }
+
+        // Savepoint reached.
+        upgrade_plugin_savepoint(true, $version, 'enrol', 'select');
+    }
+
     return true;
 }

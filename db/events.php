@@ -33,6 +33,14 @@ $observers = [
         'internal'    => true,
         'priority'    => 9999,
     ],
+    // Gère la suppression des rôles depuis l'interface Administration du site > Utilisateurs > Permissions > Définition des roles.
+    [
+        'eventname'   => '\core\event\role_deleted',
+        'callback'    => '\enrol_select\observer\role::deleted',
+        'includefile' => null,
+        'internal'    => true,
+        'priority'    => 9999,
+    ],
     // Gère les désinscriptions sur le cours FFSU.
     [
         'eventname'   => '\core\event\user_enrolment_deleted',
