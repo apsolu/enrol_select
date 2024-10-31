@@ -80,7 +80,7 @@ $string['payment_deadline'] = 'Délai de paiement';
 $string['payment_deadline_help'] = 'Ce paramètre accorde un délai de paiement à l’utilisateur. Si ce délai n’est pas respecté, APSOLU désinscrira automatiquement l’utilisateur du cours.
 
 Pour désactiver cette fonctionnalité, il suffit de mettre la valeur de ce champ à 0.';
-$string['payment_deadline_warning'] = '<p><strong>Attention : il vous reste {$a->deadline} pour payer. Passé ce délai, votre inscription sera automatiquement annulée !</strong></p>
+$string['payment_deadline_warning'] = '<p><strong>Attention : il vous reste {$a->deadline} pour payer. Passé ce délai, votre inscription sera automatiquement annulée !</strong></p>
 <p>Si vous ne pouvez pas payer en ligne, merci de contacter votre secrétariat par téléphone ou par courriel à l’adresse {$a->contact}.</p>';
 $string['pluginname'] = 'Inscription par voeux';
 $string['pluginname_desc'] = 'Le plugin d’inscription par voeux permet aux utilisateurs de choisir les cours qu’ils veulent suivre. Les cours peuvent être protégés par différents critères (période d’inscription, taille de la liste principale, cohortes, etc).';
@@ -98,13 +98,13 @@ $string['the_user_X_has_reached_their_wish_limit_for_the_role_Y'] = 'L’utilisa
 $string['unenrolment_from'] = 'Désinscription de {$a}';
 $string['unenrolment_message'] = '<p>Bonjour,</p>
 <p>Vous avez été désinscrit du cours {$a->coursename}.</p>
-<p>Vous n’avez pas payé les frais d’inscription suivants :</p>
+<p>Vous n’avez pas payé les frais d’inscription suivants :</p>
 <ul>
     <li>{$a->cards}</li>
 </ul>
 <p>Au besoin, n’hésitez pas à nous contacter via l’adresse {$a->contact}.</p>
 <p>Cordialement,</p>';
-$string['warning_changing_calendar_may_result_in_loss_of_data'] = 'Attention ! La modification du calendrier peut entraîner une perte de données (comme par exemple les notes des étudiants).';
+$string['warning_changing_calendar_may_result_in_loss_of_data'] = 'Attention ! La modification du calendrier peut entraîner une perte de données (comme par exemple les notes des étudiants).';
 $string['welcome_message_on_accepted_list'] = 'Message de bienvenue de la liste des acceptés';
 $string['welcome_message_on_main_list'] = 'Message de bienvenue de la liste principale';
 $string['welcome_message_on_wait_list'] = 'Message de bienvenue de la liste complémentaire';
@@ -229,7 +229,7 @@ $string['event_user_notified'] = 'Utilisateur notifié';
 $string['full_registration'] = 'Inscription complète';
 
 $string['maxwishes'] = 'Nombre de voeux maximum';
-$string['maxwishes_help'] = 'Nombre de voeux maximum par défaut attribué à un utilisateur n’étant pas clairement identifié dans le système d’information ; n’appartenant à aucune population définie.';
+$string['maxwishes_help'] = 'Nombre de voeux maximum par défaut attribué à un utilisateur n’étant pas clairement identifié dans le système d’information ; n’appartenant à aucune population définie.';
 
 $string['manage_notify'] = 'Envoyer une notification aux étudiants sélectionnés';
 $string['manage_notification_0'] = 'Vous avez été retiré de la liste des étudiants acceptés.';
@@ -372,7 +372,7 @@ $string['renewenrolement'] = 'Renouveler mon inscription';
 $string['savedreenrolment'] = 'Votre choix a été enregistré.<br />Vous pouvez revenir sur votre sélection à tout moment jusqu’au {$a->date}.';
 $string['reenrolmentnotificationsubject'] = 'Récapitulatif de vos réinscriptions au SIUAPS';
 $string['reenrolmentnotification'] = 'Bonjour,'.PHP_EOL.PHP_EOL.
-    'Vous avez choisi de :'.PHP_EOL.
+    'Vous avez choisi de :'.PHP_EOL.
     '{$a->choices}'.PHP_EOL.PHP_EOL.
     'En cas de demande de réinscription, il vous appartient maintenant de vous présenter (avec votre tenue) sur le lieu et à l’heure du cours lors de la semaine de rentrée au SIUAPS - voir "mes rendez-vous à venir"'.PHP_EOL.PHP_EOL.
     'À bientôt,'.PHP_EOL.PHP_EOL.
