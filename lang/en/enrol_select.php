@@ -220,10 +220,6 @@ $string['unenroled'] = 'Désinscrit';
 
 $string['canntenrol'] = 'canntenrol';
 
-$string['rolename_and_price'] = '{$a->rolename} - {$a->price} {$a->currency}';
-$string['rolename_and_price'] = '{$a->rolename}';
-$string['rolename_and_price_free'] = '{$a} - gratuit';
-
 $string['event_user_moved'] = 'Utilisateur déplacé';
 $string['event_user_notified'] = 'Utilisateur notifié';
 $string['full_registration'] = 'Inscription complète';
