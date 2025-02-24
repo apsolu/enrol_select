@@ -64,12 +64,12 @@
         "description": "Étudiants sur liste principale.",
         "form_action": "https://apsolu.fr/form",
         "lock": false,
-        "actions": "<input type=\"submit\" />",
+        "actions": "<input type=\"submit\">",
         "count_users": 1,
         "users": [
             {
                 "id": "9",
-                "picture": "<img src=\"https://apsolu.fr/picture\" alt=\"\" />",
+                "picture": "<img src=\"https://apsolu.fr/picture\" alt=\"\">",
                 "lastname": "apsolu",
                 "firstname": "bob",
                 "role": "5",
@@ -86,7 +86,8 @@
                         "state": "1",
                         "role": "5",
                         "timecreated": "Lundi 18 mai à 12h05",
-                        "timecreated_sortable": "2020-05-18 12:05:47"
+                        "datecreated_sortable": "2020-05-18",
+                        "timecreated_sortable": "12:05:47"
                     }
                 ]
             }
@@ -104,80 +105,79 @@
 
 	{{#count_users}}
 	<form action="{{form_action}}" method="post" class="participants-form">
-		<div class="table-responsive">
-		<table class="table table-striped table-sortable">
-			<thead>
-				<tr>
-					<th class="filter-false sorter-false">{{#str}}select, enrol_select{{/str}}
-					{{^lock}}
-						<br />(<button type="button" class="btn btn-link checkall">{{#str}}all{{/str}}</button> / <button type="button" class="btn btn-link uncheckall">{{#str}}none{{/str}}</button>)
-					{{/lock}}
-					</th>
-					<th class="filter-false sorter-false">{{#str}}pictureofuser{{/str}}</th>
-					<th>{{#str}}lastname{{/str}}</th>
-					<th>{{#str}}firstname{{/str}}</th>
-					<th>{{#str}}register_type, enrol_select{{/str}}</th>
-					<th>{{#str}}institution{{/str}}</th>
-					<th>{{#str}}fields_apsolucycle, local_apsolu{{/str}}</th>
-					<th>{{#str}}department{{/str}}</th>
-					<th>{{#str}}additional_information, local_apsolu{{/str}}</th>
-					<th>{{#str}}register_date, enrol_select{{/str}}</th>
-				</tr>
-			</thead>
-			<tbody>
-				{{#users}}
-				<tr>
-					<td>
-					{{^lock}}
-						<input type="checkbox" class="apsolu-select-manage-users-input-checkbox" name="users[]" value="{{id}}" />
-					{{/lock}}
-					</td>
-					<td>{{{picture}}}</td>
-					<td>{{lastname}}</td>
-					<td>{{firstname}}</td>
-					<td>{{role}}</td>
-					<td>{{institution}}</td>
-					<td>{{apsolucycle}}</td>
-					<td>{{department}}</td>
-					<td>
-						{{! Affiche toutes les inscriptions acceptées de l'étudiant. }}
-						{{#count_accepted_enrolments}}
-						<details>
-							<summary>{{#str}}x_accepted_enrolment_s, enrol_select, {{count_accepted_enrolments}}{{/str}}</summary>
-							<ul class="list-unstyledx">
-								{{#accepted_enrolments}}
-								<li><abbr title="{{fullname}}">{{sport}}</abbr>{{#course_url}} <a href="{{course_url}}">{{#pix}}i/course, core, {{#str}}course{{/str}}{{/pix}}</a>{{/course_url}} ({{enrolname}}/{{role}})</li>
-								{{/accepted_enrolments}}
-							</ul>
-						</details>
-						{{/count_accepted_enrolments}}
+		<div class="table-responsive apsolu-mask-wrapper" data-mask-name="manage_list">
+            <table class="table table-striped table-sortable">
+                <thead>
+                    <tr>
+                        <th class="filter-false sorter-false no-mask table-column-shrink"><!-- {{#str}}select, enrol_select{{/str}}-->
+                        {{^lock}}
+                            <input title="{{#str}}all{{/str}} / {{#str}}none{{/str}}" type="checkbox" class="change-all" name="change-all" value="0">
+                        {{/lock}}
 
-						{{! Affiche toutes les autres inscriptions de l'étudiant. }}
-						{{#count_other_enrolments}}
-						<details>
-							<summary>{{#str}}x_other_enrolment_s, enrol_select, {{count_other_enrolments}}{{/str}}</summary>
-							<ul class="list-unstyledx">
-								{{#other_enrolments}}
-								<li><abbr title="{{fullname}}">{{sport}}</abbr>{{#course_url}} <a href="{{course_url}}">{{#pix}}i/course, core, {{#str}}course{{/str}}{{/pix}}</a>{{/course_url}} ({{enrolname}}/{{state}}/{{role}})</li>
-								{{/other_enrolments}}
-							</ul>
-						</details>
-						{{/count_other_enrolments}}
+                        </th>
+                        <th class="filter-false sorter-false no-mask table-column-shrink"></th>
+                        <th class="no-mask">{{#str}}fullname, local_apsolu{{/str}}</th>
+                        <th class="table-column-shrink" data-mask-name="register_type">{{#str}}register_type, enrol_select{{/str}}</th>
+                        <th class="table-column-shrink" data-mask-name="institution">{{#str}}institution{{/str}}</th>
+                        <th class="table-column-shrink" data-mask-name="fields_apsolucycle">{{#str}}fields_apsolucycle, local_apsolu{{/str}}</th>
+                        <th data-mask-name="department">{{#str}}department{{/str}}</th>
+                        <th data-mask-name="additional_information">{{#str}}additional_information, local_apsolu{{/str}}</th>
+                        <th class="table-column-shrink" data-mask-name="register_date">{{#str}}register_date, enrol_select{{/str}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#users}}
+                    <tr class="align-items-center">
+                        <td>
+                        {{^lock}}
+                            <input type="checkbox" class="apsolu-select-manage-users-input-checkbox" name="users[]" value="{{id}}" id="enrol-{{enrolid}}-list-{{status}}-{{id}}">
+                        {{/lock}}
+                        </td>
+                        <td>{{{picture}}}</td>
+                        <td><label class="w-100" for="enrol-{{enrolid}}-list-{{status}}-{{id}}">{{lastname}} {{firstname}}</label></td>
+                        <td>{{role}}</td>
+                        <td>{{institution}}</td>
+                        <td>{{apsolucycle}}</td>
+                        <td>{{department}}</td>
+                        <td>
+                            {{! Affiche toutes les inscriptions acceptées de l'étudiant. }}
+                            {{#count_accepted_enrolments}}
+                            <details>
+                                <summary>{{#str}}x_accepted_enrolment_s, enrol_select, {{count_accepted_enrolments}}{{/str}}</summary>
+                                <ul class="list-unstyledx">
+                                    {{#accepted_enrolments}}
+                                    <li><abbr title="{{fullname}}">{{sport}}</abbr>{{#course_url}} <a href="{{course_url}}">{{#pix}}i/course, core, {{#str}}course{{/str}}{{/pix}}</a>{{/course_url}} ({{enrolname}}/{{role}})</li>
+                                    {{/accepted_enrolments}}
+                                </ul>
+                            </details>
+                            {{/count_accepted_enrolments}}
 
-						{{! Affiche l'état des paiements de l'étudiant pour ce cours. }}
-						{{#count_payments}}
-						<ul class="list-unstyled mt-3">
-							{{#payments}}
-							<li>{{{.}}}</li>
-							{{/payments}}
-						</ul>
-						{{/count_payments}}
-					</td>
-					<td><span title="{{timecreated}}">{{timecreated_sortable}}</span></td>
-				</tr>
-				{{/users}}
-			</tbody>
-		</table>
+                            {{! Affiche toutes les autres inscriptions de l'étudiant. }}
+                            {{#count_other_enrolments}}
+                            <details>
+                                <summary>{{#str}}x_other_enrolment_s, enrol_select, {{count_other_enrolments}}{{/str}}</summary>
+                                <ul class="list-unstyledx">
+                                    {{#other_enrolments}}
+                                    <li><abbr title="{{fullname}}">{{sport}}</abbr>{{#course_url}} <a href="{{course_url}}">{{#pix}}i/course, core, {{#str}}course{{/str}}{{/pix}}</a>{{/course_url}} ({{enrolname}}/{{state}}/{{role}})</li>
+                                    {{/other_enrolments}}
+                                </ul>
+                            </details>
+                            {{/count_other_enrolments}}
+
+                            {{! Affiche l'état des paiements de l'étudiant pour ce cours. }}
+                            {{#count_payments}}
+                            <ul class="list-unstyled mt-3">
+                                {{#payments}}
+                                <li>{{{.}}}</li>
+                                {{/payments}}
+                            </ul>
+                            {{/count_payments}}
+                        </td>
+                        <td><span title="{{timecreated}}">{{datecreated_sortable}} {{timecreated_sortable}}</span></td>
+                    </tr>
+                    {{/users}}
+                </tbody>
+            </table>
 		</div>
 
 		{{^lock}}

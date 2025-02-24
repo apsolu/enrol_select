@@ -23,74 +23,83 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'local_apsolu/jquery.tablesorter'], function($) {
-    return {
-        initialise: function(semester2) {
-            // Active les premiers sous-onglets (liste des acceptés, liste principale, liste complémentaire, etc).
-            $('.apsolu-manage-users-tab-ul > li:first-child > a').each(function() {
-                $(this).addClass('active show');
-                $(this).attr('aria-selected', 'true');
-                $('#' + $(this).attr('aria-controls')).addClass('active show');
-            });
+define(['jquery', 'local_apsolu/table-mask'],
+    function($) {
+        return {
+            initialise: function(semester2) {
+                // Active les premiers sous-onglets (liste des acceptés, liste principale, liste complémentaire, etc).
+                $('.apsolu-manage-users-tab-ul > li:first-child > a').each(function() {
+                    $(this).addClass('active show');
+                    $(this).attr('aria-selected', 'true');
+                    $('#' + $(this).attr('aria-controls')).addClass('active show');
+                });
 
-            // Détermine quel onglet doit être actif au chargement de la page (S1 ou S2).
-            var index;
-            if (semester2 == true) {
-                index = Math.floor($('#apsolu-manage-methods-title-tab-ul > li').length / 2);
-            } else {
-                index = 0;
-            }
-
-            // Active un onglet (semestre 1, semestre 2, etc).
-            var link = $('#apsolu-manage-methods-title-tab-ul > li').eq(index).children().first();
-            link.addClass('active show');
-            link.attr('aria-selected', 'true');
-            $('#' + link.attr('aria-controls')).addClass('active show');
-
-            // Gère les checkboxes permettant de faire des actions sur les utilisateurs sélectionnés.
-            $('.select_options').change(function() {
-                var checkboxes = $(this).parents(':eq(1)').find("input[type='checkbox']:checked");
-                if (checkboxes.length > 0 && $(this).val() !== '') {
-                    $(this).parents(':eq(1)').submit();
-                }
-            });
-
-            // Gère les liens permettant de cocher toutes les checkboxes.
-            $('.checkall').click(function() {
-                var form = $(this).closest('.participants-form');
-                form.find("input[type='checkbox']").prop('checked', true);
-                form.find('select[name="actions"]').prop('disabled', false);
-            });
-
-            // Gère les liens permettant de décocher toutes les checkboxes.
-            $('.uncheckall').click(function() {
-                var form = $(this).closest('.participants-form');
-                form.find("input[type='checkbox']").prop('checked', false);
-                form.find('select[name="actions"]').prop('disabled', true);
-            });
-
-            // Active ou désactive le menu déroulant permettant de faire des actions sur les utilisateurs sélectionnés.
-            $('.apsolu-select-manage-users-input-checkbox').change(function() {
-                var form = $(this).closest('.participants-form');
-                if (form.find(".apsolu-select-manage-users-input-checkbox:checked").length == 0) {
-                    form.find('select[name="actions"],input[name="send_message"]').prop('disabled', true);
+                // Détermine quel onglet doit être actif au chargement de la page (S1 ou S2).
+                let index;
+                if (semester2 == true) {
+                    index = Math.floor($('#apsolu-manage-methods-title-tab-ul > li').length / 2);
                 } else {
-                    form.find('select[name="actions"],input[name="send_message"]').prop('disabled', false);
+                    index = 0;
                 }
-            });
 
-            // Désactive par défaut les menus déroulants permettant de faire des actions sur les utilisateurs sélectionnés.
-            $('select[name="actions"]').prop('disabled', true);
+                // Active un onglet (semestre 1, semestre 2, etc).
+                var $link = $('#apsolu-manage-methods-title-tab-ul > li').eq(index).children().first();
+                $link.addClass('active show');
+                $link.attr('aria-selected', 'true');
+                $('#' + $link.attr('aria-controls')).addClass('active show');
 
-            // Ajoute la possiblité de trier les tableaux.
-            $(".table-sortable").tablesorter({
-                headers: {
-                    '0': {sorter: false},
-                    '1': {sorter: false}
-                },
-                // Trie chronologiquement la colonne date d'inscription.
-                sortList: [[9, 0]]
-            });
-        }
-    };
-});
+                // Gère les checkboxes permettant de faire des actions sur les utilisateurs sélectionnés.
+                $('.select_options').change(function() {
+                    let $checkboxes = $(this).parents(':eq(1)').find("input[type='checkbox']:checked");
+                    if ($checkboxes.length > 0 && $(this).val() !== '') {
+                        $(this).parents(':eq(1)').submit();
+                    }
+                });
+
+                // Gère les liens permettant de cocher toutes les checkboxes.
+                $('.checkall').click(function() {
+                    let $form = $(this).closest('.participants-form');
+                    $form.find("input[type='checkbox']").prop('checked', true);
+                    $form.find('select[name="actions"]').prop('disabled', false);
+                });
+
+                // Gère les liens permettant de décocher toutes les checkboxes.
+                $('.uncheckall').click(function() {
+                    let $form = $(this).closest('.participants-form');
+                    $form.find("input[type='checkbox']").prop('checked', false);
+                    $form.find('select[name="actions"]').prop('disabled', true);
+
+                });
+
+                // selectionne ou déselectionne toutes les checkboxes en fonction de l'état de la checkbox de selection globale
+                $('.change-all').change(function() {
+                    let $form = $(this).closest('.participants-form');
+                    let check = $(this).prop("checked");
+                    $form.find("input[type='checkbox']").prop('checked', check);
+                    $form.find('select[name="actions"]').prop('disabled', !check);
+                });
+
+
+                // Active ou désactive le menu déroulant permettant de faire des actions sur les utilisateurs sélectionnés.
+                $('.apsolu-select-manage-users-input-checkbox').change(function() {
+                    let $form = $(this).closest('.participants-form');
+                    if ($form.find(".apsolu-select-manage-users-input-checkbox:checked").length == 0) {
+                        $form.find('select[name="actions"],input[name="send_message"]').prop('disabled', true);
+                    } else {
+                        $form.find('select[name="actions"],input[name="send_message"]').prop('disabled', false);
+                    }
+
+                    let check = $(this).prop("checked");
+                    if(!check) {
+                        $form.find('.change-all').prop("checked", false);
+                    } else if($form.find('.apsolu-select-manage-users-input-checkbox:not(:checked)').length == 0) {
+                        $form.find('.change-all').prop("checked", true);
+                    }
+                });
+
+                // Désactive par défaut les menus déroulants permettant de faire des actions sur les utilisateurs sélectionnés.
+                $('select[name="actions"]').prop('disabled', true);
+            }
+        };
+    }
+);
