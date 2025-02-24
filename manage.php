@@ -240,7 +240,8 @@ foreach ($recordset as $record) {
     $enrolment->state = get_string(enrol_select_plugin::$states[$record->status].'_list_abbr', 'enrol_select');
     $enrolment->status = $record->status;
     $enrolment->timecreated = userdate($record->timecreated, '%a %d %b à %T');
-    $enrolment->timecreated_sortable = userdate($record->timecreated, '%F %T');
+    $enrolment->datecreated_sortable = userdate($record->timecreated, '%F');
+    $enrolment->timecreated_sortable = userdate($record->timecreated, '%T');
     if ($ismanager === false) {
         $enrolment->course_url = '';
     } else {
@@ -272,6 +273,7 @@ foreach ($users as $user) {
         $user->role = $enrolment->role;
         $user->timecreated = $enrolment->timecreated;
         $user->timecreated_sortable = $enrolment->timecreated_sortable;
+        $user->datecreated_sortable = $enrolment->datecreated_sortable;
 
         $enrols[$enrolid]->lists[$enrolment->status]->users[] = clone $user;
         $enrols[$enrolid]->lists[$enrolment->status]->count_users++;
@@ -279,7 +281,7 @@ foreach ($users as $user) {
 }
 
 foreach ($enrols as $enrolid => $enrol) {
-    $enrols[$enrolid]->id = $enrolid;
+    $enrols[$enrolid]->eid = $enrolid;
     $enrols[$enrolid]->lists = array_values($enrol->lists);
 }
 
