@@ -281,7 +281,7 @@ foreach ($users as $user) {
 }
 
 foreach ($enrols as $enrolid => $enrol) {
-    $enrols[$enrolid]->eid = $enrolid;
+    $enrols[$enrolid]->id = $enrolid;
     $enrols[$enrolid]->lists = array_values($enrol->lists);
 }
 
