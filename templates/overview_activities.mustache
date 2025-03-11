@@ -139,13 +139,13 @@
                         <td class="text-center">
                             {{#enroled}}
                             <a class="apsolu-enrol-a apsolu-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}{{filters}}">
-                                {{#pix}}i/completion-manual-y,core,{{#quote}}{{#str}}edit{{/str}}{{/quote}}{{/pix}}
+                                {{#pix}}i/completion-manual-y,core,{{#str}}edit{{/str}}{{/pix}}
                             </a>
                             {{/enroled}}
                             {{^enroled}}
                                 {{#allow_enrolment}}
                                     <a class="apsolu-enrol-a apsolu-not-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}{{filters}}">
-                                        {{#pix}}i/completion-manual-n,core,{{#quote}}{{#str}}enrol,enrol_select{{/str}}{{/quote}}{{/pix}}
+                                        {{#pix}}i/completion-manual-n,core,{{#str}}enrol,enrol_select{{/str}}{{/pix}}
                                     </a>
                                 {{/allow_enrolment}}
                                 {{^allow_enrolment}}{{#debug}}<a class="apsolu-enrol-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">Debug</a>{{/debug}}{{/allow_enrolment}}
