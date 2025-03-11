@@ -71,9 +71,9 @@
 
     <dl id="adduseroptionsdl" class="enrol-select-manage-fieldset-div">
         <div>
-            <dt>Rôle</dt>
+            <dt><label for="apsolu-enrol-role">{{#str}}role{{/str}}</label></dt>
             <dd>
-                <select class="custom-select form-control" name="role">
+                <select class="custom-select form-control" id="apsolu-enrol-role" name="role">
                     {{# roles}}
                     <option value="{{ id }}">{{ name }}</option>
                     {{/ roles}}
@@ -81,9 +81,9 @@
             </dd>
         </div>
         <div>
-            <dt>Liste</dt>
+            <dt><label for="apsolu-enrol-status">{{#str}}list, enrol_select{{/str}}</label></dt>
             <dd>
-                <select class="custom-select form-control" name="status">
+                <select class="custom-select form-control" id="apsolu-enrol-status" name="status">
                     {{# status}}
                     <option value="{{ id }}">{{ name }}</option>
                     {{/ status}}
