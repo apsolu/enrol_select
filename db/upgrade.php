@@ -168,6 +168,162 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
             $DB->execute($sql);
         }
 
+        // Ajoute un champ 'id' sur la table 'enrol_select_roles'.
+        $tablename = 'enrol_select_roles';
+
+        $table = new xmldb_table($tablename);
+        $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, $precision = '10', $unsigned = XMLDB_UNSIGNED, $notnull = XMLDB_NOTNULL,
+            $sequence = XMLDB_SEQUENCE, $default = null, $previous = null);
+
+        if ($dbman->field_exists($table, $field) === false) {
+            // Renomme la table actuelle.
+            $dbman->rename_table($table, $tablename.'tmp');
+
+            // Ajoute la nouvelle table contenant la clé primaire 'id'.
+            $table = new xmldb_table($tablename);
+
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('enrolid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('roleid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+            $table->add_index('enrolid', XMLDB_INDEX_NOTUNIQUE, ['enrolid']);
+            $table->add_index('roleid', XMLDB_INDEX_NOTUNIQUE, ['roleid']);
+            $table->add_index('enrolidroleid', XMLDB_INDEX_UNIQUE, ['enrolid', 'roleid']);
+
+            $dbman->create_table($table);
+
+            // Récupère le contenu de l'ancienne table et l'injecte dans la nouvelle table.
+            $id = 1;
+            $recordset = $DB->get_recordset($tablename.'tmp');
+            foreach ($recordset as $record) {
+                $DB->insert_record($tablename, $record);
+            }
+            $recordset->close();
+
+            // Supprime l'ancienne table.
+            $table = new xmldb_table($tablename.'tmp');
+            $dbman->drop_table($table);
+        }
+
+        // Ajoute un champ 'id' sur la table 'enrol_select_cohorts'.
+        $tablename = 'enrol_select_cohorts';
+
+        $table = new xmldb_table($tablename);
+        $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, $precision = '10', $unsigned = XMLDB_UNSIGNED, $notnull = XMLDB_NOTNULL,
+            $sequence = XMLDB_SEQUENCE, $default = null, $previous = null);
+
+        if ($dbman->field_exists($table, $field) === false) {
+            // Renomme la table actuelle.
+            $dbman->rename_table($table, $tablename.'tmp');
+
+            // Ajoute la nouvelle table contenant la clé primaire 'id'.
+            $table = new xmldb_table($tablename);
+
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('enrolid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('cohortid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+            $table->add_index('enrolid', XMLDB_INDEX_NOTUNIQUE, ['enrolid']);
+            $table->add_index('cohortid', XMLDB_INDEX_NOTUNIQUE, ['cohortid']);
+            $table->add_index('enrolidcohortid', XMLDB_INDEX_UNIQUE, ['enrolid', 'cohortid']);
+
+            $dbman->create_table($table);
+
+            // Récupère le contenu de l'ancienne table et l'injecte dans la nouvelle table.
+            $id = 1;
+            $recordset = $DB->get_recordset($tablename.'tmp');
+            foreach ($recordset as $record) {
+                $DB->insert_record($tablename, $record);
+            }
+            $recordset->close();
+
+            // Supprime l'ancienne table.
+            $table = new xmldb_table($tablename.'tmp');
+            $dbman->drop_table($table);
+        }
+
+        // Ajoute un champ 'id' sur la table 'enrol_select_cohorts_roles'.
+        $tablename = 'enrol_select_cohorts_roles';
+
+        $table = new xmldb_table($tablename);
+        $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, $precision = '10', $unsigned = XMLDB_UNSIGNED, $notnull = XMLDB_NOTNULL,
+            $sequence = XMLDB_SEQUENCE, $default = null, $previous = null);
+
+        if ($dbman->field_exists($table, $field) === false) {
+            // Renomme la table actuelle.
+            $dbman->rename_table($table, $tablename.'tmp');
+
+            // Ajoute la nouvelle table contenant la clé primaire 'id'.
+            $table = new xmldb_table($tablename);
+
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('roleid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('cohortid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+            $table->add_index('roleid', XMLDB_INDEX_NOTUNIQUE, ['roleid']);
+            $table->add_index('cohortid', XMLDB_INDEX_NOTUNIQUE, ['cohortid']);
+            $table->add_index('roleidcohortid', XMLDB_INDEX_UNIQUE, ['roleid', 'cohortid']);
+
+            $dbman->create_table($table);
+
+            // Récupère le contenu de l'ancienne table et l'injecte dans la nouvelle table.
+            $id = 1;
+            $recordset = $DB->get_recordset($tablename.'tmp');
+            foreach ($recordset as $record) {
+                $DB->insert_record($tablename, $record);
+            }
+            $recordset->close();
+
+            // Supprime l'ancienne table.
+            $table = new xmldb_table($tablename.'tmp');
+            $dbman->drop_table($table);
+        }
+
+        // Ajoute un champ 'id' sur la table 'enrol_select_cards'.
+        $tablename = 'enrol_select_cards';
+
+        $table = new xmldb_table($tablename);
+        $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, $precision = '10', $unsigned = XMLDB_UNSIGNED, $notnull = XMLDB_NOTNULL,
+            $sequence = XMLDB_SEQUENCE, $default = null, $previous = null);
+
+        if ($dbman->field_exists($table, $field) === false) {
+            // Renomme la table actuelle.
+            $dbman->rename_table($table, $tablename.'tmp');
+
+            // Ajoute la nouvelle table contenant la clé primaire 'id'.
+            $table = new xmldb_table($tablename);
+
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('enrolid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('cardid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+            $table->add_index('enrolid', XMLDB_INDEX_NOTUNIQUE, ['enrolid']);
+            $table->add_index('cardid', XMLDB_INDEX_NOTUNIQUE, ['cardid']);
+            $table->add_index('enrolidcardid', XMLDB_INDEX_UNIQUE, ['enrolid', 'cardid']);
+
+            $dbman->create_table($table);
+
+            // Récupère le contenu de l'ancienne table et l'injecte dans la nouvelle table.
+            $id = 1;
+            $recordset = $DB->get_recordset($tablename.'tmp');
+            foreach ($recordset as $record) {
+                $DB->insert_record($tablename, $record);
+            }
+            $recordset->close();
+
+            // Supprime l'ancienne table.
+            $table = new xmldb_table($tablename.'tmp');
+            $dbman->drop_table($table);
+        }
+
         // Savepoint reached.
         upgrade_plugin_savepoint(true, $version, 'enrol', 'select');
     }
