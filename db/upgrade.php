@@ -154,8 +154,8 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
         upgrade_plugin_savepoint(true, $version, 'enrol', 'select');
     }
 
-    // Modification à appliquer lors de la prochaine mise à jour.
-    if (false) {
+    $version = 2025031900;
+    if ($oldversion < $version) {
         $queries = [];
         // Nettoie les tables faisant référence à des méthodes d'inscription supprimées.
         $queries[] = "DELETE FROM {enrol_select_cards} WHERE enrolid NOT IN (SELECT id FROM {enrol})";
@@ -324,6 +324,12 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
             $dbman->drop_table($table);
         }
 
+        // Savepoint reached.
+        upgrade_plugin_savepoint(true, $version, 'enrol', 'select');
+    }
+
+    // Modification à appliquer lors de la prochaine mise à jour.
+    if (false) {
         // Savepoint reached.
         upgrade_plugin_savepoint(true, $version, 'enrol', 'select');
     }
