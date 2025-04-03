@@ -143,14 +143,14 @@ if ($complement !== false) {
         if (isset($filtertime, $filtercohorts) === false) {
             // Pour un étudiant.
             $availableuserroles = $enrolselectplugin->get_available_user_roles($enrol, $USER->id);
-
         } else {
             // Pour un gestionnaire qui utiliserait les filtres.
-            $sql = "SELECT DISTINCT r.*".
-                " FROM {role} r".
-                " JOIN {apsolu_colleges} ac ON r.id = ac.roleid".
-                " JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid".
-                " WHERE acm.cohortid IN (".substr(str_repeat('?,', count($filtercohorts)), 0, -1).")";
+            $sql = "SELECT DISTINCT r.*
+                      FROM {role} r
+                      JOIN {apsolu_colleges} ac ON r.id = ac.roleid
+                      JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid
+                     WHERE acm.cohortid IN (".substr(str_repeat('?,', count($filtercohorts)), 0, -1).")
+                  ORDER BY r.sortorder";
             $availableuserroles = role_fix_names($DB->get_records_sql($sql, $filtercohorts));
 
             // Collèges.

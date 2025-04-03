@@ -502,18 +502,19 @@ class enrol_select_plugin extends enrol_plugin {
             $userid = $USER->id;
         }
 
-        $sql = "SELECT DISTINCT r.*".
-            " FROM {role} r".
-            " JOIN {enrol_select_roles} esr ON r.id = esr.roleid".
-            " JOIN {enrol} e ON e.id = esr.enrolid".
-            " JOIN {enrol_select_cohorts} esc ON e.id = esc.enrolid".
-            " JOIN {cohort_members} cm ON cm.cohortid = esc.cohortid".
-            " JOIN {apsolu_colleges_members} acm ON acm.cohortid = cm.cohortid".
-            " JOIN {apsolu_colleges} ac ON ac.id = acm.collegeid AND r.id = ac.roleid".
-            " WHERE e.id = :enrolid".
-            " AND e.enrol = 'select'".
-            " AND e.status = 0". // Active.
-            " AND cm.userid = :userid";
+        $sql = "SELECT DISTINCT r.*
+                  FROM {role} r
+                  JOIN {enrol_select_roles} esr ON r.id = esr.roleid
+                  JOIN {enrol} e ON e.id = esr.enrolid
+                  JOIN {enrol_select_cohorts} esc ON e.id = esc.enrolid
+                  JOIN {cohort_members} cm ON cm.cohortid = esc.cohortid
+                  JOIN {apsolu_colleges_members} acm ON acm.cohortid = cm.cohortid
+                  JOIN {apsolu_colleges} ac ON ac.id = acm.collegeid AND r.id = ac.roleid
+                 WHERE e.id = :enrolid
+                   AND e.enrol = 'select'
+                   AND e.status = 0  -- Active.
+                   AND cm.userid = :userid
+              ORDER BY r.sortorder";
         $params = ['enrolid' => $instance->id, 'userid' => $userid];
 
         return role_fix_names($DB->get_records_sql($sql, $params));
