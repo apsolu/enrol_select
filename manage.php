@@ -165,27 +165,30 @@ $paymentspix = Payment::get_statuses_images();
 // TODO: rendre moins spécifique à Brest.
 $appnvalidations = Payment::get_appn_brest($courseid);
 
+// On récupère tous les types de calendriers.
+$calendartypes = $DB->get_records('apsolu_calendars_types');
+
 // On récupère toutes les inscriptions de tous les étudiants inscrits à ce cours.
-$sql = 'SELECT u.*, ra.roleid, e.name AS enrolname, e.courseid, ue.enrolid, ue.status, ue.timecreated,'.
-    ' c.fullname, cc.name AS sport, uid1.data AS apsolucycle'.
-    ' FROM {user} u'.
-    ' LEFT JOIN {user_info_data} uid1 ON u.id = uid1.userid AND uid1.fieldid = :fieldid'.
-    ' JOIN {user_enrolments} ue ON u.id = ue.userid'.
-    ' JOIN {role_assignments} ra ON u.id = ra.userid AND ra.itemid = ue.enrolid'.
-    ' JOIN {enrol} e ON e.id = ue.enrolid'.
-    " JOIN {course} c ON c.id = e.courseid".
-    " JOIN {course_categories} cc ON cc.id = c.category".
-    ' WHERE u.deleted = 0'.
-    ' AND e.enrol = "select"'.
-    ' AND e.status = 0'.
-    ' AND u.id IN ('.
-        ' SELECT ue.userid'.
-        ' FROM {user_enrolments} ue'.
-        ' JOIN {enrol} e ON e.id = ue.enrolid'.
-        ' WHERE e.enrol = "select"'.
-        ' AND e.courseid = :courseid'.
-    ')'.
-    ' ORDER BY ue.timecreated, u.lastname, u.firstname';
+$sql = 'SELECT u.*, ra.roleid, e.name AS enrolname, e.courseid, ue.enrolid, ue.status, ue.timecreated,
+               c.fullname, cc.name AS sport, uid1.data AS apsolucycle, ac.typeid AS calendartypeid
+          FROM {user} u
+     LEFT JOIN {user_info_data} uid1 ON u.id = uid1.userid AND uid1.fieldid = :fieldid
+          JOIN {user_enrolments} ue ON u.id = ue.userid
+          JOIN {role_assignments} ra ON u.id = ra.userid AND ra.itemid = ue.enrolid
+          JOIN {enrol} e ON e.id = ue.enrolid
+     LEFT JOIN {apsolu_calendars} ac ON ac.id = e.customchar1
+          JOIN {course} c ON c.id = e.courseid
+          JOIN {course_categories} cc ON cc.id = c.category
+         WHERE u.deleted = 0
+           AND e.enrol = "select"
+           AND e.status = 0
+           AND u.id IN (SELECT ue.userid
+                          FROM {user_enrolments} ue
+                          JOIN {enrol} e ON e.id = ue.enrolid
+                         WHERE e.enrol = "select"
+                           AND e.courseid = :courseid
+               )
+      ORDER BY ue.timecreated, u.lastname, u.firstname';
 $users = [];
 $recordset = $DB->get_recordset_sql($sql, ['fieldid' => $customfields['apsolucycle']->id, 'courseid' => $course->id]);
 foreach ($recordset as $record) {
@@ -229,14 +232,12 @@ foreach ($recordset as $record) {
     $enrolment->sport = $record->sport;
     $enrolment->role = $roles[$record->roleid]->name;
 
-    // TODO: utiliser la nouvelle table.
-    if (stripos($record->enrolname, 'semestre 1') !== false) {
-        $enrolment->enrolname = 'S1';
-    } else if (stripos($record->enrolname, 'semestre 2') !== false) {
-        $enrolment->enrolname = 'S2';
+    if (isset($calendartypes[$record->calendartypeid]->shortname) === true) {
+        $enrolment->enrolname = $calendartypes[$record->calendartypeid]->shortname;
     } else {
         $enrolment->enrolname = $record->enrolname;
     }
+
     $enrolment->state = get_string(enrol_select_plugin::$states[$record->status].'_list_abbr', 'enrol_select');
     $enrolment->status = $record->status;
     $enrolment->timecreated = userdate($record->timecreated, '%a %d %b à %T');
