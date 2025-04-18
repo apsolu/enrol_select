@@ -126,8 +126,8 @@ $overviewactivitiesdata->more_than_one_site = $filters['more_than_one_site'];
 $PAGE->blocks->add_fake_block($filters['block'], BLOCK_POS_LEFT);
 
 // CSS.
-$PAGE->requires->css(new moodle_url($CFG->wwwroot.'/enrol/select/styles/select2.min.css'));
-$PAGE->requires->css(new moodle_url($CFG->wwwroot.'/enrol/select/styles/ol.css'));
+$PAGE->requires->css('/enrol/select/styles/select2.min.css');
+$PAGE->requires->css('/enrol/select/styles/ol.css');
 
 // Javascript.
 $PAGE->requires->js_call_amd('enrol_select/select_mapping', 'initialise');
