@@ -26,11 +26,6 @@ require('../../config.php');
 require_once($CFG->dirroot.'/enrol/select/lib.php');
 require_once($CFG->dirroot.'/enrol/select/locallib.php');
 
-$loglevel = DEBUG_DEVELOPER;
-if (defined('BEHAT_SITE_RUNNING') === true) {
-    $loglevel = DEBUG_NONE;
-}
-
 require_login();
 
 $context = context_user::instance($USER->id);
@@ -114,9 +109,11 @@ $activities = [];
 foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
     if ($enrolment->status !== enrol_select_plugin::ACCEPTED) {
         // On ne conserve que les inscriptions validées.
-        $message = 'L\'inscription d\'inscription #'.$enrolment->enrolid.
-            ' du cours #'.$enrolment->id.' n\'est pas validée (status: '.$enrolment->status.').';
-        debugging($message, $loglevel);
+        if (defined('BEHAT_SITE_RUNNING') === false) {
+            $message = 'L\'inscription d\'inscription #'.$enrolment->enrolid.
+                ' du cours #'.$enrolment->id.' n\'est pas validée (status: '.$enrolment->status.').';
+            debugging($message, $level = DEBUG_DEVELOPER);
+        }
         continue;
     }
 
@@ -124,16 +121,20 @@ foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
 
     if ($enrol === false) {
         // L'instance d'inscription n'existe pas.
-        $message = 'L\'instance d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'existe pas.';
-        debugging($message, $loglevel);
+        if (defined('BEHAT_SITE_RUNNING') === false) {
+            $message = 'L\'instance d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'existe pas.';
+            debugging($message, $level = DEBUG_DEVELOPER);
+        }
         continue;
     }
 
     if ($select->can_reenrol($enrol) === false) {
         // L'utilisateur n'est pas autorisé à se réinscrire.
-        $message = 'L\'utilisateur #'.$USER->id.' n\'est pas autorisé à se réinscrire'.
-            ' via l\'instance #'.$enrolment->enrolid.' du cours #'.$enrolment->id.'.';
-        debugging($message, $loglevel);
+        if (defined('BEHAT_SITE_RUNNING') === false) {
+            $message = 'L\'utilisateur #'.$USER->id.' n\'est pas autorisé à se réinscrire'.
+                ' via l\'instance #'.$enrolment->enrolid.' du cours #'.$enrolment->id.'.';
+            debugging($message, $level = DEBUG_DEVELOPER);
+        }
         continue;
     }
 
@@ -141,8 +142,10 @@ foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
 
     if ($targetenrol === false) {
         // L'instance de réinscription n'existe pas.
-        $message = 'L\'instance de réinscription #'.$targetenrol->id.' du cours #'.$enrolment->id.' n\'existe pas.';
-        debugging($message, $loglevel);
+        if (defined('BEHAT_SITE_RUNNING') === false) {
+            $message = 'L\'instance de réinscription #'.$targetenrol->id.' du cours #'.$enrolment->id.' n\'existe pas.';
+            debugging($message, $level = DEBUG_DEVELOPER);
+        }
         continue;
     }
 
@@ -154,8 +157,10 @@ foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
 
     if ($roles === []) {
         // L'utilisateur ne peut pas s'incrire (problème de cohortes ou de rôles).
-        $message = 'L\'utilisateur #'.$USER->id.' ne peut pas s\'inscrire (problème de cohortes ou de rôles).';
-        debugging($message, $loglevel);
+        if (defined('BEHAT_SITE_RUNNING') === false) {
+            $message = 'L\'utilisateur #'.$USER->id.' ne peut pas s\'inscrire (problème de cohortes ou de rôles).';
+            debugging($message, $level = DEBUG_DEVELOPER);
+        }
         continue;
     }
 

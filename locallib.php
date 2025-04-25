@@ -528,11 +528,6 @@ function enrol_select_get_potential_user_roles($userid = null, $courseid = null)
 function enrol_select_get_potential_user_activities($time = null, $cohorts = null) {
     global $DB, $USER;
 
-    $loglevel = DEBUG_DEVELOPER;
-    if (defined('BEHAT_SITE_RUNNING') === true) {
-        $loglevel = DEBUG_NONE;
-    }
-
     $groupings = enrol_select_get_visible_activities_domains();
     $categories = enrol_select_get_visible_sports();
     $skills = $DB->get_records('apsolu_skills');
@@ -617,7 +612,9 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
     foreach ($enrols as $enrol) {
         if (!isset($courses[$enrol->courseid])) {
             $params = (object) ['courseid' => $enrol->courseid, 'enrolid' => $enrol->id];
-            debugging(get_string('debug_enrol_invalid_enrolment', 'enrol_select', $params), $loglevel);
+            if (defined('BEHAT_SITE_RUNNING') === false) {
+                debugging(get_string('debug_enrol_invalid_enrolment', 'enrol_select', $params), $level = DEBUG_DEVELOPER);
+            }
             continue;
         }
 
@@ -672,7 +669,9 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
     foreach ($courses as $courseid => $course) {
         if (!isset($categories[$course->category])) {
             $params = (object) ['courseid' => $course->id, 'categoryid' => $course->category];
-            debugging(get_string('debug_enrol_invalid_category', 'enrol_select', $params), $loglevel);
+            if (defined('BEHAT_SITE_RUNNING') === false) {
+                debugging(get_string('debug_enrol_invalid_category', 'enrol_select', $params), $level = DEBUG_DEVELOPER);
+            }
             unset($courses[$courseid]);
             continue;
         }
@@ -680,7 +679,9 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
         // L'utilisateur ne semble pas avoir le droit de s'inscrire à ce cours.
         if (!isset($courses[$courseid]->enrols)) {
             $params = (object) ['courseid' => $course->id, 'userid' => $USER->id];
-            debugging(get_string('debug_enrol_no_enrolments', 'enrol_select', $params), $loglevel);
+            if (defined('BEHAT_SITE_RUNNING') === false) {
+                debugging(get_string('debug_enrol_no_enrolments', 'enrol_select', $params), $level = DEBUG_DEVELOPER);
+            }
             unset($courses[$courseid]);
             continue;
         }
@@ -688,7 +689,9 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
         // Il y a trop de méthodes !
         if (isset($courses[$courseid]->enrols[1])) {
             $params = (object) ['courseid' => $courseid, 'userid' => $USER->id];
-            debugging(get_string('debug_enrol_too_many_enrolments', 'enrol_select', $params), $loglevel);
+            if (defined('BEHAT_SITE_RUNNING') === false) {
+                debugging(get_string('debug_enrol_too_many_enrolments', 'enrol_select', $params), $level = DEBUG_DEVELOPER);
+            }
             unset($courses[$courseid]);
             continue;
         }
@@ -758,7 +761,9 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
         }
 
         if ($course->role_options === []) {
-            debugging('Course #'.$course->id.': no role for enrol #'.$enrol->id, $loglevel);
+            if (defined('BEHAT_SITE_RUNNING') === false) {
+                debugging('Course #'.$course->id.': no role for enrol #'.$enrol->id, $level = DEBUG_DEVELOPER);
+            }
             unset($courses[$courseid]);
             continue;
         } else {
