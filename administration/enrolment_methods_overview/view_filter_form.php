@@ -78,6 +78,8 @@ class apsolu_overview_filter_form extends moodleform {
         $a->class = 'btn btn-default btn-secondary';
 
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('filter', 'local_apsolu'));
+        $buttonarray[] = &$mform->createElement('submit', 'exportcsv', get_string('export_to_csv_format', 'local_apsolu'));
+        $buttonarray[] = &$mform->createElement('submit', 'exportexcel', get_string('export_to_excel_format', 'local_apsolu'));
         $mform->addGroup($buttonarray, 'buttonar', '', [' '], false);
 
         $mform->addElement('hidden', 'tab', 'enrolment_methods_overview');

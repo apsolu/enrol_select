@@ -205,4 +205,136 @@ foreach ($courses as $course) {
     }
 }
 
+if (isset($mdata->exportcsv) === true) {
+    // Exporte les données au format CSV.
+    require_once($CFG->libdir . '/csvlib.class.php');
+
+    $filename = 'extraction_des_methodes_d_inscription';
+
+    $csvexport = new csv_export_writer();
+    $csvexport->set_filename($filename);
+
+    // Définit les entêtes.
+    $headers = [];
+    $headers[] = get_string('courses', 'local_apsolu');
+    $headers[] = get_string('enrolname', 'enrol_select');
+    $headers[] = get_string('calendars', 'local_apsolu');
+    $headers[] = get_string('enrolstartdate', 'enrol_select');
+    $headers[] = get_string('enrolenddate', 'enrol_select');
+    $headers[] = get_string('accepted_list', 'enrol_select');
+    $headers[] = get_string('main_list', 'enrol_select');
+    $headers[] = get_string('wait_list', 'enrol_select');
+    $headers[] = get_string('deleted_list', 'enrol_select');
+    $csvexport->add_data($headers);
+
+    // Définit le contenu principal.
+    foreach ($data->courses as $course) {
+        foreach ($course->enrols as $enrol) {
+            $row = [];
+            $row[] = $course->fullname;
+            $row[] = $enrol->name;
+            $row[] = $enrol->calendar;
+            $row[] = userdate($enrol->enrolstartdate, get_string('strftimedatetime'));
+            $row[] = userdate($enrol->enrolenddate, get_string('strftimedatetime'));
+            $row[] = $enrol->count_accepted_list;
+            $row[] = $enrol->count_main_list;
+            $row[] = $enrol->count_wait_list;
+            $row[] = $enrol->count_deleted_list;
+
+            $csvexport->add_data($row);
+        }
+
+        if (empty($course->count_enrols) === true) {
+            $row = [];
+            $row[] = $course->fullname;
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+
+            $csvexport->add_data($row);
+        }
+    }
+
+    $csvexport->download_file();
+    exit();
+}
+
+if (isset($mdata->exportexcel) === true) {
+    // Export au format excel.
+    require_once($CFG->libdir.'/excellib.class.php');
+
+    $workbook = new MoodleExcelWorkbook("-");
+    $workbook->send('extraction_des_methodes_d_inscription.xls');
+    $myxls = $workbook->add_worksheet();
+
+    if (class_exists('PHPExcel_Style_Border') === true) {
+        // Jusqu'à Moodle 3.7.x.
+        $properties = ['border' => PHPExcel_Style_Border::BORDER_THIN];
+    } else {
+        // Depuis Moodle 3.8.x.
+        $properties = ['border' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN];
+    }
+
+    $excelformat = new MoodleExcelFormat($properties);
+
+    // Définit les entêtes.
+    $headers = [];
+    $headers[] = get_string('courses', 'local_apsolu');
+    $headers[] = get_string('enrolname', 'enrol_select');
+    $headers[] = get_string('calendars', 'local_apsolu');
+    $headers[] = get_string('enrolstartdate', 'enrol_select');
+    $headers[] = get_string('enrolenddate', 'enrol_select');
+    $headers[] = get_string('accepted_list', 'enrol_select');
+    $headers[] = get_string('main_list', 'enrol_select');
+    $headers[] = get_string('wait_list', 'enrol_select');
+    $headers[] = get_string('deleted_list', 'enrol_select');
+    foreach ($headers as $position => $value) {
+        $myxls->write_string(0, $position, $value, $excelformat);
+    }
+
+    // Définit le contenu principal.
+    $line = 1;
+    foreach ($data->courses as $course) {
+        foreach ($course->enrols as $enrol) {
+            $myxls->write_string($line, 0, $course->fullname, $excelformat);
+            $myxls->write_string($line, 1, $enrol->name, $excelformat);
+            $myxls->write_string($line, 2, $enrol->calendar, $excelformat);
+            $myxls->write_date($line, 3, $enrol->enrolstartdate, $excelformat);
+            $myxls->write_date($line, 4, $enrol->enrolenddate, $excelformat);
+            $myxls->write_string($line, 5, $enrol->count_accepted_list, $excelformat);
+            $myxls->write_string($line, 6, $enrol->count_main_list, $excelformat);
+            $myxls->write_string($line, 7, $enrol->count_wait_list, $excelformat);
+            $myxls->write_string($line, 8, $enrol->count_deleted_list, $excelformat);
+
+            $line++;
+        }
+
+        if (empty($course->count_enrols) === true) {
+            $myxls->write_string($line, 0, $course->fullname, $excelformat);
+            $myxls->write_string($line, 1, '', $excelformat);
+            $myxls->write_string($line, 2, '', $excelformat);
+            $myxls->write_string($line, 3, '', $excelformat);
+            $myxls->write_string($line, 4, '', $excelformat);
+            $myxls->write_string($line, 5, '', $excelformat);
+            $myxls->write_string($line, 6, '', $excelformat);
+            $myxls->write_string($line, 7, '', $excelformat);
+            $myxls->write_string($line, 8, '', $excelformat);
+
+            $line++;
+        }
+    }
+
+    // MDL-83543: positionne un cookie pour qu'un script js déverrouille le bouton submit après le téléchargement.
+    setcookie('moodledownload_' . sesskey(), time());
+
+    // Transmet le fichier au navigateur.
+    $workbook->close();
+    exit(0);
+}
+
 echo $OUTPUT->render_from_template('enrol_select/administration_enrolment_methods_overview', $data);
