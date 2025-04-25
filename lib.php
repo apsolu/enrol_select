@@ -605,15 +605,20 @@ class enrol_select_plugin extends enrol_plugin {
 
         $today = time();
 
+        $loglevel = DEBUG_DEVELOPER;
+        if (defined('BEHAT_SITE_RUNNING') === true) {
+            $loglevel = DEBUG_NONE;
+        }
+
         // Check opening register period.
         if ($instance->enrolstartdate !== '0' && $instance->enrolstartdate > $today) {
-            debugging($this->get_name().' not opened yet.', $level = DEBUG_DEVELOPER);
+            debugging($this->get_name().' not opened yet.', $loglevel);
             return false;
         }
 
         // Check closing register period.
         if ($instance->enrolenddate !== '0' && $instance->enrolenddate < $today) {
-            debugging($this->get_name().' already closed.', $level = DEBUG_DEVELOPER);
+            debugging($this->get_name().' already closed.', $loglevel);
             return false;
         }
 
@@ -630,7 +635,7 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         if ($found !== true) {
-            debugging($this->get_name().': '.$user->username.' and enrol cohort mismatch.', $level = DEBUG_DEVELOPER);
+            debugging($this->get_name().': '.$user->username.' and enrol cohort mismatch.', $loglevel);
             return false;
         }
 
@@ -650,7 +655,7 @@ class enrol_select_plugin extends enrol_plugin {
 
         // Check available slots.
         if ($this->get_available_status($instance, $user) === false) {
-            debugging($this->get_name().' n\'a plus aucune place disponible.', $level = DEBUG_DEVELOPER);
+            debugging($this->get_name().' n\'a plus aucune place disponible.', $loglevel);
             return false;
         }
 
@@ -672,13 +677,13 @@ class enrol_select_plugin extends enrol_plugin {
             $parameters = ['userid' => $user->id, 'roleid' => $roleid];
             $message = get_string('the_user_X_has_reached_their_wish_limit_for_the_role_Y', 'enrol_select', $parameters);
 
-            debugging($message, $level = DEBUG_DEVELOPER);
+            debugging($message, $loglevel);
             return false;
         }
 
         // Check role.
         if ($DB->get_record('enrol_select_roles', ['enrolid' => $instance->id, 'roleid' => $roleid]) === false) {
-            debugging($this->get_name().': roleid #'.$roleid.' is not available.', $level = DEBUG_DEVELOPER);
+            debugging($this->get_name().': roleid #'.$roleid.' is not available.', $loglevel);
             return false;
         }
 
@@ -699,32 +704,37 @@ class enrol_select_plugin extends enrol_plugin {
 
         $today = time();
 
+        $loglevel = DEBUG_DEVELOPER;
+        if (defined('BEHAT_SITE_RUNNING') === true) {
+            $loglevel = DEBUG_NONE;
+        }
+
         if ($userid === null) {
             $userid = $USER->id;
         }
 
         // Check reenrol enabled.
         if (empty($instance->customint6)) {
-            debugging($this->get_name().' reenrol not enabled.', $level = DEBUG_DEVELOPER);
+            debugging($this->get_name().' reenrol not enabled.', $loglevel);
             return false;
         }
 
         // Check reenrol exists.
         $enrol = $DB->get_record('enrol', ['id' => $instance->customint6, 'enrol' => 'select']);
         if ($enrol === false) {
-            debugging($this->get_name().' reenrol id #'.$instance->customint6.' does not exist', $level = DEBUG_DEVELOPER);
+            debugging($this->get_name().' reenrol id #'.$instance->customint6.' does not exist', $loglevel);
             return false;
         }
 
         // Check opening reenrol period.
         if ($instance->customint4 !== '0' && $instance->customint4 > $today) {
-            debugging($this->get_name().' not opened yet.', $level = DEBUG_DEVELOPER);
+            debugging($this->get_name().' not opened yet.', $loglevel);
             return false;
         }
 
         // Check closing reenrol period.
         if ($instance->customint5 !== '0' && $instance->customint5 < $today) {
-            debugging($this->get_name().' already closed.', $level = DEBUG_DEVELOPER);
+            debugging($this->get_name().' already closed.', $loglevel);
             return false;
         }
 
@@ -742,7 +752,7 @@ class enrol_select_plugin extends enrol_plugin {
             }
 
             if ($found !== true) {
-                debugging($this->get_name().': userid #'.$userid.' and enrol cohort mismatch.', $level = DEBUG_DEVELOPER);
+                debugging($this->get_name().': userid #'.$userid.' and enrol cohort mismatch.', $loglevel);
                 return false;
             }
         }
@@ -753,7 +763,7 @@ class enrol_select_plugin extends enrol_plugin {
         // Check role.
         if ($roleid !== null) {
             if ($DB->get_record('enrol_select_roles', ['enrolid' => $instance->id, 'roleid' => $roleid]) === false) {
-                debugging($this->get_name().': roleid #'.$roleid.' is not available.', $level = DEBUG_DEVELOPER);
+                debugging($this->get_name().': roleid #'.$roleid.' is not available.', $loglevel);
                 return false;
             }
         }
