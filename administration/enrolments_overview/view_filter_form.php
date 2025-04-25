@@ -57,6 +57,6 @@ class apsolu_enrolments_overview_filter_form extends moodleform {
         $mform->addGroup($buttonarray, 'buttonar', '', [' '], false);
 
         $mform->addElement('hidden', 'tab', 'enrolments_overview');
-        $mform->setType('tab', PARAM_TEXT);
+        $mform->setType('tab', PARAM_ALPHAEXT);
     }
 }

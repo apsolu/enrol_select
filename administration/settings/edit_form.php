@@ -188,7 +188,7 @@ class enrol_select_default_settings_form extends moodleform {
 
         // Hidden fields.
         $mform->addElement('hidden', 'tab', 'settings');
-        $mform->setType('tab', PARAM_ALPHANUM);
+        $mform->setType('tab', PARAM_ALPHAEXT);
 
         // Set default values.
         $this->set_data($defaults);

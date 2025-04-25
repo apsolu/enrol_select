@@ -81,6 +81,6 @@ class apsolu_overview_filter_form extends moodleform {
         $mform->addGroup($buttonarray, 'buttonar', '', [' '], false);
 
         $mform->addElement('hidden', 'tab', 'enrolment_methods_overview');
-        $mform->setType('tab', PARAM_ALPHA);
+        $mform->setType('tab', PARAM_ALPHAEXT);
     }
 }

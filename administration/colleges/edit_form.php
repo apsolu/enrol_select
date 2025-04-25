@@ -95,7 +95,7 @@ class apsolu_colleges_form extends moodleform {
         $mform->setType('id', PARAM_INT);
 
         $mform->addElement('hidden', 'tab', 'colleges');
-        $mform->setType('tab', PARAM_ALPHA);
+        $mform->setType('tab', PARAM_ALPHAEXT);
 
         $mform->addElement('hidden', 'action', 'edit');
         $mform->setType('action', PARAM_ALPHA);
