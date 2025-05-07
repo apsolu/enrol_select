@@ -73,10 +73,6 @@ class apsolu_overview_filter_form extends moodleform {
         $mform->setType('teacherid', PARAM_INT);
 
         // Submit buttons.
-        $a = new stdClass();
-        $a->href = $CFG->wwwroot.'/enrol/select/administration.php?tab=colleges';
-        $a->class = 'btn btn-default btn-secondary';
-
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('filter', 'local_apsolu'));
         $buttonarray[] = &$mform->createElement('submit', 'exportcsv', get_string('export_to_csv_format', 'local_apsolu'));
         $buttonarray[] = &$mform->createElement('submit', 'exportexcel', get_string('export_to_excel_format', 'local_apsolu'));
