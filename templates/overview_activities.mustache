@@ -121,7 +121,7 @@
             </thead>
             <tbody>
                 {{#activities}}
-                    <tr class="apsolu-sports-tr">
+                    <tr class="apsolu-sports-tr apsolu-sports-tr-activity">
                         <th class="apsolu-sports-th" colspan="12">
                             {{^ description}}
                                 <span class="apsolu-sports-th-span">{{name}}</span>
@@ -135,7 +135,7 @@
                     </tr>
 
                     {{#courses}}
-                    <tr{{#enroled}} class="info"{{/enroled}} >
+                    <tr class="apsolu-sports-tr apsolu-sports-tr-course{{#enroled}} info{{/enroled}}">
                         <td class="text-center">
                             {{#enroled}}
                             <a class="apsolu-enrol-a apsolu-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}{{filters}}">

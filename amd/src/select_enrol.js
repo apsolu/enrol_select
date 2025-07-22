@@ -47,15 +47,9 @@ define(['jquery'], function($) {
                     }
 
                     // Affiche ou masque toutes les lignes du tableau des activités.
-                    var rows = document.querySelectorAll('#apsolu-activities-table tbody tr');
+                    var rows = document.querySelectorAll('#apsolu-activities-table .apsolu-sports-tr-course');
                     for (i = 0; i < rows.length; i++) {
                         rows[i].style.display = display;
-                    }
-
-                    // Affiche toujours les lignes contenant le nom des activités.
-                    rows = document.getElementsByClassName('apsolu-sports-tr');
-                    for (i = 0; i < rows.length; i++) {
-                        rows[i].style.display = 'table-row';
                     }
 
                     // Renseigne l'action à réaliser lors du prochain appel.
