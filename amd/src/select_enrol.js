@@ -35,21 +35,31 @@ define(['jquery'], function($) {
                 tooglebutton.addEventListener('click', function(evt) {
                     var i = 0;
                     var display = '';
+                    var newclassname = '';
                     var action = evt.currentTarget.getAttribute('data-action');
                     switch (action) {
                         case 'show':
                             display = 'table-row';
                             action = 'hide';
+                            newclassname = 'apsolu-collapsible';
                             break;
                         case 'hide':
                             display = 'none';
                             action = 'show';
+                            newclassname = 'apsolu-expandable';
+                            break;
                     }
 
                     // Affiche ou masque toutes les lignes du tableau des activités.
                     var rows = document.querySelectorAll('#apsolu-activities-table .apsolu-sports-tr-course');
                     for (i = 0; i < rows.length; i++) {
                         rows[i].style.display = display;
+                    }
+
+                    // Change le pictogramme représentant une flèche vers le bas ou vers la droite.
+                    rows = document.getElementsByClassName('apsolu-sports-th-span');
+                    for (i = 0; i < rows.length; i++) {
+                        rows[i].className = "apsolu-sports-th-span " + newclassname;
                     }
 
                     // Renseigne l'action à réaliser lors du prochain appel.

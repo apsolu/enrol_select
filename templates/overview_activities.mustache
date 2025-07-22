@@ -124,10 +124,10 @@
                     <tr class="apsolu-sports-tr apsolu-sports-tr-activity">
                         <th class="apsolu-sports-th" colspan="12">
                             {{^ description}}
-                                <span class="apsolu-sports-th-span">{{name}}</span>
+                                <span class="apsolu-sports-th-span apsolu-expandable">{{name}}</span>
                             {{/description}}
                             {{#description}}
-                                <span class="apsolu-sports-th-span" aria-describedby="apsolu-sports-id-{{sportid}}">{{name}}</span>
+                                <span class="apsolu-sports-th-span apsolu-expandable" aria-describedby="apsolu-sports-id-{{sportid}}">{{name}}</span>
                                 <img class="apsolu-sports-description-info-img" data-popup="apsolu-sports-id-{{sportid}}" role="button" src="{{info_pix_url}}" alt="aide" />
                                 <div id="apsolu-sports-id-{{sportid}}" class="apsolu-sports-description" aria-hidden="true">{{{description}}}</div>
                             {{/description}}

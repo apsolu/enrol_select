@@ -83,13 +83,13 @@ define(['jquery', 'enrol_select/select2'], function($) {
                         }
                     });
                 } else {
-                    $("#apsolu-activities-table tbody tr th").each(function() {
+                    $("#apsolu-activities-table tbody tr th.apsolu-sports-th").each(function() {
                         $(this).css("display", "table-cell");
 
-                        if ($(this).hasClass("apsolu-expandable")) {
-                            $(this).parent().nextUntil(".apsolu-sports-tr").css("display", "none");
-                        } else {
-                            $(this).parent().nextUntil(".apsolu-sports-tr").css("display", "table-row");
+                        if ($(this).children('span').hasClass("apsolu-expandable")) {
+                            $(this).parent().nextUntil(".apsolu-sports-tr-activity").css("display", "none");
+                        } else if ($(this).children('span').hasClass("apsolu-collapsible")) {
+                            $(this).parent().nextUntil(".apsolu-sports-tr-activity").css("display", "table-row");
                         }
                     });
                 }
@@ -99,8 +99,8 @@ define(['jquery', 'enrol_select/select2'], function($) {
              * Masque toutes les lignes du tableau contenant un créneau, pour ne garder que le sport.
              */
             function apsolu_collapse_rows() {
-                $('.apsolu-sports-th').children('span').attr("class", "apsolu-expandable");
-                $('.apsolu-sports-th').parent().nextUntil(".apsolu-sports-tr").css("display", "none");
+                $('.apsolu-sports-th-span').attr("class", "apsolu-sports-th-span apsolu-expandable");
+                $('.apsolu-sports-th').parent().parent().nextUntil(".apsolu-sports-tr-activity").css("display", "none");
             }
 
             $('.filters').each(function() {

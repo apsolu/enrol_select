@@ -26,35 +26,14 @@
 define(["jquery", "enrol_select/jquery.popupoverlay"], function($) {
     return {
         initialise: function() {
-            /**
-             * Fonction appelée pour modifier les icônes plier/déplier.
-             *
-             * @param {HTMLElement} th_element Entête de tableau.
-             */
-            function apsolu_overview_set_expandable_icons(th_element) {
-                if ($(th_element).hasClass("apsolu-expandable")) {
-                    $(th_element).attr("class", "apsolu-collapsible");
-                } else if ($(th_element).hasClass("apsolu-collapsible")) {
-                    $(th_element).attr("class", "apsolu-expandable");
-                } else if ($(th_element).parent().next().css("display") == "none") {
-                    $(th_element).attr("class", "apsolu-expandable");
-                } else {
-                    $(th_element).attr("class", "apsolu-collapsible");
-                }
-            }
-
+            // Action exécutée à chaque clic sur les flèches à gauche du nom de l'activité.
             $(".apsolu-sports-th-span").click(function() {
-                $(this).parent().parent().nextUntil(".apsolu-sports-tr").toggle("slow", "swing");
-                apsolu_overview_set_expandable_icons(this);
-            });
-
-            // Si les filtres ne sont pas activés...
-            if ($("#apsolu-wishes-filters .select2-selection__clear").length == 0) {
-                $("#apsolu-activities-table tbody tr:not(.apsolu-sports-tr)").css("display", "none");
-            }
-
-            $(".apsolu-sports-th-span").each(function() {
-                apsolu_overview_set_expandable_icons(this);
+                $(this).parent().parent().nextUntil(".apsolu-sports-tr-activity").toggle("slow", "swing");
+                if ($(this).hasClass("apsolu-expandable")) {
+                    $(this).attr("class", "apsolu-sports-th-span apsolu-collapsible");
+                } else if ($(this).hasClass("apsolu-collapsible")) {
+                    $(this).attr("class", "apsolu-sports-th-span apsolu-expandable");
+                }
             });
 
             // Overlay : http://dev.vast.com/jquery-popup-overlay/.
