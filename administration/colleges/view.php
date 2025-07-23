@@ -29,7 +29,7 @@ require_once($CFG->dirroot.'/enrol/select/locallib.php');
 echo $OUTPUT->heading('Liste des populations');
 
 $url = $CFG->wwwroot.'/enrol/select/administration.php?tab=colleges&action=edit&id=0';
-echo '<p class="text-right"><a href="'.$url.'" class="btn btn-primary">Créer une nouvelle population</a></p>';
+echo '<p class="text-end"><a href="'.$url.'" class="btn btn-primary">Créer une nouvelle population</a></p>';
 
 $colleges = $DB->get_records('apsolu_colleges', $conditions = null, $sort = 'name');
 $cohorts = $DB->get_records('cohort', $conditions = null, $sort = 'name');

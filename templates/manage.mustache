@@ -65,7 +65,7 @@
     {{#enrols}}
         <div id="enrol-{{id}}" class="tab-pane fade" role="tabpanel" aria-labelledby="enrol-{{id}}">
 			{{^lock}}
-			<ul class="list-inline text-right apsolu-manage-enrolments-ul">
+			<ul class="list-inline text-end apsolu-manage-enrolments-ul">
 				<li class="list-inline-item"><a class="btn btn-default" href="{{enrol_user_link}}">{{#pix}}t/enrolusers, core{{/pix}} {{# str}}enrolusers, enrol_manual{{/ str}}</a></li>
 				{{#canunenrol}}
 				<li class="list-inline-item"><a class="btn btn-default" href="{{unenrol_user_link}}">{{#pix}}t/removecontact, core{{/pix}} {{# str}}unenrolusers, enrol_manual{{/ str}}</a></li>
