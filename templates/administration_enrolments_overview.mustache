@@ -83,7 +83,7 @@
             {{^count_courses}}<span class="btn {{^count_warnings}}btn-primary{{/count_warnings}}{{#count_warnings}}btn-danger{{/count_warnings}} disabled">{{count_courses}}</span>{{/count_courses}}
             {{#count_courses}}
             <div class="dropdown show">
-                <a class="btn btn {{^count_warnings}}btn-primary{{/count_warnings}}{{#count_warnings}}btn-danger{{/count_warnings}} dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ count_courses }}</a>
+                <a class="btn btn {{^count_warnings}}btn-primary{{/count_warnings}}{{#count_warnings}}btn-danger{{/count_warnings}} dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ count_courses }}</a>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 {{#courses}}
                     <a class="dropdown-item" href="{{wwwroot}}/enrol/instances.php?id={{id}}">{{fullname}}</a>

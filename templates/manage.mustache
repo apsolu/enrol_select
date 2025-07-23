@@ -57,7 +57,7 @@
     {{! Onglets semestre 1, semestre 2, etc }}
 	<ul class="nav nav-tabs" id="apsolu-manage-methods-title-tab-ul" role="tablist">
 	{{#enrols}}
-	    <li><a aria-controls="enrol-{{id}}" aria-selected="false" class="nav-link" data-toggle="tab" href="#enrol-{{id}}" role="tab">{{name}}</a></li>
+	    <li><a aria-controls="enrol-{{id}}" aria-selected="false" class="nav-link" data-bs-toggle="tab" href="#enrol-{{id}}" role="tab">{{name}}</a></li>
     {{/enrols}}
     </ul>
 
@@ -80,7 +80,7 @@
             {{! Onglets liste des acceptés, liste principale, liste complémentaire, etc }}
             <ul class="apsolu-manage-users-tab-ul nav nav-tabs" role="tablist">
             {{#lists}}
-                <li><a aria-controls="enrol-{{id}}-list-{{status}}" aria-selected="false" class="nav-link" data-toggle="tab" href="#enrol-{{id}}-list-{{status}}" role="tab">{{name}} ({{count_users}}{{#max_users}}/{{max_users}}{{/max_users}})</a></li>
+                <li><a aria-controls="enrol-{{id}}-list-{{status}}" aria-selected="false" class="nav-link" data-bs-toggle="tab" href="#enrol-{{id}}-list-{{status}}" role="tab">{{name}} ({{count_users}}{{#max_users}}/{{max_users}}{{/max_users}})</a></li>
             {{/lists}}
             </ul>
 
