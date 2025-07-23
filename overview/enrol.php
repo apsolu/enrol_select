@@ -397,7 +397,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
             if ($paymentbutton === true) {
                 $href = $CFG->wwwroot.'/local/apsolu/payment/index.php';
                 $label = get_string('pay', 'local_apsolu');
-                echo '<a class="btn btn-default btn-primary mr-3" href="'.$href.'">'.$label.'</a>';
+                echo '<a class="btn btn-default btn-primary me-3" href="'.$href.'">'.$label.'</a>';
             }
 
             $href = $CFG->wwwroot.'/enrol/select/overview.php';
