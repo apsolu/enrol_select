@@ -340,6 +340,24 @@ class enrol_select_edit_form extends moodleform {
                     $errors['customdec1'] = $label;
                 }
             }
+
+            // Contrôle que les zones de texte ne sont pas vides.
+            for ($i = 1; $i < 4; $i++) {
+                $textswitch = sprintf('customtext%sswitch', $i);
+                $text = sprintf('customtext%s', $i);
+
+                if (empty($data[$textswitch]) === true) {
+                    // Personnalisation non activée.
+                    continue;
+                }
+
+                if (empty(trim(strip_tags($data[$text]['text']))) === false) {
+                    // Le texte n'est pas vide.
+                    continue;
+                }
+
+                $errors[$textswitch] = get_string('the_field_welcome_message_seems_to_be_empty', 'enrol_select');
+            }
         }
 
         return $errors;

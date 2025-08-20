@@ -93,6 +93,7 @@ $string['settings'] = 'Paramètres';
 $string['the_delay_cannot_be_combined_with_the_automatic_list_filling'] = 'L’option « délai de paiement » ne peut pas être combinée avec l’option de « remontée de liste automatique ».';
 $string['the_delay_cannot_be_set_if_the_default_list_is_accepted'] = 'L’option « délai de paiement » ne peut pas être définie si l’option « liste d’inscription par défaut » n’a pas la valeur « liste des étudiants acceptés ».';
 $string['the_delay_cannot_be_set_to_a_value_of_less_than_20_minutes'] = 'L’option « délai de paiement » ne peut pas être définie à une valeur inférieure à 20 minutes.';
+$string['the_field_welcome_message_seems_to_be_empty'] = 'Le champ « Message de bienvenue personnalisé » semble être est vide. Merci de confirmer ce choix en sélectionnant la valeur « Non » dans le champ « Envoyer un message aux utilisateurs ».';
 $string['there_are_still_places_on_the_wait_list'] = 'Il reste des places sur liste complémentaire';
 $string['the_user_X_has_reached_their_wish_limit_for_the_role_Y'] = 'L’utilisateur #{$a->userid} a atteint sa limite de voeux pour le rôle #{$a->roleid}.';
 $string['unenrolment_from'] = 'Désinscription de {$a}';
