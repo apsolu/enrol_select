@@ -263,101 +263,103 @@ class enrol_select_edit_form extends moodleform {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
 
-        if ($data['status'] == ENROL_INSTANCE_ENABLED) {
-            // Vérifie que la date de fin des inscriptions est bien supérieure à la date de début.
-            if (!empty($data['enrolenddate']) && $data['enrolenddate'] < $data['enrolstartdate']) {
-                $errors['enrolenddate'] = get_string('enrolenddateerror', 'enrol_select');
+        if ($data['status'] != ENROL_INSTANCE_ENABLED) {
+            return $errors;
+        }
+
+        // Vérifie que la date de fin des inscriptions est bien supérieure à la date de début.
+        if (!empty($data['enrolenddate']) && $data['enrolenddate'] < $data['enrolstartdate']) {
+            $errors['enrolenddate'] = get_string('enrolenddateerror', 'enrol_select');
+        }
+
+        // Vérifie que la date de fin du cours est bien supérieure à la date de début.
+        if (!empty($data['customint8']) && $data['customint8'] < $data['customint7']) {
+            $errors['customint8'] = get_string('courseenddateerror', 'enrol_select');
+        }
+
+        // Contrôle que le début des inscriptions démarrent avant le début des cours.
+        if (empty($data['enrolstartdate']) === false && empty($data['customint7']) === false) {
+            if ($data['enrolstartdate'] > $data['customint7']) {
+                $str = get_string('the_enrol_start_date_must_be_prior_to_the_course_start_date', 'local_apsolu');
+                $errors['enrolstartdate'] = $str;
+
+                $str = get_string('the_course_start_date_must_be_after_to_the_enrol_start_date', 'local_apsolu');
+                $errors['customint7'] = $str;
+            }
+        }
+
+        // Contrôle que la fin des inscriptions se terminent avant la fin des cours.
+        if (empty($data['enrolenddate']) === false && empty($data['customint8']) === false) {
+            if ($data['enrolenddate'] > $data['customint8']) {
+                $str = get_string('the_enrol_end_date_must_be_prior_to_the_course_end_date', 'local_apsolu');
+                $errors['enrolenddate'] = $str;
+
+                $str = get_string('the_course_end_date_must_be_after_to_the_enrol_end_date', 'local_apsolu');
+                $errors['customint8'] = $str;
+            }
+        }
+
+        // Vérifie que la date de fin des réinscriptions est bien supérieure à la date de début.
+        if (!empty($data['customint5']) && $data['customint5'] < $data['customint4']) {
+            $errors['customint5'] = get_string('reenrolenddateerror', 'enrol_select');
+        }
+
+        // Vérifie que la date de début des réinscriptions est renseignée lorsque la date de fin l'est également.
+        if (empty($data['customint4']) && !empty($data['customint5'])) {
+            $errors['customint4'] = get_string('reenrolstartdatemissingerror', 'enrol_select');
+        }
+
+        // Vérifie que la date de fin des réinscriptions est renseignée lorsque la date de début l'est également.
+        if (!empty($data['customint4']) && empty($data['customint5'])) {
+            $errors['customint5'] = get_string('reenrolenddatemissingerror', 'enrol_select');
+        }
+
+        // Contrôle qu'un calendrier est activé lorsqu'au moins une carte de paiement est sélectionnée.
+        if (isset($data['cards'][0]) === true && empty($data['customchar1']) === true) {
+            $errors['customchar1'] = get_string('you_must_set_a_calendar_so_that_payments_can_apply', 'enrol_select');
+        }
+
+        // Contrôle que la liste d'inscription par défaut est "acceptée" lorsqu'un délai de paiement est activé.
+        if (isset($data['customdec1']) === true && empty($data['customdec1']) === false) {
+            $quotaenabled = (isset($data['customint3']) === true && empty($data['customint3']) === false);
+            if ($quotaenabled === true && (isset($data['customchar2']) === false || empty($data['customchar2']) === false)) {
+                $label = get_string('the_delay_cannot_be_combined_with_the_automatic_list_filling', 'enrol_select');
+                $errors['customdec1'] = $label;
             }
 
-            // Vérifie que la date de fin du cours est bien supérieure à la date de début.
-            if (!empty($data['customint8']) && $data['customint8'] < $data['customint7']) {
-                $errors['customint8'] = get_string('courseenddateerror', 'enrol_select');
+            if (isset($data['customchar3']) === false || $data['customchar3'] !== enrol_select_plugin::ACCEPTED) {
+                $errors['customdec1'] = get_string('the_delay_cannot_be_set_if_the_default_list_is_accepted', 'enrol_select');
             }
 
-            // Contrôle que le début des inscriptions démarrent avant le début des cours.
-            if (empty($data['enrolstartdate']) === false && empty($data['customint7']) === false) {
-                if ($data['enrolstartdate'] > $data['customint7']) {
-                    $str = get_string('the_enrol_start_date_must_be_prior_to_the_course_start_date', 'local_apsolu');
-                    $errors['enrolstartdate'] = $str;
-
-                    $str = get_string('the_course_start_date_must_be_after_to_the_enrol_start_date', 'local_apsolu');
-                    $errors['customint7'] = $str;
-                }
+            if ($data['customdec1'] < 1200) {
+                $label = get_string('the_delay_cannot_be_set_to_a_value_of_less_than_20_minutes', 'enrol_select');
+                $errors['customdec1'] = $label;
             }
 
-            // Contrôle que la fin des inscriptions se terminent avant la fin des cours.
-            if (empty($data['enrolenddate']) === false && empty($data['customint8']) === false) {
-                if ($data['enrolenddate'] > $data['customint8']) {
-                    $str = get_string('the_enrol_end_date_must_be_prior_to_the_course_end_date', 'local_apsolu');
-                    $errors['enrolenddate'] = $str;
+            // TODO: à cause d'un problème de stockage de données en base, on empêche de saisir un délai de paiement
+            // supérieur à 99999 secondes.
+            if ($data['customdec1'] > 99999) {
+                $label = get_string('it_is_currently_not_possible_to_indicate_a_duration_greater_than_one_day', 'enrol_select');
+                $errors['customdec1'] = $label;
+            }
+        }
 
-                    $str = get_string('the_course_end_date_must_be_after_to_the_enrol_end_date', 'local_apsolu');
-                    $errors['customint8'] = $str;
-                }
+        // Contrôle que les zones de texte ne sont pas vides.
+        for ($i = 1; $i < 4; $i++) {
+            $textswitch = sprintf('customtext%sswitch', $i);
+            $text = sprintf('customtext%s', $i);
+
+            if (empty($data[$textswitch]) === true) {
+                // Personnalisation non activée.
+                continue;
             }
 
-            // Vérifie que la date de fin des réinscriptions est bien supérieure à la date de début.
-            if (!empty($data['customint5']) && $data['customint5'] < $data['customint4']) {
-                $errors['customint5'] = get_string('reenrolenddateerror', 'enrol_select');
+            if (empty(trim(strip_tags($data[$text]['text']))) === false) {
+                // Le texte n'est pas vide.
+                continue;
             }
 
-            // Vérifie que la date de début des réinscriptions est renseignée lorsque la date de fin l'est également.
-            if (empty($data['customint4']) && !empty($data['customint5'])) {
-                $errors['customint4'] = get_string('reenrolstartdatemissingerror', 'enrol_select');
-            }
-
-            // Vérifie que la date de fin des réinscriptions est renseignée lorsque la date de début l'est également.
-            if (!empty($data['customint4']) && empty($data['customint5'])) {
-                $errors['customint5'] = get_string('reenrolenddatemissingerror', 'enrol_select');
-            }
-
-            // Contrôle qu'un calendrier est activé lorsqu'au moins une carte de paiement est sélectionnée.
-            if (isset($data['cards'][0]) === true && empty($data['customchar1']) === true) {
-                $errors['customchar1'] = get_string('you_must_set_a_calendar_so_that_payments_can_apply', 'enrol_select');
-            }
-
-            // Contrôle que la liste d'inscription par défaut est "acceptée" lorsqu'un délai de paiement est activé.
-            if (isset($data['customdec1']) === true && empty($data['customdec1']) === false) {
-                $quotaenabled = (isset($data['customint3']) === true && empty($data['customint3']) === false);
-                if ($quotaenabled === true && (isset($data['customchar2']) === false || empty($data['customchar2']) === false)) {
-                    $label = get_string('the_delay_cannot_be_combined_with_the_automatic_list_filling', 'enrol_select');
-                    $errors['customdec1'] = $label;
-                }
-
-                if (isset($data['customchar3']) === false || $data['customchar3'] !== enrol_select_plugin::ACCEPTED) {
-                    $errors['customdec1'] = get_string('the_delay_cannot_be_set_if_the_default_list_is_accepted', 'enrol_select');
-                }
-
-                if ($data['customdec1'] < 1200) {
-                    $label = get_string('the_delay_cannot_be_set_to_a_value_of_less_than_20_minutes', 'enrol_select');
-                    $errors['customdec1'] = $label;
-                }
-
-                // TODO: à cause d'un problème de stockage de données en base, on empêche de saisir un délai de paiement
-                // supérieur à 99999 secondes.
-                if ($data['customdec1'] > 99999) {
-                    $label = get_string('it_is_currently_not_possible_to_indicate_a_duration_greater_than_one_day', 'enrol_select');
-                    $errors['customdec1'] = $label;
-                }
-            }
-
-            // Contrôle que les zones de texte ne sont pas vides.
-            for ($i = 1; $i < 4; $i++) {
-                $textswitch = sprintf('customtext%sswitch', $i);
-                $text = sprintf('customtext%s', $i);
-
-                if (empty($data[$textswitch]) === true) {
-                    // Personnalisation non activée.
-                    continue;
-                }
-
-                if (empty(trim(strip_tags($data[$text]['text']))) === false) {
-                    // Le texte n'est pas vide.
-                    continue;
-                }
-
-                $errors[$textswitch] = get_string('the_field_welcome_message_seems_to_be_empty', 'enrol_select');
-            }
+            $errors[$textswitch] = get_string('the_field_welcome_message_seems_to_be_empty', 'enrol_select');
         }
 
         return $errors;
