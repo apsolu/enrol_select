@@ -28,16 +28,21 @@
 
 $string['messageprovider:select_notification'] = 'Notifications en relation avec les inscriptions';
 
+$string['batch_settings'] = 'Paramétrage par lot';
 $string['check_enrolment_payment'] = 'Contrôle le paiement d’une inscription';
 $string['cohort_X_is_already_used_with_role_Y_by_college_Z'] = 'La cohorte « {$a->cohort} » est déjà utilisée avec le rôle « {$a->role} » par la population « {$a->college} ».';
 $string['college_unused_cohorts'] = '<details class="alert alert-info"><summary class="mb-3">Information</summary><p>Ces cohortes ne sont actuellement pas utilisées dans les populations :</p><ul>{$a}</ul></details>';
 $string['continue_my_enrolments'] = 'Continuer mes inscriptions';
 $string['custom_welcome_message'] = 'Message de bienvenue personnalisé';
+$string['custom_welcome_message_on_accepted_list'] = 'Message de bienvenue personnalisé pour la liste des acceptés';
+$string['custom_welcome_message_on_main_list'] = 'Message de bienvenue personnalisé pour la liste principale';
+$string['custom_welcome_message_on_wait_list'] = 'Message de bienvenue personnalisé pour la liste d’attente';
 $string['custom_welcome_message_help'] = 'Les utilisateurs recevront un message de bienvenue par courriel lors de leur inscription.';
 $string['date_diverging_from_calendar_date'] = 'Date divergente par rapport à la date du calendrier';
 $string['default_enrolment_list'] = 'Liste d’inscription par défaut';
 $string['default_enrolment_list_help'] = 'Détermine si les nouvelles inscriptions doivent être automatiquement acceptées. Ce réglage s’applique tant que les quotas ne sont pas atteints. Pour l’utilisation de l’option « Délai de paiement », la valeur de cette option doit être « Liste des étudiants acceptés ».';
 $string['default_settings'] = 'Paramétrage par défaut';
+$string['edit_field_X'] = 'Modifier le champ « {$a} »';
 $string['enable_automatic_list_filling'] = 'Activer la remontée de liste automatique';
 $string['enable_automatic_list_filling_help'] = 'Permet de faire remonter un étudiant sur liste complémentaire dès qu’une place se libère sur liste principale. L’action est appliquée seulement lorsqu’un étudiant se désinscrit en période d’inscription. Cette option n’est pas compatible avec l’option « Délai de paiement ».';
 $string['enrollee_accepted_list'] = 'Candidat Inscription';
@@ -53,6 +58,7 @@ $string['enrolments_overview'] = 'Vue d\'ensemble des inscriptions';
 $string['filters_for_managers'] = 'Filtres pour gestionnaires';
 $string['it_is_currently_not_possible_to_indicate_a_duration_greater_than_one_day'] = 'Pour des raisons techniques, il n’est pour le moment pas possible d’indiquer une durée supérieure à 27 heures.';
 $string['list'] = 'Liste';
+$string['list_of_courses_for_which_the_enrolment_method_will_be_changed'] = 'Liste des cours dont la méthode d’inscription sera modifiée :';
 $string['lists'] = 'Listes';
 $string['main_sport'] = 'Sport principal';
 $string['manage_select_enrolments'] = 'Gérer les inscriptions par voeux';
@@ -66,6 +72,7 @@ $string['no_available_enrol_methods_desc'] = 'Pour utiliser cette fonctionnalit�
 $string['no_available_prices'] = 'Aucun tarif défini';
 $string['no_available_roles'] = 'Aucun rôle disponible';
 $string['no_dates'] = 'Aucune date';
+$string['no_enrolment_method_available_with_these_selection_criteria'] = 'Aucune méthode d’inscription disponible avec ces critères de sélection';
 $string['no_quotas'] = 'Aucun quota';
 $string['no_seat_restrictions'] = 'Aucune restriction de place';
 $string['no_places_available'] = 'Aucune place disponible';
@@ -86,6 +93,7 @@ $string['pluginname'] = 'Inscription par voeux';
 $string['pluginname_desc'] = 'Le plugin d’inscription par voeux permet aux utilisateurs de choisir les cours qu’ils veulent suivre. Les cours peuvent être protégés par différents critères (période d’inscription, taille de la liste principale, cohortes, etc).';
 $string['policyagree'] = 'J’atteste avoir pris connaissances de <a href="{$a}" target="blank_">ces recommandations médicales</a>.';
 $string['reenrolment_disabled'] = 'Réinscription désactivée';
+$string['selection_criteria'] = 'Critères de sélection';
 $string['send_welcome_message_to_users_on_accepted_list'] = 'Envoyer un message aux utilisateurs sur la liste des acceptés';
 $string['send_welcome_message_to_users_on_main_list'] = 'Envoyer un message aux utilisateurs sur liste principale';
 $string['send_welcome_message_to_users_on_wait_list'] = 'Envoyer un message aux utilisateurs sur liste complémentaire';
@@ -111,6 +119,7 @@ $string['welcome_message_on_main_list'] = 'Message de bienvenue de la liste prin
 $string['welcome_message_on_wait_list'] = 'Message de bienvenue de la liste complémentaire';
 $string['welcome_messages'] = 'Messages de bienvenue';
 $string['x_accepted_enrolment_s'] = '{$a} inscription(s) acceptée(s)';
+$string['x_enrolment_methods_changed'] = '{$a} méthode(s) d’inscription modifiée(s)';
 $string['x_other_enrolment_s'] = '{$a} autre(s) inscription(s)';
 $string['x_place_remaining_on_the_main_list'] = '{$a} place restante sur liste principale';
 $string['x_place_remaining_on_the_wait_list'] = '{$a} place restante sur liste complémentaire';
