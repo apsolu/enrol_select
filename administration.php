@@ -30,6 +30,7 @@ $action = optional_param('action', 'view', PARAM_ALPHA);
 
 $tabslist = [];
 $tabslist['default_settings'] = 'settings';
+$tabslist['batch_settings'] = 'batch_settings';
 $tabslist['colleges'] = 'colleges';
 $tabslist['renewals'] = 'renewals';
 $tabslist['enrolments_overview'] = 'enrolments_overview';
