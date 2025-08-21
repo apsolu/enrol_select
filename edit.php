@@ -161,28 +161,11 @@ if ($mform->is_cancelled()) {
     if ($instance->id) {
         $reset = ($instance->status != $data->status);
 
-        $instance->status         = $data->status;
-        $instance->name           = $data->name;
-        $instance->customint1     = $data->customint1;
-        $instance->customint2     = $data->customint2;
-        $instance->customint3     = $data->customint3;
-        $instance->customint4     = $data->customint4;
-        $instance->customint5     = $data->customint5;
-        $instance->customint6     = $data->customint6;
-        $instance->customint7     = $data->customint7;
-        $instance->customint8     = $data->customint8;
-        $instance->customdec1     = $data->customdec1;
-        $instance->customchar1    = $data->customchar1;
-        $instance->customchar2    = $data->customchar2;
-        $instance->customchar3    = $data->customchar3;
-        $instance->customtext1    = $data->customtext1['text'];
-        $instance->customtext2    = $data->customtext2['text'];
-        $instance->customtext3    = $data->customtext3['text'];
-        $instance->enrolstartdate = $data->enrolstartdate;
-        $instance->enrolenddate   = $data->enrolenddate;
-        $instance->timemodified   = time();
+        $data->customtext1 = $data->customtext1['text'];
+        $data->customtext2 = $data->customtext2['text'];
+        $data->customtext3 = $data->customtext3['text'];
 
-        $DB->update_record('enrol', $instance);
+        $plugin->update_instance($instance, $data);
 
         // Mets à jour les dates d'accès au cours des étudiants.
         $sql = "UPDATE {user_enrolments} SET timestart = :timestart, timeend = :timeend WHERE enrolid = :enrolid";
@@ -192,30 +175,12 @@ if ($mform->is_cancelled()) {
         if ($reset) {
             $context->mark_dirty();
         }
-
     } else {
-        $fields = [
-            'status'          => ENROL_INSTANCE_ENABLED,
-            'name'            => $data->name,
-            'customint1'      => $data->customint1,
-            'customint2'      => $data->customint2,
-            'customint3'      => $data->customint3,
-            'customint4'      => $data->customint4,
-            'customint5'      => $data->customint5,
-            'customint6'      => $data->customint6,
-            'customint7'      => $data->customint7,
-            'customint8'      => $data->customint8,
-            'customdec1'      => $data->customdec1,
-            'customchar1'     => $data->customchar1,
-            'customchar2'     => $data->customchar2,
-            'customchar3'     => $data->customchar3,
-            'customtext1'     => $data->customtext1['text'],
-            'customtext2'     => $data->customtext2['text'],
-            'customtext3'     => $data->customtext3['text'],
-            'enrolstartdate'  => $data->enrolstartdate,
-            'enrolenddate'    => $data->enrolenddate,
-        ];
-        $instance->id = $plugin->add_instance($course, $fields);
+        $data->customtext1 = $data->customtext1['text'];
+        $data->customtext2 = $data->customtext2['text'];
+        $data->customtext3 = $data->customtext3['text'];
+
+        $instance->id = $plugin->add_instance($course, (array) $data);
     }
 
     $DB->delete_records('enrol_select_cohorts', ['enrolid' => $instance->id]);
