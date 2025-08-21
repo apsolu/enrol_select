@@ -205,7 +205,7 @@ class enrol_select_edit_form extends moodleform {
         }
 
         // Messages de bienvenue.
-        $options = ['cols' => '60', 'rows' => '8'];
+        $options = ['cols' => '60', 'rows' => '16'];
 
         // Message pour les inscrits sur la liste des acceptés.
         $mform->addElement('header', 'header', get_string('welcome_message_on_accepted_list', 'enrol_select'));
