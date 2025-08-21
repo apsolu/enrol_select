@@ -20,7 +20,7 @@ require_once($CFG->libdir.'/formslib.php');
 require_once($CFG->dirroot.'/enrol/select/lib.php');
 
 /**
- * Classe pour le formulaire permettant de configurer le paramétrage par lot des méthodes d'inscription par voeux.
+ * Classe pour le formulaire permettant de configurer le paramétrage par lots des méthodes d'inscription par voeux.
  *
  * @package    enrol_select
  * @copyright  2025 Université Rennes 2
@@ -35,7 +35,7 @@ class enrol_select_batch_settings_form extends moodleform {
     public function definition() {
         $mform = $this->_form;
 
-        list($defaults, $calendars) = $this->_customdata;
+        list($calendars) = $this->_customdata;
 
         // Critères de sélection.
         $mform->addElement('header', 'header1', get_string('selection_criteria', 'enrol_select'));
@@ -50,7 +50,8 @@ class enrol_select_batch_settings_form extends moodleform {
         $mform->addRule('calendar', get_string('required'), 'required', null, 'client');
 
         // Messages de bienvenue.
-        $options = ['cols' => '60', 'rows' => '8'];
+        $attributes = ['cols' => '60', 'rows' => '16'];
+        $options = ['autosave' => false];
         $mform->addElement('header', 'header2', get_string('welcome_messages', 'enrol_select'));
 
         // Message pour les inscrits sur la liste des acceptés.
@@ -58,7 +59,7 @@ class enrol_select_batch_settings_form extends moodleform {
         $mform->addElement('checkbox', 'batch_customtext1switch', $label);
 
         $label = get_string('custom_welcome_message_on_accepted_list', 'enrol_select');
-        $mform->addElement('editor', 'batch_customtext1', $label, $options);
+        $mform->addElement('editor', 'batch_customtext1', $label, $attributes, $options);
         $mform->setType('batch_customtext1', PARAM_RAW);
         $mform->addHelpButton('batch_customtext1', 'custom_welcome_message', 'enrol_select');
         $mform->disabledIf('batch_customtext1', 'batch_customtext1switch');
@@ -67,8 +68,8 @@ class enrol_select_batch_settings_form extends moodleform {
         $label = get_string('edit_field_X', 'enrol_select', get_string('custom_welcome_message_on_main_list', 'enrol_select'));
         $mform->addElement('checkbox', 'batch_customtext2switch', $label);
 
-        $mform->addElement('editor', 'batch_customtext2', get_string('custom_welcome_message_on_main_list', 'enrol_select'),
-            $options);
+        $label = get_string('custom_welcome_message_on_main_list', 'enrol_select');
+        $mform->addElement('editor', 'batch_customtext2', $label, $attributes, $options);
         $mform->setType('batch_customtext2', PARAM_RAW);
         $mform->addHelpButton('batch_customtext2', 'custom_welcome_message', 'enrol_select');
         $mform->disabledIf('batch_customtext2', 'batch_customtext2switch');
@@ -77,8 +78,8 @@ class enrol_select_batch_settings_form extends moodleform {
         $label = get_string('edit_field_X', 'enrol_select', get_string('custom_welcome_message_on_wait_list', 'enrol_select'));
         $mform->addElement('checkbox', 'batch_customtext3switch', $label);
 
-        $mform->addElement('editor', 'batch_customtext3', get_string('custom_welcome_message_on_wait_list', 'enrol_select'),
-            $options);
+        $label = get_string('custom_welcome_message_on_wait_list', 'enrol_select');
+        $mform->addElement('editor', 'batch_customtext3', $label, $attributes, $options);
         $mform->setType('batch_customtext3', PARAM_RAW);
         $mform->addHelpButton('batch_customtext3', 'custom_welcome_message', 'enrol_select');
         $mform->disabledIf('batch_customtext3', 'batch_customtext3switch');
@@ -92,9 +93,6 @@ class enrol_select_batch_settings_form extends moodleform {
         // Hidden fields.
         $mform->addElement('hidden', 'tab', 'batch_settings');
         $mform->setType('tab', PARAM_ALPHAEXT);
-
-        // Set default values.
-        $this->set_data($defaults);
     }
 
     /**

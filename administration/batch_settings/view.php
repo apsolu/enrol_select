@@ -15,12 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Page d'affichage du paramétrage par lot des méthodes d'inscription.
+ * Page d'affichage du paramétrage par lots des méthodes d'inscription.
  *
  * @package    enrol_select
  * @copyright  2025 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+use enrol_select\event\batch_enrol_instance_updated;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -29,14 +31,12 @@ require_once($CFG->dirroot.'/enrol/select/administration/batch_settings/edit_for
 // Build form.
 $calendars = $DB->get_records('apsolu_calendars', $conditions = null, $sort = 'name');
 
-$customdata = [$defaults, $calendars];
-
+$customdata = [$calendars];
 $mform = new enrol_select_batch_settings_form(null, $customdata);
 
 echo $OUTPUT->heading(get_string('batch_settings', 'enrol_select'));
 
 if ($data = $mform->get_data()) {
-
     if (isset($data->submitbutton) === true) {
         // Modification des méthodes d'inscription par lots.
         $needupdate = false;
@@ -64,6 +64,13 @@ if ($data = $mform->get_data()) {
                 $DB->update_record('enrol', $enrol);
                 $count++;
             }
+
+            // Ajoute un évènement.
+            $event = batch_enrol_instance_updated::create([
+                'other' => ['criteria' => ['calendar' => $data->calendar]],
+                'context' => context_system::instance(),
+            ]);
+            $event->trigger();
         }
 
         echo $OUTPUT->notification(get_string('x_enrolment_methods_changed', 'enrol_select', $count), 'notifysuccess');

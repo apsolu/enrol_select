@@ -53,7 +53,7 @@ if ($hassiteconfig || has_any_capability($capabilities, context_system::instance
         $page = new admin_externalpage('enrol_select_settings', $label, $url, $capabilities);
         $ADMIN->add('enrol_select', $page);
 
-        // Inscriptions > Paramètrage par lot.
+        // Inscriptions > Paramètrage par lots.
         $label = get_string('batch_settings', 'enrol_select');
         $url = new moodle_url('/enrol/select/administration.php?tab=batch_settings');
         $page = new admin_externalpage('enrol_select_batch_settings', $label, $url, $capabilities);

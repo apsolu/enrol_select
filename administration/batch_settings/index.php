@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Contrôleur pour les pages de gestion du paramétrage par lot des méthodes d'inscription.
+ * Contrôleur pour les pages de gestion du paramétrage par lots des méthodes d'inscription.
  *
  * @package    enrol_select
  * @copyright  2025 Université Rennes 2
