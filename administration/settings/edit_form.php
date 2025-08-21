@@ -45,7 +45,7 @@ class enrol_select_default_settings_form extends moodleform {
 
         list($defaults, $calendars, $cohorts, $roles, $cards) = $this->_customdata;
 
-        $mform->addElement('header', 'header', get_string('general'));
+        $mform->addElement('header', 'header1', get_string('general'));
 
         // Calendrier utilisé.
         $options = [];
@@ -54,7 +54,8 @@ class enrol_select_default_settings_form extends moodleform {
         }
         $select = $mform->addElement('select', 'default_customchar1', get_string('calendars', 'local_apsolu'), $options);
 
-        $mform->addElement('header', 'header', get_string('settings'));
+        $mform->addElement('header', 'header2', get_string('settings'));
+        $mform->setExpanded('header2');
 
         // Activer les quotas.
         $mform->addElement('selectyesno', 'default_customint3', get_string('enablequotas', 'enrol_select'));
@@ -87,7 +88,8 @@ class enrol_select_default_settings_form extends moodleform {
         $mform->setType('default_customchar3', PARAM_INT);
 
         // Cohortes.
-        $mform->addElement('header', 'header', get_string('cohorts', 'enrol_select'));
+        $mform->addElement('header', 'header3', get_string('cohorts', 'enrol_select'));
+        $mform->setExpanded('header3');
 
         $options = [];
         foreach ($cohorts as $cohort) {
@@ -107,7 +109,8 @@ class enrol_select_default_settings_form extends moodleform {
         }
 
         // Rôles.
-        $mform->addElement('header', 'header', get_string('roles'));
+        $mform->addElement('header', 'header4', get_string('roles'));
+        $mform->setExpanded('header4');
 
         $options = [];
         foreach ($roles as $role) {
@@ -127,7 +130,8 @@ class enrol_select_default_settings_form extends moodleform {
         }
 
         // Paiements.
-        $mform->addElement('header', 'header', get_string('payments'));
+        $mform->addElement('header', 'header5', get_string('payments'));
+        $mform->setExpanded('header5');
 
         $options = [];
         foreach ($cards as $card) {
@@ -151,7 +155,8 @@ class enrol_select_default_settings_form extends moodleform {
 
         // Messages de bienvenue.
         $options = ['cols' => '60', 'rows' => '8'];
-        $mform->addElement('header', 'header', get_string('welcome_messages', 'enrol_select'));
+        $mform->addElement('header', 'header6', get_string('welcome_messages', 'enrol_select'));
+        $mform->setExpanded('header6');
 
         // Message pour les inscrits sur la liste des acceptés.
         $label = get_string('send_welcome_message_to_users_on_accepted_list', 'enrol_select');
