@@ -1,6 +1,6 @@
 # enrol_select
 
-[![Build Status](https://github.com/apsolu/enrol_select/workflows/Moodle%20Plugin%20CI/badge.svg?branch=main)](https://github.com/apsolu/enrol_select/actions)
+[![Build Status](https://github.com/apsolu/enrol_select/actions/workflows/moodle-ci.yml/badge.svg?branch=main)](https://github.com/apsolu/enrol_select/actions)
 [![Coverage Status](https://coveralls.io/repos/github/apsolu/enrol_select/badge.svg?branch=main)](https://coveralls.io/github/apsolu/enrol_select?branch=main)
 [![Moodle Status](https://img.shields.io/badge/moodle-5.0-blue)](https://moodle.org)
 
