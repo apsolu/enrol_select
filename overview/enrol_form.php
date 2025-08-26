@@ -83,7 +83,8 @@ class enrol_select_form extends moodleform {
             }
 
             // Acceptation des recommandations médicales.
-            if (empty($instance->showpolicy) === false && empty($CFG->sitepolicy) === false) {
+            if (empty($instance->showpolicy) === false &&
+                (empty($CFG->sitepolicy) === false || is_file($CFG->dirroot.'/policy.html') === true)) {
                 $mform->addElement('checkbox', 'policy', get_string('policyagree', 'enrol_select', $CFG->sitepolicy));
                 $mform->addRule('policy', get_string('required'), 'required', null, 'client');
             }
