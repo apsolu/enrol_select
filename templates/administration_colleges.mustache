@@ -1,0 +1,82 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template enrol_select/administration_colleges
+
+    Template Moodle pour afficher la page d'administration des populations.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * wwwroot
+    * colleges
+        * id
+        * name
+        * rolename
+        * maxwish
+        * minregister
+        * maxregister
+        * members
+    * count_colleges
+    * unusedcohorts
+
+    Example context (json):
+    {
+        "wwwroot": "",
+        "colleges": [],
+        "count_colleges": 0,
+        "unusedcohorts" : ""
+    }
+}}
+
+<p class="text-end"><a href="{{ wwwroot }}/enrol/select/administration.php?tab=colleges&action=edit&id=0" class="btn btn-primary">Créer une nouvelle population</a></p>
+
+{{{ unusedcohorts }}}
+
+{{#count_colleges}}
+<table class="table table-striped">
+    <tr>
+        <th>Nom de la population</th>
+        <th>{{#str}}roles{{/str}}</th>
+        <th>{{#str}}maximum_wishes, enrol_select{{/str}}</th>
+        <th>{{#str}}minimum_enrolments, enrol_select{{/str}}</th>
+        <th>{{#str}}maximum_enrolments, enrol_select{{/str}}</th>
+        <th>{{#str}}cohorts, cohort{{/str}}</th>
+        <th>{{#str}}actions{{/str}}</th>
+    </tr>
+    {{#colleges}}
+    <tr>
+        <td>{{ name }}</td>
+        <td>{{ rolename }}</td>
+        <td>{{ maxwish }}</td>
+        <td>{{ minregister }}</td>
+        <td>{{ maxregister }}</td>
+        <td>{{{ members }}}</td>
+        <td>
+			<ul class="list-inline">
+				<li class="list-inline-item"><a href="{{wwwroot}}/enrol/select/administration.php?tab=colleges&action=edit&id={{id}}">{{#pix}}t/edit,core,{{#str}}edit{{/str}}{{/pix}}</a></li>
+				<li class="list-inline-item"><a href="{{wwwroot}}/enrol/select/administration.php?tab=colleges&action=delete&id={{id}}">{{#pix}}t/delete,core,{{#str}}delete{{/str}}{{/pix}}</a></li>
+			</ul>
+        </td>
+    </tr>
+    {{/colleges}}
+</table>
+{{/count_colleges}}

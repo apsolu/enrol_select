@@ -28,9 +28,6 @@ require_once($CFG->dirroot.'/enrol/select/locallib.php');
 
 echo $OUTPUT->heading('Liste des populations');
 
-$url = $CFG->wwwroot.'/enrol/select/administration.php?tab=colleges&action=edit&id=0';
-echo '<p class="text-end"><a href="'.$url.'" class="btn btn-primary">Créer une nouvelle population</a></p>';
-
 $colleges = $DB->get_records('apsolu_colleges', $conditions = null, $sort = 'name');
 $cohorts = $DB->get_records('cohort', $conditions = null, $sort = 'name');
 
@@ -45,64 +42,38 @@ foreach ($DB->get_records_sql($sql) as $cohort) {
     $unusedcohorts[] = $cohort->name;
 }
 
-if ($unusedcohorts !== []) {
-    $unusedcohorts = '<li>'.implode('</li><li>', $unusedcohorts).'</li>';
-    echo get_string('college_unused_cohorts', 'enrol_select', $unusedcohorts);
-}
-
-// TODO: utiliser un template mustache.
-$editimage = $OUTPUT->image_url('t/edit');
-$deleteimage = $OUTPUT->image_url('t/delete');
-
-if ($colleges) {
-    $table = new html_table();
-    $table->attributes = ['class' => 'table table-striped'];
-    $table->head = [
-        'nom de la population',
-        'roles',
-        get_string('maximum_wishes', 'enrol_select'),
-        get_string('minimum_enrolments', 'enrol_select'),
-        get_string('maximum_enrolments', 'enrol_select'),
-        'cohortes',
-        'actions',
-        ];
-
-    foreach ($colleges as $college) {
-        // Members.
-        $members = [];
-        foreach ($DB->get_records('apsolu_colleges_members', ['collegeid' => $college->id], '', 'cohortid') as $member) {
-            if (isset($cohorts[$member->cohortid]) === false) {
-                // TODO: faire en sorte de retirer les cohortes qui n'existe plus.
-                // Voir si il y a un event lors de la suppression des cohortes.
-                continue;
-            }
-
-            $members[] = '<li>'.$cohorts[$member->cohortid]->name.'</li>';
+foreach ($colleges as $college) {
+    // Members.
+    $members = [];
+    foreach ($DB->get_records('apsolu_colleges_members', ['collegeid' => $college->id], '', 'cohortid') as $member) {
+        if (isset($cohorts[$member->cohortid]) === false) {
+            // TODO: faire en sorte de retirer les cohortes qui n'existe plus.
+            // Voir si il y a un event lors de la suppression des cohortes.
+            continue;
         }
 
-        if ($members !== []) {
-            sort($members);
-            $members = '<ul>'.implode('', $members).'</ul>';
-        }
-
-        // Actions.
-        $editlink = $CFG->wwwroot.'/enrol/select/administration.php?tab=colleges&action=edit&id='.$college->id;
-        $deletelink = $CFG->wwwroot.'/enrol/select/administration.php?tab=colleges&action=delete&id='.$college->id;
-        $actions = '<ul class="list-inline">
-            <li class="list-inline-item"><a href="'.$editlink.'"><img class="icon" src="'.$editimage.'" /></a></li>
-            <li class="list-inline-item"><a href="'.$deletelink.'"><img class="icon" src="'.$deleteimage.'" /></a></li>
-            </ul>';
-
-        $table->data[] = [
-            $college->name,
-            $roles[$college->roleid]->name,
-            $college->maxwish,
-            $college->minregister,
-            $college->maxregister,
-            $members,
-            $actions,
-        ];
+        $members[] = '<li>'.$cohorts[$member->cohortid]->name.'</li>';
     }
 
-    echo html_writer::table($table);
+    if ($members !== []) {
+        sort($members);
+        $college->members = '<ul>'.implode('', $members).'</ul>';
+    } else {
+        $college->members = '';
+    }
+
+    $college->rolename = $roles[$college->roleid]->name;
 }
+
+$data = new stdClass();
+$data->wwwroot = $CFG->wwwroot;
+$data->colleges = array_values($colleges);
+$data->count_colleges = count($data->colleges);
+
+$data->unusedcohorts = '';
+if ($unusedcohorts !== []) {
+    $unusedcohorts = '<li>'.implode('</li><li>', $unusedcohorts).'</li>';
+    $data->unusedcohorts = get_string('college_unused_cohorts', 'enrol_select', $unusedcohorts);
+}
+
+echo $OUTPUT->render_from_template('enrol_select/administration_colleges', $data);
