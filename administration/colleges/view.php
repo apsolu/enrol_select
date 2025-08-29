@@ -33,10 +33,10 @@ $cohorts = $DB->get_records('cohort', $conditions = null, $sort = 'name');
 
 $roles = enrol_select_get_custom_student_roles();
 
-$sql = "SELECT c.*".
-    " FROM {cohort} c".
-    " WHERE c.id NOT IN (SELECT cohortid FROM {apsolu_colleges_members})".
-    " ORDER BY c.name";
+$sql = "SELECT c.*
+          FROM {cohort} c
+         WHERE c.id NOT IN (SELECT cohortid FROM {apsolu_colleges_members})
+      ORDER BY c.name";
 $unusedcohorts = [];
 foreach ($DB->get_records_sql($sql) as $cohort) {
     $unusedcohorts[] = $cohort->name;
