@@ -162,9 +162,6 @@ foreach ($instances as $instance) {
 $payments = Payment::get_users_cards_status_per_course($course->id);
 $paymentspix = Payment::get_statuses_images();
 
-// TODO: rendre moins spécifique à Brest.
-$appnvalidations = Payment::get_appn_brest($courseid);
-
 // On récupère tous les types de calendriers.
 $calendartypes = $DB->get_records('apsolu_calendars_types');
 
@@ -205,17 +202,6 @@ foreach ($recordset as $record) {
         $record->count_other_enrolments = 0;
         $record->payments = [];
         $record->count_payments = 0;
-
-        // TODO: à supprimer.
-        if (isset($appnvalidations) === true) {
-            // Affiche l'état de la validation du certificat pour les APPN de Brest.
-            if (isset($appnvalidations[$record->id]) === true) {
-                $record->payments[] = $paymentspix[Payment::PAID]->image.' Attestation savoir nager';
-            } else {
-                $record->payments[] = $paymentspix[Payment::DUE]->image.' Attestation savoir nager';
-            }
-            $record->count_payments++;
-        }
 
         if (isset($payments[$record->id]) === true) {
             foreach ($payments[$record->id] as $payment) {
