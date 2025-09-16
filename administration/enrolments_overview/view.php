@@ -56,7 +56,7 @@ if ($mdata = $mform->get_data()) {
     // Exemple: un personnel ne devrait pas être évalué.
     $sql = "SELECT DISTINCT u.id, u.firstname, u.lastname, u.email, u.idnumber, u.department, uid.data AS ufr
               FROM {user} u
-              JOIN {user_info_data} uid ON u.id = uid.userid AND uid.fieldid = :ufrfieldid
+         LEFT JOIN {user_info_data} uid ON u.id = uid.userid AND uid.fieldid = :ufrfieldid
               JOIN {role_assignments} ra ON u.id = ra.userid AND ra.component = 'enrol_select'
               JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50
               JOIN {course} c ON c.id = ctx.instanceid
@@ -87,7 +87,7 @@ if ($mdata = $mform->get_data()) {
     // Récupère tous les utilisateurs appartenant à la population sélectionnée.
     $sql = "SELECT DISTINCT u.id, u.firstname, u.lastname, u.email, u.idnumber, u.department, uid.data AS ufr, c.name AS cohort
               FROM {user} u
-              JOIN {user_info_data} uid ON u.id = uid.userid AND uid.fieldid = :ufrfieldid
+         LEFT JOIN {user_info_data} uid ON u.id = uid.userid AND uid.fieldid = :ufrfieldid
               JOIN {cohort_members} cm ON u.id = cm.userid
               JOIN {cohort} c ON c.id = cm.cohortid
               JOIN {apsolu_colleges_members} acm ON cm.cohortid = acm.cohortid
