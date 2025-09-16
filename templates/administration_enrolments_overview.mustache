@@ -63,39 +63,49 @@
 {{/count_rows}}
 
 {{#count_rows}}
-<table class="table table-striped">
-    <tr>
-        <th>{{#str}}user{{/str}}</th>
-        <th>{{#str}}idnumber{{/str}}</th>
-        <th>{{#str}}cohorts, enrol_select{{/str}}</th>
-        <th>{{#str}}calendar, local_apsolu{{/str}}</th>
-        <th>{{#str}}enrolments, enrol_select{{/str}}</th>
-        <th>{{#str}}minimum_enrolments, enrol_select{{/str}}</th>
-        <th>{{#str}}maximum_enrolments, enrol_select{{/str}}</th>
-    </tr>
-    {{#rows}}
-    <tr{{#count_warnings}} class="table-danger"{{/count_warnings}}>
-        <td><a href="{{wwwroot}}/user/view.php?id={{id}}">{{firstname}} {{lastname}}</a></td>
-        <td>{{ idnumber }}</td>
-        <td><ul>{{#cohorts}}<li>{{ . }}</li>{{/cohorts}}</ul></td>
-        <td>{{ calendar }}</td>
-        <td>
-            {{^count_courses}}<span class="btn {{^count_warnings}}btn-primary{{/count_warnings}}{{#count_warnings}}btn-danger{{/count_warnings}} disabled">{{count_courses}}</span>{{/count_courses}}
-            {{#count_courses}}
-            <div class="dropdown show">
-                <a class="btn btn {{^count_warnings}}btn-primary{{/count_warnings}}{{#count_warnings}}btn-danger{{/count_warnings}} dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ count_courses }}</a>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                {{#courses}}
-                    <a class="dropdown-item" href="{{wwwroot}}/enrol/instances.php?id={{id}}">{{fullname}}</a>
-                {{/courses}}
-                </div>
-            </div>
-            {{/count_courses}}
-        </td>
-        <td>{{ minregister }}</td>
-        <td>{{ maxregister }}</td>
-    </tr>
-    {{/rows}}
-</table>
+<div class="apsolu-mask-wrapper table-responsive" data-mask-name="apsolu-enrol-select-administration-enrolments-overview">
+    <table class="table table-striped" id="apsolu-enrol-select-administration-enrolments-overview-table">
+        <thead>
+            <tr>
+                <th class="no-mask">{{#str}}user{{/str}}</th>
+                <th class="no-mask">{{#str}}idnumber{{/str}}</th>
+                <th class="table-column-shrink" data-mask-name="enrolments-department" style="width: auto;">{{#str}}department{{/str}}</th>
+                <th class="table-column-shrink" data-mask-name="enrolments-ufr" style="width: auto;">{{#str}}ufr, local_apsolu{{/str}}</th>
+                <th class="table-column-shrink" data-mask-name="enrolments-cohorts" style="width: auto;">{{#str}}cohorts, enrol_select{{/str}}</th>
+                <th class="table-column-shrink" data-mask-name="enrolments-calendar" style="width: auto;">{{#str}}calendar, local_apsolu{{/str}}</th>
+                <th class="no-mask">{{#str}}enrolments, enrol_select{{/str}}</th>
+                <th class="no-mask">{{#str}}minimum_enrolments, enrol_select{{/str}}</th>
+                <th class="no-mask">{{#str}}maximum_enrolments, enrol_select{{/str}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#rows}}
+            <tr{{#count_warnings}} class="table-danger"{{/count_warnings}}>
+                <td><a href="{{wwwroot}}/user/view.php?id={{id}}">{{firstname}} {{lastname}}</a></td>
+                <td>{{ idnumber }}</td>
+                <td>{{ department }}</td>
+                <td>{{ ufr }}</td>
+                <td><ul>{{#cohorts}}<li>{{ . }}</li>{{/cohorts}}</ul></td>
+                <td>{{ calendar }}</td>
+                <td>
+                    {{^count_courses}}<span class="btn {{^count_warnings}}btn-primary{{/count_warnings}}{{#count_warnings}}btn-danger{{/count_warnings}} disabled">{{count_courses}}</span>{{/count_courses}}
+                    {{#count_courses}}
+                    <div class="dropdown show">
+                        <a class="btn btn {{^count_warnings}}btn-primary{{/count_warnings}}{{#count_warnings}}btn-danger{{/count_warnings}} dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ count_courses }}</a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        {{#courses}}
+                            <a class="dropdown-item" href="{{wwwroot}}/enrol/instances.php?id={{id}}">{{fullname}}</a>
+                        {{/courses}}
+                        </div>
+                    </div>
+                    {{/count_courses}}
+                </td>
+                <td>{{ minregister }}</td>
+                <td>{{ maxregister }}</td>
+            </tr>
+            {{/rows}}
+        </tbody>
+    </table>
+</div>
 {{/count_rows}}
 {{/submit}}

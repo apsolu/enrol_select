@@ -337,4 +337,6 @@ if (isset($mdata->exportexcel) === true) {
     exit(0);
 }
 
+$PAGE->requires->js_call_amd('local_apsolu/sort', 'initialise');
+
 echo $OUTPUT->render_from_template('enrol_select/administration_enrolments_overview', $data);
