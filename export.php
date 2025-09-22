@@ -91,6 +91,7 @@ $headers = [
     get_string('lastname'),
     get_string('firstname'),
     get_string('idnumber'),
+    get_string('email'),
     get_string('institution'),
     get_string('ufr', 'local_apsolu'),
     get_string('department'),
@@ -153,6 +154,7 @@ foreach ($users as $user) {
     $row[] = $user->lastname;
     $row[] = $user->firstname;
     $row[] = $user->idnumber;
+    $row[] = $user->email;
     $row[] = $user->institution;
     $row[] = (isset($apsoluufr)) ? $apsoluufr : '';
     $row[] = $user->department;
