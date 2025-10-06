@@ -799,7 +799,7 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
 
         $course->grouping = $groupings[$categories[$course->category]->parent]->name;
         $course->sport = $categories[$course->category]->name;
-        $course->weekday_locale = get_string(strtolower($course->weekday), 'calendar');
+        $course->weekday_locale = get_string(strtolower($course->weekday), 'local_apsolu');
         $course->skill = $skills[$course->skillid]->name;
         $location = $locations[$course->locationid];
         $course->location = $location->name;
@@ -927,7 +927,7 @@ function enrol_select_generate_filters($courses = []) {
         $elements['sport'][$course->category] = $course->sport;
         $elements['skill'][$course->skillid] = $course->skill;
         $elements['area'][$course->areaid] = $course->area;
-        $elements['weekday'][$course->numweekday] = get_string($course->weekday, 'calendar');
+        $elements['weekday'][$course->numweekday] = get_string($course->weekday, 'local_apsolu');
         $starttime = substr($course->starttime, 0, 2).'h';
         $elements['starttime'][$starttime] = $starttime;
         $endtime = substr($course->endtime, 0, 2).'h';
