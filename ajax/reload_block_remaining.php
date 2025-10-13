@@ -24,9 +24,9 @@
 
 define('AJAX_SCRIPT', true);
 
-require(__DIR__.'/../../../config.php');
-require_once($CFG->dirroot.'/enrol/select/blocklib.php');
-require_once($CFG->dirroot.'/enrol/select/locallib.php');
+require(__DIR__ . '/../../../config.php');
+require_once($CFG->dirroot . '/enrol/select/blocklib.php');
+require_once($CFG->dirroot . '/enrol/select/locallib.php');
 
 // Set permissions.
 require_login();

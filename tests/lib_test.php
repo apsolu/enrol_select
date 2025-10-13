@@ -35,8 +35,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot.'/course/lib.php');
-require_once($CFG->dirroot.'/enrol/select/lib.php');
+require_once($CFG->dirroot . '/course/lib.php');
+require_once($CFG->dirroot . '/enrol/select/lib.php');
 
 /**
  * Classe de tests pour enrol_select_plugin
@@ -192,7 +192,7 @@ final class lib_test extends advanced_testcase {
 
         // Génère une instance enrol_select.
         $numberofusers = [enrol_select_plugin::ACCEPTED => 5, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0];
-        list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
+        [$plugin, $instance, $users] = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
 
         // Teste que l'utilisateur se voit proposer une place sur liste principale quand les quotas sont absents.
         $user = $generator->create_user();
@@ -252,7 +252,7 @@ final class lib_test extends advanced_testcase {
 
         // Teste lorsque que le quota sur liste principale est à 0.
         $numberofusers = [enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0];
-        list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
+        [$plugin, $instance, $users] = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
 
         // On définit un maximum d'inscrits.
         $instance->customint3 = 1; // Active les quotas.
@@ -275,7 +275,7 @@ final class lib_test extends advanced_testcase {
 
         // Teste lorsque que le quota sur liste secondaire est à 0.
         $numberofusers = [enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0];
-        list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
+        [$plugin, $instance, $users] = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
 
         // On définit un maximum d'inscrits.
         $instance->customint3 = 1; // Active les quotas.
@@ -309,7 +309,7 @@ final class lib_test extends advanced_testcase {
 
         // On bascule sur une inscription sur liste acceptée par défaut.
         $numberofusers = [enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 0, enrol_select_plugin::WAIT => 0];
-        list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
+        [$plugin, $instance, $users] = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
         $instance->customchar3 = enrol_select_plugin::ACCEPTED;
         $instance->customint3 = 0;
 
@@ -365,7 +365,7 @@ final class lib_test extends advanced_testcase {
 
         // Génère une instance enrol_select.
         $numberofusers = [enrol_select_plugin::ACCEPTED => 5, enrol_select_plugin::MAIN => 5, enrol_select_plugin::WAIT => 0];
-        list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
+        [$plugin, $instance, $users] = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
 
         // Teste que la liste principale n'est pas réalimentée lorsque les inscriptions sont closes.
         $instance->enrolstartdate = strtotime('-2 week');
@@ -474,7 +474,7 @@ final class lib_test extends advanced_testcase {
 
         // Génère une instance enrol_select.
         $numberofusers = [enrol_select_plugin::ACCEPTED => 0, enrol_select_plugin::MAIN => 2, enrol_select_plugin::WAIT => 2];
-        list($plugin, $instance, $users) = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
+        [$plugin, $instance, $users] = $generator->get_plugin_generator('enrol_select')->create_enrol_instance($numberofusers);
 
         // Active les quotas et la remontée automatique.
         $instance->customint3 = 1;

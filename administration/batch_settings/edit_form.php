@@ -16,8 +16,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot.'/enrol/select/lib.php');
+require_once($CFG->libdir . '/formslib.php');
+require_once($CFG->dirroot . '/enrol/select/lib.php');
 
 /**
  * Classe pour le formulaire permettant de configurer le paramétrage par lots des méthodes d'inscription par voeux.
@@ -35,7 +35,7 @@ class enrol_select_batch_settings_form extends moodleform {
     public function definition() {
         $mform = $this->_form;
 
-        list($calendars) = $this->_customdata;
+        [$calendars] = $this->_customdata;
 
         // Critères de sélection.
         $mform->addElement('header', 'header1', get_string('selection_criteria', 'enrol_select'));
@@ -131,5 +131,4 @@ class enrol_select_batch_settings_form extends moodleform {
 
         return $errors;
     }
-
 }

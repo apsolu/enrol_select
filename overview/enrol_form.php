@@ -43,7 +43,7 @@ class enrol_select_form extends moodleform {
         global $CFG, $DB;
 
         $mform = $this->_form;
-        list($instance, $roles, $federationrequirement) = $this->_customdata;
+        [$instance, $roles, $federationrequirement] = $this->_customdata;
 
         // Course field.
         $mform->addElement('text', 'fullname', get_string('course'), ['readonly' => 1, 'size' => '48']);
@@ -83,11 +83,13 @@ class enrol_select_form extends moodleform {
             }
 
             // Acceptation des recommandations médicales.
-            if (empty($instance->showpolicy) === false &&
-                (empty($CFG->sitepolicy) === false || is_file($CFG->dirroot.'/policy.html') === true)) {
+            if (
+                empty($instance->showpolicy) === false &&
+                (empty($CFG->sitepolicy) === false || is_file($CFG->dirroot . '/policy.html') === true)
+            ) {
                 $url = $CFG->sitepolicy;
                 if (empty($url) === true) {
-                    $url = $CFG->wwwroot.'/policy.html';
+                    $url = $CFG->wwwroot . '/policy.html';
                 }
                 $mform->addElement('checkbox', 'policy', get_string('policyagree', 'enrol_select', $url));
                 $mform->addRule('policy', get_string('required'), 'required', null, 'client');
@@ -117,7 +119,7 @@ class enrol_select_form extends moodleform {
         }
 
         $attributes = new stdClass();
-        $attributes->href = $CFG->wwwroot.'/enrol/select/overview.php';
+        $attributes->href = $CFG->wwwroot . '/enrol/select/overview.php';
         $attributes->class = 'btn btn-default btn-secondary apsolu-cancel-a';
         $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu', $attributes));
 

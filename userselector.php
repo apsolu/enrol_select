@@ -61,17 +61,17 @@ class enrol_select_potential_participant extends user_selector_base {
     public function find_users($search) {
         global $DB;
         // By default wherecondition retrieves all users except the deleted, not confirmed and guest.
-        list($wherecondition, $params) = $this->search_sql($search, 'u');
+        [$wherecondition, $params] = $this->search_sql($search, 'u');
         $params['enrolid'] = $this->enrolid;
 
-        $fields      = 'SELECT ' . $this->required_fields_sql('u') .', ue.id AS enrolment';
+        $fields      = 'SELECT ' . $this->required_fields_sql('u') . ', ue.id AS enrolment';
         $countfields = 'SELECT COUNT(1)';
 
         $sql = " FROM {user} u
             LEFT JOIN {user_enrolments} ue ON (ue.userid = u.id AND ue.enrolid = :enrolid)
                 WHERE $wherecondition";
 
-        list($sort, $sortparams) = users_order_by_sql('u', $search, $this->accesscontext);
+        [$sort, $sortparams] = users_order_by_sql('u', $search, $this->accesscontext);
         $order = ' ORDER BY ' . $sort;
 
         if (!$this->is_validating()) {

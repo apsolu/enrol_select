@@ -22,12 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use UniversiteRennes2\Apsolu as apsolu;
+use UniversiteRennes2\Apsolu;
 
-require_once(__DIR__.'/../../config.php');
-require_once($CFG->dirroot.'/enrol/select/locallib.php');
-require_once($CFG->dirroot.'/enrol/select/manage_editenroltype_form.php');
-require_once($CFG->dirroot.'/local/apsolu/locallib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once($CFG->dirroot . '/enrol/select/locallib.php');
+require_once($CFG->dirroot . '/enrol/select/manage_editenroltype_form.php');
+require_once($CFG->dirroot . '/local/apsolu/locallib.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 $from = required_param('from', PARAM_INT);
@@ -67,9 +67,9 @@ $PAGE->set_title($enrolselect->get_instance_name($instance));
 $PAGE->set_heading($course->fullname);
 
 // Get users list.
-$sql = "SELECT u.*".
-    " FROM {user} u".
-    " JOIN {user_enrolments} ue ON u.id = ue.userid".
+$sql = "SELECT u.*" .
+    " FROM {user} u" .
+    " JOIN {user_enrolments} ue ON u.id = ue.userid" .
     " WHERE ue.enrolid = ?";
 $users = $DB->get_records_sql($sql, [$enrolid]);
 foreach ($users as $userid => $user) {
@@ -88,17 +88,16 @@ $mform = new enrol_select_manage_editenroltype_form($url->out(false), [$instance
 
 if ($mform->is_cancelled()) {
     redirect($return);
-
 } else if ($data = $mform->get_data()) {
     if (isset($roles[$data->roleid])) {
         foreach ($data->users as $userid) {
             $enrolselect->enrol_user($instance, $userid, $data->roleid, $timestart = 0, $timeend = 0);
         }
 
-        $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
+        $url = $CFG->wwwroot . '/enrol/select/manage.php?enrolid=' . $enrolid;
         redirect($url, 'Le ou les utilisateurs ont été correctement mis à jour.', 5, \core\output\notification::NOTIFY_SUCCESS);
     } else {
-        $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
+        $url = $CFG->wwwroot . '/enrol/select/manage.php?enrolid=' . $enrolid;
         $message = 'Ce rôle ne semble pas être valide pour cette méthode d\'inscription';
         redirect($url, $message, 5, \core\output\notification::NOTIFY_ERROR);
     }

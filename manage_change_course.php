@@ -22,11 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use UniversiteRennes2\Apsolu as apsolu;
+use UniversiteRennes2\Apsolu;
 
-require_once(__DIR__.'/../../config.php');
-require_once($CFG->dirroot.'/enrol/select/locallib.php');
-require_once($CFG->dirroot.'/enrol/select/manage_change_course_form.php');
+require_once(__DIR__ . '/../../config.php');
+require_once($CFG->dirroot . '/enrol/select/locallib.php');
+require_once($CFG->dirroot . '/enrol/select/manage_change_course_form.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 $from = required_param('from', PARAM_INT);
@@ -66,9 +66,9 @@ $PAGE->set_title($enrolselect->get_instance_name($instance));
 $PAGE->set_heading($course->fullname);
 
 // Get users list.
-$sql = "SELECT u.*".
-    " FROM {user} u".
-    " JOIN {user_enrolments} ue ON u.id = ue.userid".
+$sql = "SELECT u.*" .
+    " FROM {user} u" .
+    " JOIN {user_enrolments} ue ON u.id = ue.userid" .
     " WHERE ue.enrolid = ?";
 $users = $DB->get_records_sql($sql, [$enrolid]);
 foreach ($users as $userid => $user) {
@@ -81,13 +81,13 @@ foreach ($users as $userid => $user) {
 
 // Cherche les cours contenant une méthode 'select' et où l'utilisateur courant est enseignant...
 // Ne pas faire de jointure sur ra.itemid et e.id.
-$sql = "SELECT e.id, e.name, c.id AS courseid, c.fullname".
-    " FROM {course} c".
-    " JOIN {apsolu_courses} apc ON apc.id = c.id".
-    " JOIN {context} ctx ON c.id = ctx.instanceid AND ctx.contextlevel = 50".
-    " JOIN {role_assignments} ra ON ctx.id = ra.contextid AND ra.roleid = 3".
-    " JOIN {enrol} e ON c.id = e.courseid AND e.status = 0 AND e.enrol = 'select'".
-    " WHERE ra.userid = ?".
+$sql = "SELECT e.id, e.name, c.id AS courseid, c.fullname" .
+    " FROM {course} c" .
+    " JOIN {apsolu_courses} apc ON apc.id = c.id" .
+    " JOIN {context} ctx ON c.id = ctx.instanceid AND ctx.contextlevel = 50" .
+    " JOIN {role_assignments} ra ON ctx.id = ra.contextid AND ra.roleid = 3" .
+    " JOIN {enrol} e ON c.id = e.courseid AND e.status = 0 AND e.enrol = 'select'" .
+    " WHERE ra.userid = ?" .
     " ORDER BY c.fullname";
 $courses = [];
 foreach ($DB->get_records_sql($sql, [$USER->id]) as $courseid => $enrolcourse) {
@@ -96,14 +96,14 @@ foreach ($DB->get_records_sql($sql, [$USER->id]) as $courseid => $enrolcourse) {
     }
 
     if (!empty($enrolcourse->name)) {
-        $courses[$courseid] = $enrolcourse->fullname.' ('.$enrolcourse->name.')';
+        $courses[$courseid] = $enrolcourse->fullname . ' (' . $enrolcourse->name . ')';
     } else {
         $courses[$courseid] = $enrolcourse->fullname;
     }
 }
 
 if ($courses === []) {
-    $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
+    $url = $CFG->wwwroot . '/enrol/select/manage.php?enrolid=' . $enrolid;
     $message = 'Vous n\'enseignez que dans un seul cours. Vous ne pouvez pas utiliser cette fonction.';
     redirect($url, $message, 5, \core\output\notification::NOTIFY_ERROR);
 }
@@ -112,10 +112,9 @@ $mform = new enrol_select_manage_change_course_form($url->out(false), [$instance
 
 if ($mform->is_cancelled()) {
     redirect($return);
-
 } else if ($data = $mform->get_data()) {
     if ($data->courseid == $course->id) {
-        $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
+        $url = $CFG->wwwroot . '/enrol/select/manage.php?enrolid=' . $enrolid;
         redirect($url, 'Impossible de déplacer dans le même cours', 5, \core\output\notification::NOTIFY_ERROR);
     } else if (isset($courses[$data->courseid])) {
         $newinstance = $DB->get_record('enrol', ['id' => $data->courseid, 'enrol' => 'select'], '*', MUST_EXIST);
@@ -136,8 +135,15 @@ if ($mform->is_cancelled()) {
             $roleassignment = $DB->get_record('role_assignments', $params);
             if ($roleassignment) {
                 $enrolselect->unenrol_user($instance, $userid);
-                $enrolselect->enrol_user($newinstance, $userid, $roleassignment->roleid, $timestart = 0, $timeend = 0,
-                    $currentenrol->status, $recovergrades = null);
+                $enrolselect->enrol_user(
+                    $newinstance,
+                    $userid,
+                    $roleassignment->roleid,
+                    $timestart = 0,
+                    $timeend = 0,
+                    $currentenrol->status,
+                    $recovergrades = null
+                );
                 $goodmoves++;
             } else {
                 $badmoves++;
@@ -148,21 +154,21 @@ if ($mform->is_cancelled()) {
         if ($goodmoves === 1) {
             $notification[] = '1 utilisateur a été déplacé';
         } else if ($goodmoves > 1) {
-            $notification[] = $goodmoves.' utilisateurs ont été déplacés';
+            $notification[] = $goodmoves . ' utilisateurs ont été déplacés';
         }
 
         if ($badmoves === 1) {
-            $notification[] = '1 utilisateur n\'a pas pu être déplacé (soit il est déjà inscrit au cours,'.
+            $notification[] = '1 utilisateur n\'a pas pu être déplacé (soit il est déjà inscrit au cours,' .
                 ' soit une erreur est survenue)';
         } else if ($badmoves > 1) {
-            $notification[] = $badmoves.' utilisateurs n\'ont pas pu être déplacés (soit ils sont déjà inscrits au cours,'.
+            $notification[] = $badmoves . ' utilisateurs n\'ont pas pu être déplacés (soit ils sont déjà inscrits au cours,' .
                 ' soit une erreur est survenue)';
         }
 
-        $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
-        redirect($url, implode(' et ', $notification).'.', 5, \core\output\notification::NOTIFY_SUCCESS);
+        $url = $CFG->wwwroot . '/enrol/select/manage.php?enrolid=' . $enrolid;
+        redirect($url, implode(' et ', $notification) . '.', 5, \core\output\notification::NOTIFY_SUCCESS);
     } else {
-        $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
+        $url = $CFG->wwwroot . '/enrol/select/manage.php?enrolid=' . $enrolid;
         $message = 'Ce cours ne semble pas être valide pour cette méthode d\'inscription';
         redirect($url, $message, 5, \core\output\notification::NOTIFY_ERROR);
     }

@@ -22,14 +22,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_apsolu\core\customfields as CustomFields;
+use local_apsolu\core\customfields;
 
 defined('MOODLE_INTERNAL') || die;
 
 // Fichier chargé automatiquement pour les administrateurs, mais pas pour les gestionnaires visiblement.
-require_once($CFG->dirroot.'/enrol/select/lib.php');
-require_once($CFG->dirroot.'/enrol/select/locallib.php');
-require_once($CFG->dirroot.'/enrol/select/administration/enrolments_overview/view_filter_form.php');
+require_once($CFG->dirroot . '/enrol/select/lib.php');
+require_once($CFG->dirroot . '/enrol/select/locallib.php');
+require_once($CFG->dirroot . '/enrol/select/administration/enrolments_overview/view_filter_form.php');
 
 // Liste des populations.
 $colleges = [];
@@ -253,7 +253,7 @@ if (isset($mdata->exportcsv) === true) {
         }
 
         $data = [];
-        $data[] = $row->firstname.' '.$row->lastname;
+        $data[] = $row->firstname . ' ' . $row->lastname;
         $data[] = $row->idnumber;
         $data[] = $row->email;
         $data[] = $row->department;
@@ -273,7 +273,7 @@ if (isset($mdata->exportcsv) === true) {
 
 if (isset($mdata->exportexcel) === true) {
     // Export au format excel.
-    require_once($CFG->libdir.'/excellib.class.php');
+    require_once($CFG->libdir . '/excellib.class.php');
 
     $workbook = new MoodleExcelWorkbook("-");
     $workbook->send('extraction_des_inscriptions.xls');
@@ -315,7 +315,7 @@ if (isset($mdata->exportexcel) === true) {
             $courses[] = $course->fullname;
         }
 
-        $myxls->write_string($line, 0, $row->firstname.' '.$row->lastname, $excelformat);
+        $myxls->write_string($line, 0, $row->firstname . ' ' . $row->lastname, $excelformat);
         $myxls->write_string($line, 1, $row->idnumber, $excelformat);
         $myxls->write_string($line, 2, $row->email, $excelformat);
         $myxls->write_string($line, 3, $row->department, $excelformat);

@@ -23,13 +23,13 @@
  */
 
 use UniversiteRennes2\Apsolu\Payment;
-use local_apsolu\core\customfields as CustomFields;
-use local_apsolu\core\role as Role;
+use local_apsolu\core\customfields;
+use local_apsolu\core\role;
 
-require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/locallib.php');
-require_once($CFG->dirroot.'/user/profile/lib.php');
-require_once($CFG->dirroot.'/local/apsolu/classes/apsolu/payment.php');
+require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
+require_once($CFG->dirroot . '/user/profile/lib.php');
+require_once($CFG->dirroot . '/local/apsolu/classes/apsolu/payment.php');
 
 $enrolid = optional_param('enrolid', null, PARAM_INT);
 
@@ -78,8 +78,8 @@ foreach ($instances as $instance) {
     $enrol = new stdClass();
     $enrol->name = $enrolselect->get_instance_name($instance);
     $enrol->enrolid = $instance->id;
-    $enrol->enrol_user_link = $CFG->wwwroot.'/enrol/select/enrol.php?enrolid='.$instance->id;
-    $enrol->unenrol_user_link = $CFG->wwwroot.'/enrol/select/unenrol.php?enrolid='.$instance->id;
+    $enrol->enrol_user_link = $CFG->wwwroot . '/enrol/select/enrol.php?enrolid=' . $instance->id;
+    $enrol->unenrol_user_link = $CFG->wwwroot . '/enrol/select/unenrol.php?enrolid=' . $instance->id;
     $enrol->lists = [];
     $enrol->lock = ($instance->customint8 < time());
     if ($ismanager !== false || is_siteadmin() === true) {
@@ -98,9 +98,9 @@ foreach ($instances as $instance) {
         $otheroptions  = [];
 
         foreach (enrol_select_plugin::$states as $scode => $sstate) {
-            $mainoptions[$scode] = get_string('move_to_'.$sstate, 'enrol_select');
+            $mainoptions[$scode] = get_string('move_to_' . $sstate, 'enrol_select');
             if ($nextinstance !== false) {
-                $suboptions['99'.$scode] = get_string('move_to_next_'.$sstate, 'enrol_select');
+                $suboptions['99' . $scode] = get_string('move_to_next_' . $sstate, 'enrol_select');
             }
         }
 
@@ -121,11 +121,11 @@ foreach ($instances as $instance) {
         }
 
         $list = new stdClass();
-        $list->name = get_string($state.'_list', 'enrol_select');
-        $list->description = get_string($state.'_description', 'enrol_select');
+        $list->name = get_string($state . '_list', 'enrol_select');
+        $list->description = get_string($state . '_description', 'enrol_select');
         $list->status = $code;
-        $list->form_action = $CFG->wwwroot.'/enrol/select/manage_handler.php?enrolid='.$instance->id;
-        $list->enrol_user_link = $CFG->wwwroot.'/enrol/select/add.php?enrolid='.$instance->id.'&status='.$code;
+        $list->form_action = $CFG->wwwroot . '/enrol/select/manage_handler.php?enrolid=' . $instance->id;
+        $list->enrol_user_link = $CFG->wwwroot . '/enrol/select/add.php?enrolid=' . $instance->id . '&status=' . $code;
         $list->users = [];
         $list->count_users = 0;
 
@@ -140,10 +140,10 @@ foreach ($instances as $instance) {
                 $list->max_users = false;
         }
 
-        $htmlselectattributes = ['id' => 'to-'.$state, 'class' => 'select_options'];
-        $list->actions = '<p>'.html_writer::tag('label', get_string("withselectedusers"), ['for' => 'to-'.$state]).
-            html_writer::select($selectoptions, 'actions', '', ['' => 'choosedots'], $htmlselectattributes).
-            html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'from', 'value' => $code]).
+        $htmlselectattributes = ['id' => 'to-' . $state, 'class' => 'select_options'];
+        $list->actions = '<p>' . html_writer::tag('label', get_string("withselectedusers"), ['for' => 'to-' . $state]) .
+            html_writer::select($selectoptions, 'actions', '', ['' => 'choosedots'], $htmlselectattributes) .
+            html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'from', 'value' => $code]) .
             '</p>';
 
         $enrol->lists[$code] = $list;
@@ -205,7 +205,7 @@ foreach ($recordset as $record) {
 
         if (isset($payments[$record->id]) === true) {
             foreach ($payments[$record->id] as $payment) {
-                $record->payments[] = $paymentspix[$payment->status]->image.' '.$payment->name;
+                $record->payments[] = $paymentspix[$payment->status]->image . ' ' . $payment->name;
                 $record->count_payments++;
             }
         }
@@ -224,7 +224,7 @@ foreach ($recordset as $record) {
         $enrolment->enrolname = $record->enrolname;
     }
 
-    $enrolment->state = get_string(enrol_select_plugin::$states[$record->status].'_list_abbr', 'enrol_select');
+    $enrolment->state = get_string(enrol_select_plugin::$states[$record->status] . '_list_abbr', 'enrol_select');
     $enrolment->status = $record->status;
     $enrolment->timecreated = userdate($record->timecreated, '%a %d %b à %T');
     $enrolment->datecreated_sortable = userdate($record->timecreated, '%F');

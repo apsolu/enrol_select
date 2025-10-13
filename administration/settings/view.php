@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/enrol/select/administration/settings/edit_form.php');
+require_once($CFG->dirroot . '/enrol/select/administration/settings/edit_form.php');
 
 // Build form.
 $attributes = [

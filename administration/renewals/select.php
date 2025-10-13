@@ -22,11 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use UniversiteRennes2\Apsolu as apsolu;
+use UniversiteRennes2\Apsolu;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/enrol/select/lib.php');
+require_once($CFG->dirroot . '/enrol/select/lib.php');
 
 echo $OUTPUT->heading('Réinscriptions en masse');
 
@@ -40,7 +40,7 @@ $recordset = $DB->get_recordset_sql($sql);
 
 $options = [];
 foreach (enrol_select_plugin::$states as $code => $state) {
-    $options[$code] = get_string($state.'_list', 'enrol_select');
+    $options[$code] = get_string($state . '_list', 'enrol_select');
 }
 
 if ($recordset) {
@@ -57,13 +57,14 @@ if ($recordset) {
     foreach ($recordset as $renewal) {
         // Actions.
         $uid = uniqid();
-        $submitlink = $CFG->wwwroot.'/enrol/select/administration.php?tab=renewals&action=submit';
-        $actions = '<ul><li style="display:inline;"><a href="'.$submitlink.'">Valider les réinscriptions en masse</a></li></ul>';
+        $submitlink = $CFG->wwwroot . '/enrol/select/administration.php?tab=renewals&action=submit';
+        $actions = '<ul><li style="display:inline;">' .
+            '<a href="' . $submitlink . '">Valider les réinscriptions en masse</a></li></ul>';
         $selectoptions = html_writer::select($options, $uid . '_action', '0', ['' => 'choosedots']);
 
         $table->data[] = [
-            '<input type="hidden" name="uids[]" value="'.$uid.'" />'.
-            '<input type="checkbox" name="' . $uid . '_enrol" value="'.$renewal->id.'" />',
+            '<input type="hidden" name="uids[]" value="' . $uid . '" />' .
+            '<input type="checkbox" name="' . $uid . '_enrol" value="' . $renewal->id . '" />',
             $renewal->coursename,
             $renewal->enrolname,
             $renewal->renewalname,
@@ -72,7 +73,7 @@ if ($recordset) {
     }
 
     $information = get_string('only_students_on_the_accepted_list_will_be_transferred_to_the_list_of_your_choice', 'enrol_select');
-    echo '<form method="post" action="'.$submitlink.'">';
+    echo '<form method="post" action="' . $submitlink . '">';
     echo html_writer::div($information, 'alert alert-info');
     echo html_writer::table($table);
     echo '<input class="btn btn-primary" type="submit" value="Valider">';

@@ -16,7 +16,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 /**
  * Classe pour le formulaire permettant de filtrer la vue d'ensemble des inscriptions.
@@ -34,7 +34,7 @@ class apsolu_enrolments_overview_filter_form extends moodleform {
     public function definition() {
         $mform = $this->_form;
 
-        list($colleges, $calendars) = $this->_customdata;
+        [$colleges, $calendars] = $this->_customdata;
 
         // Champ "population".
         $mform->addElement('select', 'college', get_string('college', 'enrol_select'), $colleges, ['multiple' => false]);

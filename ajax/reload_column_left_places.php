@@ -22,13 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use UniversiteRennes2\Apsolu as apsolu;
+use UniversiteRennes2\Apsolu;
 
 define('AJAX_SCRIPT', true);
 
-require(__DIR__.'/../../../config.php');
-require_once($CFG->dirroot.'/enrol/select/lib.php');
-require_once($CFG->dirroot.'/enrol/select/locallib.php');
+require(__DIR__ . '/../../../config.php');
+require_once($CFG->dirroot . '/enrol/select/lib.php');
+require_once($CFG->dirroot . '/enrol/select/locallib.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 
@@ -87,4 +87,4 @@ if ($enrol->customint3 == 1) {
     $leftplacesstyle = 'success';
 }
 
-echo '<td id="apsolu-select-left-places-'.$enrolid.'-ajax" class="table-'.$leftplacesstyle.'">'.$leftplacesstr.'</td>';
+echo '<td id="apsolu-select-left-places-' . $enrolid . '-ajax" class="table-' . $leftplacesstyle . '">' . $leftplacesstr . '</td>';

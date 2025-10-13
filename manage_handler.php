@@ -22,20 +22,20 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use UniversiteRennes2\Apsolu as apsolu;
+use UniversiteRennes2\Apsolu;
 
-require(__DIR__.'/../../config.php');
+require(__DIR__ . '/../../config.php');
 
 require_login();
 
 $actions = required_param('actions', PARAM_ALPHA);
 
 if ($actions === 'notify') {
-    require(__DIR__.'/manage_notify.php');
+    require(__DIR__ . '/manage_notify.php');
 } else if ($actions === 'changecourse') {
-    require(__DIR__.'/manage_change_course.php');
+    require(__DIR__ . '/manage_change_course.php');
 } else if ($actions === 'editenroltype') {
-    require(__DIR__.'/manage_editenroltype.php');
+    require(__DIR__ . '/manage_editenroltype.php');
 } else {
-    require(__DIR__.'/manage_move.php');
+    require(__DIR__ . '/manage_move.php');
 }

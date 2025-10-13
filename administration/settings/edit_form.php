@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot.'/enrol/select/lib.php');
+require_once($CFG->libdir . '/formslib.php');
+require_once($CFG->dirroot . '/enrol/select/lib.php');
 
 /**
  * Classe pour le formulaire permettant de configurer le paramétrage par défaut des méthodes d'inscription par voeux.
@@ -43,7 +43,7 @@ class enrol_select_default_settings_form extends moodleform {
     public function definition() {
         $mform = $this->_form;
 
-        list($defaults, $calendars, $cohorts, $roles, $cards) = $this->_customdata;
+        [$defaults, $calendars, $cohorts, $roles, $cards] = $this->_customdata;
 
         $mform->addElement('header', 'header1', get_string('general'));
 
@@ -139,7 +139,7 @@ class enrol_select_default_settings_form extends moodleform {
         }
 
         if (count($options) === 0) {
-            $mform->addElement('html', '<div class="alert alert-info">'.get_string('no_available_prices', 'enrol_select').'</div>');
+            $mform->addElement('html', html_writer::div(get_string('no_available_prices', 'enrol_select'), 'alert alert-info'));
             $mform->addElement('hidden', 'default_cards', '');
             $mform->setType('default_cards', PARAM_ALPHANUM);
         } else {
@@ -218,15 +218,19 @@ class enrol_select_default_settings_form extends moodleform {
         // Contrôle que la liste d'inscription par défaut est "acceptée" lorsqu'un délai de paiement est activé.
         if (isset($data['default_customdec1']) === true && empty($data['default_customdec1']) === false) {
             $quotaenabled = (isset($data['default_customint3']) === true && empty($data['default_customint3']) === false);
-            if ($quotaenabled === true &&
-                (isset($data['default_customchar2']) === false || empty($data['default_customchar2']) === false)) {
+            if (
+                $quotaenabled === true &&
+                (isset($data['default_customchar2']) === false || empty($data['default_customchar2']) === false)
+            ) {
                 $label = get_string('the_delay_cannot_be_combined_with_the_automatic_list_filling', 'enrol_select');
                 $errors['default_customdec1'] = $label;
             }
 
             if (isset($data['default_customchar3']) === false || $data['default_customchar3'] !== enrol_select_plugin::ACCEPTED) {
-                $errors['default_customdec1'] = get_string('the_delay_cannot_be_set_if_the_default_list_is_accepted',
-                    'enrol_select');
+                $errors['default_customdec1'] = get_string(
+                    'the_delay_cannot_be_set_if_the_default_list_is_accepted',
+                    'enrol_select'
+                );
             }
 
             if ($data['default_customdec1'] < 1200) {
@@ -262,5 +266,4 @@ class enrol_select_default_settings_form extends moodleform {
 
         return $errors;
     }
-
 }

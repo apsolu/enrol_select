@@ -36,23 +36,23 @@ function enrol_select_get_remaining_choices_block() {
     $overviewremainingchoicesdata = new stdClass();
     $overviewremainingchoicesdata->choices = enrol_select_get_sum_user_choices($userid = null, $count = true);
     $overviewremainingchoicesdata->count_choices = 0;
-    $overviewremainingchoicesdata->summary = '<div id="apsolu-rules-summary" class="table-responsive">'.
-            '<table class="table table-bordered">'.
-            '<thead>'.
-                '<tr>'.
-                    '<th>En tant que...</th>'.
-                    '<th>nombre de voeux maximums</th>'.
-                    '<th>nombre d\'inscriptions minimums</th>'.
-                    '<th>nombre d\'inscriptions maximums</th>'.
-                '</tr>'.
-            '</thead>'.
+    $overviewremainingchoicesdata->summary = '<div id="apsolu-rules-summary" class="table-responsive">' .
+            '<table class="table table-bordered">' .
+            '<thead>' .
+                '<tr>' .
+                    '<th>En tant que...</th>' .
+                    '<th>nombre de voeux maximums</th>' .
+                    '<th>nombre d\'inscriptions minimums</th>' .
+                    '<th>nombre d\'inscriptions maximums</th>' .
+                '</tr>' .
+            '</thead>' .
             '<tbody>';
     foreach ($colleges as $college) {
-        $overviewremainingchoicesdata->summary .= '<tr>'.
-                '<td>'.$college->name.'</td>'.
-                '<td>'.$college->maxwish.'</td>'.
-                '<td>'.$college->minregister.'</td>'.
-                '<td>'.$college->maxregister.'</td>'.
+        $overviewremainingchoicesdata->summary .= '<tr>' .
+                '<td>' . $college->name . '</td>' .
+                '<td>' . $college->maxwish . '</td>' .
+                '<td>' . $college->minregister . '</td>' .
+                '<td>' . $college->maxregister . '</td>' .
                 '</tr>';
     }
     $overviewremainingchoicesdata->summary .= '</tbody></table></div>';
@@ -65,8 +65,8 @@ function enrol_select_get_remaining_choices_block() {
 
         $choice->description = '';
         if ($choice->count >= $choice->maxwish) {
-            $choice->description = '<p class="alert-success">Vous avez atteint le maximum de voeux avec le statut <b>'.
-                $roles[$choice->roleid]->name.'</b>.</p>';
+            $choice->description = '<p class="alert-success">Vous avez atteint le maximum de voeux avec le statut <b>' .
+                $roles[$choice->roleid]->name . '</b>.</p>';
         } else {
             // Pluriel.
             if ($choice->maxregister > 1) {
@@ -76,8 +76,8 @@ function enrol_select_get_remaining_choices_block() {
             }
 
             if ($choice->minregister == 0) {
-                $choice->description = '<p class="alert-info">Vous pouvez choisir '.$choice->maxregister.' '.
-                    $activitiesstr.' avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
+                $choice->description = '<p class="alert-info">Vous pouvez choisir ' . $choice->maxregister . ' ' .
+                    $activitiesstr . ' avec le statut <b>' . $roles[$choice->roleid]->name . '</b>.';
             } else {
                 if ($choice->count < $choice->minregister) {
                     $style = 'alert-danger';
@@ -86,11 +86,12 @@ function enrol_select_get_remaining_choices_block() {
                 }
 
                 if ($choice->minregister === $choice->maxregister) {
-                    $choice->description = '<p class="'.$style.'">Vous pouvez choisir <b>'.$choice->minregister.' '.
-                        $activitiesstr.'</b> avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
+                    $choice->description = '<p class="' . $style . '">Vous pouvez choisir <b>' . $choice->minregister . ' ' .
+                        $activitiesstr . '</b> avec le statut <b>' . $roles[$choice->roleid]->name . '</b>.';
                 } else {
-                    $choice->description = '<p class="'.$style.'">Vous pouvez choisir <b>entre '.$choice->minregister.' et '.
-                        $choice->maxregister.' '.$activitiesstr.'</b> avec le statut <b>'.$roles[$choice->roleid]->name.'</b>.';
+                    $choice->description = '<p class="' . $style . '">Vous pouvez choisir <b>entre ' . $choice->minregister .
+                        ' et ' . $choice->maxregister . ' ' . $activitiesstr . '</b> avec le statut <b>' .
+                        $roles[$choice->roleid]->name . '</b>.';
                 }
             }
 
@@ -100,9 +101,8 @@ function enrol_select_get_remaining_choices_block() {
             } else {
                 $choicestr = 'voeu';
             }
-            $choice->description .= '<br />Il vous reste encore <b>'.$countchoices.' '.$choicestr.'</b>.</p>';
+            $choice->description .= '<br />Il vous reste encore <b>' . $countchoices . ' ' . $choicestr . '</b>.</p>';
         }
-
     }
 
     // Réindexe les valeurs pour mustache.
@@ -125,7 +125,7 @@ function enrol_select_get_remaining_choices_block() {
 function enrol_select_get_enrolments_block() {
     global $DB, $CFG, $OUTPUT;
 
-    require_once(__DIR__.'/lib.php');
+    require_once(__DIR__ . '/lib.php');
 
     $roles = role_fix_names($DB->get_records('role'));
 
@@ -175,7 +175,7 @@ function enrol_select_get_filters_block($courses) {
     $filters = enrol_select_generate_filters($courses);
 
     $overviewfiltersdata = new stdClass();
-    $overviewfiltersdata->form = (object) ['action' => $CFG->wwwroot.'/enrol/select/overview.php'];
+    $overviewfiltersdata->form = (object) ['action' => $CFG->wwwroot . '/enrol/select/overview.php'];
     $overviewfiltersdata->filters = array_values($filters);
 
     $block = new block_contents();

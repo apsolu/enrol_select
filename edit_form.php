@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot.'/cohort/lib.php');
+require_once($CFG->libdir . '/formslib.php');
+require_once($CFG->dirroot . '/cohort/lib.php');
 
 /**
  * Définition du formulaire pour configurer une instance enrol_select d'un cours.
@@ -43,7 +43,7 @@ class enrol_select_edit_form extends moodleform {
     public function definition() {
         $mform = $this->_form;
 
-        list($instance, $plugin, $context, $cohorts, $roles, $enrolmethods, $calendars, $cards) = $this->_customdata;
+        [$instance, $plugin, $context, $cohorts, $roles, $enrolmethods, $calendars, $cards] = $this->_customdata;
 
         $datetimeoptions = ['optional' => true];
 
@@ -192,7 +192,7 @@ class enrol_select_edit_form extends moodleform {
         }
 
         if (count($options) === 0) {
-            $mform->addElement('html', '<div class="alert alert-info">'.get_string('no_available_prices', 'enrol_select').'</div>');
+            $mform->addElement('html', html_writer::div(get_string('no_available_prices', 'enrol_select'), 'alert alert-info'));
         } else {
             $attributes = ['size' => 10];
             $select = $mform->addElement('select', 'cards', 'Cartes requises', $options, $attributes);

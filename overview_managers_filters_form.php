@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot.'/cohort/lib.php');
+require_once($CFG->libdir . '/formslib.php');
+require_once($CFG->dirroot . '/cohort/lib.php');
 
 /**
  * Définition du formulaire permettant aux gestionnaires de simuler une ouverture d'inscription.

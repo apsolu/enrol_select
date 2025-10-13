@@ -23,8 +23,8 @@
  */
 
 require('../../config.php');
-require_once($CFG->dirroot.'/enrol/select/lib.php');
-require_once($CFG->dirroot.'/enrol/select/locallib.php');
+require_once($CFG->dirroot . '/enrol/select/lib.php');
+require_once($CFG->dirroot . '/enrol/select/locallib.php');
 
 require_login();
 
@@ -110,8 +110,8 @@ foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
     if ($enrolment->status !== enrol_select_plugin::ACCEPTED) {
         // On ne conserve que les inscriptions validées.
         if (defined('BEHAT_SITE_RUNNING') === false) {
-            $message = 'L\'inscription d\'inscription #'.$enrolment->enrolid.
-                ' du cours #'.$enrolment->id.' n\'est pas validée (status: '.$enrolment->status.').';
+            $message = 'L\'inscription d\'inscription #' . $enrolment->enrolid .
+                ' du cours #' . $enrolment->id . ' n\'est pas validée (status: ' . $enrolment->status . ').';
             debugging($message, $level = DEBUG_DEVELOPER);
         }
         continue;
@@ -122,7 +122,7 @@ foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
     if ($enrol === false) {
         // L'instance d'inscription n'existe pas.
         if (defined('BEHAT_SITE_RUNNING') === false) {
-            $message = 'L\'instance d\'inscription #'.$enrolment->enrolid.' du cours #'.$enrolment->id.' n\'existe pas.';
+            $message = 'L\'instance d\'inscription #' . $enrolment->enrolid . ' du cours #' . $enrolment->id . ' n\'existe pas.';
             debugging($message, $level = DEBUG_DEVELOPER);
         }
         continue;
@@ -131,8 +131,8 @@ foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
     if ($select->can_reenrol($enrol) === false) {
         // L'utilisateur n'est pas autorisé à se réinscrire.
         if (defined('BEHAT_SITE_RUNNING') === false) {
-            $message = 'L\'utilisateur #'.$USER->id.' n\'est pas autorisé à se réinscrire'.
-                ' via l\'instance #'.$enrolment->enrolid.' du cours #'.$enrolment->id.'.';
+            $message = 'L\'utilisateur #' . $USER->id . ' n\'est pas autorisé à se réinscrire' .
+                ' via l\'instance #' . $enrolment->enrolid . ' du cours #' . $enrolment->id . '.';
             debugging($message, $level = DEBUG_DEVELOPER);
         }
         continue;
@@ -143,7 +143,7 @@ foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
     if ($targetenrol === false) {
         // L'instance de réinscription n'existe pas.
         if (defined('BEHAT_SITE_RUNNING') === false) {
-            $message = 'L\'instance de réinscription #'.$targetenrol->id.' du cours #'.$enrolment->id.' n\'existe pas.';
+            $message = 'L\'instance de réinscription #' . $targetenrol->id . ' du cours #' . $enrolment->id . ' n\'existe pas.';
             debugging($message, $level = DEBUG_DEVELOPER);
         }
         continue;
@@ -158,7 +158,7 @@ foreach (enrol_select_get_user_reenrolments() as $key => $enrolment) {
     if ($roles === []) {
         // L'utilisateur ne peut pas s'incrire (problème de cohortes ou de rôles).
         if (defined('BEHAT_SITE_RUNNING') === false) {
-            $message = 'L\'utilisateur #'.$USER->id.' ne peut pas s\'inscrire (problème de cohortes ou de rôles).';
+            $message = 'L\'utilisateur #' . $USER->id . ' ne peut pas s\'inscrire (problème de cohortes ou de rôles).';
             debugging($message, $level = DEBUG_DEVELOPER);
         }
         continue;
@@ -178,10 +178,11 @@ if (isset($_POST['reenrol'])) {
     foreach ($_POST['renew'] as $enrolid => $renew) {
         $instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'select']);
 
-        $log = userdate(time(), '%c').' '.$USER->firstname.' '.$USER->lastname.' ('.$USER->email.' #id '.$USER->id.')';
+        $log = userdate(time(), '%c') . ' ' . $USER->firstname . ' ' . $USER->lastname . ' (' . $USER->email .
+            ' #id ' . $USER->id . ')';
 
         if (!$instance) {
-            debugging('ERROR: '.$log.' invalid instance #id '.$enrolid, $level = NO_DEBUG_DISPLAY);
+            debugging('ERROR: ' . $log . ' invalid instance #id ' . $enrolid, $level = NO_DEBUG_DISPLAY);
             continue;
         }
 
@@ -197,7 +198,7 @@ if (isset($_POST['reenrol'])) {
             $mailcontent[] = get_string('reenrolmentstop', 'enrol_select', $course);
 
             // Ajouter une ligne de log.
-            debugging($log.' unenrol from instanceid '.$instance->id, $level = NO_DEBUG_DISPLAY);
+            debugging($log . ' unenrol from instanceid ' . $instance->id, $level = NO_DEBUG_DISPLAY);
         } else if ($renew === '1') {
             // Inscrire l'utilisateur...
             if (isset($_POST['role'][$enrolid])) {
@@ -206,29 +207,43 @@ if (isset($_POST['reenrol'])) {
                 if (isset($activities[$instance->courseid], $activities[$instance->courseid]->roles[$roleid])) {
                     if (isset($CFG->is_siuaps_rennes) === true) {
                         // Inscription liste définitive.
-                        $select->enrol_user($instance, $USER->id, $roleid, $instance->customint7, $instance->customint8,
-                            $status = ENROL_INSTANCE_ENABLED, $recovergrades = null);
+                        $select->enrol_user(
+                            $instance,
+                            $USER->id,
+                            $roleid,
+                            $instance->customint7,
+                            $instance->customint8,
+                            $status = ENROL_INSTANCE_ENABLED,
+                            $recovergrades = null
+                        );
                     } else {
                         // Inscription liste principale.
-                        $select->enrol_user($instance, $USER->id, $roleid, $instance->customint7, $instance->customint8,
-                            $status = 2, $recovergrades = null);
+                        $select->enrol_user(
+                            $instance,
+                            $USER->id,
+                            $roleid,
+                            $instance->customint7,
+                            $instance->customint8,
+                            $status = 2,
+                            $recovergrades = null
+                        );
                     }
 
                     $mailcontent[] = get_string('reenrolmentcontinue', 'enrol_select', $course);
 
                     // Ajouter une ligne de log.
-                    debugging($log.' enrol into instanceid '.$instance->id.', roleid '.$roleid, $level = NO_DEBUG_DISPLAY);
+                    debugging($log . ' enrol into instanceid ' . $instance->id . ', roleid ' . $roleid, $level = NO_DEBUG_DISPLAY);
                 } else {
                     // Ajouter une ligne de log.
                     $reasons = [];
                     if (!isset($activities[$instance->courseid])) {
-                        $reasons[] = 'non inscrit dans le cours #'.$instance->courseid;
+                        $reasons[] = 'non inscrit dans le cours #' . $instance->courseid;
                     } else if (!isset($activities[$instance->courseid]->roles[$roleid])) {
-                        $reasons[] = 'non autorisé pour le rôle #'.$roleid;
+                        $reasons[] = 'non autorisé pour le rôle #' . $roleid;
                     }
 
-                    $message = 'ERROR: '.$log.' can\'t enrol instanceid '.$instance->id.
-                        ', roleid '.$roleid.' :: '.implode(', ', $reasons);
+                    $message = 'ERROR: ' . $log . ' can\'t enrol instanceid ' . $instance->id .
+                        ', roleid ' . $roleid . ' :: ' . implode(', ', $reasons);
                     debugging($message, $level = NO_DEBUG_DISPLAY);
                 }
             }
@@ -240,7 +255,7 @@ if (isset($_POST['reenrol'])) {
         sort($mailcontent);
 
         $list = new stdClass();
-        $list->choices = ' - '.implode(PHP_EOL.' - ', $mailcontent);
+        $list->choices = ' - ' . implode(PHP_EOL . ' - ', $mailcontent);
         $body = get_string('reenrolmentnotification', 'enrol_select', $list);
         $subject = get_string('reenrolmentnotificationsubject', 'enrol_select');
 
@@ -264,11 +279,11 @@ foreach ($activities as $enrolment) {
     $enrolment->teachers = [];
     $enrolment->count_teachers = 0;
 
-    $sql = "SELECT ra.*".
-        " FROM {role_assignments} ra".
-        " JOIN {context} c ON c.id = ra.contextid".
-        " WHERE c.instanceid = :courseid".
-        " AND c.contextlevel = 50".
+    $sql = "SELECT ra.*" .
+        " FROM {role_assignments} ra" .
+        " JOIN {context} c ON c.id = ra.contextid" .
+        " WHERE c.instanceid = :courseid" .
+        " AND c.contextlevel = 50" .
         " AND ra.roleid = 3";
     $assignments = $DB->get_records_sql($sql, ['courseid' => $targetenrol->courseid]);
     foreach ($assignments as $assignment) {
@@ -299,14 +314,14 @@ foreach ($activities as $enrolment) {
     $enrolment->renew = '';
     foreach ([1 => get_string('yes'), 0 => get_string('no')] as $value => $label) {
         $checked = ($renew == $value);
-        $checkbox = html_writer::checkbox($name = 'renew['.$targetenrol->id.']', $value, $checked, $label, $attributes);
+        $checkbox = html_writer::checkbox($name = 'renew[' . $targetenrol->id . ']', $value, $checked, $label, $attributes);
         $enrolment->renew .= str_replace('checkbox', 'radio', $checkbox);
     }
 
     $enrolment->roles = '';
     foreach ($roles as $value => $label) {
         $checked = ($role == $value);
-        $checkbox = html_writer::checkbox($name = 'role['.$targetenrol->id.']', $value, $checked, $label, $attributes);
+        $checkbox = html_writer::checkbox($name = 'role[' . $targetenrol->id . ']', $value, $checked, $label, $attributes);
         $enrolment->roles .= str_replace('checkbox', 'radio', $checkbox);
     }
 
@@ -315,7 +330,7 @@ foreach ($activities as $enrolment) {
 }
 
 $data = new stdClass();
-$data->action = $CFG->wwwroot.'/enrol/select/renew.php';
+$data->action = $CFG->wwwroot . '/enrol/select/renew.php';
 $data->enrolments = $enrolments;
 $data->enrolments_count = $enrolmentscount;
 $data->notification = $notification;

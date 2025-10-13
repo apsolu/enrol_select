@@ -22,11 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use UniversiteRennes2\Apsolu as apsolu;
+use UniversiteRennes2\Apsolu;
 
-require_once(__DIR__.'/../../config.php');
-require_once($CFG->dirroot.'/enrol/select/locallib.php');
-require_once($CFG->dirroot.'/local/apsolu/forms/notification_form.php');
+require_once(__DIR__ . '/../../config.php');
+require_once($CFG->dirroot . '/enrol/select/locallib.php');
+require_once($CFG->dirroot . '/local/apsolu/forms/notification_form.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 if (!isset($_POST['users'])) {
@@ -64,9 +64,9 @@ $PAGE->set_title($enrolselect->get_instance_name($instance));
 $PAGE->set_heading($course->fullname);
 
 // Get users list.
-$sql = "SELECT u.*".
-    " FROM {user} u".
-    " JOIN {user_enrolments} ue ON u.id = ue.userid".
+$sql = "SELECT u.*" .
+    " FROM {user} u" .
+    " JOIN {user_enrolments} ue ON u.id = ue.userid" .
     " WHERE ue.enrolid = ?";
 $users = $DB->get_records_sql($sql, [$enrolid]);
 foreach ($users as $userid => $user) {

@@ -26,8 +26,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use local_apsolu\core\federation\course as FederationCourse;
 
-require_once($CFG->dirroot.'/enrol/select/locallib.php');
-require_once($CFG->dirroot.'/local/apsolu/locallib.php');
+require_once($CFG->dirroot . '/enrol/select/locallib.php');
+require_once($CFG->dirroot . '/local/apsolu/locallib.php');
 
 /**
  * Classe principale du module enrol_select.
@@ -75,8 +75,8 @@ class enrol_select_plugin extends enrol_plugin {
      * @return string|false Retourne false si le $status n'est pas correct.
      */
     public static function get_enrolment_list_name($status, $type = null) {
-        if ($type !== null ) {
-            $type = '_'.$type;
+        if ($type !== null) {
+            $type = '_' . $type;
         }
 
         switch ($status) {
@@ -84,7 +84,7 @@ class enrol_select_plugin extends enrol_plugin {
             case self::MAIN:
             case self::WAIT:
             case self::DELETED:
-                return get_string(self::$states[$status].'_list'.$type, 'enrol_select');
+                return get_string(self::$states[$status] . '_list' . $type, 'enrol_select');
         }
 
         return false;
@@ -127,8 +127,12 @@ class enrol_select_plugin extends enrol_plugin {
 
         if (has_capability('enrol/select:config', $context)) {
             $editlink = new moodle_url("/enrol/select/edit.php", ['courseid' => $instance->courseid, 'id' => $instance->id]);
-            $icons[] = $OUTPUT->action_icon($editlink, new pix_icon('t/edit', get_string('edit'), 'core',
-                ['class' => 'iconsmall']));
+            $icons[] = $OUTPUT->action_icon($editlink, new pix_icon(
+                't/edit',
+                get_string('edit'),
+                'core',
+                ['class' => 'iconsmall']
+            ));
         }
 
         return $icons;
@@ -154,24 +158,24 @@ class enrol_select_plugin extends enrol_plugin {
             $timeend = time();
         }
 
-        $sql = "SELECT DISTINCT u.*".
-            " FROM {user} u".
-            " JOIN {user_enrolments} ue ON u.id = ue.userid".
-            " JOIN {enrol} e ON e.id = ue.enrolid AND e.enrol = 'select'".
-            " JOIN {role_assignments} ra ON u.id = ra.userid AND e.id = ra.itemid AND ra.component = 'enrol_select'".
-            " JOIN {role} r ON r.id = ra.roleid".
-            " JOIN {context} ctx ON ra.contextid = ctx.id AND ctx.instanceid = e.courseid".
-            " JOIN {cohort_members} cm ON u.id = cm.userid".
-            " JOIN {enrol_select_roles} esr ON r.id = esr.roleid AND e.id = esr.enrolid".
-            " JOIN {enrol_select_cohorts} esc ON cm.cohortid = esc.cohortid AND e.id = esr.enrolid".
-            " JOIN {apsolu_colleges_members} acm ON cm.cohortid = acm.cohortid".
-            " JOIN {apsolu_colleges} ac ON ra.roleid = ac.roleid AND acm.collegeid = ac.id".
-            " WHERE e.status = 0". // Only active enrolments.
-            " AND ue.status = 0".
-            " AND (ue.timestart < :timestart OR ue.timestart = 0)".
-            " AND (ue.timeend > :timeend OR ue.timeend = 0)".
-            " AND e.courseid = :courseid".
-            " AND ctx.contextlevel = 50". // Course level.
+        $sql = "SELECT DISTINCT u.*" .
+            " FROM {user} u" .
+            " JOIN {user_enrolments} ue ON u.id = ue.userid" .
+            " JOIN {enrol} e ON e.id = ue.enrolid AND e.enrol = 'select'" .
+            " JOIN {role_assignments} ra ON u.id = ra.userid AND e.id = ra.itemid AND ra.component = 'enrol_select'" .
+            " JOIN {role} r ON r.id = ra.roleid" .
+            " JOIN {context} ctx ON ra.contextid = ctx.id AND ctx.instanceid = e.courseid" .
+            " JOIN {cohort_members} cm ON u.id = cm.userid" .
+            " JOIN {enrol_select_roles} esr ON r.id = esr.roleid AND e.id = esr.enrolid" .
+            " JOIN {enrol_select_cohorts} esc ON cm.cohortid = esc.cohortid AND e.id = esr.enrolid" .
+            " JOIN {apsolu_colleges_members} acm ON cm.cohortid = acm.cohortid" .
+            " JOIN {apsolu_colleges} ac ON ra.roleid = ac.roleid AND acm.collegeid = ac.id" .
+            " WHERE e.status = 0" . // Only active enrolments.
+            " AND ue.status = 0" .
+            " AND (ue.timestart < :timestart OR ue.timestart = 0)" .
+            " AND (ue.timeend > :timeend OR ue.timeend = 0)" .
+            " AND e.courseid = :courseid" .
+            " AND ctx.contextlevel = 50" . // Course level.
             " AND r.archetype = 'student'";
 
         $params = [];
@@ -381,9 +385,9 @@ class enrol_select_plugin extends enrol_plugin {
         }
 
         // Détermine si il y a déjà des utilisateurs sur la liste des acceptés et la liste principale.
-        $sql = "SELECT userid".
-            " FROM {user_enrolments}".
-            " WHERE enrolid = :enrolid".
+        $sql = "SELECT userid" .
+            " FROM {user_enrolments}" .
+            " WHERE enrolid = :enrolid" .
             " AND status IN (:accepted, :main)";
         $params = ['enrolid' => $instance->id, 'accepted' => self::ACCEPTED, 'main' => self::MAIN];
         $mainlistenrolements = $DB->get_records_sql($sql, $params);
@@ -468,16 +472,16 @@ class enrol_select_plugin extends enrol_plugin {
             $userid = $USER->id;
         }
 
-        $sql = "SELECT r.*".
-            " FROM {role} r".
-            " JOIN {role_assignments} ra ON r.id = ra.roleid".
-            " JOIN {context} ctx ON ctx.id = ra.contextid".
-            " JOIN {enrol} e ON ctx.instanceid = e.courseid AND e.id = ra.itemid".
-            " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid".
-            " WHERE e.id = :enrolid".
-            " AND e.enrol = 'select'".
-            " AND e.status = 0". // Active.
-            " AND ue.userid = :userid".
+        $sql = "SELECT r.*" .
+            " FROM {role} r" .
+            " JOIN {role_assignments} ra ON r.id = ra.roleid" .
+            " JOIN {context} ctx ON ctx.id = ra.contextid" .
+            " JOIN {enrol} e ON ctx.instanceid = e.courseid AND e.id = ra.itemid" .
+            " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid" .
+            " WHERE e.id = :enrolid" .
+            " AND e.enrol = 'select'" .
+            " AND e.status = 0" . // Active.
+            " AND ue.userid = :userid" .
             " AND ctx.contextlevel = 50";
         $params = ['enrolid' => $instance->id, 'userid' => $userid];
 
@@ -532,15 +536,15 @@ class enrol_select_plugin extends enrol_plugin {
     public function set_available_status($instance, $user = null) {
         global $DB;
 
-        debugging(sprintf('%s() is deprecated. Please see'.
+        debugging(sprintf('%s() is deprecated. Please see' .
             ' enrol_select_plugin::get_available_status() method instead.', __METHOD__), DEBUG_DEVELOPER);
 
         $this->available_status = [];
 
         // Check main list.
-        $sql = "SELECT userid".
-            " FROM {user_enrolments}".
-            " WHERE enrolid = :enrolid".
+        $sql = "SELECT userid" .
+            " FROM {user_enrolments}" .
+            " WHERE enrolid = :enrolid" .
             " AND status IN (0, 2)";
         $mainlistenrolements = $DB->get_records_sql($sql, ['enrolid' => $instance->id]);
         $this->count_main_list_enrolements = count($mainlistenrolements);
@@ -608,7 +612,7 @@ class enrol_select_plugin extends enrol_plugin {
         // Check opening register period.
         if ($instance->enrolstartdate !== '0' && $instance->enrolstartdate > $today) {
             if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging($this->get_name().' not opened yet.', $level = DEBUG_DEVELOPER);
+                debugging($this->get_name() . ' not opened yet.', $level = DEBUG_DEVELOPER);
             }
             return false;
         }
@@ -616,7 +620,7 @@ class enrol_select_plugin extends enrol_plugin {
         // Check closing register period.
         if ($instance->enrolenddate !== '0' && $instance->enrolenddate < $today) {
             if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging($this->get_name().' already closed.', $level = DEBUG_DEVELOPER);
+                debugging($this->get_name() . ' already closed.', $level = DEBUG_DEVELOPER);
             }
             return false;
         }
@@ -635,7 +639,7 @@ class enrol_select_plugin extends enrol_plugin {
 
         if ($found !== true) {
             if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging($this->get_name().': '.$user->username.' and enrol cohort mismatch.', $level = DEBUG_DEVELOPER);
+                debugging($this->get_name() . ': ' . $user->username . ' and enrol cohort mismatch.', $level = DEBUG_DEVELOPER);
             }
             return false;
         }
@@ -657,7 +661,7 @@ class enrol_select_plugin extends enrol_plugin {
         // Check available slots.
         if ($this->get_available_status($instance, $user) === false) {
             if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging($this->get_name().' n\'a plus aucune place disponible.', $level = DEBUG_DEVELOPER);
+                debugging($this->get_name() . ' n\'a plus aucune place disponible.', $level = DEBUG_DEVELOPER);
             }
             return false;
         }
@@ -689,7 +693,7 @@ class enrol_select_plugin extends enrol_plugin {
         // Check role.
         if ($DB->get_record('enrol_select_roles', ['enrolid' => $instance->id, 'roleid' => $roleid]) === false) {
             if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging($this->get_name().': roleid #'.$roleid.' is not available.', $level = DEBUG_DEVELOPER);
+                debugging($this->get_name() . ': roleid #' . $roleid . ' is not available.', $level = DEBUG_DEVELOPER);
             }
             return false;
         }
@@ -718,7 +722,7 @@ class enrol_select_plugin extends enrol_plugin {
         // Check reenrol enabled.
         if (empty($instance->customint6)) {
             if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging($this->get_name().' reenrol not enabled.', $level = DEBUG_DEVELOPER);
+                debugging($this->get_name() . ' reenrol not enabled.', $level = DEBUG_DEVELOPER);
             }
             return false;
         }
@@ -727,7 +731,10 @@ class enrol_select_plugin extends enrol_plugin {
         $enrol = $DB->get_record('enrol', ['id' => $instance->customint6, 'enrol' => 'select']);
         if ($enrol === false) {
             if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging($this->get_name().' reenrol id #'.$instance->customint6.' does not exist', $level = DEBUG_DEVELOPER);
+                debugging(
+                    $this->get_name() . ' reenrol id #' . $instance->customint6 . ' does not exist',
+                    $level = DEBUG_DEVELOPER
+                );
             }
             return false;
         }
@@ -735,7 +742,7 @@ class enrol_select_plugin extends enrol_plugin {
         // Check opening reenrol period.
         if ($instance->customint4 !== '0' && $instance->customint4 > $today) {
             if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging($this->get_name().' not opened yet.', $level = DEBUG_DEVELOPER);
+                debugging($this->get_name() . ' not opened yet.', $level = DEBUG_DEVELOPER);
             }
             return false;
         }
@@ -743,7 +750,7 @@ class enrol_select_plugin extends enrol_plugin {
         // Check closing reenrol period.
         if ($instance->customint5 !== '0' && $instance->customint5 < $today) {
             if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging($this->get_name().' already closed.', $level = DEBUG_DEVELOPER);
+                debugging($this->get_name() . ' already closed.', $level = DEBUG_DEVELOPER);
             }
             return false;
         }
@@ -763,7 +770,7 @@ class enrol_select_plugin extends enrol_plugin {
 
             if ($found !== true) {
                 if (defined('BEHAT_SITE_RUNNING') === false) {
-                    debugging($this->get_name().': userid #'.$userid.' and enrol cohort mismatch.', $level = DEBUG_DEVELOPER);
+                    debugging($this->get_name() . ': userid #' . $userid . ' and enrol cohort mismatch.', $level = DEBUG_DEVELOPER);
                 }
                 return false;
             }
@@ -776,7 +783,7 @@ class enrol_select_plugin extends enrol_plugin {
         if ($roleid !== null) {
             if ($DB->get_record('enrol_select_roles', ['enrolid' => $instance->id, 'roleid' => $roleid]) === false) {
                 if (defined('BEHAT_SITE_RUNNING') === false) {
-                    debugging($this->get_name().': roleid #'.$roleid.' is not available.', $level = DEBUG_DEVELOPER);
+                    debugging($this->get_name() . ': roleid #' . $roleid . ' is not available.', $level = DEBUG_DEVELOPER);
                 }
                 return false;
             }
@@ -798,8 +805,15 @@ class enrol_select_plugin extends enrol_plugin {
      *
      * @return void.
      */
-    public function enrol_user(stdClass $instance, $userid, $roleid = null, $timestart = 0, $timeend = 0,
-        $status = null, $recovergrades = null) {
+    public function enrol_user(
+        stdClass $instance,
+        $userid,
+        $roleid = null,
+        $timestart = 0,
+        $timeend = 0,
+        $status = null,
+        $recovergrades = null
+    ) {
         global $DB, $USER;
 
         // La méthode parent::enrol_user() ne remplace pas les rôles, mais cumul.
@@ -870,9 +884,9 @@ class enrol_select_plugin extends enrol_plugin {
 
         // Traite le cas où on souhaite juste modifier le statut.
         if ($status !== null) {
-            $sql = "UPDATE {user_enrolments}".
-                " SET status = :status, timemodified = :now".
-                " WHERE enrolid = :enrolid".
+            $sql = "UPDATE {user_enrolments}" .
+                " SET status = :status, timemodified = :now" .
+                " WHERE enrolid = :enrolid" .
                 " AND userid = :userid";
             $DB->execute($sql, ['status' => $status, 'now' => time(), 'enrolid' => $instance->id, 'userid' => $userid]);
         }
@@ -881,11 +895,11 @@ class enrol_select_plugin extends enrol_plugin {
         if ($roleid !== null) {
             $coursecontext = context_course::instance($instance->courseid);
 
-            $sql = "UPDATE {role_assignments}".
-                " SET roleid = :roleid, timemodified = :now".
-                " WHERE component = 'enrol_select'".
-                " AND userid = :userid".
-                " AND contextid = :contextid".
+            $sql = "UPDATE {role_assignments}" .
+                " SET roleid = :roleid, timemodified = :now" .
+                " WHERE component = 'enrol_select'" .
+                " AND userid = :userid" .
+                " AND contextid = :contextid" .
                 " AND itemid= :itemid";
             $params = [
                 'roleid' => $roleid,

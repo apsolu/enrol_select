@@ -27,7 +27,7 @@ use local_apsolu\core\course;
 require('../../config.php');
 require_once('edit_form.php');
 require_once('locallib.php');
-require_once($CFG->libdir.'/gradelib.php');
+require_once($CFG->libdir . '/gradelib.php');
 
 $courseid = required_param('courseid', PARAM_INT);
 $instanceid = optional_param('id', 0, PARAM_INT);

@@ -54,7 +54,7 @@ class batch_enrol_instance_updated extends \core\event\base {
     public function get_critiria() {
         $criteria = [];
         foreach ($this->other['criteria'] as $field => $id) {
-            $criteria[] = $field.' with id '.$id;
+            $criteria[] = $field . ' with id ' . $id;
         }
         return implode(', ', $criteria);
     }
@@ -65,7 +65,8 @@ class batch_enrol_instance_updated extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' updated all enrol instances with following criteria : ".$this->get_criteria().".";
+        return "The user with id '$this->userid' updated all enrol instances with following criteria : " .
+            $this->get_criteria() . ".";
     }
 
     /**

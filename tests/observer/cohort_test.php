@@ -32,7 +32,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot.'/cohort/lib.php');
+require_once($CFG->dirroot . '/cohort/lib.php');
 
 /**
  * Classe de tests pour enrol_select\observer\cohort

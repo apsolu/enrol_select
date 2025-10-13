@@ -22,8 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_apsolu\core\course as Course;
-use local_apsolu\core\federation\activity as Activity;
+use local_apsolu\core\course;
+use local_apsolu\core\federation\activity;
 use local_apsolu\core\federation\course as FederationCourse;
 use UniversiteRennes2\Apsolu\Payment;
 
@@ -31,14 +31,14 @@ define('APSOLU_FEDERATION_REQUIREMENT_FALSE', 0);
 define('APSOLU_FEDERATION_REQUIREMENT_TRUE', 1);
 define('APSOLU_FEDERATION_REQUIREMENT_OPTIONAL', 2);
 
-require_once(__DIR__.'/../../../config.php');
-require_once(__DIR__.'/enrol_form.php');
-require_once(__DIR__.'/../locallib.php');
-require_once($CFG->dirroot.'/group/lib.php');
-require_once($CFG->dirroot.'/lib/enrollib.php');
-require_once($CFG->dirroot.'/enrol/select/lib.php');
-require_once($CFG->dirroot.'/local/apsolu/classes/apsolu/payment.php');
-require_once($CFG->dirroot.'/local/apsolu/locallib.php');
+require_once(__DIR__ . '/../../../config.php');
+require_once(__DIR__ . '/enrol_form.php');
+require_once(__DIR__ . '/../locallib.php');
+require_once($CFG->dirroot . '/group/lib.php');
+require_once($CFG->dirroot . '/lib/enrollib.php');
+require_once($CFG->dirroot . '/enrol/select/lib.php');
+require_once($CFG->dirroot . '/local/apsolu/classes/apsolu/payment.php');
+require_once($CFG->dirroot . '/local/apsolu/locallib.php');
 
 // Get params.
 $enrolid = required_param('enrolid', PARAM_INT);
@@ -83,9 +83,9 @@ if (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, ['250']
     $course->information = '';
     $course->showpolicy = '0';
 } else {
-    $sql = "SELECT c.*, ac.license, ac.information, ac.showpolicy".
-        " FROM {course} c".
-        " JOIN {apsolu_courses} ac ON c.id = ac.id".
+    $sql = "SELECT c.*, ac.license, ac.information, ac.showpolicy" .
+        " FROM {course} c" .
+        " JOIN {apsolu_courses} ac ON c.id = ac.id" .
         " WHERE c.id = :courseid";
     $params = ['courseid' => $enrol->courseid];
     $course = $DB->get_record_sql($sql, $params, $strictness = MUST_EXIST);
@@ -149,7 +149,7 @@ if ($complement !== false) {
                       FROM {role} r
                       JOIN {apsolu_colleges} ac ON r.id = ac.roleid
                       JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid
-                     WHERE acm.cohortid IN (".substr(str_repeat('?,', count($filtercohorts)), 0, -1).")
+                     WHERE acm.cohortid IN (" . substr(str_repeat('?,', count($filtercohorts)), 0, -1) . ")
                   ORDER BY r.sortorder";
             $availableuserroles = role_fix_names($DB->get_records_sql($sql, $filtercohorts));
 
@@ -227,7 +227,7 @@ if (isset($edit)) {
 
 // Build form.
 $customdata = [$instance, $roles, $federationrequirement];
-$actionurl = $CFG->wwwroot.'/enrol/select/overview/enrol.php?enrolid='.$enrolid;
+$actionurl = $CFG->wwwroot . '/enrol/select/overview/enrol.php?enrolid=' . $enrolid;
 $mform = new enrol_select_form($actionurl, $customdata);
 
 $PAGE->navbar->add(get_string('enrolment', 'enrol_select'), new moodle_url('/enrol/select/overview.php'));
@@ -244,11 +244,11 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
         // Unenrol.
         $enrolselectplugin->unenrol_user($instance, $USER->id);
 
-        echo '<div class="alert alert-success"><p>'.get_string('unenrolmentsaved', 'enrol_select').'</p></div>';
+        echo '<div class="alert alert-success"><p>' . get_string('unenrolmentsaved', 'enrol_select') . '</p></div>';
 
-        $href = $CFG->wwwroot.'/enrol/select/overview.php';
-        echo '<p class="text-center">'.
-            '<a class="btn btn-default btn-secondary apsolu-cancel-a" href="'.$href.'">'.get_string('continue').'</a>'.
+        $href = $CFG->wwwroot . '/enrol/select/overview.php';
+        echo '<p class="text-center">' .
+            '<a class="btn btn-default btn-secondary apsolu-cancel-a" href="' . $href . '">' . get_string('continue') . '</a>' .
             '</p>';
     } else {
         // Enrol.
@@ -264,10 +264,11 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
             $recovergrades = null;
             $enrolselectplugin->enrol_user($instance, $USER->id, $data->role, $timestart, $timeend, $status, $recovergrades);
 
-            if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_TRUE ||
+            if (
+                $federationrequirement === APSOLU_FEDERATION_REQUIREMENT_TRUE ||
                 ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_OPTIONAL &&
-                isset($data->federation) && $data->federation === '1')) {
-
+                isset($data->federation) && $data->federation === '1')
+            ) {
                 $data->federation = $course->category;
 
                 // Récupère la liste des activités FFSU.
@@ -288,8 +289,15 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 } else {
                     $conditions = ['enrolid' => $federationinstance->id];
                     $federationrole = $DB->get_record('enrol_select_roles', $conditions, '*', MUST_EXIST);
-                    $enrolselectplugin->enrol_user($federationinstance, $USER->id, $federationrole->roleid, $timestart = 0,
-                        $timeend = 0, $status = 0, $recovergrades);
+                    $enrolselectplugin->enrol_user(
+                        $federationinstance,
+                        $USER->id,
+                        $federationrole->roleid,
+                        $timestart = 0,
+                        $timeend = 0,
+                        $status = 0,
+                        $recovergrades
+                    );
                 }
             } else if (isset($data->federation)) {
                 $federationcourseid = $enrol->courseid;
@@ -349,11 +357,13 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                     $message = sprintf('<p>%s</p>', $message1);
             }
 
-            if (isset($CFG->is_siuaps_rennes) === true &&
+            if (
+                isset($CFG->is_siuaps_rennes) === true &&
                 in_array($data->role, ['9', '10'], true) === true &&
-                in_array($status, [enrol_select_plugin::MAIN, enrol_select_plugin::ACCEPTED], true) === true) {
-                $message .= '<p>'.
-                    '<strong>Attention il faut aussi faire votre inscription pédagogique dans votre scolarité.</strong>'.
+                in_array($status, [enrol_select_plugin::MAIN, enrol_select_plugin::ACCEPTED], true) === true
+            ) {
+                $message .= '<p>' .
+                    '<strong>Attention il faut aussi faire votre inscription pédagogique dans votre scolarité.</strong>' .
                     '</p>';
             }
 
@@ -395,14 +405,14 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
             echo '<p class="text-center">';
 
             if ($paymentbutton === true) {
-                $href = $CFG->wwwroot.'/local/apsolu/payment/index.php';
+                $href = $CFG->wwwroot . '/local/apsolu/payment/index.php';
                 $label = get_string('pay', 'local_apsolu');
-                echo '<a class="btn btn-default btn-primary me-3" href="'.$href.'">'.$label.'</a>';
+                echo '<a class="btn btn-default btn-primary me-3" href="' . $href . '">' . $label . '</a>';
             }
 
-            $href = $CFG->wwwroot.'/enrol/select/overview.php';
+            $href = $CFG->wwwroot . '/enrol/select/overview.php';
             $label = get_string('continue_my_enrolments', 'enrol_select');
-            echo '<a class="btn btn-default btn-secondary apsolu-cancel-a" href="'.$href.'">'.$label.'</a>';
+            echo '<a class="btn btn-default btn-secondary apsolu-cancel-a" href="' . $href . '">' . $label . '</a>';
             echo '</p>';
         } else {
             throw new moodle_exception('error_cannot_enrol', 'enrol_select');

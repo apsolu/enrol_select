@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/enrol/select/locallib.php');
+require_once($CFG->dirroot . '/enrol/select/locallib.php');
 
 echo $OUTPUT->heading('Liste des populations');
 
@@ -52,12 +52,12 @@ foreach ($colleges as $college) {
             continue;
         }
 
-        $members[] = '<li>'.$cohorts[$member->cohortid]->name.'</li>';
+        $members[] = '<li>' . $cohorts[$member->cohortid]->name . '</li>';
     }
 
     if ($members !== []) {
         sort($members);
-        $college->members = '<ul>'.implode('', $members).'</ul>';
+        $college->members = '<ul>' . implode('', $members) . '</ul>';
     } else {
         $college->members = '';
     }
@@ -72,7 +72,7 @@ $data->count_colleges = count($data->colleges);
 
 $data->unusedcohorts = '';
 if ($unusedcohorts !== []) {
-    $unusedcohorts = '<li>'.implode('</li><li>', $unusedcohorts).'</li>';
+    $unusedcohorts = '<li>' . implode('</li><li>', $unusedcohorts) . '</li>';
     $data->unusedcohorts = get_string('college_unused_cohorts', 'enrol_select', $unusedcohorts);
 }
 

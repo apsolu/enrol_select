@@ -172,12 +172,20 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
         $tablename = 'enrol_select_roles';
 
         $table = new xmldb_table($tablename);
-        $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, $precision = '10', $unsigned = XMLDB_UNSIGNED, $notnull = XMLDB_NOTNULL,
-            $sequence = XMLDB_SEQUENCE, $default = null, $previous = null);
+        $field = new xmldb_field(
+            'id',
+            XMLDB_TYPE_INTEGER,
+            $precision = '10',
+            $unsigned = XMLDB_UNSIGNED,
+            $notnull = XMLDB_NOTNULL,
+            $sequence = XMLDB_SEQUENCE,
+            $default = null,
+            $previous = null
+        );
 
         if ($dbman->field_exists($table, $field) === false) {
             // Renomme la table actuelle.
-            $dbman->rename_table($table, $tablename.'tmp');
+            $dbman->rename_table($table, $tablename . 'tmp');
 
             // Ajoute la nouvelle table contenant la clé primaire 'id'.
             $table = new xmldb_table($tablename);
@@ -196,14 +204,14 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
 
             // Récupère le contenu de l'ancienne table et l'injecte dans la nouvelle table.
             $id = 1;
-            $recordset = $DB->get_recordset($tablename.'tmp');
+            $recordset = $DB->get_recordset($tablename . 'tmp');
             foreach ($recordset as $record) {
                 $DB->insert_record($tablename, $record);
             }
             $recordset->close();
 
             // Supprime l'ancienne table.
-            $table = new xmldb_table($tablename.'tmp');
+            $table = new xmldb_table($tablename . 'tmp');
             $dbman->drop_table($table);
         }
 
@@ -211,12 +219,20 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
         $tablename = 'enrol_select_cohorts';
 
         $table = new xmldb_table($tablename);
-        $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, $precision = '10', $unsigned = XMLDB_UNSIGNED, $notnull = XMLDB_NOTNULL,
-            $sequence = XMLDB_SEQUENCE, $default = null, $previous = null);
+        $field = new xmldb_field(
+            'id',
+            XMLDB_TYPE_INTEGER,
+            $precision = '10',
+            $unsigned = XMLDB_UNSIGNED,
+            $notnull = XMLDB_NOTNULL,
+            $sequence = XMLDB_SEQUENCE,
+            $default = null,
+            $previous = null
+        );
 
         if ($dbman->field_exists($table, $field) === false) {
             // Renomme la table actuelle.
-            $dbman->rename_table($table, $tablename.'tmp');
+            $dbman->rename_table($table, $tablename . 'tmp');
 
             // Ajoute la nouvelle table contenant la clé primaire 'id'.
             $table = new xmldb_table($tablename);
@@ -235,14 +251,14 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
 
             // Récupère le contenu de l'ancienne table et l'injecte dans la nouvelle table.
             $id = 1;
-            $recordset = $DB->get_recordset($tablename.'tmp');
+            $recordset = $DB->get_recordset($tablename . 'tmp');
             foreach ($recordset as $record) {
                 $DB->insert_record($tablename, $record);
             }
             $recordset->close();
 
             // Supprime l'ancienne table.
-            $table = new xmldb_table($tablename.'tmp');
+            $table = new xmldb_table($tablename . 'tmp');
             $dbman->drop_table($table);
         }
 
@@ -250,12 +266,20 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
         $tablename = 'enrol_select_cohorts_roles';
 
         $table = new xmldb_table($tablename);
-        $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, $precision = '10', $unsigned = XMLDB_UNSIGNED, $notnull = XMLDB_NOTNULL,
-            $sequence = XMLDB_SEQUENCE, $default = null, $previous = null);
+        $field = new xmldb_field(
+            'id',
+            XMLDB_TYPE_INTEGER,
+            $precision = '10',
+            $unsigned = XMLDB_UNSIGNED,
+            $notnull = XMLDB_NOTNULL,
+            $sequence = XMLDB_SEQUENCE,
+            $default = null,
+            $previous = null
+        );
 
         if ($dbman->field_exists($table, $field) === false) {
             // Renomme la table actuelle.
-            $dbman->rename_table($table, $tablename.'tmp');
+            $dbman->rename_table($table, $tablename . 'tmp');
 
             // Ajoute la nouvelle table contenant la clé primaire 'id'.
             $table = new xmldb_table($tablename);
@@ -274,14 +298,14 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
 
             // Récupère le contenu de l'ancienne table et l'injecte dans la nouvelle table.
             $id = 1;
-            $recordset = $DB->get_recordset($tablename.'tmp');
+            $recordset = $DB->get_recordset($tablename . 'tmp');
             foreach ($recordset as $record) {
                 $DB->insert_record($tablename, $record);
             }
             $recordset->close();
 
             // Supprime l'ancienne table.
-            $table = new xmldb_table($tablename.'tmp');
+            $table = new xmldb_table($tablename . 'tmp');
             $dbman->drop_table($table);
         }
 
@@ -289,12 +313,20 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
         $tablename = 'enrol_select_cards';
 
         $table = new xmldb_table($tablename);
-        $field = new xmldb_field('id', XMLDB_TYPE_INTEGER, $precision = '10', $unsigned = XMLDB_UNSIGNED, $notnull = XMLDB_NOTNULL,
-            $sequence = XMLDB_SEQUENCE, $default = null, $previous = null);
+        $field = new xmldb_field(
+            'id',
+            XMLDB_TYPE_INTEGER,
+            $precision = '10',
+            $unsigned = XMLDB_UNSIGNED,
+            $notnull = XMLDB_NOTNULL,
+            $sequence = XMLDB_SEQUENCE,
+            $default = null,
+            $previous = null
+        );
 
         if ($dbman->field_exists($table, $field) === false) {
             // Renomme la table actuelle.
-            $dbman->rename_table($table, $tablename.'tmp');
+            $dbman->rename_table($table, $tablename . 'tmp');
 
             // Ajoute la nouvelle table contenant la clé primaire 'id'.
             $table = new xmldb_table($tablename);
@@ -313,14 +345,14 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
 
             // Récupère le contenu de l'ancienne table et l'injecte dans la nouvelle table.
             $id = 1;
-            $recordset = $DB->get_recordset($tablename.'tmp');
+            $recordset = $DB->get_recordset($tablename . 'tmp');
             foreach ($recordset as $record) {
                 $DB->insert_record($tablename, $record);
             }
             $recordset->close();
 
             // Supprime l'ancienne table.
-            $table = new xmldb_table($tablename.'tmp');
+            $table = new xmldb_table($tablename . 'tmp');
             $dbman->drop_table($table);
         }
 

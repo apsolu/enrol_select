@@ -24,8 +24,8 @@
 
 define('AJAX_SCRIPT', true);
 
-require_once(__DIR__.'/../../../config.php');
+require_once(__DIR__ . '/../../../config.php');
 
 require_login();
 
-require(__DIR__.'/../overview/enrol.php');
+require(__DIR__ . '/../overview/enrol.php');

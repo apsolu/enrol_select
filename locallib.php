@@ -58,24 +58,24 @@ function enrol_select_get_activities($siteid = 0, $categoryid = 0, $categoryname
         $conditions[] = " AND ac.on_homepage = :on_homepage";
     }
 
-    $sql = "SELECT c.id, c.fullname, ac.event, ac.weekday, ac.starttime, ac.endtime,".
-        " cc0.id AS domainid, cc0.name AS domain, cc.id AS sportid, cc.name AS sport, acc.url, cc.description,".
-        " ac.skillid, ask.name AS skill, ac.locationid, al.name AS location, aa.name AS area,".
-        " aci.name AS site, ac.periodid, ap.generic_name".
-        " FROM {course} c".
-        " JOIN {apsolu_courses} ac ON c.id = ac.id".
-        " JOIN {course_categories} cc ON cc.id = c.category".
-        " JOIN {apsolu_courses_categories} acc ON acc.id = cc.id".
-        " JOIN {course_categories} cc0 ON cc0.id = cc.parent".
-        " JOIN {apsolu_skills} ask ON ask.id = ac.skillid".
-        " JOIN {apsolu_locations} al ON al.id = ac.locationid".
-        " JOIN {apsolu_areas} aa ON aa.id = al.areaid".
-        " JOIN {apsolu_cities} aci ON aci.id = aa.cityid".
-        " JOIN {apsolu_periods} ap ON ap.id = ac.periodid".
-        " WHERE cc0.visible = 1".
-        " AND cc.visible = 1".
-        " AND c.visible = 1".
-        implode(' ', $conditions).
+    $sql = "SELECT c.id, c.fullname, ac.event, ac.weekday, ac.starttime, ac.endtime," .
+        " cc0.id AS domainid, cc0.name AS domain, cc.id AS sportid, cc.name AS sport, acc.url, cc.description," .
+        " ac.skillid, ask.name AS skill, ac.locationid, al.name AS location, aa.name AS area," .
+        " aci.name AS site, ac.periodid, ap.generic_name" .
+        " FROM {course} c" .
+        " JOIN {apsolu_courses} ac ON c.id = ac.id" .
+        " JOIN {course_categories} cc ON cc.id = c.category" .
+        " JOIN {apsolu_courses_categories} acc ON acc.id = cc.id" .
+        " JOIN {course_categories} cc0 ON cc0.id = cc.parent" .
+        " JOIN {apsolu_skills} ask ON ask.id = ac.skillid" .
+        " JOIN {apsolu_locations} al ON al.id = ac.locationid" .
+        " JOIN {apsolu_areas} aa ON aa.id = al.areaid" .
+        " JOIN {apsolu_cities} aci ON aci.id = aa.cityid" .
+        " JOIN {apsolu_periods} ap ON ap.id = ac.periodid" .
+        " WHERE cc0.visible = 1" .
+        " AND cc.visible = 1" .
+        " AND c.visible = 1" .
+        implode(' ', $conditions) .
         " ORDER BY domain, sport, numweekday, starttime, event";
     return $DB->get_records_sql($sql, $params);
 }
@@ -88,17 +88,17 @@ function enrol_select_get_activities($siteid = 0, $categoryid = 0, $categoryname
 function enrol_select_get_activities_roles() {
     global $DB;
 
-    $sql = "SELECT r.id, r.name, r.shortname, r.description, r.sortorder, r.archetype, ar.color, ar.fontawesomeid".
-        " FROM {role} r".
-        " LEFT JOIN {apsolu_roles} ar ON r.id = ar.id".
+    $sql = "SELECT r.id, r.name, r.shortname, r.description, r.sortorder, r.archetype, ar.color, ar.fontawesomeid" .
+        " FROM {role} r" .
+        " LEFT JOIN {apsolu_roles} ar ON r.id = ar.id" .
         " ORDER BY sortorder";
     $roles = role_fix_names($DB->get_records_sql($sql));
 
     $activities = [];
 
-    $sql = "SELECT e.courseid, esr.roleid".
-        " FROM {enrol} e".
-        " JOIN {apsolu_courses} ac ON ac.id = e.courseid".
+    $sql = "SELECT e.courseid, esr.roleid" .
+        " FROM {enrol} e" .
+        " JOIN {apsolu_courses} ac ON ac.id = e.courseid" .
         " JOIN {enrol_select_roles} esr ON e.id = esr.enrolid";
     $recordset = $DB->get_recordset_sql($sql);
     foreach ($recordset as $record) {
@@ -126,11 +126,11 @@ function enrol_select_get_activities_teachers() {
 
     $teachers = [];
 
-    $sql = "SELECT u.id AS userid, u.firstname, u.lastname, u.email, ac.id AS courseid".
-        " FROM {user} u".
-        " JOIN {role_assignments} ra ON u.id = ra.userid AND ra.roleid = 3". // Teacher.
-        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50". // Course context.
-        " JOIN {apsolu_courses} ac ON ac.id = ctx.instanceid".
+    $sql = "SELECT u.id AS userid, u.firstname, u.lastname, u.email, ac.id AS courseid" .
+        " FROM {user} u" .
+        " JOIN {role_assignments} ra ON u.id = ra.userid AND ra.roleid = 3" . // Teacher.
+        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50" . // Course context.
+        " JOIN {apsolu_courses} ac ON ac.id = ctx.instanceid" .
         " ORDER BY u.lastname, u.firstname";
     $recordset = $DB->get_recordset_sql($sql);
     foreach ($recordset as $record) {
@@ -158,10 +158,10 @@ function enrol_select_get_activities_teachers() {
 function enrol_select_get_visible_activities_domains() {
     global $DB;
 
-    $sql = "SELECT *".
-        " FROM {course_categories} cc".
-        " JOIN {apsolu_courses_groupings} acg ON cc.id = acg.id".
-        " WHERE cc.visible = 1".
+    $sql = "SELECT *" .
+        " FROM {course_categories} cc" .
+        " JOIN {apsolu_courses_groupings} acg ON cc.id = acg.id" .
+        " WHERE cc.visible = 1" .
         " ORDER BY cc.name";
     return $DB->get_records_sql($sql);
 }
@@ -174,10 +174,10 @@ function enrol_select_get_visible_activities_domains() {
 function enrol_select_get_visible_sports() {
     global $DB;
 
-    $sql = "SELECT *".
-        " FROM {course_categories} cc".
-        " JOIN {apsolu_courses_categories} acc ON cc.id = acc.id".
-        " WHERE cc.visible = 1".
+    $sql = "SELECT *" .
+        " FROM {course_categories} cc" .
+        " JOIN {apsolu_courses_categories} acc ON cc.id = acc.id" .
+        " WHERE cc.visible = 1" .
         " ORDER BY cc.name";
     return $DB->get_records_sql($sql);
 }
@@ -190,10 +190,10 @@ function enrol_select_get_visible_sports() {
 function enrol_select_get_custom_student_roles() {
     global $DB;
 
-    $sql = "SELECT r.id, r.name, r.shortname, r.description, r.sortorder, r.archetype, ar.color, ar.fontawesomeid".
-        " FROM {role} r".
-        " LEFT JOIN {apsolu_roles} ar ON r.id = ar.id".
-        " WHERE r.archetype = 'student'".
+    $sql = "SELECT r.id, r.name, r.shortname, r.description, r.sortorder, r.archetype, ar.color, ar.fontawesomeid" .
+        " FROM {role} r" .
+        " LEFT JOIN {apsolu_roles} ar ON r.id = ar.id" .
+        " WHERE r.archetype = 'student'" .
         " ORDER BY sortorder";
     $roles = role_fix_names($DB->get_records_sql($sql));
     unset($roles[5]);
@@ -217,26 +217,26 @@ function enrol_select_get_user_activity_enrolments($userid = null) {
 
     $time = time();
 
-    $sql = "SELECT DISTINCT c.*, cc.name AS sport, FORMAT(acol.userprice, 2) AS price, '1' AS paymentcenterid,".
-        " e.id AS enrolid, ue.status, ra.roleid".
-        " FROM {course} c".
-        " JOIN {course_categories} cc ON cc.id = c.category".
-        " JOIN {apsolu_courses} ac ON c.id=ac.id".
+    $sql = "SELECT DISTINCT c.*, cc.name AS sport, FORMAT(acol.userprice, 2) AS price, '1' AS paymentcenterid," .
+        " e.id AS enrolid, ue.status, ra.roleid" .
+        " FROM {course} c" .
+        " JOIN {course_categories} cc ON cc.id = c.category" .
+        " JOIN {apsolu_courses} ac ON c.id=ac.id" .
         // Check cohorts.
-        " JOIN {enrol} e ON c.id = e.courseid".
-        " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid".
-        " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid".
-        " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = cm.userid".
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid AND ra.itemid = e.id".
-        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id".
-        " JOIN {apsolu_colleges} acol ON acol.roleid = ra.roleid".
-        " JOIN {apsolu_colleges_members} acm ON acol.id = acm.collegeid AND acm.cohortid = cm.cohortid".
-        " WHERE e.enrol = 'select'".
-        " AND e.status = 0". // Active.
-        " AND cm.userid = :userid".
-        " AND c.visible = 1".
-        " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
-        " AND (ue.timeend = 0 OR ue.timeend >= :timeend)".
+        " JOIN {enrol} e ON c.id = e.courseid" .
+        " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid" .
+        " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid" .
+        " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = cm.userid" .
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid AND ra.itemid = e.id" .
+        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id" .
+        " JOIN {apsolu_colleges} acol ON acol.roleid = ra.roleid" .
+        " JOIN {apsolu_colleges_members} acm ON acol.id = acm.collegeid AND acm.cohortid = cm.cohortid" .
+        " WHERE e.enrol = 'select'" .
+        " AND e.status = 0" . // Active.
+        " AND cm.userid = :userid" .
+        " AND c.visible = 1" .
+        " AND (ue.timestart = 0 OR ue.timestart <= :timestart)" .
+        " AND (ue.timeend = 0 OR ue.timeend >= :timeend)" .
         " ORDER BY c.fullname";
     return $DB->get_records_sql($sql, ['userid' => $userid, 'timestart' => $time, 'timeend' => $time]);
 }
@@ -257,20 +257,20 @@ function enrol_select_get_real_user_activity_enrolments($userid = null) {
 
     $time = time();
 
-    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, '1' AS paymentcenterid".
-        " FROM {course} c".
-        " JOIN {course_categories} cc ON cc.id = c.category".
-        " JOIN {apsolu_courses} ac ON c.id = ac.id".
-        " JOIN {enrol} e ON c.id = e.courseid".
-        " JOIN {user_enrolments} ue ON e.id = ue.enrolid".
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.itemid = e.id".
-        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id".
-        " WHERE e.enrol = 'select'".
-        " AND e.status = 0". // Active.
-        " AND c.visible = 1".
-        " AND ue.userid = :userid".
-        " AND e.enrolstartdate <= :timestart". // Date de début des inscriptions.
-        " AND e.customint8 >= :timeend". // Date de fin des cours.
+    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, '1' AS paymentcenterid" .
+        " FROM {course} c" .
+        " JOIN {course_categories} cc ON cc.id = c.category" .
+        " JOIN {apsolu_courses} ac ON c.id = ac.id" .
+        " JOIN {enrol} e ON c.id = e.courseid" .
+        " JOIN {user_enrolments} ue ON e.id = ue.enrolid" .
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.itemid = e.id" .
+        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id" .
+        " WHERE e.enrol = 'select'" .
+        " AND e.status = 0" . // Active.
+        " AND c.visible = 1" .
+        " AND ue.userid = :userid" .
+        " AND e.enrolstartdate <= :timestart" . // Date de début des inscriptions.
+        " AND e.customint8 >= :timeend" . // Date de fin des cours.
         " ORDER BY c.fullname";
     return $DB->get_records_sql($sql, ['userid' => $userid, 'timestart' => $time, 'timeend' => $time]);
 }
@@ -295,22 +295,22 @@ function enrol_select_get_recordset_user_activity_enrolments($userid = null, $on
     }
 
     $params = ['userid' => $userid];
-    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, e.name AS enrolname,".
-        " ue.status, ra.roleid, '1' AS paymentcenterid".
-        " FROM {course} c".
-        " JOIN {course_categories} cc ON cc.id = c.category".
-        " JOIN {apsolu_courses} ac ON c.id = ac.id".
-        " JOIN {enrol} e ON c.id = e.courseid".
-        " JOIN {user_enrolments} ue ON e.id = ue.enrolid".
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.itemid = e.id".
-        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id".
-        " WHERE e.enrol = 'select'".
-        " AND e.status = 0". // Active.
-        " AND c.visible = 1".
+    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, e.name AS enrolname," .
+        " ue.status, ra.roleid, '1' AS paymentcenterid" .
+        " FROM {course} c" .
+        " JOIN {course_categories} cc ON cc.id = c.category" .
+        " JOIN {apsolu_courses} ac ON c.id = ac.id" .
+        " JOIN {enrol} e ON c.id = e.courseid" .
+        " JOIN {user_enrolments} ue ON e.id = ue.enrolid" .
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.itemid = e.id" .
+        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id" .
+        " WHERE e.enrol = 'select'" .
+        " AND e.status = 0" . // Active.
+        " AND c.visible = 1" .
         " AND ue.userid = :userid";
 
     if ($onlyactive === true) {
-        $sql .= " AND (ue.timestart = 0 OR ue.timestart <= :timestart)".
+        $sql .= " AND (ue.timestart = 0 OR ue.timestart <= :timestart)" .
             " AND (ue.timeend = 0 OR ue.timeend >= :timeend)";
         $params['timestart'] = $time;
         $params['timeend'] = $time;
@@ -335,20 +335,20 @@ function enrol_select_get_user_complement_enrolments($userid = null) {
         $userid = $USER->id;
     }
 
-    $sql = "SELECT DISTINCT c.*, FORMAT(ac.price, 2) AS price, ac.federation, '1' AS paymentcenterid, e.id AS enrolid, ue.status".
-        " FROM {course} c".
-        " JOIN {apsolu_complements} ac ON c.id=ac.id".
+    $sql = "SELECT DISTINCT c.*, FORMAT(ac.price, 2) AS price, ac.federation, '1' AS paymentcenterid, e.id AS enrolid, ue.status" .
+        " FROM {course} c" .
+        " JOIN {apsolu_complements} ac ON c.id=ac.id" .
         // Check cohorts.
-        " JOIN {enrol} e ON c.id = e.courseid".
-        " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid".
-        " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid".
-        " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = cm.userid".
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid AND ra.itemid = e.id".
-        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid=c.id".
-        " WHERE e.enrol = 'select'".
-        " AND e.status = 0". // Active.
-        " AND cm.userid=?".
-        " AND c.visible=1".
+        " JOIN {enrol} e ON c.id = e.courseid" .
+        " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid" .
+        " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid" .
+        " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = cm.userid" .
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid AND ra.itemid = e.id" .
+        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid=c.id" .
+        " WHERE e.enrol = 'select'" .
+        " AND e.status = 0" . // Active.
+        " AND cm.userid=?" .
+        " AND c.visible=1" .
         " ORDER BY c.fullname";
 
     return $DB->get_records_sql($sql, [$userid]);
@@ -369,12 +369,12 @@ function enrol_select_get_user_colleges($userid = null, $count = false) {
         $userid = $USER->id;
     }
 
-    $sql = "SELECT DISTINCT ac.*".
-        " FROM {apsolu_colleges} ac".
+    $sql = "SELECT DISTINCT ac.*" .
+        " FROM {apsolu_colleges} ac" .
         // Check cohorts.
-        " JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid".
-        " JOIN {cohort} ct ON ct.id = acm.cohortid".
-        " JOIN {cohort_members} cm ON ct.id = cm.cohortid".
+        " JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid" .
+        " JOIN {cohort} ct ON ct.id = acm.cohortid" .
+        " JOIN {cohort_members} cm ON ct.id = cm.cohortid" .
         " WHERE cm.userid = ?";
     $colleges = $DB->get_records_sql($sql, [$userid]);
 
@@ -407,17 +407,17 @@ function enrol_select_get_sum_user_choices($userid = null, $count = false) {
         $userid = $USER->id;
     }
 
-    $sql = "SELECT ac.roleid, SUM(ac.maxwish) AS maxwish, SUM(ac.minregister) AS minregister, SUM(ac.maxregister) AS maxregister".
-        " FROM {apsolu_colleges} ac".
-        " WHERE ac.id IN (".
+    $sql = "SELECT ac.roleid, SUM(ac.maxwish) AS maxwish, SUM(ac.minregister) AS minregister, SUM(ac.maxregister) AS maxregister" .
+        " FROM {apsolu_colleges} ac" .
+        " WHERE ac.id IN (" .
             // Récupère la liste des populations auxquelles appartient l'étudiant.
             // Note : nous faisons une sous-requête afin d'éviter de compter un maximum de voeux erroné,
             // notamment lorsqu'un étudiant apparait dans plusieurs cohortes liées à une population.
-            " SELECT acm.collegeid FROM {apsolu_colleges_members} acm".
-            " JOIN {cohort} ct ON ct.id = acm.cohortid".
-            " JOIN {cohort_members} cm ON ct.id = cm.cohortid".
-            " WHERE cm.userid = ?".
-        " )".
+            " SELECT acm.collegeid FROM {apsolu_colleges_members} acm" .
+            " JOIN {cohort} ct ON ct.id = acm.cohortid" .
+            " JOIN {cohort_members} cm ON ct.id = cm.cohortid" .
+            " WHERE cm.userid = ?" .
+        " )" .
         " GROUP BY ac.roleid";
     $roles = $DB->get_records_sql($sql, [$userid]);
 
@@ -450,19 +450,19 @@ function enrol_select_get_count_user_role_assignments($userid = null) {
 
     $time = time();
 
-    $sql = "SELECT ra.roleid, COUNT(c.id) AS count".
-        " FROM {role_assignments} ra".
-        " JOIN {context} ctx ON ctx.id = ra.contextid".
-        " JOIN {course} c ON c.id = ctx.instanceid AND ctx.contextlevel = 50".
-        " JOIN {apsolu_courses} ac ON ac.id = c.id".
-        " JOIN {enrol} e ON c.id = e.courseid AND ra.itemid = e.id".
-        " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid".
-        " WHERE e.enrol = 'select'".
-        " AND e.status = 0". // Active.
-        " AND c.visible = 1".
-        " AND ue.userid = :userid".
-        " AND e.enrolstartdate <= :timestart". // Date de début des inscriptions.
-        " AND e.customint8 >= :timeend". // Date de fin des cours.
+    $sql = "SELECT ra.roleid, COUNT(c.id) AS count" .
+        " FROM {role_assignments} ra" .
+        " JOIN {context} ctx ON ctx.id = ra.contextid" .
+        " JOIN {course} c ON c.id = ctx.instanceid AND ctx.contextlevel = 50" .
+        " JOIN {apsolu_courses} ac ON ac.id = c.id" .
+        " JOIN {enrol} e ON c.id = e.courseid AND ra.itemid = e.id" .
+        " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid" .
+        " WHERE e.enrol = 'select'" .
+        " AND e.status = 0" . // Active.
+        " AND c.visible = 1" .
+        " AND ue.userid = :userid" .
+        " AND e.enrolstartdate <= :timestart" . // Date de début des inscriptions.
+        " AND e.customint8 >= :timeend" . // Date de fin des cours.
         " GROUP BY ra.roleid";
     return $DB->get_records_sql($sql, ['userid' => $userid, 'timestart' => $time, 'timeend' => $time]);
 }
@@ -550,11 +550,11 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
         }
     } else {
         // Lorsqu'on utilise les filtres pour gestionnaires, on prend tous les rôles.
-        $sql = "SELECT DISTINCT r.*".
-            " FROM {role} r".
-            " JOIN {apsolu_colleges} ac ON r.id = ac.roleid".
-            " JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid".
-            " WHERE acm.cohortid IN (".substr(str_repeat('?,', count($cohorts)), 0, -1).")";
+        $sql = "SELECT DISTINCT r.*" .
+            " FROM {role} r" .
+            " JOIN {apsolu_colleges} ac ON r.id = ac.roleid" .
+            " JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid" .
+            " WHERE acm.cohortid IN (" . substr(str_repeat('?,', count($cohorts)), 0, -1) . ")";
         $availableuserroles = role_fix_names($DB->get_records_sql($sql, $cohorts));
 
         // Collèges.
@@ -572,25 +572,25 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
     }
 
     // Récupère toutes les activités.
-    $sql = "SELECT DISTINCT c.*, ac.*, cc.id AS sportid, cc.description, grp.id AS groupingid".
-        " FROM {course} c".
-        " JOIN {apsolu_courses} ac ON c.id=ac.id".
-        " JOIN {course_categories} cc ON cc.id=c.category". // Sport category.
-        " JOIN {course_categories} grp ON grp.id=cc.parent". // Parent category.
+    $sql = "SELECT DISTINCT c.*, ac.*, cc.id AS sportid, cc.description, grp.id AS groupingid" .
+        " FROM {course} c" .
+        " JOIN {apsolu_courses} ac ON c.id=ac.id" .
+        " JOIN {course_categories} cc ON cc.id=c.category" . // Sport category.
+        " JOIN {course_categories} grp ON grp.id=cc.parent" . // Parent category.
         // Check cohorts.
-        " AND c.visible=1".
-        " AND cc.visible=1".
+        " AND c.visible=1" .
+        " AND cc.visible=1" .
         " ORDER BY cc.name, ac.numweekday, ac.starttime, ac.endtime";
     $courses = $DB->get_records_sql($sql);
 
     // Récupère toutes les méthodes d'inscription valides concernant l'utilisateur courant.
-    $sql = "SELECT DISTINCT e.*".
-        " FROM {enrol} e".
-        " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid".
-        " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid".
-        " WHERE e.enrol = 'select'".
-        " AND e.status = 0".
-        " AND (e.enrolstartdate = 0 OR e.enrolstartdate < :enrolstartdate)".
+    $sql = "SELECT DISTINCT e.*" .
+        " FROM {enrol} e" .
+        " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid" .
+        " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid" .
+        " WHERE e.enrol = 'select'" .
+        " AND e.status = 0" .
+        " AND (e.enrolstartdate = 0 OR e.enrolstartdate < :enrolstartdate)" .
         " AND (e.enrolenddate = 0 OR e.enrolenddate > :enrolenddate)";
     $params = ['enrolstartdate' => $now, 'enrolenddate' => $now];
 
@@ -600,11 +600,11 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
     } else {
         $insql = [];
         foreach ($cohorts as $index => $cohortid) {
-            $insql[] = ":cohort".$index;
-            $params['cohort'.$index] = $cohortid;
+            $insql[] = ":cohort" . $index;
+            $params['cohort' . $index] = $cohortid;
         }
 
-        $sql .= ' AND ewc.cohortid IN ('.implode(',', $insql).')';
+        $sql .= ' AND ewc.cohortid IN (' . implode(',', $insql) . ')';
         $sql = str_replace('JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid', '', $sql);
     }
 
@@ -762,7 +762,7 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
 
         if ($course->role_options === []) {
             if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging('Course #'.$course->id.': no role for enrol #'.$enrol->id, $level = DEBUG_DEVELOPER);
+                debugging('Course #' . $course->id . ': no role for enrol #' . $enrol->id, $level = DEBUG_DEVELOPER);
             }
             unset($courses[$courseid]);
             continue;
@@ -793,7 +793,7 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
         }
 
         // Note : ne pas utiliser uasort() pour préserver les index, car mustache ne sait pas parcourir les tableaux associatifs.
-        usort($course->role_options, function($a, $b) {
+        usort($course->role_options, function ($a, $b) {
             return ($a->sortorder < $b->sortorder) ? -1 : 1;
         });
 
@@ -833,19 +833,19 @@ function enrol_select_get_potential_user_complements() {
 
     $now = time();
 
-    $sql = "SELECT DISTINCT c.*, ac.*, format(ac.price, 2, 'fr_FR') AS price".
-        " FROM {course} c".
-        " JOIN {apsolu_complements} ac ON c.id = ac.id".
+    $sql = "SELECT DISTINCT c.*, ac.*, format(ac.price, 2, 'fr_FR') AS price" .
+        " FROM {course} c" .
+        " JOIN {apsolu_complements} ac ON c.id = ac.id" .
         // Check cohorts.
-        " JOIN {enrol} e ON c.id = e.courseid".
-        " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid".
-        " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid".
-        " WHERE e.enrol = 'select'".
-        " AND e.status = 0". // Active.
-        " AND (e.enrolstartdate = 0 OR e.enrolstartdate < ?)".
-        " AND (e.enrolenddate = 0 OR e.enrolenddate > ?)".
-        " AND cm.userid=?".
-        " AND c.visible=1".
+        " JOIN {enrol} e ON c.id = e.courseid" .
+        " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid" .
+        " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid" .
+        " WHERE e.enrol = 'select'" .
+        " AND e.status = 0" . // Active.
+        " AND (e.enrolstartdate = 0 OR e.enrolstartdate < ?)" .
+        " AND (e.enrolenddate = 0 OR e.enrolenddate > ?)" .
+        " AND cm.userid=?" .
+        " AND c.visible=1" .
         " ORDER BY c.fullname";
     $courses = $DB->get_records_sql($sql, [$now, $now, $USER->id]);
 
@@ -880,21 +880,21 @@ function enrol_select_get_user_reenrolments($userid = null) {
 
     $time = time();
 
-    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, '1' AS paymentcenterid".
-        " FROM {course} c".
-        " JOIN {course_categories} cc ON cc.id = c.category".
-        " JOIN {apsolu_courses} ac ON c.id = ac.id".
-        " JOIN {enrol} e ON c.id = e.courseid".
-        " JOIN {user_enrolments} ue ON e.id = ue.enrolid".
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.itemid = e.id".
-        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id".
-        " WHERE e.enrol = 'select'".
-        " AND e.status = 0". // Active.
-        " AND c.visible = 1".
-        " AND ue.userid = :userid".
-        " AND e.customint6 != 0". // Enrol id, vers lequel on réinscrit l'utilisateur.
-        " AND (e.customint4 = 0 OR e.customint4 <= :timestart)". // Date de début des réinscriptions.
-        " AND (e.customint5 = 0 OR e.customint5 >= :timeend)". // Date de fin des réinscriptions.
+    $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, '1' AS paymentcenterid" .
+        " FROM {course} c" .
+        " JOIN {course_categories} cc ON cc.id = c.category" .
+        " JOIN {apsolu_courses} ac ON c.id = ac.id" .
+        " JOIN {enrol} e ON c.id = e.courseid" .
+        " JOIN {user_enrolments} ue ON e.id = ue.enrolid" .
+        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.itemid = e.id" .
+        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid = c.id" .
+        " WHERE e.enrol = 'select'" .
+        " AND e.status = 0" . // Active.
+        " AND c.visible = 1" .
+        " AND ue.userid = :userid" .
+        " AND e.customint6 != 0" . // Enrol id, vers lequel on réinscrit l'utilisateur.
+        " AND (e.customint4 = 0 OR e.customint4 <= :timestart)" . // Date de début des réinscriptions.
+        " AND (e.customint5 = 0 OR e.customint5 >= :timeend)" . // Date de fin des réinscriptions.
         " ORDER BY c.fullname";
     return $DB->get_records_sql($sql, ['userid' => $userid, 'timestart' => $time, 'timeend' => $time]);
 }
@@ -928,9 +928,9 @@ function enrol_select_generate_filters($courses = []) {
         $elements['skill'][$course->skillid] = $course->skill;
         $elements['area'][$course->areaid] = $course->area;
         $elements['weekday'][$course->numweekday] = get_string($course->weekday, 'local_apsolu');
-        $starttime = substr($course->starttime, 0, 2).'h';
+        $starttime = substr($course->starttime, 0, 2) . 'h';
         $elements['starttime'][$starttime] = $starttime;
-        $endtime = substr($course->endtime, 0, 2).'h';
+        $endtime = substr($course->endtime, 0, 2) . 'h';
         $elements['endtime'][$endtime] = $endtime;
         foreach ($course->role_options as $role) {
             $elements['role'][$role->id] = $role->localname;
@@ -956,7 +956,7 @@ function enrol_select_generate_filters($courses = []) {
             'multiple' => 'true',
             'class' => 'filters',
         ];
-        $filters[$type] = \html_writer::select($element, 'filters['.$type.']', $selected = '', $nothing = '', $attributes);
+        $filters[$type] = \html_writer::select($element, 'filters[' . $type . ']', $selected = '', $nothing = '', $attributes);
     }
 
     return $filters;

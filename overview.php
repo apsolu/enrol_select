@@ -25,8 +25,8 @@
 use local_apsolu\core\federation\course as FederationCourse;
 
 require('../../config.php');
-require_once(__DIR__.'/locallib.php');
-require_once($CFG->dirroot.'/enrol/select/blocklib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once($CFG->dirroot . '/enrol/select/blocklib.php');
 
 $courseid = optional_param('courseid', 0, PARAM_INT);
 $roleid = optional_param('roleid', 0, PARAM_INT);
@@ -54,7 +54,7 @@ $time = null;
 $cohorts = null;
 $managersfilters = '';
 if (has_any_capability($capabilities, context_system::instance()) === true) {
-    require_once(__DIR__.'/overview_managers_filters_form.php');
+    require_once(__DIR__ . '/overview_managers_filters_form.php');
 
     $mform = new overview_managers_filters_form();
     if ($data = $mform->get_data()) {
@@ -103,7 +103,7 @@ $overviewactivitiesdata->www_url = $CFG->wwwroot;
 $overviewactivitiesdata->is_courses_creator = has_capability('moodle/course:create', context_system::instance());
 $overviewactivitiesdata->filters = '';
 if (isset($time, $cohorts) === true) {
-    $overviewactivitiesdata->filters = '&time='.$time.'&cohorts='.implode(',', $cohorts);
+    $overviewactivitiesdata->filters = '&time=' . $time . '&cohorts=' . implode(',', $cohorts);
 }
 
 // Complements : get all visible complement courses for current user.

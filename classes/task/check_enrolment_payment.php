@@ -45,8 +45,8 @@ class check_enrolment_payment extends \core\task\adhoc_task {
     public function execute() {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot.'/enrol/select/lib.php');
-        require_once($CFG->dirroot.'/local/apsolu/classes/apsolu/payment.php');
+        require_once($CFG->dirroot . '/enrol/select/lib.php');
+        require_once($CFG->dirroot . '/local/apsolu/classes/apsolu/payment.php');
 
         $customdata = $this->get_custom_data();
         $course = $DB->get_record('course', ['id' => $customdata->courseid]);

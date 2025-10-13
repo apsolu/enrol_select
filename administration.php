@@ -23,7 +23,7 @@
  */
 
 require('../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once($CFG->libdir . '/adminlib.php');
 
 $tab = optional_param('tab', 'default_settings', PARAM_TEXT);
 $action = optional_param('action', 'view', PARAM_ALPHA);
@@ -46,11 +46,11 @@ if (!in_array($tab, $tabslist, true)) {
     $tab = $tabslist['default_settings'];
 }
 
-admin_externalpage_setup('enrol_select_'.$tab);
+admin_externalpage_setup('enrol_select_' . $tab);
 
 // Capture le contenu principal de la page.
 ob_start();
-require_once(__DIR__.'/administration/'.$tab.'/index.php');
+require_once(__DIR__ . '/administration/' . $tab . '/index.php');
 $content = ob_get_contents();
 ob_end_clean();
 

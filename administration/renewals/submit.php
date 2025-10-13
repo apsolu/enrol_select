@@ -25,10 +25,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 foreach ($_POST['uids'] as $uid) {
-    if (isset($_POST[$uid.'_enrol'])) {
-        $to = $_POST[$uid.'_action'];
+    if (isset($_POST[$uid . '_enrol'])) {
+        $to = $_POST[$uid . '_action'];
 
-        $enrolid = $_POST[$uid.'_enrol'];
+        $enrolid = $_POST[$uid . '_enrol'];
         $instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'select'], '*', MUST_EXIST);
 
         $nextenrolid     = $instance->customint6;
@@ -50,20 +50,20 @@ foreach ($_POST['uids'] as $uid) {
         }
 
         // Get users list.
-        $sql = "SELECT u.*".
-        " FROM {user} u".
-        " JOIN {user_enrolments} ue ON u.id = ue.userid".
-        " WHERE ue.enrolid = :enrolid".
+        $sql = "SELECT u.*" .
+        " FROM {user} u" .
+        " JOIN {user_enrolments} ue ON u.id = ue.userid" .
+        " WHERE ue.enrolid = :enrolid" .
         " AND status = :status";
         $users = $DB->get_records_sql($sql, ['enrolid' => $enrolid, 'status' => enrol_select_plugin::ACCEPTED]);
         foreach ($users as $userid => $user) {
             $enrolselectplugin = new enrol_select_plugin();
             $roleid = 0;
 
-            $sql = "SELECT roleid".
-                " FROM {role_assignments}".
-                " WHERE component = 'enrol_select'".
-                " AND itemid = :previousinstance_id".
+            $sql = "SELECT roleid" .
+                " FROM {role_assignments}" .
+                " WHERE component = 'enrol_select'" .
+                " AND itemid = :previousinstance_id" .
                 " AND userid = :userid";
             $recordset = $DB->get_recordset_sql($sql, ['previousinstance_id' => $enrolid, 'userid' => $userid]);
             foreach ($recordset as $role) {
@@ -77,5 +77,5 @@ foreach ($_POST['uids'] as $uid) {
     }
 }
 
-$url = $CFG->wwwroot.'/enrol/select/administration.php?tab=renewals';
+$url = $CFG->wwwroot . '/enrol/select/administration.php?tab=renewals';
 redirect($url, 'Le ou les utilisateurs ont été correctement réinscrits.', 5, \core\output\notification::NOTIFY_SUCCESS);

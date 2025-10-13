@@ -22,10 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require(__DIR__.'/../../config.php');
-require_once($CFG->dirroot.'/enrol/select/locallib.php');
-require_once($CFG->dirroot.'/enrol/select/userselector.php');
-require_once($CFG->dirroot.'/local/apsolu/locallib.php');
+require(__DIR__ . '/../../config.php');
+require_once($CFG->dirroot . '/enrol/select/locallib.php');
+require_once($CFG->dirroot . '/enrol/select/userselector.php');
+require_once($CFG->dirroot . '/local/apsolu/locallib.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 
@@ -77,9 +77,9 @@ if (isset($_POST['role'], $_POST['status'], $_POST['addselect']) && ctype_digit(
     }
 
     if ($count > 1) {
-        $notification = $OUTPUT->notification($count.' utilisateurs inscrits.', 'notifysuccess');
+        $notification = $OUTPUT->notification($count . ' utilisateurs inscrits.', 'notifysuccess');
     } else {
-        $notification = $OUTPUT->notification($count.' utilisateur inscrit.', 'notifysuccess');
+        $notification = $OUTPUT->notification($count . ' utilisateur inscrit.', 'notifysuccess');
     }
 }
 
@@ -100,11 +100,12 @@ if (isset($notification)) {
 }
 
 $enroldata = new stdClass();
-$enroldata->action = $CFG->wwwroot.'/enrol/select/enrol.php?enrolid='.$enrolid;
+$enroldata->action = $CFG->wwwroot . '/enrol/select/enrol.php?enrolid=' . $enrolid;
 $enroldata->roles = $enrolselect->get_roles($instance, $context);
 
 if ($enroldata->roles === []) {
-    throw new moodle_exception('error_no_role', 'enrol_select', $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$instance->id);
+    $returnurl = new moodle_url('/enrol/select/manage.php', ['enrolid' => $instance->id]);
+    throw new moodle_exception('error_no_role', 'enrol_select', $returnurl);
 }
 
 // Pour avoir l'option "libre" en premier...

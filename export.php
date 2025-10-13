@@ -22,12 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use UniversiteRennes2\Apsolu as apsolu;
+use UniversiteRennes2\Apsolu;
 
-require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/locallib.php');
-require_once($CFG->libdir.'/csvlib.class.php');
-require_once($CFG->libdir.'/excellib.class.php');
+require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
+require_once($CFG->libdir . '/csvlib.class.php');
+require_once($CFG->libdir . '/excellib.class.php');
 
 // TODO: remplacer enrolid par courseid dans les paramètres de l'URL (bloc teachers et page manage).
 $enrolid = required_param('enrolid', PARAM_INT);
@@ -66,17 +66,17 @@ if (isset($exportstatus)) {
     $conditions = '';
 }
 
-$sql = 'SELECT DISTINCT u.*, ra.roleid, ue.timecreated, ue.status'.
-    ' FROM {user} u'.
-    ' JOIN {user_enrolments} ue ON u.id = ue.userid'.
-    ' JOIN {role_assignments} ra ON u.id = ra.userid AND ue.enrolid = ra.itemid'.
-    ' JOIN {role} r ON r.id = ra.roleid AND r.archetype = "student"'.
-    ' JOIN {context} ctx ON ctx.id = ra.contextid'.
-    ' JOIN {enrol} e ON e.id = ra.itemid AND e.id = ue.enrolid AND ctx.instanceid = e.courseid'.
-    ' WHERE e.id = :enrolid'.
-    ' AND e.enrol = "select"'.
-    ' AND ctx.instanceid = :courseid'.
-    ' AND ctx.contextlevel = 50'.$conditions.
+$sql = 'SELECT DISTINCT u.*, ra.roleid, ue.timecreated, ue.status' .
+    ' FROM {user} u' .
+    ' JOIN {user_enrolments} ue ON u.id = ue.userid' .
+    ' JOIN {role_assignments} ra ON u.id = ra.userid AND ue.enrolid = ra.itemid' .
+    ' JOIN {role} r ON r.id = ra.roleid AND r.archetype = "student"' .
+    ' JOIN {context} ctx ON ctx.id = ra.contextid' .
+    ' JOIN {enrol} e ON e.id = ra.itemid AND e.id = ue.enrolid AND ctx.instanceid = e.courseid' .
+    ' WHERE e.id = :enrolid' .
+    ' AND e.enrol = "select"' .
+    ' AND ctx.instanceid = :courseid' .
+    ' AND ctx.contextlevel = 50' . $conditions .
     ' ORDER BY ue.status, ue.timecreated, u.lastname, u.firstname, u.institution, u.department';
 $users = $DB->get_records_sql($sql, $params);
 
@@ -85,7 +85,7 @@ $instancename = get_string('pluginname', 'enrol_select');
 if (empty($instance->name) === false) {
     $instancename = $instance->name;
 }
-$filename = clean_filename($course->fullname.'-'.$instancename);
+$filename = clean_filename($course->fullname . '-' . $instancename);
 
 $headers = [
     get_string('lastname'),
@@ -122,7 +122,7 @@ foreach ($users as $user) {
 
     $userfields = $DB->get_records('user_info_data', ['userid' => $user->id], $sort = '', $columns = 'fieldid, data');
     foreach ($fields as $fieldid => $field) {
-        switch($field->shortname) {
+        switch ($field->shortname) {
             case 'apsoluufr':
             case 'apsolucycle':
             case 'apsolusex':
@@ -143,7 +143,7 @@ foreach ($users as $user) {
         $birthdayday = substr($apsolubirthday, 0, 2);
         $birthdaymonth = substr($apsolubirthday, 3, 2);
         $birthdayyear = substr($apsolubirthday, 6, 4);
-        $from = new DateTime($birthdayyear.'-'.$birthdaymonth.'-'.$birthdayday);
+        $from = new DateTime($birthdayyear . '-' . $birthdaymonth . '-' . $birthdayday);
         $to   = new DateTime('today');
         $age = $from->diff($to)->y;
     } catch (Exception $exception) {
@@ -169,7 +169,7 @@ foreach ($users as $user) {
 
     if (!isset($exportstatus)) {
         $state = enrol_select_plugin::$states[$user->status];
-        $row[] = get_string($state.'_list', 'enrol_select');
+        $row[] = get_string($state . '_list', 'enrol_select');
     }
 
     $row[] = '';

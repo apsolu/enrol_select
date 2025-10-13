@@ -51,7 +51,7 @@ final class calendar_test extends \advanced_testcase {
         $countrecords = 0;
 
         // Insère un enregistrement.
-        list($plugin, $instance, $users) = $this->getDataGenerator()->get_plugin_generator('enrol_select')->create_enrol_instance();
+        [$plugin, $instance, $users] = $this->getDataGenerator()->get_plugin_generator('enrol_select')->create_enrol_instance();
 
         $instance->customchar1 = $calendarid;
         $DB->update_record('enrol', $instance);

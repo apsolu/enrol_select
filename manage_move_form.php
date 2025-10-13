@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 /**
  * Définition du formulaire pour gérer les déplacements d'inscription.
@@ -44,30 +44,30 @@ class enrol_select_manage_move_form extends moodleform {
 
         $mform = $this->_form;
 
-        list($instance, $users, $from, $to, $previousenrolid) = $this->_customdata;
+        [$instance, $users, $from, $to, $previousenrolid] = $this->_customdata;
 
         $strto = ($previousenrolid !== false) ? 'next_' . enrol_select_plugin::$states[$to] : enrol_select_plugin::$states[$to];
         $strfrom = enrol_select_plugin::$states[$from];
 
         $lists = new stdClass();
-        $lists->to = get_string('list_'.$strto, 'enrol_select');
-        $lists->from = get_string('list_'.$strfrom, 'enrol_select');
+        $lists->to = get_string('list_' . $strto, 'enrol_select');
+        $lists->from = get_string('list_' . $strfrom, 'enrol_select');
         $label = get_string('goto', 'enrol_select', $lists);
 
         $userslist = '<ul class="list list-unstyled">';
         foreach ($users as $user) {
             if (!empty($user->numberid)) {
-                $numberid = ' ('.$user->numberid.')';
+                $numberid = ' (' . $user->numberid . ')';
             } else {
                 $numberid = '';
             }
 
-            $userslist .= '<li>'.
-                $user->firstname.' '.$user->lastname.$numberid.
+            $userslist .= '<li>' .
+                $user->firstname . ' ' . $user->lastname . $numberid .
                 '</li>';
 
-            $mform->addElement('hidden', 'users['.$user->id.']', $user->id);
-            $mform->setType('users['.$user->id.']', PARAM_INT);
+            $mform->addElement('hidden', 'users[' . $user->id . ']', $user->id);
+            $mform->setType('users[' . $user->id . ']', PARAM_INT);
         }
         $userslist .= '</ul>';
         $mform->addElement('static', 'users', $label, $userslist);
@@ -80,7 +80,7 @@ class enrol_select_manage_move_form extends moodleform {
         $attributes = ['rows' => '15', 'cols' => '50'];
         $mform->addElement('textarea', 'message', get_string('send_message', 'enrol_select'), $attributes);
         $mform->setType('message', PARAM_TEXT);
-        $mform->setDefault('message', get_string('message_'.$strfrom.'_to_'.$strto, 'enrol_select'));
+        $mform->setDefault('message', get_string('message_' . $strfrom . '_to_' . $strto, 'enrol_select'));
         $mform->disabledIf('message', 'notify', 'eq', 0);
 
         $mform->addElement('hidden', 'actions', $to);
@@ -90,7 +90,7 @@ class enrol_select_manage_move_form extends moodleform {
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('save', 'admin'));
 
         $attributes = new stdClass();
-        $attributes->href = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$instance->id;
+        $attributes->href = $CFG->wwwroot . '/enrol/select/manage.php?enrolid=' . $instance->id;
         $attributes->class = 'btn btn-default btn-secondary';
         $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu', $attributes));
 

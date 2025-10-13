@@ -24,4 +24,4 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require(__DIR__.'/view.php');
+require(__DIR__ . '/view.php');

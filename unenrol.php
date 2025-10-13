@@ -22,9 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require(__DIR__.'/../../config.php');
-require_once($CFG->dirroot.'/enrol/manual/locallib.php');
-require_once($CFG->dirroot.'/enrol/select/locallib.php');
+require(__DIR__ . '/../../config.php');
+require_once($CFG->dirroot . '/enrol/manual/locallib.php');
+require_once($CFG->dirroot . '/enrol/select/locallib.php');
 
 $enrolid = required_param('enrolid', PARAM_INT);
 
@@ -72,9 +72,9 @@ if (isset($_POST['removeselect'])) {
     }
 
     if ($count > 1) {
-        $notification = $OUTPUT->notification($count.' utilisateurs désinscrits.', 'notifysuccess');
+        $notification = $OUTPUT->notification($count . ' utilisateurs désinscrits.', 'notifysuccess');
     } else {
-        $notification = $OUTPUT->notification($count.' utilisateur désinscrit.', 'notifysuccess');
+        $notification = $OUTPUT->notification($count . ' utilisateur désinscrit.', 'notifysuccess');
     }
 }
 
@@ -94,7 +94,7 @@ if (isset($notification)) {
 }
 
 $enroldata = new stdClass();
-$enroldata->action = $CFG->wwwroot.'/enrol/select/unenrol.php?enrolid='.$enrolid;
+$enroldata->action = $CFG->wwwroot . '/enrol/select/unenrol.php?enrolid=' . $enrolid;
 $enroldata->current_users_selector = $userselector;
 $enroldata->cancel = new moodle_url('/enrol/select/manage.php', ['enrolid' => $instance->id]);
 

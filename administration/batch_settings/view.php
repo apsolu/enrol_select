@@ -26,7 +26,7 @@ use enrol_select\event\batch_enrol_instance_updated;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/enrol/select/administration/batch_settings/edit_form.php');
+require_once($CFG->dirroot . '/enrol/select/administration/batch_settings/edit_form.php');
 
 // Build form.
 $calendars = $DB->get_records('apsolu_calendars', $conditions = null, $sort = 'name');
@@ -106,7 +106,7 @@ if ($data = $mform->get_data()) {
             if (isset($enrol->enrols[1]) === true) {
                 $attributes['open'] = 1;
             }
-            $content = html_writer::tag('details', $summary.$list, $attributes);
+            $content = html_writer::tag('details', $summary . $list, $attributes);
 
             $courses[] = $content;
         }

@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 /**
  * Classe pour le formulaire permettant de filtrer la vue d'ensemble des inscriptions.
@@ -44,7 +44,7 @@ class apsolu_overview_filter_form extends moodleform {
 
         $mform = $this->_form;
 
-        list($calendars, $teachers) = $this->_customdata;
+        [$calendars, $teachers] = $this->_customdata;
 
         // Champ "créneaux horaires".
         $mform->addElement('text', 'course', get_string('course', 'local_apsolu'));

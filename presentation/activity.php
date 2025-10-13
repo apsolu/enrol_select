@@ -22,16 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require(__DIR__.'/../../../config.php');
+require(__DIR__ . '/../../../config.php');
 
 require_course_login($courseid = 1);
 
 $id = optional_param('id', null, PARAM_INT);
 
-$redirection = $CFG->wwwroot.'/local/apsolu/presentation/activity.php';
+$redirection = $CFG->wwwroot . '/local/apsolu/presentation/activity.php';
 if ($id !== null) {
-    $redirection .= '?id='.$id;
+    $redirection .= '?id=' . $id;
 }
 
-header('Location: '.$redirection, $repalce = true, $httpresponsecode = 301);
+header('Location: ' . $redirection, $repalce = true, $httpresponsecode = 301);
 exit();

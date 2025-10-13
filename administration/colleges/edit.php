@@ -24,11 +24,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/enrol/select/locallib.php');
+require_once($CFG->dirroot . '/enrol/select/locallib.php');
 
 $id = required_param('id', PARAM_INT);
 
-require(__DIR__.'/edit_form.php');
+require(__DIR__ . '/edit_form.php');
 
 $instance = $DB->get_record('apsolu_colleges', ['id' => $id]);
 $cohorts = $DB->get_records('cohort', $conditions = null, $sort = 'name');
@@ -63,7 +63,7 @@ if ($data = $mform->get_data()) {
         }
     }
 
-    require(__DIR__.'/view.php');
+    require(__DIR__ . '/view.php');
 } else {
     $mform->display();
 }

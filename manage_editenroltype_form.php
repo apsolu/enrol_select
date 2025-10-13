@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 /**
  * Définition du formulaire pour gérer les changements de rôle.
@@ -44,24 +44,24 @@ class enrol_select_manage_editenroltype_form extends moodleform {
 
         $mform = $this->_form;
 
-        list($instance, $users, $from, $to, $roles) = $this->_customdata;
+        [$instance, $users, $from, $to, $roles] = $this->_customdata;
 
         $label = get_string('users');
 
         $userslist = '<ul class="list list-unstyled">';
         foreach ($users as $user) {
             if (!empty($user->numberid)) {
-                $numberid = ' ('.$user->numberid.')';
+                $numberid = ' (' . $user->numberid . ')';
             } else {
                 $numberid = '';
             }
 
-            $userslist .= '<li>'.
-                $user->firstname.' '.$user->lastname.$numberid.
+            $userslist .= '<li>' .
+                $user->firstname . ' ' . $user->lastname . $numberid .
                 '</li>';
 
-            $mform->addElement('hidden', 'users['.$user->id.']', $user->id);
-            $mform->setType('users['.$user->id.']', PARAM_INT);
+            $mform->addElement('hidden', 'users[' . $user->id . ']', $user->id);
+            $mform->setType('users[' . $user->id . ']', PARAM_INT);
         }
         $userslist .= '</ul>';
         $mform->addElement('static', 'users', $label, $userslist);
@@ -76,7 +76,7 @@ class enrol_select_manage_editenroltype_form extends moodleform {
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('save', 'admin'));
 
         $attributes = new stdClass();
-        $attributes->href = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$instance->id;
+        $attributes->href = $CFG->wwwroot . '/enrol/select/manage.php?enrolid=' . $instance->id;
         $attributes->class = 'btn btn-default btn-secondary';
         $buttonarray[] = &$mform->createElement('static', '', '', get_string('cancel_link', 'local_apsolu', $attributes));
 

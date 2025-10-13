@@ -26,18 +26,16 @@
 // phpcs:disable moodle.Files.LangFilesOrdering.IncorrectOrder
 // phpcs:disable moodle.Files.LangFilesOrdering.UnexpectedComment
 
-$string['messageprovider:select_notification'] = 'Notifications en relation avec les inscriptions';
-
 $string['batch_settings'] = 'Paramétrage par lots';
 $string['check_enrolment_payment'] = 'Contrôle le paiement d’une inscription';
 $string['cohort_X_is_already_used_with_role_Y_by_college_Z'] = 'La cohorte « {$a->cohort} » est déjà utilisée avec le rôle « {$a->role} » par la population « {$a->college} ».';
 $string['college_unused_cohorts'] = '<details class="alert alert-info"><summary class="mb-3">Information</summary><p>Ces cohortes ne sont actuellement pas utilisées dans les populations :</p><ul>{$a}</ul></details>';
 $string['continue_my_enrolments'] = 'Continuer mes inscriptions';
 $string['custom_welcome_message'] = 'Message de bienvenue personnalisé';
+$string['custom_welcome_message_help'] = 'Les utilisateurs recevront un message de bienvenue par courriel lors de leur inscription.';
 $string['custom_welcome_message_on_accepted_list'] = 'Message de bienvenue personnalisé pour la liste des acceptés';
 $string['custom_welcome_message_on_main_list'] = 'Message de bienvenue personnalisé pour la liste principale';
 $string['custom_welcome_message_on_wait_list'] = 'Message de bienvenue personnalisé pour la liste d’attente';
-$string['custom_welcome_message_help'] = 'Les utilisateurs recevront un message de bienvenue par courriel lors de leur inscription.';
 $string['date_diverging_from_calendar_date'] = 'Date divergente par rapport à la date du calendrier';
 $string['default_enrolment_list'] = 'Liste d’inscription par défaut';
 $string['default_enrolment_list_help'] = 'Détermine si les nouvelles inscriptions doivent être automatiquement acceptées. Ce réglage s’applique tant que les quotas ne sont pas atteints. Pour l’utilisation de l’option « Délai de paiement », la valeur de cette option doit être « Liste des étudiants acceptés ».';
@@ -52,8 +50,8 @@ $string['enrollee_wait_list'] = 'Candidat Attente';
 $string['enrollee_wish_list'] = 'Candidat Voeux';
 $string['enrollees'] = 'Inscrits';
 $string['enrolment_list'] = 'Liste d’inscription';
-$string['enrolment_to'] = 'Inscription en {$a}';
 $string['enrolment_methods_overview'] = 'Vue d\'ensemble des méthodes d\'inscription';
+$string['enrolment_to'] = 'Inscription en {$a}';
 $string['enrolments_overview'] = 'Vue d\'ensemble des inscriptions';
 $string['filters_for_managers'] = 'Filtres pour gestionnaires';
 $string['it_is_currently_not_possible_to_indicate_a_duration_greater_than_one_day'] = 'Pour des raisons techniques, il n’est pour le moment pas possible d’indiquer une durée supérieure à 27 heures.';
@@ -66,6 +64,8 @@ $string['maximum_enrolments'] = 'Nombre d’inscriptions maximum';
 $string['maximum_enrolments_must_be_greater_than_or_equal_to_minimum_enrolments'] = 'Le nombre d’inscriptions maximum doit être égal ou supérieur au nombre d’inscriptions minimum.';
 $string['maximum_wishes'] = 'Nombre de voeux maximum';
 $string['maximum_wishes_must_be_greater_than_or_equal_to_maximum_enrolments'] = 'Le nombre de voeux maximum doit être égal ou supérieur au nombre d’inscriptions maximum.';
+$string['messageprovider:select_notification'] = 'Notifications en relation avec les inscriptions';
+
 $string['minimum_enrolments'] = 'Nombre d’inscriptions minimum';
 $string['no_available_cohorts'] = 'Aucune cohorte disponible';
 $string['no_available_enrol_methods_desc'] = 'Pour utiliser cette fonctionnalité, une deuxième méthode d’inscription par voeux est nécessaire dans ce cours.';
@@ -73,9 +73,9 @@ $string['no_available_prices'] = 'Aucun tarif défini';
 $string['no_available_roles'] = 'Aucun rôle disponible';
 $string['no_dates'] = 'Aucune date';
 $string['no_enrolment_method_available_with_these_selection_criteria'] = 'Aucune méthode d’inscription disponible avec ces critères de sélection';
+$string['no_places_available'] = 'Aucune place disponible';
 $string['no_quotas'] = 'Aucun quota';
 $string['no_seat_restrictions'] = 'Aucune restriction de place';
-$string['no_places_available'] = 'Aucune place disponible';
 $string['number_of_accepted_enrolments'] = 'Nombre d’inscriptions acceptées';
 $string['number_of_deleted_enrolments'] = 'Nombre de désinscriptions';
 $string['number_of_enrolments_on_main_list'] = 'Nombre d’inscriptions sur liste principale';
@@ -102,8 +102,8 @@ $string['the_delay_cannot_be_combined_with_the_automatic_list_filling'] = 'L’o
 $string['the_delay_cannot_be_set_if_the_default_list_is_accepted'] = 'L’option « délai de paiement » ne peut pas être définie si l’option « liste d’inscription par défaut » n’a pas la valeur « liste des étudiants acceptés ».';
 $string['the_delay_cannot_be_set_to_a_value_of_less_than_20_minutes'] = 'L’option « délai de paiement » ne peut pas être définie à une valeur inférieure à 20 minutes.';
 $string['the_field_welcome_message_seems_to_be_empty'] = 'Le champ « Message de bienvenue personnalisé » semble être est vide. Merci de confirmer ce choix en sélectionnant la valeur « Non » dans le champ « Envoyer un message aux utilisateurs ».';
-$string['there_are_still_places_on_the_wait_list'] = 'Il reste des places sur liste complémentaire';
 $string['the_user_X_has_reached_their_wish_limit_for_the_role_Y'] = 'L’utilisateur #{$a->userid} a atteint sa limite de voeux pour le rôle #{$a->roleid}.';
+$string['there_are_still_places_on_the_wait_list'] = 'Il reste des places sur liste complémentaire';
 $string['unenrolment_from'] = 'Désinscription de {$a}';
 $string['unenrolment_message'] = '<p>Bonjour,</p>
 <p>Vous avez été désinscrit du cours {$a->coursename}.</p>
@@ -359,29 +359,29 @@ $string['closedreenrolment'] = '<p class="alert alert-info">La période de réin
 $string['nextreenrolment'] = '<p class="alert alert-info">La prochaine période de réinscription est prévue à partir du <strong>{$a->from}</strong>.</p>';
 $string['noreenrolment'] = '<div class="alert alert-warning"><p>Aucune de vos inscriptions actuelles ne propose de réinscription.</div>';
 $string['nextenrolment'] = '<div class="alert alert-info"><p>Les préinscriptions du 2ème semestre auront lieu à partir du <strong>{$a->from}</strong>.</p></div>';
-$string['reenrolmentexplanationcase'] = '<div class="alert alert-info">'.
-    '<ol>'.
-    '<li>vous souhaitez poursuivre sur le même créneau, il vous suffit de compléter et d’enregistrer le tableau ci-dessous</li>'.
-    '<li>vous souhaitez changer de créneau avec le même enseignant, <strong>contactez-le vite par mail <u>avant le {$a->limit}</u></strong></li>'.
-    '<li>vous souhaitez vous inscrire sur un autre cours avec un nouvel enseignant, revenez vous préinscrire sur « votre espace SIUAPS » à partir du <strong>{$a->from}</strong></li>'.
-    '</ol>'.
+$string['reenrolmentexplanationcase'] = '<div class="alert alert-info">' .
+    '<ol>' .
+    '<li>vous souhaitez poursuivre sur le même créneau, il vous suffit de compléter et d’enregistrer le tableau ci-dessous</li>' .
+    '<li>vous souhaitez changer de créneau avec le même enseignant, <strong>contactez-le vite par mail <u>avant le {$a->limit}</u></strong></li>' .
+    '<li>vous souhaitez vous inscrire sur un autre cours avec un nouvel enseignant, revenez vous préinscrire sur « votre espace SIUAPS » à partir du <strong>{$a->from}</strong></li>' .
+    '</ol>' .
     '</div>';
-$string['reenrolmentexplanationcasenoenrol'] = '<div class="alert alert-info">'.
-    '<ol>'.
-    '<li>vous souhaitez poursuivre sur le même créneau, il vous suffit de compléter et d’enregistrer le tableau ci-dessous</li>'.
-    '<li>vous souhaitez changer de créneau avec le même enseignant, <strong>contactez-le vite par mail <u>avant le {$a->limit}</u></strong></li>'.
-    '</ol>'.
+$string['reenrolmentexplanationcasenoenrol'] = '<div class="alert alert-info">' .
+    '<ol>' .
+    '<li>vous souhaitez poursuivre sur le même créneau, il vous suffit de compléter et d’enregistrer le tableau ci-dessous</li>' .
+    '<li>vous souhaitez changer de créneau avec le même enseignant, <strong>contactez-le vite par mail <u>avant le {$a->limit}</u></strong></li>' .
+    '</ol>' .
     '</div>';
 $string['coursename'] = 'Nom du cours';
 $string['teachercontact'] = 'Contact enseignant';
 $string['renewenrolement'] = 'Renouveler mon inscription';
 $string['savedreenrolment'] = 'Votre choix a été enregistré.<br />Vous pouvez revenir sur votre sélection à tout moment jusqu’au {$a->date}.';
 $string['reenrolmentnotificationsubject'] = 'Récapitulatif de vos réinscriptions au SIUAPS';
-$string['reenrolmentnotification'] = 'Bonjour,'.PHP_EOL.PHP_EOL.
-    'Vous avez choisi de :'.PHP_EOL.
-    '{$a->choices}'.PHP_EOL.PHP_EOL.
-    'En cas de demande de réinscription, il vous appartient maintenant de vous présenter (avec votre tenue) sur le lieu et à l’heure du cours lors de la semaine de rentrée au SIUAPS - voir "mes rendez-vous à venir"'.PHP_EOL.PHP_EOL.
-    'À bientôt,'.PHP_EOL.PHP_EOL.
+$string['reenrolmentnotification'] = 'Bonjour,' . PHP_EOL . PHP_EOL .
+    'Vous avez choisi de :' . PHP_EOL .
+    '{$a->choices}' . PHP_EOL . PHP_EOL .
+    'En cas de demande de réinscription, il vous appartient maintenant de vous présenter (avec votre tenue) sur le lieu et à l’heure du cours lors de la semaine de rentrée au SIUAPS - voir "mes rendez-vous à venir"' . PHP_EOL . PHP_EOL .
+    'À bientôt,' . PHP_EOL . PHP_EOL .
     'L’équipe du SIUAPS';
 $string['reenrolmentcontinue'] = 'poursuivre le cours {$a->fullname}';
 $string['reenrolmentstop'] = 'quitter le cours {$a->fullname}';

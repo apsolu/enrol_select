@@ -22,12 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use UniversiteRennes2\Apsolu as apsolu;
+use UniversiteRennes2\Apsolu;
 
-require_once(__DIR__.'/../../config.php');
-require_once($CFG->dirroot.'/enrol/select/locallib.php');
-require_once($CFG->dirroot.'/enrol/select/manage_move_form.php');
-require_once($CFG->dirroot.'/local/apsolu/locallib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once($CFG->dirroot . '/enrol/select/locallib.php');
+require_once($CFG->dirroot . '/enrol/select/manage_move_form.php');
+require_once($CFG->dirroot . '/local/apsolu/locallib.php');
 
 // Managing semester 2 move.
 $previousenrolid = false;
@@ -86,9 +86,9 @@ $PAGE->set_heading($course->fullname);
 $usersenrolid = ($previousenrolid) ? $previousenrolid : $enrolid;
 
 // Get users list.
-$sql = "SELECT u.*".
-    " FROM {user} u".
-    " JOIN {user_enrolments} ue ON u.id = ue.userid".
+$sql = "SELECT u.*" .
+    " FROM {user} u" .
+    " JOIN {user_enrolments} ue ON u.id = ue.userid" .
     " WHERE ue.enrolid = ?";
 $users = $DB->get_records_sql($sql, [$usersenrolid]);
 foreach ($users as $userid => $user) {
@@ -103,7 +103,6 @@ $mform = new enrol_select_manage_move_form($url->out(false), [$instance, $users,
 
 if ($mform->is_cancelled()) {
     redirect($return);
-
 } else if ($data = $mform->get_data()) {
     if (isset(enrol_select_plugin::$states[$to])) {
         foreach ($data->users as $userid) {
@@ -116,10 +115,10 @@ if ($mform->is_cancelled()) {
                 $enrolselectplugin = new enrol_select_plugin();
                 $roleid = 0;
 
-                $sql = "SELECT roleid".
-                    " FROM {role_assignments}".
-                    " WHERE component = 'enrol_select'".
-                    " AND itemid = :previousinstance_id".
+                $sql = "SELECT roleid" .
+                    " FROM {role_assignments}" .
+                    " WHERE component = 'enrol_select'" .
+                    " AND itemid = :previousinstance_id" .
                     " AND userid = :userid";
 
                 $recordset = $DB->get_recordset_sql($sql, ['previousinstance_id' => $previousenrolid, 'userid' => $userid]);
@@ -157,7 +156,7 @@ if ($mform->is_cancelled()) {
             }
         }
 
-        $url = $CFG->wwwroot.'/enrol/select/manage.php?enrolid='.$enrolid;
+        $url = $CFG->wwwroot . '/enrol/select/manage.php?enrolid=' . $enrolid;
         redirect($url, 'Le ou les utilisateurs ont été correctement déplacés.', 5, \core\output\notification::NOTIFY_SUCCESS);
     }
 }
