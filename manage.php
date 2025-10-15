@@ -61,21 +61,22 @@ if (!$enrolselect = enrol_get_plugin('select')) {
     throw new coding_exception('Can not instantiate enrol_select');
 }
 
-$data = new stdClass();
-$data->wwwroot = $CFG->wwwroot;
-$data->canunenrol = $canunenrol;
-$data->enrols = [];
-
-$roles = Role::get_records();
 $instances = $DB->get_records('enrol', ['enrol' => 'select', 'courseid' => $course->id], $sort = 'name');
-$customfields = CustomFields::getCustomFields();
 
 if (count($instances) === 0) {
     throw new moodle_exception('listnoitem', 'error');
 }
 
+$roles = Role::get_records();
+$customfields = CustomFields::getCustomFields();
+
 $enrols = [];
 $activeenrolid = false;
+
+$data = new stdClass();
+$data->wwwroot = $CFG->wwwroot;
+$data->canunenrol = $canunenrol;
+$data->enrols = [];
 
 // Initialise chaque instance du cours utilisant la méthode enrol_select.
 foreach ($instances as $instance) {
