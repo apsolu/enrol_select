@@ -26,7 +26,7 @@
 define(['jquery', 'local_apsolu/table-mask'],
     function($) {
         return {
-            initialise: function(semester2) {
+            initialise: function(activeEnrolId) {
                 // Active les premiers sous-onglets (liste des acceptés, liste principale, liste complémentaire, etc).
                 $('.apsolu-manage-users-tab-ul > li:first-child > a').each(function() {
                     $(this).addClass('active show');
@@ -34,16 +34,8 @@ define(['jquery', 'local_apsolu/table-mask'],
                     $('#' + $(this).attr('aria-controls')).addClass('active show');
                 });
 
-                // Détermine quel onglet doit être actif au chargement de la page (S1 ou S2).
-                let index;
-                if (semester2 == true) {
-                    index = Math.floor($('#apsolu-manage-methods-title-tab-ul > li').length / 2);
-                } else {
-                    index = 0;
-                }
-
                 // Active un onglet (semestre 1, semestre 2, etc).
-                var $link = $('#apsolu-manage-methods-title-tab-ul > li').eq(index).children().first();
+                var $link = $('#apsolu-manage-methods-title-tab-ul > li a[aria-controls="enrol-' + activeEnrolId + '"]');
                 $link.addClass('active show');
                 $link.attr('aria-selected', 'true');
                 $('#' + $link.attr('aria-controls')).addClass('active show');

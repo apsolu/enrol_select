@@ -70,8 +70,12 @@ $roles = Role::get_records();
 $instances = $DB->get_records('enrol', ['enrol' => 'select', 'courseid' => $course->id], $sort = 'name');
 $customfields = CustomFields::getCustomFields();
 
+if (count($instances) === 0) {
+    throw new moodle_exception('listnoitem', 'error');
+}
+
 $enrols = [];
-$semester2 = false;
+$activeenrolid = false;
 
 // Initialise chaque instance du cours utilisant la méthode enrol_select.
 foreach ($instances as $instance) {
@@ -149,13 +153,17 @@ foreach ($instances as $instance) {
         $enrol->lists[$code] = $list;
     }
 
-    if (time() > $instance->customint8) {
-        // Si la date courante est supérieure à au moins une des dates de fin de cours d'une des instances,
-        // c'est que nous sommes au 2ème semestre.
-        $semester2 = true;
+    // Si les inscriptions ont débuté et que le cours n'est pas terminé ou n'a pas de date de fin, on sélectionne cette méthode pour
+    // devenir l'onglet actif dans la liste des méthodes d'inscription du cours.
+    if (time() > $instance->enrolstartdate && (time() < $instance->customint8 || empty($instance->customint8) === true)) {
+        $activeenrolid = $instance->id;
     }
 
     $enrols[$instance->id] = $enrol;
+}
+
+if ($activeenrolid === false) {
+    $activeenrolid = $instance->id;
 }
 
 // On récupère l'état de paiement des utilisateurs du cours.
@@ -292,7 +300,7 @@ $options['widgets'] = ['filter', 'stickyHeaders'];
 $options['widgetOptions'] = ['stickyHeaders_filteredToTop' => true, 'stickyHeaders_offset' => '50px'];
 $PAGE->requires->js_call_amd('local_apsolu/sort', 'initialise', [$options]);
 
-$PAGE->requires->js_call_amd('enrol_select/select_manage_user_selection', 'initialise', [$semester2]);
+$PAGE->requires->js_call_amd('enrol_select/select_manage_user_selection', 'initialise', [$activeenrolid]);
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('manage_select_enrolments', 'enrol_select'));
