@@ -63,7 +63,7 @@ define(['jquery', 'local_apsolu/table-mask'],
 
                 });
 
-                // selectionne ou déselectionne toutes les checkboxes en fonction de l'état de la checkbox de selection globale
+                // Sélectionne ou déselectionne toutes les checkboxes en fonction de l'état de la checkbox de selection globale.
                 $('.change-all').change(function() {
                     let $form = $(this).closest('.participants-form');
                     let check = $(this).prop("checked");
@@ -82,9 +82,9 @@ define(['jquery', 'local_apsolu/table-mask'],
                     }
 
                     let check = $(this).prop("checked");
-                    if(!check) {
+                    if (!check) {
                         $form.find('.change-all').prop("checked", false);
-                    } else if($form.find('.apsolu-select-manage-users-input-checkbox:not(:checked)').length == 0) {
+                    } else if ($form.find('.apsolu-select-manage-users-input-checkbox:not(:checked)').length == 0) {
                         $form.find('.change-all').prop("checked", true);
                     }
                 });
