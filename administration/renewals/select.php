@@ -44,10 +44,19 @@ foreach (enrol_select_plugin::$states as $code => $state) {
 }
 
 if ($recordset->valid()) {
+    $mastercheckbox = new \core\output\checkbox_toggleall('enrolments-togglegroup', $ismaster = true, [
+        'id' => 'select-all-enrolments',
+        'name' => 'select-all-enrolments',
+        'label' => get_string('selectall'),
+        'labelclasses' => 'visually-hidden',
+        'classes' => 'm-1',
+        'checked' => false,
+    ]);
+
     $table = new html_table();
     $table->attributes = ['class' => 'table table-striped'];
     $table->head = [
-        '',
+        $OUTPUT->render($mastercheckbox),
         'Nom de l\'activité',
         'Méthode d\'inscription actuelle',
         'Méthode de réinscription',
@@ -62,9 +71,19 @@ if ($recordset->valid()) {
             '<a href="' . $submitlink . '">Valider les réinscriptions en masse</a></li></ul>';
         $selectoptions = html_writer::select($options, $uid . '_action', '0', ['' => 'choosedots']);
 
+        $label = sprintf('%s : copier %s vers %s', $renewal->coursename, $renewal->enrolname, $renewal->renewalname);
+        $checkbox = new \core\output\checkbox_toggleall('enrolments-togglegroup', $ismaster = false, [
+            'classes' => 'usercheckbox m-1',
+            'id' => 'enrols-' . $renewal->id,
+            'name' => 'enrols[]',
+            'value' => $renewal->id,
+            'checked' => false,
+            'label' => get_string('selectitem', 'moodle', $label),
+            'labelclasses' => 'accesshide',
+        ]);
+
         $table->data[] = [
-            '<input type="hidden" name="uids[]" value="' . $uid . '" />' .
-            '<input type="checkbox" name="' . $uid . '_enrol" value="' . $renewal->id . '" />',
+            $OUTPUT->render($checkbox),
             $renewal->coursename,
             $renewal->enrolname,
             $renewal->renewalname,
