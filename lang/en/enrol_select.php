@@ -76,6 +76,7 @@ $string['no_enrolment_method_available_with_these_selection_criteria'] = 'Aucune
 $string['no_places_available'] = 'Aucune place disponible';
 $string['no_quotas'] = 'Aucun quota';
 $string['no_seat_restrictions'] = 'Aucune restriction de place';
+$string['no_select_enrolment_method_uses_reenrolment_setting'] = 'Aucune méthode d’inscription par voeux n’utilise le paramètre « Instance de réinscription ».';
 $string['number_of_accepted_enrolments'] = 'Nombre d’inscriptions acceptées';
 $string['number_of_deleted_enrolments'] = 'Nombre de désinscriptions';
 $string['number_of_enrolments_on_main_list'] = 'Nombre d’inscriptions sur liste principale';

@@ -43,7 +43,7 @@ foreach (enrol_select_plugin::$states as $code => $state) {
     $options[$code] = get_string($state . '_list', 'enrol_select');
 }
 
-if ($recordset) {
+if ($recordset->valid()) {
     $table = new html_table();
     $table->attributes = ['class' => 'table table-striped'];
     $table->head = [
@@ -78,6 +78,8 @@ if ($recordset) {
     echo html_writer::table($table);
     echo '<input class="btn btn-primary" type="submit" value="Valider">';
     echo '</form>';
+} else {
+    echo html_writer::div(get_string('no_select_enrolment_method_uses_reenrolment_setting', 'enrol_select'), 'alert alert-warning');
 }
 
 $recordset->close();
