@@ -30,6 +30,11 @@ require_once($CFG->dirroot . '/enrol/select/lib.php');
 
 echo $OUTPUT->heading('Réinscriptions en masse');
 
+if (isset($_POST['enrols']) === true) {
+    // Traite les réponses envoyées via le formulaire.
+    require($CFG->dirroot . '/enrol/select/administration/renewals/submit.php');
+}
+
 $sql = "SELECT e.id, c.fullname AS coursename, e.name AS enrolname, e2.name AS renewalname
           FROM mdl_course c
           JOIN mdl_enrol e ON e.courseid = c.id
@@ -60,16 +65,11 @@ if ($recordset->valid()) {
         'Nom de l\'activité',
         'Méthode d\'inscription actuelle',
         'Méthode de réinscription',
-        'Liste de réinscription',
         ];
 
     foreach ($recordset as $renewal) {
         // Actions.
-        $uid = uniqid();
-        $submitlink = $CFG->wwwroot . '/enrol/select/administration.php?tab=renewals&action=submit';
-        $actions = '<ul><li style="display:inline;">' .
-            '<a href="' . $submitlink . '">Valider les réinscriptions en masse</a></li></ul>';
-        $selectoptions = html_writer::select($options, $uid . '_action', '0', ['' => 'choosedots']);
+        $submitlink = new moodle_url('/enrol/select/administration.php', ['tab' => 'renewals', 'action' => 'select']);
 
         $label = sprintf('%s : copier %s vers %s', $renewal->coursename, $renewal->enrolname, $renewal->renewalname);
         $checkbox = new \core\output\checkbox_toggleall('enrolments-togglegroup', $ismaster = false, [
@@ -87,13 +87,34 @@ if ($recordset->valid()) {
             $renewal->coursename,
             $renewal->enrolname,
             $renewal->renewalname,
-            $selectoptions,
         ];
     }
 
-    $information = get_string('only_students_on_the_accepted_list_will_be_transferred_to_the_list_of_your_choice', 'enrol_select');
     echo '<form method="post" action="' . $submitlink . '">';
-    echo html_writer::div($information, 'alert alert-info');
+    echo html_writer::start_div('alert alert-info');
+    foreach ($options as $code => $label) {
+        if (isset($_POST['targetlist'][$code]) === true) {
+            $selected = $_POST['targetlist'][$code];
+        } else {
+            $selected = -1;
+            if ($code == enrol_select_plugin::ACCEPTED) {
+                $selected = $code;
+            }
+        }
+
+        $selectname = sprintf('targetlist[%s]', $code);
+        $selectoptions = html_writer::select($options, $selectname, $selected, ['-1' => get_string('none')]);
+        $selectcontainer = html_writer::div(
+            $selectoptions,
+            'col-md-8 d-flex flex-wrap align-items-start felement',
+            ['data-fieldtype' => 'select']
+        );
+        $string = get_string('copy_users_on_X_to', 'enrol_select', $label);
+        $labeltag = html_writer::label($string, $selectname, $colonize = true, ['class' => 'd-inline word-break']);
+        $labelcontainer = html_writer::div($labeltag, 'col-md-4 col-form-label d-flex pb-0 pe-md-0');
+        echo html_writer::div($labelcontainer . $selectcontainer, 'mb-3 row fitem border');
+    }
+    echo html_writer::end_div();
     echo html_writer::table($table);
     echo '<input class="btn btn-primary" type="submit" value="Valider">';
     echo '</form>';

@@ -31,6 +31,7 @@ $string['check_enrolment_payment'] = 'Contrôle le paiement d’une inscription'
 $string['cohort_X_is_already_used_with_role_Y_by_college_Z'] = 'La cohorte « {$a->cohort} » est déjà utilisée avec le rôle « {$a->role} » par la population « {$a->college} ».';
 $string['college_unused_cohorts'] = '<details class="alert alert-info"><summary class="mb-3">Information</summary><p>Ces cohortes ne sont actuellement pas utilisées dans les populations :</p><ul>{$a}</ul></details>';
 $string['continue_my_enrolments'] = 'Continuer mes inscriptions';
+$string['copy_users_on_X_to'] = 'Copier les utilisateurs sur « {$a} » vers';
 $string['custom_welcome_message'] = 'Message de bienvenue personnalisé';
 $string['custom_welcome_message_help'] = 'Les utilisateurs recevront un message de bienvenue par courriel lors de leur inscription.';
 $string['custom_welcome_message_on_accepted_list'] = 'Message de bienvenue personnalisé pour la liste des acceptés';

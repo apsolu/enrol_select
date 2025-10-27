@@ -24,58 +24,61 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-foreach ($_POST['uids'] as $uid) {
-    if (isset($_POST[$uid . '_enrol'])) {
-        $to = $_POST[$uid . '_action'];
+if (!$enrolselect = enrol_get_plugin('select')) {
+    throw new coding_exception('Can not instantiate enrol_select');
+}
 
-        $enrolid = $_POST[$uid . '_enrol'];
-        $instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'select'], '*', MUST_EXIST);
+$enrolments = $DB->get_records('enrol', ['enrol' => 'select']);
 
-        $nextenrolid     = $instance->customint6;
-        $nextinstance    = $DB->get_record('enrol', ['id' => $nextenrolid, 'enrol' => 'select'], '*', MUST_EXIST);
+foreach ($_POST['enrols'] as $enrolid) {
+    if (isset($enrolments[$enrolid]) === false) {
+        continue;
+    }
 
-        $course = $DB->get_record('course', ['id' => $instance->courseid], '*', MUST_EXIST);
-        $context = context_course::instance($course->id, MUST_EXIST);
-        $canenrol = has_capability('enrol/select:enrol', $context);
-        $canunenrol = has_capability('enrol/select:unenrol', $context);
+    $instance = $enrolments[$enrolid];
+    $nextenrolid = $instance->customint6;
 
-        if (!$canenrol && !$canunenrol) {
-            // No need to invent new error strings here...
-            require_capability('enrol/select:enrol', $context);
-            require_capability('enrol/select:unenrol', $context);
+    if (isset($enrolments[$nextenrolid]) === false) {
+        continue;
+    }
+    $nextinstance = $enrolments[$nextenrolid];
+
+    $context = context_course::instance($instance->courseid, MUST_EXIST);
+    $canenrol = has_capability('enrol/select:enrol', $context);
+    $canunenrol = has_capability('enrol/select:unenrol', $context);
+
+    if (!$canenrol && !$canunenrol) {
+        // No need to invent new error strings here...
+        require_capability('enrol/select:enrol', $context);
+        require_capability('enrol/select:unenrol', $context);
+    }
+
+    // Get users list.
+    foreach ($DB->get_records('user_enrolments', ['enrolid' => $enrolid]) as $userenrolment) {
+        if (isset($_POST['targetlist'][$userenrolment->status]) === false) {
+            continue;
         }
 
-        if (!$enrolselect = enrol_get_plugin('select')) {
-            throw new coding_exception('Can not instantiate enrol_select');
+        if ($_POST['targetlist'][$userenrolment->status] === '-1') {
+            continue;
         }
 
-        // Get users list.
-        $sql = "SELECT u.*" .
-        " FROM {user} u" .
-        " JOIN {user_enrolments} ue ON u.id = ue.userid" .
-        " WHERE ue.enrolid = :enrolid" .
-        " AND status = :status";
-        $users = $DB->get_records_sql($sql, ['enrolid' => $enrolid, 'status' => enrol_select_plugin::ACCEPTED]);
-        foreach ($users as $userid => $user) {
-            $enrolselectplugin = new enrol_select_plugin();
-            $roleid = 0;
+        $userid = $userenrolment->userid;
+        $enrolselectplugin = new enrol_select_plugin();
 
-            $sql = "SELECT roleid" .
-                " FROM {role_assignments}" .
-                " WHERE component = 'enrol_select'" .
-                " AND itemid = :previousinstance_id" .
-                " AND userid = :userid";
-            $recordset = $DB->get_recordset_sql($sql, ['previousinstance_id' => $enrolid, 'userid' => $userid]);
-            foreach ($recordset as $role) {
-                // TODO: pourquoi un foreach pour initialiser la variable roleid ?
-                $roleid = $role->roleid;
-            }
-            $recordset->close();
-
-            $enrolselectplugin->enrol_user($nextinstance, $userid, $roleid, 0, 0, $to, null, null);
+        $roleassignment = $DB->get_record('role_assignments', ['component' => 'enrol_select', 'itemid' => $enrolid, 'userid' =>
+            $userid]);
+        if ($roleassignment === false) {
+            continue;
         }
+
+        $roleid = $roleassignment->roleid;
+        $timestart = 0;
+        $timeend = 0;
+        $status = $_POST['targetlist'][$userenrolment->status];
+        $recovergrades = null;
+        $enrolselectplugin->enrol_user($nextinstance, $userid, $roleid, $timestart, $timeend, $status, $recovergrades);
     }
 }
 
-$url = $CFG->wwwroot . '/enrol/select/administration.php?tab=renewals';
-redirect($url, 'Le ou les utilisateurs ont été correctement réinscrits.', 5, \core\output\notification::NOTIFY_SUCCESS);
+echo $OUTPUT->notification('Le ou les utilisateurs ont été correctement réinscrits.', 'notifysuccess');
