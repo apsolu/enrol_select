@@ -48,30 +48,6 @@ define(['jquery', 'local_apsolu/table-mask'],
                     }
                 });
 
-                // Gère les liens permettant de cocher toutes les checkboxes.
-                $('.checkall').click(function() {
-                    let $form = $(this).closest('.participants-form');
-                    $form.find("input[type='checkbox']").prop('checked', true);
-                    $form.find('select[name="actions"]').prop('disabled', false);
-                });
-
-                // Gère les liens permettant de décocher toutes les checkboxes.
-                $('.uncheckall').click(function() {
-                    let $form = $(this).closest('.participants-form');
-                    $form.find("input[type='checkbox']").prop('checked', false);
-                    $form.find('select[name="actions"]').prop('disabled', true);
-
-                });
-
-                // Sélectionne ou déselectionne toutes les checkboxes en fonction de l'état de la checkbox de selection globale.
-                $('.change-all').change(function() {
-                    let $form = $(this).closest('.participants-form');
-                    let check = $(this).prop("checked");
-                    $form.find("input[type='checkbox']").prop('checked', check);
-                    $form.find('select[name="actions"]').prop('disabled', !check);
-                });
-
-
                 // Active ou désactive le menu déroulant permettant de faire des actions sur les utilisateurs sélectionnés.
                 $('.apsolu-select-manage-users-input-checkbox').change(function() {
                     let $form = $(this).closest('.participants-form');

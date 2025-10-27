@@ -125,7 +125,18 @@ foreach ($instances as $instance) {
             $selectoptions[] = ['Réinscription vers ' . $nextinstance->name => $suboptions];
         }
 
+        $togglegroup = 'enrol-' . $enrol->enrolid . '-status-' . $code . '-togglegroup';
+        $mastercheckbox = new \core\output\checkbox_toggleall($togglegroup, $ismaster = true, [
+            'id' => 'select-all-users-from-enrol-' . $enrol->enrolid . '-status-' . $code,
+            'name' => 'select-all-users-from-enrol-' . $enrol->enrolid . '-status-' . $code,
+            'label' => get_string('selectall'),
+            'labelclasses' => 'visually-hidden',
+            'classes' => 'm-1',
+            'checked' => false,
+            ]);
+
         $list = new stdClass();
+        $list->mastercheckbox = $OUTPUT->render($mastercheckbox);
         $list->name = get_string($state . '_list', 'enrol_select');
         $list->description = get_string($state . '_description', 'enrol_select');
         $list->status = $code;
@@ -266,6 +277,19 @@ foreach ($users as $user) {
         }
 
         // On stocke le rôle et la date d'inscription pour cet utilisateur.
+        $togglegroup = 'enrol-' . $enrolid . '-status-' . $enrolment->status . '-togglegroup';
+        $checkbox = new \core\output\checkbox_toggleall($togglegroup, $ismaster = false, [
+            'classes' => 'apsolu-select-manage-users-input-checkbox usercheckbox m-1',
+            'id' => 'enrol-' . $enrolid . '-list-' . $enrolment->status . '-' . $user->id,
+            'name' => 'users[]',
+            'value' => $user->id,
+            'checked' => false,
+            'label' => get_string('selectitem', 'moodle', fullname($user)),
+            'labelclasses' => 'accesshide',
+            ]);
+
+        $user->checkbox = $OUTPUT->render($checkbox);
+
         $user->role = $enrolment->role;
         $user->timecreated = $enrolment->timecreated;
         $user->timecreated_sortable = $enrolment->timecreated_sortable;

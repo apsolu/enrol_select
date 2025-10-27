@@ -10,12 +10,6 @@ span.select2-container {
     width: 90%;
 }
 
-button.checkall,
-button.uncheckall {
-    margin: 0;
-    padding: 0;
-}
-
 #page-enrol-apsolu-overview .navbar-fixed-top {
     display: none;
 }

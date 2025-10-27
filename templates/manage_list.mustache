@@ -33,6 +33,7 @@
     * description Description de la liste.
     * form_action URL du formulaire.
     * lock Indique si l'instance est verrouillée.
+    * mastercheckbox Case à cocher permettant de cocher ou décocher tous les utilisateurs.
     * actions Boutons HTML de validation du formulaire.
     * count_users Nombre d'utilisateurs.
     * users
@@ -51,6 +52,7 @@
             * course_url URL du cours.
             * enrolname Nom de la méthode d'inscription.
             * state État de l'inscription.
+            * checkbox Case à cocher permettant de sélectionner l'utilisateur.
             * role Rôle pris dans l'inscription.
             * timecreated Date d'inscription.
             * timecreated_sortable Date d'inscription dans un format triable alphabétiquement.
@@ -62,6 +64,7 @@
         "wwwroot": "https://apsolu.fr",
         "enrolid": "8",
         "description": "Étudiants sur liste principale.",
+        "mastercheckbox": "",
         "form_action": "https://apsolu.fr/form",
         "lock": false,
         "actions": "<input type=\"submit\">",
@@ -84,6 +87,7 @@
                         "course_url": "https://apsolu.fr/course",
                         "enrolname": "Inscription S1",
                         "state": "1",
+                        "checkbox": "",
                         "role": "5",
                         "timecreated": "Lundi 18 mai à 12h05",
                         "datecreated_sortable": "2020-05-18",
@@ -111,9 +115,8 @@
                     <tr>
                         <th class="filter-false sorter-false no-mask table-column-shrink"><!-- {{#str}}select, enrol_select{{/str}}-->
                         {{^lock}}
-                            <input title="{{#str}}all{{/str}} / {{#str}}none{{/str}}" type="checkbox" class="change-all" name="change-all" value="0">
+                            {{{ mastercheckbox }}}
                         {{/lock}}
-
                         </th>
                         <th class="filter-false sorter-false no-mask table-column-shrink"></th>
                         <th class="no-mask">{{#str}}fullname, local_apsolu{{/str}}</th>
@@ -130,11 +133,11 @@
                     <tr class="align-items-center">
                         <td>
                         {{^lock}}
-                            <input type="checkbox" class="apsolu-select-manage-users-input-checkbox" name="users[]" value="{{id}}" id="enrol-{{enrolid}}-list-{{status}}-{{id}}">
+                            {{{ checkbox }}}
                         {{/lock}}
                         </td>
                         <td>{{{picture}}}</td>
-                        <td><label class="w-100" for="enrol-{{enrolid}}-list-{{status}}-{{id}}">{{lastname}} {{firstname}}</label></td>
+                        <td>{{lastname}} {{firstname}}</td>
                         <td>{{role}}</td>
                         <td>{{institution}}</td>
                         <td>{{apsolucycle}}</td>
