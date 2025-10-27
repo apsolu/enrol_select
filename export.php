@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_apsolu\core\customfields;
 use UniversiteRennes2\Apsolu;
 
 require(__DIR__ . '/../../config.php');
@@ -87,98 +88,48 @@ if (empty($instance->name) === false) {
 }
 $filename = clean_filename($course->fullname . '-' . $instancename);
 
-$headers = [
-    get_string('lastname'),
-    get_string('firstname'),
-    get_string('idnumber'),
-    get_string('email'),
-    get_string('institution'),
-    get_string('ufr', 'local_apsolu'),
-    get_string('department'),
-    get_string('cycle', 'local_apsolu'),
-    get_string('register_type', 'enrol_select'),
-    'Date d\'inscription',
-];
+$headers = [];
+$headers['lastname'] = get_string('lastname');
+$headers['firstname'] = get_string('firstname');
+$headers['idnumber'] = get_string('idnumber');
 
-if ($CFG->wwwroot === 'https://mon-espace-suapse.univ-lr.fr' || $CFG->debug !== 0) {
-    // TODO: à modifier.
-    $headers[] = get_string('sportcard', 'local_apsolu');
+// Récupère les champs additionnels pour l'exportation.
+$extrafields = customfields::get_extra_fields_for_export();
+foreach ($extrafields as $fieldname => $label) {
+    $headers[$fieldname] = $label;
 }
 
-if (!isset($exportstatus)) {
-    $headers[] = get_string('list', 'enrol_select');
+if (isset($exportstatus) === false) {
+    $headers['list'] = get_string('list', 'enrol_select');
 }
 
-$headers[] = 'texte libre';
-$headers[] = 'texte libre';
-$headers[] = 'texte libre';
-
-$fields = $DB->get_records('user_info_field');
+$headers['registertype'] = get_string('register_type', 'enrol_select');
+$headers['registerdate'] = get_string('register_date', 'enrol_select');
+$headers['empty1'] = 'texte libre';
+$headers['empty2'] = 'texte libre';
+$headers['empty3'] = 'texte libre';
 
 $rows = [];
 foreach ($users as $user) {
-    $sex = '';
-    $birthday = '';
+    $customfields = profile_user_record($user->id);
 
-    $userfields = $DB->get_records('user_info_data', ['userid' => $user->id], $sort = '', $columns = 'fieldid, data');
-    foreach ($fields as $fieldid => $field) {
-        switch ($field->shortname) {
-            case 'apsoluufr':
-            case 'apsolucycle':
-            case 'apsolusex':
-            case 'apsolubirthday':
-            case 'apsoluidcardnumber':
-                if (isset($userfields[$fieldid])) {
-                    ${$field->shortname} = $userfields[$fieldid]->data;
-                }
-                break;
-        }
-    }
-
-    try {
-        if (isset($apsolubirthday) === false) {
-            throw new Exception('Undefined variable: apsolubirthday');
-        }
-
-        $birthdayday = substr($apsolubirthday, 0, 2);
-        $birthdaymonth = substr($apsolubirthday, 3, 2);
-        $birthdayyear = substr($apsolubirthday, 6, 4);
-        $from = new DateTime($birthdayyear . '-' . $birthdaymonth . '-' . $birthdayday);
-        $to   = new DateTime('today');
-        $age = $from->diff($to)->y;
-    } catch (Exception $exception) {
-        $age = '';
-    }
+    $user->list = enrol_select_plugin::get_enrolment_list_name($user->status);
+    $user->registertype = $roles[$user->roleid]->localname;
+    $user->registerdate = userdate($user->timecreated);
 
     $row = [];
-    $row[] = $user->lastname;
-    $row[] = $user->firstname;
-    $row[] = $user->idnumber;
-    $row[] = $user->email;
-    $row[] = $user->institution;
-    $row[] = (isset($apsoluufr)) ? $apsoluufr : '';
-    $row[] = $user->department;
-    $row[] = (isset($apsolucycle)) ? $apsolucycle : '';
-    $row[] = $roles[$user->roleid]->localname;
-    $row[] = userdate($user->timecreated);
-
-    if ($CFG->wwwroot === 'https://mon-espace-suapse.univ-lr.fr' || $CFG->debug !== 0) {
-        // TODO: à modifier.
-        $row[] = $apsoluidcardnumber;
+    foreach ($headers as $fieldname => $unused) {
+        if (isset($user->$fieldname) === true) {
+            $row[] = $user->$fieldname;
+        } else if (isset($customfields->$fieldname) === true) {
+            $row[] = $customfields->$fieldname;
+        } else {
+            $row[] = '';
+        }
     }
-
-    if (!isset($exportstatus)) {
-        $state = enrol_select_plugin::$states[$user->status];
-        $row[] = get_string($state . '_list', 'enrol_select');
-    }
-
-    $row[] = '';
-    $row[] = '';
-    $row[] = '';
 
     $rows[] = $row;
 }
-
 
 switch ($exportformat) {
     case 'xls':
@@ -189,19 +140,13 @@ switch ($exportformat) {
         // Adding the worksheet.
         $myxls = $workbook->add_worksheet();
 
-        if (class_exists('PHPExcel_Style_Border') === true) {
-            // Jusqu'à Moodle 3.7.x.
-            $properties = ['border' => PHPExcel_Style_Border::BORDER_THIN];
-        } else {
-            // Depuis Moodle 3.8.x.
-            $properties = ['border' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN];
-        }
-
-        $excelformat = new MoodleExcelFormat($properties);
+        $excelformat = new MoodleExcelFormat(['border' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]);
 
         // Set headers.
-        foreach ($headers as $column => $value) {
-            $myxls->write_string(0, $column, $value, $excelformat);
+        $i = 0;
+        foreach ($headers as $value) {
+            $myxls->write_string(0, $i, $value, $excelformat);
+            $i++;
         }
 
         // Set data.
