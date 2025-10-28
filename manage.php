@@ -165,9 +165,12 @@ foreach ($instances as $instance) {
         $enrol->lists[$code] = $list;
     }
 
-    // Si les inscriptions ont débuté et que le cours n'est pas terminé ou n'a pas de date de fin, on sélectionne cette méthode pour
-    // devenir l'onglet actif dans la liste des méthodes d'inscription du cours.
-    if (time() > $instance->enrolstartdate && (time() < $instance->customint8 || empty($instance->customint8) === true)) {
+    if ($enrolid !== null) {
+        // Le paramètre "enrolid" a été passé dans l'URL. On veut afficher l'onglet de cette méthode d'inscription par défaut.
+        $activeenrolid = $enrolid;
+    } else if (time() > $instance->enrolstartdate && (time() < $instance->customint8 || empty($instance->customint8) === true)) {
+        // Si les inscriptions ont débuté et que le cours n'est pas terminé ou n'a pas de date de fin, on sélectionne cette méthode
+        // pour devenir l'onglet actif dans la liste des méthodes d'inscription du cours.
         $activeenrolid = $instance->id;
     }
 
