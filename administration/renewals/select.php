@@ -35,7 +35,7 @@ if (isset($_POST['enrols']) === true) {
     require($CFG->dirroot . '/enrol/select/administration/renewals/submit.php');
 }
 
-$sql = "SELECT e.id, c.fullname AS coursename, e.name AS enrolname, e2.name AS renewalname
+$sql = "SELECT e.id, c.fullname AS coursename, e.name AS enrolname, e2.id AS renewalid, e2.name AS renewalname
           FROM mdl_course c
           JOIN mdl_enrol e ON e.courseid = c.id
           JOIN mdl_enrol e2 ON e.customint6 = e2.id
@@ -82,11 +82,13 @@ if ($recordset->valid()) {
             'labelclasses' => 'accesshide',
         ]);
 
+        $enrolurl = new moodle_url('/enrol/select/manage.php', ['enrolid' => $renewal->id]);
+        $renewalurl = new moodle_url('/enrol/select/manage.php', ['enrolid' => $renewal->renewalid]);
         $table->data[] = [
             $OUTPUT->render($checkbox),
             $renewal->coursename,
-            $renewal->enrolname,
-            $renewal->renewalname,
+            html_writer::link($enrolurl, $renewal->enrolname),
+            html_writer::link($renewalurl, $renewal->renewalname),
         ];
     }
 
