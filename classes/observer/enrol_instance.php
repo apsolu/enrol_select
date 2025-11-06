@@ -36,7 +36,7 @@ class enrol_instance {
     public static function deleted(enrol_instance_deleted $event) {
         global $DB;
 
-        if (isset($event->other['enrol']) === true && $event->other['enrol'] !== 'select') {
+        if (isset($event->other['enrol']) === false || $event->other['enrol'] !== 'select') {
             // Ignore le traitement si la méthode d'inscription supprimée n'est pas de type 'enrol_select'.
             return;
         }
