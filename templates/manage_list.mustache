@@ -121,9 +121,9 @@
                         <th class="filter-false sorter-false no-mask table-column-shrink"></th>
                         <th class="no-mask">{{#str}}fullname, local_apsolu{{/str}}</th>
                         <th class="table-column-shrink" data-mask-name="register_type">{{#str}}register_type, enrol_select{{/str}}</th>
-                        <th class="table-column-shrink" data-mask-name="institution">{{#str}}institution{{/str}}</th>
-                        <th class="table-column-shrink" data-mask-name="fields_apsolucycle">{{#str}}fields_apsolucycle, local_apsolu{{/str}}</th>
-                        <th data-mask-name="department">{{#str}}department{{/str}}</th>
+                        {{# extrafields }}
+                        <th class="table-column-shrink" data-mask-name="{{ fieldname }}">{{ label }}</th>
+                        {{/ extrafields }}
                         <th data-mask-name="additional_information">{{#str}}additional_information, local_apsolu{{/str}}</th>
                         <th class="table-column-shrink" data-mask-name="register_date">{{#str}}register_date, enrol_select{{/str}}</th>
                     </tr>
@@ -139,9 +139,9 @@
                         <td>{{{picture}}}</td>
                         <td>{{lastname}} {{firstname}}</td>
                         <td>{{role}}</td>
-                        <td>{{institution}}</td>
-                        <td>{{apsolucycle}}</td>
-                        <td>{{department}}</td>
+                        {{# extrafields }}
+                        <td>{{ . }}</td>
+                        {{/ extrafields }}
                         <td>
                             {{! Affiche toutes les inscriptions acceptées de l'étudiant. }}
                             {{#count_accepted_enrolments}}

@@ -68,7 +68,14 @@ if (count($instances) === 0) {
 }
 
 $roles = Role::get_records();
-$customfields = CustomFields::getCustomFields();
+$extrafields = [];
+foreach (customfields::get_extra_fields('display') as $fieldname => $label) {
+    $extrafield = new stdClass();
+    $extrafield->fieldname = $fieldname;
+    $extrafield->label = $label;
+
+    $extrafields[$fieldname] = $extrafield;
+}
 
 $enrols = [];
 $activeenrolid = false;
@@ -76,6 +83,7 @@ $activeenrolid = false;
 $data = new stdClass();
 $data->wwwroot = $CFG->wwwroot;
 $data->canunenrol = $canunenrol;
+$data->extrafields = array_values($extrafields);
 $data->enrols = [];
 
 // Initialise chaque instance du cours utilisant la méthode enrol_select.
@@ -190,9 +198,8 @@ $calendartypes = $DB->get_records('apsolu_calendars_types');
 
 // On récupère toutes les inscriptions de tous les étudiants inscrits à ce cours.
 $sql = 'SELECT u.*, ra.roleid, e.name AS enrolname, e.courseid, ue.enrolid, ue.status, ue.timecreated,
-               c.fullname, cc.name AS sport, uid1.data AS apsolucycle, ac.typeid AS calendartypeid
+               c.fullname, cc.name AS sport, ac.typeid AS calendartypeid
           FROM {user} u
-     LEFT JOIN {user_info_data} uid1 ON u.id = uid1.userid AND uid1.fieldid = :fieldid
           JOIN {user_enrolments} ue ON u.id = ue.userid
           JOIN {role_assignments} ra ON u.id = ra.userid AND ra.itemid = ue.enrolid
           JOIN {enrol} e ON e.id = ue.enrolid
@@ -210,7 +217,7 @@ $sql = 'SELECT u.*, ra.roleid, e.name AS enrolname, e.courseid, ue.enrolid, ue.s
                )
       ORDER BY ue.timecreated, u.lastname, u.firstname';
 $users = [];
-$recordset = $DB->get_recordset_sql($sql, ['fieldid' => $customfields['apsolucycle']->id, 'courseid' => $course->id]);
+$recordset = $DB->get_recordset_sql($sql, ['courseid' => $course->id]);
 foreach ($recordset as $record) {
     if (isset($roles[$record->roleid]) === false) {
         continue;
@@ -230,6 +237,18 @@ foreach ($recordset as $record) {
             foreach ($payments[$record->id] as $payment) {
                 $record->payments[] = $paymentspix[$payment->status]->image . ' ' . $payment->name;
                 $record->count_payments++;
+            }
+        }
+
+        $record->extrafields = [];
+        if ($extrafields !== []) {
+            $customfields = profile_user_record($record->id);
+            foreach ($extrafields as $extrafield => $unused) {
+                if (isset($record->$extrafield) === true) {
+                    $record->extrafields[] = $record->$extrafield;
+                } else if (isset($customfields->$extrafield) === true) {
+                    $record->extrafields[] = $customfields->$extrafield;
+                }
             }
         }
 
