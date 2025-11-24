@@ -94,7 +94,7 @@ $headers['firstname'] = get_string('firstname');
 $headers['idnumber'] = get_string('idnumber');
 
 // Récupère les champs additionnels pour l'exportation.
-$extrafields = customfields::get_extra_fields_for_export();
+$extrafields = customfields::get_extra_fields('export');
 foreach ($extrafields as $fieldname => $label) {
     $headers[$fieldname] = $label;
 }
