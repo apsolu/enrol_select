@@ -62,7 +62,7 @@ if (has_any_capability($capabilities, context_system::instance()) === true) {
     }
 }
 
-require_login();
+require_login($courseorid = null, $autologinguest = false);
 
 $context = context_user::instance($USER->id);
 

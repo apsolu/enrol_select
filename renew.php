@@ -26,7 +26,7 @@ require('../../config.php');
 require_once($CFG->dirroot . '/enrol/select/lib.php');
 require_once($CFG->dirroot . '/enrol/select/locallib.php');
 
-require_login();
+require_login($courseorid = null, $autologinguest = false);
 
 $context = context_user::instance($USER->id);
 

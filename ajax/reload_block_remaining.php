@@ -29,7 +29,7 @@ require_once($CFG->dirroot . '/enrol/select/blocklib.php');
 require_once($CFG->dirroot . '/enrol/select/locallib.php');
 
 // Set permissions.
-require_login();
+require_login($courseorid = null, $autologinguest = false);
 
 $context = context_user::instance($USER->id);
 

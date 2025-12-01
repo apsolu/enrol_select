@@ -26,7 +26,7 @@ use UniversiteRennes2\Apsolu;
 
 require(__DIR__ . '/../../config.php');
 
-require_login();
+require_login($courseorid = null, $autologinguest = false);
 
 $actions = required_param('actions', PARAM_ALPHA);
 

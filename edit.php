@@ -35,7 +35,7 @@ $instanceid = optional_param('id', 0, PARAM_INT);
 $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 $context = context_course::instance($course->id, MUST_EXIST);
 
-require_login($course);
+require_login($course, $autologinguest = false);
 require_capability('enrol/select:config', $context);
 
 $PAGE->set_url('/enrol/select/edit.php', ['courseid' => $course->id, 'id' => $instanceid]);

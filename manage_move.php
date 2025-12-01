@@ -57,7 +57,7 @@ if (isset($_POST['previousenrolid']) && $_POST['previousenrolid'] > 0) {
 $course = $DB->get_record('course', ['id' => $instance->courseid], '*', MUST_EXIST);
 $context = context_course::instance($course->id, MUST_EXIST);
 
-require_login($course);
+require_login($course, $autologinguest = false);
 $canenrol = has_capability('enrol/select:enrol', $context);
 $canunenrol = has_capability('enrol/select:unenrol', $context);
 

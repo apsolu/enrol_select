@@ -33,7 +33,7 @@ require_once($CFG->dirroot . '/enrol/select/locallib.php');
 $enrolid = required_param('enrolid', PARAM_INT);
 
 // Set permissions.
-require_login();
+require_login($courseorid = null, $autologinguest = false);
 
 $context = context_user::instance($USER->id);
 

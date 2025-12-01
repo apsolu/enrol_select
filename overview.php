@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/enrol/select/blocklib.php');
 $courseid = optional_param('courseid', 0, PARAM_INT);
 $roleid = optional_param('roleid', 0, PARAM_INT);
 
-require_login();
+require_login($courseorid = null, $autologinguest = false);
 
 $context = context_user::instance($USER->id);
 
