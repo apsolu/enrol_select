@@ -77,7 +77,8 @@ foreach ($calendars as $calendar) {
         break;
     }
 
-    if ($calendar->reenrolstartdate < $nextopen || $nextopen === 0) {
+    if ($calendar->reenrolstartdate >= $time && ($calendar->reenrolstartdate < $nextopen || $nextopen === 0)) {
+        // Affiche la prochaine date d'ouverture de réinscriptions la plus proche et n'étant pas déjà passée.
         $nextopen = $calendar->reenrolstartdate;
     }
 }
