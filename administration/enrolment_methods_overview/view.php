@@ -227,7 +227,9 @@ if (isset($mdata->exportcsv) === true) {
     $headers[] = get_string('enrolenddate', 'enrol_select');
     $headers[] = get_string('accepted_list', 'enrol_select');
     $headers[] = get_string('main_list', 'enrol_select');
+    $headers[] = get_string('max_places', 'enrol_select');
     $headers[] = get_string('wait_list', 'enrol_select');
+    $headers[] = get_string('max_waiting_places', 'enrol_select');
     $headers[] = get_string('deleted_list', 'enrol_select');
     $csvexport->add_data($headers);
 
@@ -242,7 +244,17 @@ if (isset($mdata->exportcsv) === true) {
             $row[] = userdate($enrol->enrolenddate, get_string('strftimedatetime'));
             $row[] = $enrol->count_accepted_list;
             $row[] = $enrol->count_main_list;
+            if (empty($enrol->quota) === true) {
+                $row[] = get_string('no_quotas', 'enrol_select');
+            } else {
+                $row[] = $enrol->customint1;
+            }
             $row[] = $enrol->count_wait_list;
+            if (empty($enrol->quota) === true) {
+                $row[] = get_string('no_quotas', 'enrol_select');
+            } else {
+                $row[] = $enrol->customint2;
+            }
             $row[] = $enrol->count_deleted_list;
 
             $csvexport->add_data($row);
@@ -251,6 +263,8 @@ if (isset($mdata->exportcsv) === true) {
         if (empty($course->count_enrols) === true) {
             $row = [];
             $row[] = $course->fullname;
+            $row[] = '';
+            $row[] = '';
             $row[] = '';
             $row[] = '';
             $row[] = '';
@@ -295,7 +309,9 @@ if (isset($mdata->exportexcel) === true) {
     $headers[] = get_string('enrolenddate', 'enrol_select');
     $headers[] = get_string('accepted_list', 'enrol_select');
     $headers[] = get_string('main_list', 'enrol_select');
+    $headers[] = get_string('max_places', 'enrol_select');
     $headers[] = get_string('wait_list', 'enrol_select');
+    $headers[] = get_string('max_waiting_places', 'enrol_select');
     $headers[] = get_string('deleted_list', 'enrol_select');
     foreach ($headers as $position => $value) {
         $myxls->write_string(0, $position, $value, $excelformat);
@@ -312,8 +328,18 @@ if (isset($mdata->exportexcel) === true) {
             $myxls->write_date($line, 4, $enrol->enrolenddate, $excelformat);
             $myxls->write_string($line, 5, $enrol->count_accepted_list, $excelformat);
             $myxls->write_string($line, 6, $enrol->count_main_list, $excelformat);
-            $myxls->write_string($line, 7, $enrol->count_wait_list, $excelformat);
-            $myxls->write_string($line, 8, $enrol->count_deleted_list, $excelformat);
+            if (empty($enrol->quota) === true) {
+                $myxls->write_string($line, 7, get_string('no_quotas', 'enrol_select'), $excelformat);
+            } else {
+                $myxls->write_string($line, 7, $enrol->customint1, $excelformat);
+            }
+            $myxls->write_string($line, 8, $enrol->count_wait_list, $excelformat);
+            if (empty($enrol->quota) === true) {
+                $myxls->write_string($line, 9, get_string('no_quotas', 'enrol_select'), $excelformat);
+            } else {
+                $myxls->write_string($line, 9, $enrol->customint2, $excelformat);
+            }
+            $myxls->write_string($line, 10, $enrol->count_deleted_list, $excelformat);
 
             $line++;
         }
@@ -328,6 +354,8 @@ if (isset($mdata->exportexcel) === true) {
             $myxls->write_string($line, 6, '', $excelformat);
             $myxls->write_string($line, 7, '', $excelformat);
             $myxls->write_string($line, 8, '', $excelformat);
+            $myxls->write_string($line, 9, '', $excelformat);
+            $myxls->write_string($line, 10, '', $excelformat);
 
             $line++;
         }
