@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Select enrolment plugin.
- *
- * @package    enrol_select
- * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 defined('MOODLE_INTERNAL') || die();
 
 use local_apsolu\core\federation\course as FederationCourse;
@@ -33,7 +25,7 @@ require_once($CFG->dirroot . '/local/apsolu/locallib.php');
  * Classe principale du module enrol_select.
  *
  * @package    enrol_select
- * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @copyright  2016 Université Rennes 2
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 #[\AllowDynamicProperties]

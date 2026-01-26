@@ -23,7 +23,7 @@ use UniversiteRennes2\Apsolu\Payment;
  * Classe représentant la tâche pour vérifier les paiements à l'inscription.
  *
  * @package    enrol_select
- * @copyright  2023 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @copyright  2023 Université Rennes 2
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class check_enrolment_payment extends \core\task\adhoc_task {

@@ -14,24 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Classe pour afficher le selecteur d'étudiants.
- *
- * @package    enrol_select
- * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/user/selector/lib.php');
 require_once($CFG->dirroot . '/enrol/locallib.php');
 
 /**
- * Enrol candidates.
+ * Classe pour afficher le selecteur d'étudiants.
  *
  * @package    enrol_select
- * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @copyright  2016 Université Rennes 2
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class enrol_select_potential_participant extends user_selector_base {

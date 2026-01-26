@@ -14,21 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Event to log user movements.
- *
- * @package    enrol_select
- * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace enrol_select\event;
 
 /**
  * Event to log user movements.
  *
  * @package    enrol_select
- * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @copyright  2016 Université Rennes 2
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class user_moved extends \core\event\base {

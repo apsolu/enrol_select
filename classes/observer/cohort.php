@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Classe permettant d'écouter les évènements diffusés par Moodle.
- *
- * @package   enrol_select
- * @copyright 2022 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace enrol_select\observer;
 
 use core\event\cohort_deleted;
@@ -30,7 +22,7 @@ use core\event\cohort_deleted;
  * Classe permettant d'écouter les évènements diffusés par Moodle.
  *
  * @package   enrol_select
- * @copyright 2022 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @copyright 2022 Université Rennes 2
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class cohort {

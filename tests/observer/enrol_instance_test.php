@@ -23,7 +23,7 @@ use advanced_testcase;
  *
  * @package    enrol_select
  * @category   test
- * @copyright  2024 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @copyright  2024 Université Rennes 2
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class enrol_instance_test extends advanced_testcase {

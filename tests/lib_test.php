@@ -14,15 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Teste la classe enrol_select_plugin
- *
- * @package    enrol_select
- * @category   test
- * @copyright  2021 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace enrol_select;
 
 use advanced_testcase;
@@ -43,7 +34,7 @@ require_once($CFG->dirroot . '/enrol/select/lib.php');
  *
  * @package    enrol_select
  * @category   test
- * @copyright  2021 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @copyright  2021 Université Rennes 2
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class lib_test extends advanced_testcase {

@@ -24,7 +24,7 @@ use local_apsolu\core\federation\course;
  * Classe permettant d'écouter les évènements diffusés par Moodle.
  *
  * @package   enrol_select
- * @copyright 2024 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @copyright 2024 Université Rennes 2
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class user_enrolment {

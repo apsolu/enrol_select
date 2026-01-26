@@ -20,7 +20,7 @@ namespace enrol_select\event;
  * Enregistre une trace lorsque des méthodes d'inscription sont mis à jour en lot.
  *
  * @package    enrol_select
- * @copyright  2025 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @copyright  2025 Université Rennes 2
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class batch_enrol_instance_updated extends \core\event\base {

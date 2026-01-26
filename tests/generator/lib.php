@@ -14,15 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * enrol_select data generator
- *
- * @package    enrol_select
- * @category   test
- * @copyright  2021 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 use local_apsolu\core\course;
 
 /**
@@ -30,7 +21,7 @@ use local_apsolu\core\course;
  *
  * @package    enrol_select
  * @category   test
- * @copyright  2021 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @copyright  2021 Université Rennes 2
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class enrol_select_generator extends testing_module_generator {

@@ -18,7 +18,7 @@
  * Script ajax permettant d'afficher la popup d'inscription.
  *
  * @package    enrol_select
- * @copyright  2016 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @copyright  2016 Université Rennes 2
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

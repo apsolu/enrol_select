@@ -18,7 +18,7 @@
  * Page d'affichage du paramétrage par défaut des méthodes d'inscription.
  *
  * @package    enrol_select
- * @copyright  2021 Université Rennes 2 <dsi-contact@univ-rennes2.fr>
+ * @copyright  2021 Université Rennes 2
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
