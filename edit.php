@@ -93,7 +93,10 @@ for ($i = 1; $i < 4; $i++) {
     $instance->{$customtext} = ['text' => $instance->{$customtext}, 'format' => FORMAT_HTML];
 }
 
-$mform = new enrol_select_edit_form(null, [$instance, $plugin, $context, $cohorts, $roles, $enrolmethods, $calendars, $cards]);
+$mform = new enrol_select_edit_form(
+    $PAGE->url->out(false),
+    [$instance, $plugin, $context, $cohorts, $roles, $enrolmethods, $calendars, $cards]
+);
 
 if ($mform->is_cancelled()) {
     redirect($return);

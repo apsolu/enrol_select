@@ -32,7 +32,7 @@ require_once($CFG->dirroot . '/enrol/select/administration/batch_settings/edit_f
 $calendars = $DB->get_records('apsolu_calendars', $conditions = null, $sort = 'name');
 
 $customdata = [$calendars];
-$mform = new enrol_select_batch_settings_form(null, $customdata);
+$mform = new enrol_select_batch_settings_form($PAGE->url->out(false), $customdata);
 
 echo $OUTPUT->heading(get_string('batch_settings', 'enrol_select'));
 

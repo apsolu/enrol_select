@@ -49,7 +49,7 @@ $recordset->close();
 // Récupère la liste des calendriers.
 $calendars = $DB->get_records('apsolu_calendars');
 
-$mform = new apsolu_overview_filter_form(null, [$calendars, $teachers]);
+$mform = new apsolu_overview_filter_form($PAGE->url->out(false), [$calendars, $teachers]);
 $mdata = $mform->get_data();
 
 // Liste des cours.

@@ -46,7 +46,7 @@ foreach ($DB->get_records('apsolu_calendars', null, 'name') as $calendar) {
 $rows = [];
 
 // Traite le formulaire.
-$mform = new apsolu_enrolments_overview_filter_form(null, [$colleges, $calendars]);
+$mform = new apsolu_enrolments_overview_filter_form($PAGE->url->out(false), [$colleges, $calendars]);
 if ($mdata = $mform->get_data()) {
     $college = $DB->get_record('apsolu_colleges', ['id' => $mdata->college], '*', MUST_EXIST);
     $fields = CustomFields::getCustomFields();

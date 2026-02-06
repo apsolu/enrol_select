@@ -233,12 +233,6 @@ class enrol_select_edit_form extends moodleform {
         $mform->disabledIf('customtext3', 'customtext3switch', 'eq', 0);
 
         // Validation.
-        $mform->addElement('hidden', 'id');
-        $mform->setType('id', PARAM_INT);
-
-        $mform->addElement('hidden', 'courseid');
-        $mform->setType('courseid', PARAM_INT);
-
         $this->add_action_buttons(true, ($instance->id ? null : get_string('addinstance', 'enrol')));
 
         $this->set_data($instance);

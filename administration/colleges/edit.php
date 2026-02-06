@@ -45,7 +45,7 @@ if (!$instance) {
     $instance->cohorts = array_keys($DB->get_records('apsolu_colleges_members', ['collegeid' => $id], '', 'cohortid'));
 }
 
-$mform = new apsolu_colleges_form(null, [$instance, $roles, $cohorts]);
+$mform = new apsolu_colleges_form($PAGE->url->out(false), [$instance, $roles, $cohorts]);
 
 if ($data = $mform->get_data()) {
     if ($data->id == 0) {

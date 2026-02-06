@@ -72,7 +72,7 @@ $calendars += $DB->get_records('apsolu_calendars', $conditions = null, $sort = '
 
 $customdata = [$defaults, $calendars, $cohorts, $roles, $cards];
 
-$mform = new enrol_select_default_settings_form(null, $customdata);
+$mform = new enrol_select_default_settings_form($PAGE->url->out(false), $customdata);
 
 echo $OUTPUT->heading(get_string('default_settings', 'enrol_select'));
 
