@@ -59,6 +59,8 @@ if (!$enrolselect = enrol_get_plugin('select')) {
 $roles = role_fix_names($DB->get_records('role'));
 
 $time = time();
+
+// Récupère les inscriptions pour ce cours.
 $params = ['courseid' => $course->id, 'enrolid' => $instance->id];
 if (isset($exportstatus)) {
     $conditions = ' AND ue.status = :status';
@@ -80,6 +82,47 @@ $sql = 'SELECT DISTINCT u.*, ra.roleid, ue.timecreated, ue.status' .
     ' AND ctx.contextlevel = 50' . $conditions .
     ' ORDER BY ue.status, ue.timecreated, u.lastname, u.firstname, u.institution, u.department';
 $users = $DB->get_records_sql($sql, $params);
+
+// Récupère les autres inscriptions des utilisateurs inscrits dans ce cours.
+$params = [];
+[$insql, $params] = $DB->get_in_or_equal(array_keys($users), SQL_PARAMS_NAMED, 'userid_');
+
+$sql = "SELECT ue.userid, c.fullname, c.idnumber, e.name AS enrolname, ra.roleid, ue.status
+          FROM {course} c
+          JOIN {enrol} e ON e.courseid = c.id
+          JOIN {user_enrolments} ue ON e.id = ue.enrolid
+          JOIN {role_assignments} ra ON ue.userid = ra.userid AND ue.enrolid = ra.itemid
+          JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.instanceid = e.courseid AND ctx.contextlevel = :contextlevel
+         WHERE e.enrol = 'select'
+           AND ue.status = :status
+           AND ue.userid " . $insql;
+$params['contextlevel'] = CONTEXT_COURSE;
+$params['status'] = ENROL_USER_ACTIVE;
+
+$maxotherenrolments = 0;
+$recordset = $DB->get_recordset_sql($sql, $params);
+foreach ($recordset as $record) {
+    if (isset($users[$record->userid]->countotherenrolments) === false) {
+        $users[$record->userid]->countotherenrolments = 0;
+    }
+    $users[$record->userid]->countotherenrolments++;
+
+    $fieldname = sprintf('otherenrolmentcourse%s', $users[$record->userid]->countotherenrolments);
+    $users[$record->userid]->$fieldname = $record->fullname;
+
+    $fieldname = sprintf('otherenrolmentname%s', $users[$record->userid]->countotherenrolments);
+    $users[$record->userid]->$fieldname = $record->enrolname;
+
+    $fieldname = sprintf('otherenrolmentrole%s', $users[$record->userid]->countotherenrolments);
+    $users[$record->userid]->$fieldname = $roles[$record->roleid]->name;
+
+    $fieldname = sprintf('otherenrolmentstatus%s', $users[$record->userid]->countotherenrolments);
+    $users[$record->userid]->$fieldname = enrol_select_plugin::get_enrolment_list_name($record->status);
+
+    if ($users[$record->userid]->countotherenrolments > $maxotherenrolments) {
+        $maxotherenrolments = $users[$record->userid]->countotherenrolments;
+    }
+}
 
 // Génération du fichier csv.
 $instancename = get_string('pluginname', 'enrol_select');
@@ -105,6 +148,19 @@ if (isset($exportstatus) === false) {
 
 $headers['registertype'] = get_string('register_type', 'enrol_select');
 $headers['registerdate'] = get_string('register_date', 'enrol_select');
+for ($i = 1; $i <= $maxotherenrolments; $i++) {
+    $strparams = (object) ['number' => $i, 'type' => get_string('course')];
+    $headers['otherenrolmentcourse' . $i] = get_string('other_enrolment_number_X_type_Y', 'enrol_select', $strparams);
+
+    $strparams = (object) ['number' => $i, 'type' => get_string('enrolmentmethod', 'enrol')];
+    $headers['otherenrolmentname' . $i] = get_string('other_enrolment_number_X_type_Y', 'enrol_select', $strparams);
+
+    $strparams = (object) ['number' => $i, 'type' => get_string('role')];
+    $headers['otherenrolmentrole' . $i] = get_string('other_enrolment_number_X_type_Y', 'enrol_select', $strparams);
+
+    $strparams = (object) ['number' => $i, 'type' => get_string('participationstatus', 'enrol')];
+    $headers['otherenrolmentstatus' . $i] = get_string('other_enrolment_number_X_type_Y', 'enrol_select', $strparams);
+}
 $headers['empty1'] = 'texte libre';
 $headers['empty2'] = 'texte libre';
 $headers['empty3'] = 'texte libre';

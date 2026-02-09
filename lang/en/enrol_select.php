@@ -84,6 +84,7 @@ $string['number_of_enrolments_on_main_list'] = 'Nombre d’inscriptions sur list
 $string['number_of_enrolments_on_waiting_list'] = 'Nombre d’inscriptions sur liste d’attente';
 $string['number_of_wishes'] = 'Nombre de voeux';
 $string['only_students_on_the_accepted_list_will_be_transferred_to_the_list_of_your_choice'] = 'Seuls les étudiants inscrits sur la liste des acceptés seront reportés sur la liste de votre choix.';
+$string['other_enrolment_number_X_type_Y'] = 'Autre inscription #{$a->number} ({$a->type})';
 $string['overview'] = 'Vue d’ensemble';
 $string['payment_deadline'] = 'Délai de paiement';
 $string['payment_deadline_help'] = 'Ce paramètre accorde un délai de paiement à l’utilisateur. Si ce délai n’est pas respecté, APSOLU désinscrira automatiquement l’utilisateur du cours.
