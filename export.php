@@ -69,18 +69,18 @@ if (isset($exportstatus)) {
     $conditions = '';
 }
 
-$sql = 'SELECT DISTINCT u.*, ra.roleid, ue.timecreated, ue.status' .
-    ' FROM {user} u' .
-    ' JOIN {user_enrolments} ue ON u.id = ue.userid' .
-    ' JOIN {role_assignments} ra ON u.id = ra.userid AND ue.enrolid = ra.itemid' .
-    ' JOIN {role} r ON r.id = ra.roleid AND r.archetype = "student"' .
-    ' JOIN {context} ctx ON ctx.id = ra.contextid' .
-    ' JOIN {enrol} e ON e.id = ra.itemid AND e.id = ue.enrolid AND ctx.instanceid = e.courseid' .
-    ' WHERE e.id = :enrolid' .
-    ' AND e.enrol = "select"' .
-    ' AND ctx.instanceid = :courseid' .
-    ' AND ctx.contextlevel = 50' . $conditions .
-    ' ORDER BY ue.status, ue.timecreated, u.lastname, u.firstname, u.institution, u.department';
+$sql = "SELECT DISTINCT u.*, ra.roleid, ue.timecreated, ue.status
+          FROM {user} u
+          JOIN {user_enrolments} ue ON u.id = ue.userid
+          JOIN {role_assignments} ra ON u.id = ra.userid AND ue.enrolid = ra.itemid
+          JOIN {role} r ON r.id = ra.roleid AND r.archetype = 'student'
+          JOIN {context} ctx ON ctx.id = ra.contextid
+          JOIN {enrol} e ON e.id = ra.itemid AND e.id = ue.enrolid AND ctx.instanceid = e.courseid
+         WHERE e.id = :enrolid
+           AND e.enrol = 'select'
+           AND ctx.instanceid = :courseid
+           AND ctx.contextlevel = 50 " . $conditions . "
+      ORDER BY ue.status, ue.timecreated, u.lastname, u.firstname, u.institution, u.department";
 $users = $DB->get_records_sql($sql, $params);
 
 // Récupère les autres inscriptions des utilisateurs inscrits dans ce cours.
