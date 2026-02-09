@@ -27,6 +27,11 @@
 // phpcs:disable moodle.Files.LangFilesOrdering.UnexpectedComment
 
 $string['batch_settings'] = 'Paramétrage par lots';
+$string['cachedef_colleges'] = 'Liste des populations';
+$string['cachedef_courses'] = 'Liste des créneaux horaires';
+$string['cachedef_enrolments'] = 'Liste des inscriptions';
+$string['cachedef_enrols'] = 'Liste des méthodes d’inscription par voeux';
+$string['cachedef_users'] = 'Liste des inscriptions et des populations d’appartenance des utilisateurs';
 $string['check_enrolment_payment'] = 'Contrôle le paiement d’une inscription';
 $string['cohort_X_is_already_used_with_role_Y_by_college_Z'] = 'La cohorte « {$a->cohort} » est déjà utilisée avec le rôle « {$a->role} » par la population « {$a->college} ».';
 $string['college_unused_cohorts'] = '<details class="alert alert-info"><summary class="mb-3">Information</summary><p>Ces cohortes ne sont actuellement pas utilisées dans les populations :</p><ul>{$a}</ul></details>';
