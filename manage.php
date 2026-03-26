@@ -242,14 +242,11 @@ foreach ($recordset as $record) {
 
         $record->extrafields = [];
         if ($extrafields !== []) {
-            $customfields = profile_user_record($record->id);
-            foreach ($extrafields as $extrafield => $unused) {
-                if (isset($record->$extrafield) === true) {
-                    $record->extrafields[] = $record->$extrafield;
-                } else if (isset($customfields->$extrafield) === true) {
-                    $record->extrafields[] = $customfields->$extrafield;
-                }
-            }
+            // Custom fields (note: passse $onlyinuserobject = false pour récupérer le champ textarea 'apsoluothertrainings'.
+            $customfields = profile_user_record($record->id, $onlyinuserobject = false);
+
+            // Formate les données personnalisées.
+            $record->extrafields = customfields::format_extra_fields(array_keys($extrafields), $customfields, $record);
         }
 
         $users[$record->id] = $record;

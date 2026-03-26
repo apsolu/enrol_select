@@ -167,24 +167,15 @@ $headers['empty3'] = 'texte libre';
 
 $rows = [];
 foreach ($users as $user) {
-    $customfields = profile_user_record($user->id);
+    // Custom fields (note: passse $onlyinuserobject = false pour récupérer le champ textarea 'apsoluothertrainings'.
+    $customfields = profile_user_record($user->id, $onlyinuserobject = false);
 
     $user->list = enrol_select_plugin::get_enrolment_list_name($user->status);
     $user->registertype = $roles[$user->roleid]->localname;
     $user->registerdate = userdate($user->timecreated);
 
-    $row = [];
-    foreach ($headers as $fieldname => $unused) {
-        if (isset($user->$fieldname) === true) {
-            $row[] = $user->$fieldname;
-        } else if (isset($customfields->$fieldname) === true) {
-            $row[] = $customfields->$fieldname;
-        } else {
-            $row[] = '';
-        }
-    }
-
-    $rows[] = $row;
+    // Formate les données personnalisées.
+    $rows[] = customfields::format_extra_fields(array_keys($headers), $customfields, $user, $ishtmloutput = false);
 }
 
 switch ($exportformat) {
