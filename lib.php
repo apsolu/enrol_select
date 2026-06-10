@@ -50,6 +50,23 @@ class enrol_select_plugin extends enrol_plugin {
      */
     const DELETED = '4';
 
+    /** @var array Tableau contenant les paramètres par défaut lors de l'installation du module enrol_select. */
+    public static $initialsettings = [
+        'default_cohorts' => '', // Cohortes par défaut.
+        'default_roles' => 5, // Rôles par défaut.
+        'default_cards' => '', // Paiements par défaut.
+        'default_customint1' => 20, // Maximum de place sur la liste principale.
+        'default_customint2' => 10, // Maximum de place sur la liste d'attente.
+        'default_customint3' => 0, // Activer les quotas.
+        'default_customdec1' => 0, // Délai de paiement.
+        'default_customchar1' => 0, // Type de calendrier.
+        'default_customchar2' => 0, // Remontée de liste automatique.
+        'default_customchar3' => self::MAIN, // Liste sur laquelle inscrire les étudiants.
+        'default_customtext1' => '', // Message de bienvenue pour les inscrits sur liste des acceptés.
+        'default_customtext2' => '', // Message de bienvenue pour les inscrits sur liste principale.
+        'default_customtext3' => '', // Message de bienvenue pour les inscrits sur liste complémentaire.
+    ];
+
     /** @var array Tableau indexé avec les constantes de classe ACCEPTED, MAIN, WAIT et DELETED. */
     public static $states = [
         self::ACCEPTED => 'accepted',
@@ -242,22 +259,6 @@ class enrol_select_plugin extends enrol_plugin {
     public function get_instance_defaults() {
         $instance = get_config('enrol_select');
 
-        if (isset($instance->default_roles) === false) {
-            $instance->default_cohorts = '';
-            $instance->default_roles = 5;
-            $instance->default_cards = '';
-            $instance->default_customint1 = 20;
-            $instance->default_customint2 = 10;
-            $instance->default_customint3 = 0;
-            $instance->default_customdec1 = 0;
-            $instance->default_customchar1 = 0;
-            $instance->default_customchar2 = 0;
-            $instance->default_customchar3 = self::MAIN;
-            $instance->default_customtext1 = '';
-            $instance->default_customtext2 = '';
-            $instance->default_customtext3 = '';
-        }
-
         $fields = [];
         $fields['status'] = ENROL_INSTANCE_ENABLED; // Enable method or not.
         $fields['cohorts'] = explode(',', $instance->default_cohorts); // Cohortes par défaut.
@@ -280,6 +281,23 @@ class enrol_select_plugin extends enrol_plugin {
         $fields['customtext3'] = $instance->default_customtext3; // Message de bienvenue pour les inscrits sur liste complémentaire.
 
         return $fields;
+    }
+
+    /**
+     * Retourne les valeurs par défaut lors de l'installation du module enrol_select.
+     *
+     * @return void
+     */
+    public static function setup_initial_settings(): void {
+        $instance = get_config('enrol_select');
+
+        foreach (self::$initialsettings as $name => $value) {
+            if (isset($instance->$name) === true) {
+                continue;
+            }
+
+            set_config($name, $value, 'enrol_select');
+        }
     }
 
     /**

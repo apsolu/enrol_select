@@ -28,7 +28,12 @@
  * @return void
  */
 function xmldb_enrol_select_install() {
-    $result = 1;
+    global $CFG;
 
-    return ($result === 1);
+    require_once($CFG->dirroot . '/enrol/select/lib.php');
+
+    // Initialise les paramètres par défaut utilisés lors de l'ajout d'une nouvelle méthode d'inscription par voeux.
+    enrol_select_plugin::setup_initial_settings();
+
+    return true;
 }

@@ -32,7 +32,7 @@
  * @return true If success.
  */
 function xmldb_enrol_select_upgrade($oldversion = 0) {
-    global $DB;
+    global $CFG, $DB;
 
     $dbman = $DB->get_manager();
 
@@ -360,8 +360,13 @@ function xmldb_enrol_select_upgrade($oldversion = 0) {
         upgrade_plugin_savepoint(true, $version, 'enrol', 'select');
     }
 
-    // Modification à appliquer lors de la prochaine mise à jour.
-    if (false) {
+    $version = 2026061000;
+    if ($oldversion < $version) {
+        require_once($CFG->dirroot . '/enrol/select/lib.php');
+
+        // Initialise les paramètres par défaut utilisés lors de l'ajout d'une nouvelle méthode d'inscription par voeux.
+        enrol_select_plugin::setup_initial_settings();
+
         // Savepoint reached.
         upgrade_plugin_savepoint(true, $version, 'enrol', 'select');
     }
