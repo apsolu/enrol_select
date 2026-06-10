@@ -45,6 +45,16 @@ $capabilities = [
         ],
     ],
 
+    // Export enroled users.
+    'enrol/select:export' => [
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+        ],
+    ],
+
     // Manage user enrolments.
     'enrol/select:manage' => [
         'captype' => 'write',
