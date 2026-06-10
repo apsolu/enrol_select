@@ -44,18 +44,12 @@ $context = context_course::instance($course->id, MUST_EXIST);
 
 require_login($course, $autologinguest = false);
 
+require_capability('enrol/select:manage', $context);
+
 $canenrol = has_capability('enrol/select:enrol', $context);
 $canunenrol = has_capability('enrol/select:unenrol', $context);
 
 $ismanager = $DB->get_record('role_assignments', ['contextid' => 1, 'roleid' => 1, 'userid' => $USER->id]);
-
-// Note: manage capability not used here because it is used for editing
-// of existing enrolments which is not possible here.
-
-if (!$canenrol) {
-    // No need to invent new error strings here...
-    require_capability('enrol/select:enrol', $context);
-}
 
 if (!$enrolselect = enrol_get_plugin('select')) {
     throw new coding_exception('Can not instantiate enrol_select');
