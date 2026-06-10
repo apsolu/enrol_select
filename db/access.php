@@ -25,10 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
-
-    /* Add or edit enrol-self instance in course. */
+    // Add or edit enrolment instance in course.
     'enrol/select:config' => [
-
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
@@ -37,7 +35,7 @@ $capabilities = [
         ],
     ],
 
-    /* Enrol anybody. */
+    // Enrol anybody.
     'enrol/select:enrol' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
@@ -47,9 +45,8 @@ $capabilities = [
         ],
     ],
 
-    /* Manage user self-enrolments. */
+    // Manage user enrolments.
     'enrol/select:manage' => [
-
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
@@ -58,7 +55,7 @@ $capabilities = [
         ],
     ],
 
-    /* Unenrol anybody from course (including self) -  watch out for data loss. */
+    // Unenrol anybody from course.
     'enrol/select:unenrol' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
@@ -67,5 +64,4 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
     ],
-
 ];
