@@ -58,15 +58,6 @@ $capabilities = [
         ],
     ],
 
-    /* Voluntarily unenrol self from course - watch out for data loss. */
-    'enrol/select:unenrolself' => [
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => [
-            'student' => CAP_ALLOW,
-        ],
-    ],
-
     /* Unenrol anybody from course (including self) -  watch out for data loss. */
     'enrol/select:unenrol' => [
         'captype' => 'write',

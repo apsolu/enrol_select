@@ -143,7 +143,6 @@ $string['select:config'] = 'Configurer les instances d’inscription par voeux';
 $string['select:enrol'] = 'Inscrire des utilisateurs';
 $string['select:manage'] = 'Gérer les utilisateurs inscrits';
 $string['select:unenrol'] = 'Désinscrire du cours les utilisateurs';
-$string['select:unenrolself'] = 'Se désinscrire du cours';
 
 $string['enrolname'] = 'Nom de l’instance d’inscription';
 
