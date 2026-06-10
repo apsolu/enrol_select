@@ -82,6 +82,7 @@ $activeenrolid = false;
 
 $data = new stdClass();
 $data->wwwroot = $CFG->wwwroot;
+$data->canenrol = $canenrol;
 $data->canunenrol = $canunenrol;
 $data->extrafields = array_values($extrafields);
 $data->enrols = [];
