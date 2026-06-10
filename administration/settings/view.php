@@ -77,6 +77,10 @@ $mform = new enrol_select_default_settings_form($PAGE->url->out(false), $customd
 echo $OUTPUT->heading(get_string('default_settings', 'enrol_select'));
 
 if ($data = $mform->get_data()) {
+    if (isset($data->default_customchar2) === false) {
+        $data->default_customchar2 = 0;
+    }
+
     if (empty($data->default_customtext1switch) === true) {
         $data->default_customtext1 = ['text' => ''];
     }
