@@ -48,8 +48,7 @@ require_capability('enrol/select:manage', $context);
 
 $canenrol = has_capability('enrol/select:enrol', $context);
 $canunenrol = has_capability('enrol/select:unenrol', $context);
-
-$ismanager = $DB->get_record('role_assignments', ['contextid' => 1, 'roleid' => 1, 'userid' => $USER->id]);
+$canmanagepastenrolment = has_capability('enrol/select:managepastenrolment', $context);
 
 if (!$enrolselect = enrol_get_plugin('select')) {
     throw new coding_exception('Can not instantiate enrol_select');
@@ -90,9 +89,8 @@ foreach ($instances as $instance) {
     $enrol->unenrol_user_link = $CFG->wwwroot . '/enrol/select/unenrol.php?enrolid=' . $instance->id;
     $enrol->lists = [];
     $enrol->lock = ($instance->customint8 < time());
-    if ($ismanager !== false || is_siteadmin() === true) {
-        // Les gestionnaires et les administrateurs peuvent modifier les inscriptions toute l'année.
-        // TODO: créer une permission pour gérer ce point.
+    if ($canmanagepastenrolment === true) {
+        // Par défaut, les gestionnaires peuvent modifier les inscriptions toute l'année.
         $enrol->lock = false;
     }
 
@@ -263,7 +261,7 @@ foreach ($recordset as $record) {
     $enrolment->timecreated = userdate($record->timecreated, '%a %d %b à %T');
     $enrolment->datecreated_sortable = userdate($record->timecreated, '%F');
     $enrolment->timecreated_sortable = userdate($record->timecreated, '%T');
-    if ($ismanager === false) {
+    if ($canmanagepastenrolment === false) {
         $enrolment->course_url = '';
     } else {
         $enrolment->course_url = new moodle_url('/course/view.php', ['id' => $record->courseid]);

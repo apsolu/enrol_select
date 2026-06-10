@@ -143,6 +143,7 @@ $string['select:config'] = 'Configurer les instances d’inscription par voeux';
 $string['select:enrol'] = 'Inscrire des utilisateurs';
 $string['select:export'] = 'Exporter la liste des utilisateurs inscrits';
 $string['select:manage'] = 'Gérer les utilisateurs inscrits';
+$string['select:managepastenrolment'] = 'Gérer les utilisateurs inscrits sur des méthodes d’inscription expirées';
 $string['select:unenrol'] = 'Désinscrire du cours les utilisateurs';
 
 $string['enrolname'] = 'Nom de l’instance d’inscription';

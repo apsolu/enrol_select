@@ -65,6 +65,15 @@ $capabilities = [
         ],
     ],
 
+    // Manage user for past enrolments.
+    'enrol/select:managepastenrolment' => [
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+
     // Unenrol anybody from course.
     'enrol/select:unenrol' => [
         'captype' => 'write',
