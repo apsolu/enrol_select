@@ -75,6 +75,7 @@ $customdata = [$defaults, $calendars, $cohorts, $roles, $cards];
 $mform = new enrol_select_default_settings_form($PAGE->url->out(false), $customdata);
 
 echo $OUTPUT->heading(get_string('default_settings', 'enrol_select'));
+echo  html_writer::tag('div', get_string('default_settings_description', 'enrol_select'), ['class' => 'alert alert-info']);
 
 if ($data = $mform->get_data()) {
     if (isset($data->default_customchar2) === false) {

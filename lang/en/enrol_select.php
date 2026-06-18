@@ -46,6 +46,7 @@ $string['date_diverging_from_calendar_date'] = 'Date divergente par rapport à l
 $string['default_enrolment_list'] = 'Liste d’inscription par défaut';
 $string['default_enrolment_list_help'] = 'Détermine si les nouvelles inscriptions doivent être automatiquement acceptées. Ce réglage s’applique tant que les quotas ne sont pas atteints. Pour l’utilisation de l’option « Délai de paiement », la valeur de cette option doit être « Liste des étudiants acceptés ».';
 $string['default_settings'] = 'Paramétrage par défaut';
+$string['default_settings_description'] = 'Le paramétrage par défaut ne s’applique qu’aux <strong>nouvelles</strong> méthodes d’inscription créées. Ce paramétrage ne s’applique pas aux méthodes déjà existantes.';
 $string['edit_field_X'] = 'Modifier le champ « {$a} »';
 $string['enable_automatic_list_filling'] = 'Activer la remontée de liste automatique';
 $string['enable_automatic_list_filling_help'] = 'Permet de faire remonter un étudiant sur liste complémentaire dès qu’une place se libère sur liste principale. L’action est appliquée seulement lorsqu’un étudiant se désinscrit en période d’inscription. Cette option n’est pas compatible avec l’option « Délai de paiement ».';
