@@ -209,6 +209,38 @@ foreach ($courses as $course) {
     }
 }
 
+// Définit les noms des listes pour la section 'Gestion des listes'.
+$data->accepted_list = ucfirst(get_accepted_listname());
+$data->main_list = ucfirst(get_main_listname());
+$data->wait_list = ucfirst(get_wait_listname());
+$data->deleted_list = ucfirst(get_deleted_listname());
+
+$data->accepted_list_abbr = get_enrolment_fieldvalue(enrol_select_plugin::ACCEPTED, 'statusabbr', false);
+$data->main_list_abbr = get_enrolment_fieldvalue(enrol_select_plugin::MAIN, 'statusabbr', false);
+$data->wait_list_abbr = get_enrolment_fieldvalue(enrol_select_plugin::WAIT, 'statusabbr', false);
+$data->deleted_list_abbr = get_enrolment_fieldvalue(enrol_select_plugin::DELETED, 'statusabbr', false);
+
+// Définit les entêtes du tableau d'export (csv et excel).
+$headers = [];
+$headers[] = get_string('courses', 'local_apsolu');
+$headers[] = get_string('enrolname', 'enrol_select');
+$headers[] = get_string('calendars', 'local_apsolu');
+$headers[] = get_string('enrolstartdate', 'enrol_select');
+$headers[] = get_string('enrolenddate', 'enrol_select');
+$headers[] = $data->accepted_list;
+$headers[] = $data->main_list;
+$headers[] = get_string_on_list_x(
+    [enrol_select_plugin::ACCEPTED, enrol_select_plugin::MAIN],
+    'max_places',
+    'listname',
+);
+$headers[] = $data->wait_list;
+$headers[] = get_string_on_list_x(
+    enrol_select_plugin::WAIT,
+    'max_places_on_listname_X'
+);
+$headers[] = $data->deleted_list;
+
 if (isset($mdata->exportcsv) === true) {
     // Exporte les données au format CSV.
     require_once($CFG->libdir . '/csvlib.class.php');
@@ -217,20 +249,6 @@ if (isset($mdata->exportcsv) === true) {
 
     $csvexport = new csv_export_writer();
     $csvexport->set_filename($filename);
-
-    // Définit les entêtes.
-    $headers = [];
-    $headers[] = get_string('courses', 'local_apsolu');
-    $headers[] = get_string('enrolname', 'enrol_select');
-    $headers[] = get_string('calendars', 'local_apsolu');
-    $headers[] = get_string('enrolstartdate', 'enrol_select');
-    $headers[] = get_string('enrolenddate', 'enrol_select');
-    $headers[] = get_string('accepted_list', 'enrol_select');
-    $headers[] = get_string('main_list', 'enrol_select');
-    $headers[] = get_string('max_places', 'enrol_select');
-    $headers[] = get_string('wait_list', 'enrol_select');
-    $headers[] = get_string('max_waiting_places', 'enrol_select');
-    $headers[] = get_string('deleted_list', 'enrol_select');
     $csvexport->add_data($headers);
 
     // Définit le contenu principal.
@@ -300,19 +318,6 @@ if (isset($mdata->exportexcel) === true) {
 
     $excelformat = new MoodleExcelFormat($properties);
 
-    // Définit les entêtes.
-    $headers = [];
-    $headers[] = get_string('courses', 'local_apsolu');
-    $headers[] = get_string('enrolname', 'enrol_select');
-    $headers[] = get_string('calendars', 'local_apsolu');
-    $headers[] = get_string('enrolstartdate', 'enrol_select');
-    $headers[] = get_string('enrolenddate', 'enrol_select');
-    $headers[] = get_string('accepted_list', 'enrol_select');
-    $headers[] = get_string('main_list', 'enrol_select');
-    $headers[] = get_string('max_places', 'enrol_select');
-    $headers[] = get_string('wait_list', 'enrol_select');
-    $headers[] = get_string('max_waiting_places', 'enrol_select');
-    $headers[] = get_string('deleted_list', 'enrol_select');
     foreach ($headers as $position => $value) {
         $myxls->write_string(0, $position, $value, $excelformat);
     }

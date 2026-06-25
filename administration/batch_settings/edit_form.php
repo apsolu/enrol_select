@@ -16,6 +16,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_select_plugin as plugin;
+
 require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->dirroot . '/enrol/select/lib.php');
 
@@ -55,7 +57,7 @@ class enrol_select_batch_settings_form extends moodleform {
         $mform->addElement('header', 'header2', get_string('welcome_messages', 'enrol_select'));
 
         // Message pour les inscrits sur la liste des acceptés.
-        $label = get_string('send_welcome_message_to_users_on_accepted_list', 'enrol_select');
+        $label = get_string_on_list_x(plugin::ACCEPTED, 'send_welcome_message_to_users_on_listname_X');
         $mform->addElement('selectyesno', 'batch_customtext1switch', $label);
         $mform->addHelpButton('batch_customtext1switch', 'custom_welcome_message', 'enrol_select');
 
@@ -65,7 +67,7 @@ class enrol_select_batch_settings_form extends moodleform {
         $mform->disabledIf('batch_customtext1', 'batch_customtext1switch', 'eq', 0);
 
         // Message pour les inscrits sur la liste principale.
-        $label = get_string('send_welcome_message_to_users_on_accepted_list', 'enrol_select');
+        $label = get_string_on_list_x(plugin::MAIN, 'send_welcome_message_to_users_on_listname_X');
         $mform->addElement('selectyesno', 'batch_customtext2switch', $label);
         $mform->addHelpButton('batch_customtext2switch', 'custom_welcome_message', 'enrol_select');
 
@@ -75,7 +77,7 @@ class enrol_select_batch_settings_form extends moodleform {
         $mform->disabledIf('batch_customtext2', 'batch_customtext2switch', 'eq', 0);
 
         // Message pour les inscrits sur la liste complémentaire.
-        $label = get_string('send_welcome_message_to_users_on_accepted_list', 'enrol_select');
+        $label = get_string_on_list_x(plugin::WAIT, 'send_welcome_message_to_users_on_listname_X');
         $mform->addElement('selectyesno', 'batch_customtext3switch', $label);
         $mform->addHelpButton('batch_customtext3switch', 'custom_welcome_message', 'enrol_select');
 

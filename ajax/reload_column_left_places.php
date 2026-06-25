@@ -63,18 +63,17 @@ if ($enrol->customint3 == 1) {
     if ($maxmainlist > $countmainlist && $countwaitlist === 0) {
         // Si la liste principale n'est pas complète et que la liste d'attente est vide.
         $count = $maxmainlist - $countmainlist;
-        if ($count > 1) {
-            $leftplacesstr = get_string('x_places_remaining_on_the_main_list', 'enrol_select', $count);
-        } else {
-            $leftplacesstr = get_string('x_place_remaining_on_the_main_list', 'enrol_select', $count);
-        }
+        $leftplacesstr = $count . ' ' . get_string_on_list_x(
+            enrol_select_plugin::MAIN,
+            $count > 1 ? 'places_remaining_on_listname_X' : 'place_remaining_on_listname_X'
+        );
         $leftplacesstyle = 'success';
     } else if ($maxwaitlist > $countwaitlist) {
         // Si la liste complémentaire n'est pas complète.
         // TODO: faire une option afin de laisser le choix entre afficher le nombre
         // de places restantes ($maxwaitlist - $countwaitlist) sur liste complémentaire
         // ou afficher un message générique indiquant qu'il reste des places sur liste complémentaire.
-        $leftplacesstr = get_string('there_are_still_places_on_the_wait_list', 'enrol_select');
+        $leftplacesstr = get_string_on_list_x(enrol_select_plugin::WAIT, 'there_are_still_places_on_listname_X');
         $leftplacesstyle = 'warning';
     } else {
         // Si il ne reste plus de place.

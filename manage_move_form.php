@@ -41,10 +41,10 @@ class enrol_select_manage_move_form extends moodleform {
         $strto = ($previousenrolid !== false) ? 'next_' . enrol_select_plugin::$states[$to] : enrol_select_plugin::$states[$to];
         $strfrom = enrol_select_plugin::$states[$from];
 
-        $lists = new stdClass();
-        $lists->to = get_string('list_' . $strto, 'enrol_select');
-        $lists->from = get_string('list_' . $strfrom, 'enrol_select');
-        $label = get_string('goto', 'enrol_select', $lists);
+        // $lists = new stdClass();
+        // $lists->to = get_enrolment_fieldvalue($to, 'listname', false, false);
+        // $lists->from = get_enrolment_fieldvalue($from, 'listname', false, false);
+        $label = get_goto_list_customstr($to, $from, $previousenrolid !== false);
 
         $userslist = '<ul class="list list-unstyled">';
         foreach ($users as $user) {
@@ -72,7 +72,7 @@ class enrol_select_manage_move_form extends moodleform {
         $attributes = ['rows' => '15', 'cols' => '50'];
         $mform->addElement('textarea', 'message', get_string('send_message', 'enrol_select'), $attributes);
         $mform->setType('message', PARAM_TEXT);
-        $mform->setDefault('message', get_string('message_' . $strfrom . '_to_' . $strto, 'enrol_select'));
+        $mform->setDefault('message', get_moved_to_message($to, $from, $previousenrolid !== false));
         $mform->disabledIf('message', 'notify', 'eq', 0);
 
         $mform->addElement('hidden', 'actions', $to);

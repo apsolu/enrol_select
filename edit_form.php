@@ -119,27 +119,41 @@ class enrol_select_edit_form extends moodleform {
 
         // Activer la remontée de liste automatique.
         $mform->addElement('selectyesno', 'customchar2', get_string('enable_automatic_list_filling', 'enrol_select'));
-        $mform->addHelpButton('customchar2', 'enable_automatic_list_filling', 'enrol_select');
+        $a = new stdClass();
+        $a->accepted = get_enrolment_fieldvalue(enrol_select_plugin::ACCEPTED, 'listname', false);
+        $a->main = get_enrolment_fieldvalue(enrol_select_plugin::MAIN, 'listname', false);
+        $a->wait = get_enrolment_fieldvalue(enrol_select_plugin::WAIT, 'listname', false);
+        $mform->addHelpButton('customchar2', 'enable_automatic_list_filling', 'enrol_select', '', false, $a);
         $mform->setType('customchar2', PARAM_INT);
         $mform->disabledIf('customchar2', 'customint3', 'eq', 0);
 
         // Nombre de places sur la liste principale.
-        $mform->addElement('text', 'customint1', get_string('max_places', 'enrol_select'));
+        $label = get_string_on_list_x(
+            [enrol_select_plugin::ACCEPTED, enrol_select_plugin::MAIN],
+            'max_places',
+            'listname',
+        );
+
+        $mform->addElement('text', 'customint1', $label);
         $mform->setType('customint1', PARAM_INT);
         $mform->disabledIf('customint1', 'customint3', 'eq', 0);
 
         // Nombre de places sur la liste complémentaire.
-        $mform->addElement('text', 'customint2', get_string('max_waiting_places', 'enrol_select'), ['optional' => true]);
+        $label = get_string_on_list_x(
+            enrol_select_plugin::WAIT,
+            'max_places_on_listname_X'
+        );
+        $mform->addElement('text', 'customint2', $label, ['optional' => true]);
         $mform->setType('customint2', PARAM_INT);
         $mform->disabledIf('customint2', 'customint3', 'eq', 0);
 
         // Liste d'inscription par défaut.
         $options = [];
-        $options[enrol_select_plugin::MAIN] = get_string('main_list', 'enrol_select');
-        $options[enrol_select_plugin::ACCEPTED] = get_string('accepted_list', 'enrol_select');
+        $options[enrol_select_plugin::MAIN] = get_main_listname();
+        $options[enrol_select_plugin::ACCEPTED] = get_accepted_listname();
 
         $mform->addElement('select', 'customchar3', get_string('default_enrolment_list', 'enrol_select'), $options);
-        $mform->addHelpButton('customchar3', 'default_enrolment_list', 'enrol_select');
+        $mform->addHelpButton('customchar3', 'default_enrolment_list', 'enrol_select', '', false, get_main_listname());
         $mform->setType('customchar3', PARAM_INT);
 
         // Cohortes.
@@ -197,12 +211,13 @@ class enrol_select_edit_form extends moodleform {
         }
 
         // Messages de bienvenue.
-        $options = ['cols' => '60', 'rows' => '16'];
+        $options = ['cols' => '60', 'rows' => '8'];
 
         // Message pour les inscrits sur la liste des acceptés.
-        $mform->addElement('header', 'header', get_string('welcome_message_on_accepted_list', 'enrol_select'));
+        $mform->addElement('header', 'header', get_string('welcome_messages', 'enrol_select'));
+        $mform->setExpanded('header');
 
-        $label = get_string('send_welcome_message_to_users_on_accepted_list', 'enrol_select');
+        $label = get_string_on_list_x(enrol_select_plugin::ACCEPTED, 'send_welcome_message_to_users_on_listname_X');
         $mform->addElement('selectyesno', 'customtext1switch', $label);
         $mform->addHelpButton('customtext1switch', 'custom_welcome_message', 'enrol_select');
 
@@ -211,9 +226,7 @@ class enrol_select_edit_form extends moodleform {
         $mform->disabledIf('customtext1', 'customtext1switch', 'eq', 0);
 
         // Message pour les inscrits sur la liste principale.
-        $mform->addElement('header', 'header', get_string('welcome_message_on_main_list', 'enrol_select'));
-
-        $label = get_string('send_welcome_message_to_users_on_main_list', 'enrol_select');
+        $label = get_string_on_list_x(enrol_select_plugin::MAIN, 'send_welcome_message_to_users_on_listname_X');
         $mform->addElement('selectyesno', 'customtext2switch', $label);
         $mform->addHelpButton('customtext2switch', 'custom_welcome_message', 'enrol_select');
 
@@ -222,9 +235,7 @@ class enrol_select_edit_form extends moodleform {
         $mform->disabledIf('customtext2', 'customtext2switch', 'eq', 0);
 
         // Message pour les inscrits sur la liste complémentaire.
-        $mform->addElement('header', 'header', get_string('welcome_message_on_wait_list', 'enrol_select'));
-
-        $label = get_string('send_welcome_message_to_users_on_wait_list', 'enrol_select');
+        $label = get_string_on_list_x(enrol_select_plugin::WAIT, 'send_welcome_message_to_users_on_listname_X');
         $mform->addElement('selectyesno', 'customtext3switch', $label);
         $mform->addHelpButton('customtext3switch', 'custom_welcome_message', 'enrol_select');
 
@@ -314,7 +325,12 @@ class enrol_select_edit_form extends moodleform {
             }
 
             if (isset($data['customchar3']) === false || $data['customchar3'] !== enrol_select_plugin::ACCEPTED) {
-                $errors['customdec1'] = get_string('the_delay_cannot_be_set_if_the_default_list_is_accepted', 'enrol_select');
+                $errors['customdec1'] = get_string_on_list_x(
+                    enrol_select_plugin::ACCEPTED,
+                    'the_delay_cannot_be_set_unless_default_list_is_accepted',
+                    'listname',
+                    true
+                );
             }
 
             if ($data['customdec1'] < 1200) {

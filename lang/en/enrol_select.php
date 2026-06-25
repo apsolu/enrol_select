@@ -36,29 +36,30 @@ $string['check_enrolment_payment'] = 'Contrôle le paiement d’une inscription'
 $string['cohort_X_is_already_used_with_role_Y_by_college_Z'] = 'La cohorte « {$a->cohort} » est déjà utilisée avec le rôle « {$a->role} » par la population « {$a->college} ».';
 $string['college_unused_cohorts'] = '<details class="alert alert-info"><summary class="mb-3">Information</summary><p>Ces cohortes ne sont actuellement pas utilisées dans les populations :</p><ul>{$a}</ul></details>';
 $string['continue_my_enrolments'] = 'Continuer mes inscriptions';
-$string['copy_users_on_X_to'] = 'Copier les utilisateurs sur « {$a} » vers';
+$string['copy_users_on_X_to'] = 'Copier les utilisateurs actuellement sur la {$a} vers';
 $string['custom_welcome_message'] = 'Message de bienvenue personnalisé';
 $string['custom_welcome_message_help'] = 'Les utilisateurs recevront un message de bienvenue par courriel lors de leur inscription.';
-$string['custom_welcome_message_on_accepted_list'] = 'Message de bienvenue personnalisé pour la liste des acceptés';
-$string['custom_welcome_message_on_main_list'] = 'Message de bienvenue personnalisé pour la liste principale';
-$string['custom_welcome_message_on_wait_list'] = 'Message de bienvenue personnalisé pour la liste d’attente';
+// $string['custom_welcome_message_on_accepted_list'] = 'Message de bienvenue personnalisé pour la liste des acceptés'; // Suppr.
+// $string['custom_welcome_message_on_main_list'] = 'Message de bienvenue personnalisé pour la liste principale'; // Suppr.
+// $string['custom_welcome_message_on_wait_list'] = 'Message de bienvenue personnalisé pour la liste d’attente'; // Suppr.
 $string['date_diverging_from_calendar_date'] = 'Date divergente par rapport à la date du calendrier';
 $string['default_enrolment_list'] = 'Liste d’inscription par défaut';
-$string['default_enrolment_list_help'] = 'Détermine si les nouvelles inscriptions doivent être automatiquement acceptées. Ce réglage s’applique tant que les quotas ne sont pas atteints. Pour l’utilisation de l’option « Délai de paiement », la valeur de cette option doit être « Liste des étudiants acceptés ».';
+$string['default_enrolment_list_help'] = 'Détermine si les nouvelles inscriptions doivent être automatiquement acceptées. Ce réglage s’applique tant que les quotas ne sont pas atteints. Pour l’utilisation de l’option « Délai de paiement », la valeur de cette option doit être « {$a} ».';
 $string['default_settings'] = 'Paramétrage par défaut';
+$string['default_value'] = 'Valeur par défaut : ';
 $string['edit_field_X'] = 'Modifier le champ « {$a} »';
 $string['enable_automatic_list_filling'] = 'Activer la remontée de liste automatique';
-$string['enable_automatic_list_filling_help'] = 'Permet de faire remonter un étudiant sur liste complémentaire dès qu’une place se libère sur liste principale. L’action est appliquée seulement lorsqu’un étudiant se désinscrit en période d’inscription. Cette option n’est pas compatible avec l’option « Délai de paiement ».';
-$string['enrollee_accepted_list'] = 'Candidat Inscription';
-$string['enrollee_deleted_list'] = 'Candidat Refusé';
-$string['enrollee_main_list'] = 'Candidat Principale';
-$string['enrollee_wait_list'] = 'Candidat Attente';
-$string['enrollee_wish_list'] = 'Candidat Voeux';
-$string['enrollees'] = 'Inscrits';
+$string['enable_automatic_list_filling_help'] = 'Permet de faire remonter sur la liste par défaut ({$a->accepted} ou {$a->main} selon la configuration) un étudiant actuellement sur la {$a->wait} dès qu’une place s’y libère. L’action est appliquée seulement lorsqu’un étudiant se désinscrit en période d’inscription. Cette option n’est pas compatible avec l’option « Délai de paiement ».';
+// $string['enrollee_accepted_list'] = 'Candidat Inscription'; // SUpp (dans local_apsolu).
+// $string['enrollee_deleted_list'] = 'Candidat Refusé'; // SUpp (dans local_apsolu).
+// $string['enrollee_main_list'] = 'Candidat Principale'; // SUpp (dans local_apsolu).
+// $string['enrollee_wait_list'] = 'Candidat Attente'; // SUpp (dans local_apsolu).
+// $string['enrollee_wish_list'] = 'Candidat Voeux'; // SUpp (dans local_apsolu).
+// $string['enrollees'] = 'Inscrits'; // Supp (existe déjà dans local_apsolu, inutilisé).
 $string['enrolment_list'] = 'Liste d’inscription';
-$string['enrolment_methods_overview'] = 'Vue d\'ensemble des méthodes d\'inscription';
+$string['enrolment_methods_overview'] = 'Vue d’ensemble des méthodes d’inscription';
 $string['enrolment_to'] = 'Inscription en {$a}';
-$string['enrolments_overview'] = 'Vue d\'ensemble des inscriptions';
+$string['enrolments_overview'] = 'Vue d’ensemble des inscriptions';
 $string['filters_for_managers'] = 'Filtres pour gestionnaires';
 $string['it_is_currently_not_possible_to_indicate_a_duration_greater_than_one_day'] = 'Pour des raisons techniques, il n’est pour le moment pas possible d’indiquer une durée supérieure à 27 heures.';
 $string['list'] = 'Liste';
@@ -83,12 +84,13 @@ $string['no_places_available'] = 'Aucune place disponible';
 $string['no_quotas'] = 'Aucun quota';
 $string['no_seat_restrictions'] = 'Aucune restriction de place';
 $string['no_select_enrolment_method_uses_reenrolment_setting'] = 'Aucune méthode d’inscription par voeux n’utilise le paramètre « Instance de réinscription ».';
-$string['number_of_accepted_enrolments'] = 'Nombre d’inscriptions acceptées';
-$string['number_of_deleted_enrolments'] = 'Nombre de désinscriptions';
-$string['number_of_enrolments_on_main_list'] = 'Nombre d’inscriptions sur liste principale';
-$string['number_of_enrolments_on_waiting_list'] = 'Nombre d’inscriptions sur liste d’attente';
+// $string['number_of_accepted_enrolments'] = 'Nombre d’inscriptions acceptées'; // Supp (passé dans local_apsolu).
+// $string['number_of_deleted_enrolments'] = 'Nombre de désinscriptions'; // Supp (passé dans local_apsolu).
+// $string['number_of_enrolments_on_main_list'] = 'Nombre d’inscriptions sur liste principale'; // Supp (passé dans local_apsolu).
+// $string['number_of_enrolments_on_waiting_list'] = 'Nombre d’inscriptions sur liste d’attente'; // Supp (passé dans local_apsolu).
+
 $string['number_of_wishes'] = 'Nombre de voeux';
-$string['only_students_on_the_accepted_list_will_be_transferred_to_the_list_of_your_choice'] = 'Seuls les étudiants inscrits sur la liste des acceptés seront reportés sur la liste de votre choix.';
+// $string['only_students_on_the_accepted_list_will_be_transferred_to_the_list_of_your_choice'] = 'Seuls les étudiants inscrits sur la liste des acceptés seront reportés sur la liste de votre choix.'; // Supp. (inutilisé).
 $string['other_enrolment_number_X_type_Y'] = 'Autre inscription #{$a->number} ({$a->type})';
 $string['overview'] = 'Vue d’ensemble';
 $string['payment_deadline'] = 'Délai de paiement';
@@ -102,16 +104,19 @@ $string['pluginname_desc'] = 'Le plugin d’inscription par voeux permet aux uti
 $string['policyagree'] = 'J’atteste avoir pris connaissances de <a href="{$a}" target="blank_">ces recommandations médicales</a>.';
 $string['reenrolment_disabled'] = 'Réinscription désactivée';
 $string['selection_criteria'] = 'Critères de sélection';
-$string['send_welcome_message_to_users_on_accepted_list'] = 'Envoyer un message aux utilisateurs sur la liste des acceptés';
-$string['send_welcome_message_to_users_on_main_list'] = 'Envoyer un message aux utilisateurs sur liste principale';
-$string['send_welcome_message_to_users_on_wait_list'] = 'Envoyer un message aux utilisateurs sur liste complémentaire';
+// $string['send_welcome_message_to_users_on_accepted_list'] = 'Envoyer un message aux utilisateurs sur la liste des acceptés'; // Supp.
+// $string['send_welcome_message_to_users_on_listname_X'] = 'Envoyer un message aux utilisateurs sur la liste {$a}';
+// $string['send_welcome_message_to_users_on_main_list'] = 'Envoyer un message aux utilisateurs sur liste principale'; // Supp.
+// $string['send_welcome_message_to_users_on_wait_list'] = 'Envoyer un message aux utilisateurs sur liste complémentaire'; // Supp.
 $string['settings'] = 'Paramètres';
 $string['the_delay_cannot_be_combined_with_the_automatic_list_filling'] = 'L’option « délai de paiement » ne peut pas être combinée avec l’option de « remontée de liste automatique ».';
-$string['the_delay_cannot_be_set_if_the_default_list_is_accepted'] = 'L’option « délai de paiement » ne peut pas être définie si l’option « liste d’inscription par défaut » n’a pas la valeur « liste des étudiants acceptés ».';
+// $string['the_delay_cannot_be_set_if_the_default_list_is_accepted'] = 'L’option « délai de paiement » ne peut pas être définie si l’option « liste d’inscription par défaut » n’a pas la valeur « liste des étudiants acceptés ».'; // Suppr.
+$string['the_delay_cannot_be_set_unless_default_list_is_accepted'] = 'L’option « délai de paiement » ne peut pas être définie si l’option « liste d’inscription par défaut » n’a pas la valeur « {$a} ».';
 $string['the_delay_cannot_be_set_to_a_value_of_less_than_20_minutes'] = 'L’option « délai de paiement » ne peut pas être définie à une valeur inférieure à 20 minutes.';
 $string['the_field_welcome_message_seems_to_be_empty'] = 'Le champ « Message de bienvenue personnalisé » semble être est vide. Merci de confirmer ce choix en sélectionnant la valeur « Non » dans le champ « Envoyer un message aux utilisateurs ».';
 $string['the_user_X_has_reached_their_wish_limit_for_the_role_Y'] = 'L’utilisateur #{$a->userid} a atteint sa limite de voeux pour le rôle #{$a->roleid}.';
-$string['there_are_still_places_on_the_wait_list'] = 'Il reste des places sur liste complémentaire';
+// $string['there_are_still_places_on_the_wait_list'] = 'Il reste des places sur liste complémentaire'; // Supp.
+$string['there_are_still_places_on_listname_X'] = 'Il reste des places sur la liste {$a}';
 $string['unenrolment_from'] = 'Désinscription de {$a}';
 $string['unenrolment_message'] = '<p>Bonjour,</p>
 <p>Vous avez été désinscrit du cours {$a->coursename}.</p>
@@ -122,18 +127,21 @@ $string['unenrolment_message'] = '<p>Bonjour,</p>
 <p>Au besoin, n’hésitez pas à nous contacter via l’adresse {$a->contact}.</p>
 <p>Cordialement,</p>';
 $string['warning_changing_calendar_may_result_in_loss_of_data'] = 'Attention ! La modification du calendrier peut entraîner une perte de données (comme par exemple les notes des étudiants).';
-$string['welcome_message_on_accepted_list'] = 'Message de bienvenue de la liste des acceptés';
-$string['welcome_message_on_main_list'] = 'Message de bienvenue de la liste principale';
-$string['welcome_message_on_wait_list'] = 'Message de bienvenue de la liste complémentaire';
+// $string['welcome_message_on_accepted_list'] = 'Message de bienvenue de la liste des acceptés'; // Supp.
+// $string['welcome_message_on_main_list'] = 'Message de bienvenue de la liste principale'; // Supp.
+// $string['welcome_message_on_wait_list'] = 'Message de bienvenue de la liste complémentaire'; // Supp.
 $string['welcome_messages'] = 'Messages de bienvenue';
-$string['x_accepted_enrolment_s'] = '{$a} inscription(s) acceptée(s)';
+// $string['x_accepted_enrolment_s'] = '{$a} inscription(s) « acceptées »'; // Supp.
+$string['x_enrolments_on_status_X'] = ' inscription(s) avec le statut « {$a} »';
+$string['number_of_enrolments_on_status_X'] = 'Nombre d’inscriptions avec le statut « {$a} »';
 $string['x_enrolment_methods_changed'] = '{$a} méthode(s) d’inscription modifiée(s)';
 $string['x_other_enrolment_s'] = '{$a} autre(s) inscription(s)';
-$string['x_place_remaining_on_the_main_list'] = '{$a} place restante sur liste principale';
-$string['x_place_remaining_on_the_wait_list'] = '{$a} place restante sur liste complémentaire';
-$string['x_places_remaining_on_the_main_list'] = '{$a} places restantes sur liste principale';
-$string['x_places_remaining_on_the_wait_list'] = '{$a} places restantes sur liste complémentaire';
-$string['you_are_on_X_list'] = 'Vous êtes sur {$a}.';
+$string['place_remaining_on_listname_X'] = 'place restante sur la liste {$a}';
+$string['places_remaining_on_listname_X'] = 'places restantes sur la liste {$a}';
+// $string['x_places_remaining_on_the_main_list'] = '{$a} places restantes sur liste principale'; // Supp.
+// $string['x_places_remaining_on_the_wait_list'] = '{$a} places restantes sur liste complémentaire'; // Supp. (pas utilisé).
+// $string['you_are_on_X_list'] = 'Vous êtes sur la liste {$a}.'; // Supp.
+$string['you_are_on_listname_X'] = 'Vous êtes sur la liste {$a}.';
 $string['you_must_set_a_calendar_so_that_payments_can_apply'] = 'Vous devez définir un calendrier afin que les paiements puissent s’appliquer.';
 $string['your_enrolment_has_been_registered'] = 'Votre inscription a été enregistrée.';
 $string['your_wish_has_been_registered'] = 'Votre vœu a été enregistré.';
@@ -147,6 +155,46 @@ $string['select:managepastenrolment'] = 'Gérer les utilisateurs inscrits sur de
 $string['select:unenrol'] = 'Désinscrire du cours les utilisateurs';
 
 $string['enrolname'] = 'Nom de l’instance d’inscription';
+
+// Valeurs par défaut pour les libellés des noms de liste.
+// Format "status".
+$string['list_accepted'] = 'accepté';
+$string['list_main'] = 'principale';
+$string['list_wait'] = 'complémentaire';
+$string['list_deleted'] = '« désinscrit »';
+
+// Format "status abbr.".
+$string['accepted_list_abbr'] = 'Accepté';
+$string['main_list_abbr'] = 'LP';
+$string['wait_list_abbr'] = 'LC';
+$string['deleted_list_abbr'] = 'Désins.';
+
+// Format "status short".
+$string['accepted_list_short'] = 'Accepté';
+$string['main_list_short'] = 'Principale';
+$string['wait_list_short'] = 'Complément';
+$string['deleted_list_short'] = 'Désinscrit';
+
+// Format "listname".
+$string['accepted_list'] = 'des étudiants acceptés';
+$string['main_list'] = 'principale';
+$string['wait_list'] = 'complémentaire';
+$string['deleted_list'] = 'désinscrit';
+
+// Format "description".
+$string['accepted_description'] = 'acceptés (inscription validée)';
+$string['main_description'] = 'sur liste principale (en attente de validation)';
+$string['wait_description'] = 'sur liste complémentaire (non admis)';
+$string['deleted_description'] = 'désinscrits (inscription supprimée)';
+
+$string['description_accessgranted_true'] = 'Ils ont accès aux forums et aux documents du cours';
+$string['description_accessgranted_false'] = 'Ils n’ont accès ni aux forums, ni aux documents du cours';
+$string['description_displaysession_first'] = 'Seule la première session du cours est indiquée sur leur page d’accueil.';
+$string['description_displaysession_all'] = 'Une liste de toutes les sessions à venir est également indiquée sur leur page d’accueil.';
+$string['description_displaysession_none'] = 'Ce cours n’est pas référencé sur leur page d’accueil.';
+
+// $string['main_list_registered'] = 'Inscrit sur liste principale'; // Supp : plus utilisé depuis la suppression du template overview_wishes en 2021.
+// $string['wait_list_registered'] = 'Inscrit sur liste complémentaire';  // Supp ?
 
 // Edit form.
 $string['enableinstance'] = 'Activer cette méthode d’inscription';
@@ -167,13 +215,35 @@ $string['cohorts'] = 'Cohortes';
 $string['selectcohorts'] = 'Sélectionner les populations (cohortes)';
 $string['registertype'] = 'Type d’inscription';
 
+// Edit list form.
+$string['edit_listname'] = 'Nom de la liste';
+$string['edit_listname_help'] = 'Chaîne servant à renommer l’intitulé de la liste. {$a}.';
+$string['edit_status'] = 'Statut d’inscription';
+$string['edit_status_help'] = 'Chaîne servant à renommer le statut de l’inscription. {$a}.';
+$string['edit_statusabbr'] = 'Acronyme';
+$string['edit_statusshort'] = 'Version courte';
+$string['edit_description'] = 'Description';
+$string['edit_description_help'] = 'Chaîne servant à redéfinir la description du statut de l’inscription. {$a}.';
+$string['description_student'] = 'étudiants {$a}';
+$string['edit_list_title'] = 'Modifier les chaînes pour la liste « {$a} »';
+$string['formaterror'] = 'La valeur saisie doit respecter la formulation suivante : « {$a} »';
+$string['listname_strformat'] = 'liste {$a}';
+$string['listname_strexample'] = 'nom de la liste';
+$string['description_strformat'] = 'étudiants {$a}';
+$string['description_strexample'] = 'état de l’inscription';
+$string['status_strexample'] = 'La valeur saisie doit être un adjectif';
+$string['reset_defaultvalues_ok'] = 'Les champs de la liste ont été repositionnés sur leurs valeurs par défaut.';
+$string['savingvalues_ok'] = 'Les valeur associés à la liste {$a} ont été modifiées.';
+$string['savingvalues_notok'] = 'Les valeur associés à cette liste n’ont pas été correctement modifiées.';
+$string['default_reset_values'] = '<strong>Valeurs par défaut : </strong>laissez le champ vide lors de l’enregistrement pour réinitialiser la chaîne à sa valeur par défaut';
+
 $string['enrolenddateerror'] = 'La date de fin des inscriptions ne peut être antérieure à celle du début';
 $string['courseenddateerror'] = 'La date de fin du cours ne peut être antérieure à celle du début';
 $string['reenrolenddateerror'] = 'La date de fin des réinscriptions ne peut être antérieure à celle du début';
 $string['reenrolstartdatemissingerror'] = 'La date de début des réinscriptions doit être renseignée si la date de fin est présente';
 $string['reenrolenddatemissingerror'] = 'La date de fin des réinscriptions doit être renseignée si la date de début est présente';
 
-$string['max_places'] = 'Nombre de places sur la liste des acceptés et sur la liste principale';
+$string['max_places'] = 'Nombre de places sur la liste {$a->accepted} et sur la liste {$a->main}';
 $string['free_places'] = 'Places disponibles';
 
 $string['overviewtitle'] = 'Inscription aux activités';
@@ -192,7 +262,8 @@ $string['complements_list'] = 'Liste des activités complémentaires';
 $string['complements'] = 'Activités complémentaires';
 $string['no_complements'] = 'Aucune activité complémentaire ouverte aux inscriptions.';
 
-$string['max_waiting_places'] = 'Nombre de places sur liste complémentaire';
+// $string['max_waiting_places'] = 'Nombre de places sur liste complémentaire'; // Supp.
+$string['max_places_on_listname_X'] = 'Nombre de places sur la liste {$a}';
 $string['role'] = 'Rôle attribué par défaut';
 
 $string['status'] = 'Activer cette méthode d’inscription';
@@ -203,27 +274,10 @@ $string['wishes'] = 'Voeux';
 $string['roles'] = 'Rôles';
 $string['prices'] = 'Tarification';
 $string['college'] = 'Population';
-$string['colleges'] = 'Population';
+$string['colleges'] = 'Populations';
 $string['renewals'] = 'Réinscriptions en masse';
+$string['lists'] = 'Gestion des listes';
 
-$string['accepted_list'] = 'Liste des étudiants acceptés';
-$string['accepted_list_abbr'] = 'Accepté';
-$string['accepted_list_short'] = 'Accepté';
-$string['accepted_description'] = 'Liste des étudiants acceptés en cours. Ils ont accès aux forums et aux documents du cours. Une liste de toutes les sessions à venir est également indiquée sur leur page d’accueil.';
-$string['main_list'] = 'Liste principale';
-$string['main_list_abbr'] = 'LP';
-$string['main_list_short'] = 'Principale';
-$string['main_description'] = 'Liste des étudiants sur liste principale. Ils n’ont accès ni aux forums, ni aux documents du cours. Seule la première session du cours est indiquée sur leur page d’accueil.';
-$string['main_list_registered'] = 'Inscrit sur liste principale';
-$string['wait_list'] = 'Liste complémentaire';
-$string['wait_list_abbr'] = 'LC';
-$string['wait_list_short'] = 'Complément';
-$string['wait_description'] = 'Liste des étudiants sur liste complémentaire. Ils n’ont accès ni aux forums, ni aux documents du cours. Seule la première session du cours est indiquée sur leur page d’accueil.';
-$string['wait_list_registered'] = 'Inscrit sur liste complémentaire';
-$string['deleted_list'] = 'Liste des étudiants désinscrits';
-$string['deleted_list_abbr'] = 'Désins.';
-$string['deleted_list_short'] = 'Désinscrit';
-$string['deleted_description'] = 'Liste des étudiants désinscrits. Ils n’ont accès ni aux forums, ni aux documents du cours. Ce cours n’est pas référencé sur leur page d’accueil.';
 $string['error:enrol'] = 'Impossible de vous inscrire à ce cours';
 
 $string['enrolment'] = 'Inscription';
@@ -246,84 +300,101 @@ $string['full_registration'] = 'Inscription complète';
 $string['maxwishes'] = 'Nombre de voeux maximum';
 $string['maxwishes_help'] = 'Nombre de voeux maximum par défaut attribué à un utilisateur n’étant pas clairement identifié dans le système d’information ; n’appartenant à aucune population définie.';
 
-$string['manage_notify'] = 'Envoyer une notification aux étudiants sélectionnés';
-$string['manage_notification_0'] = 'Vous avez été retiré de la liste des étudiants acceptés.';
-$string['manage_notification_2'] = 'Vous avez été retiré de la liste principale.';
-$string['manage_notification_3'] = 'Vous avez été retiré de la liste complémentaire.';
-$string['manage_notification_4'] = 'Vous avez été retiré de la liste des étudiants refusés.';
+// Supp ? inutilisé.
+// $string['manage_notify'] = 'Envoyer une notification aux étudiants sélectionnés';
+// $string['manage_notification_0'] = 'Vous avez été retiré de la liste des étudiants acceptés.';
+// $string['manage_notification_2'] = 'Vous avez été retiré de la liste principale.';
+// $string['manage_notification_3'] = 'Vous avez été retiré de la liste complémentaire.';
+// $string['manage_notification_4'] = 'Vous avez été retiré de la liste des étudiants refusés.';
+// Fin supp.
 
 $string['move_to'] = 'Déplacer';
-$string['move_to_accepted'] = 'Déplacer dans la liste des étudiants acceptés';
-$string['move_to_main'] = 'Déplacer dans la liste principale';
-$string['move_to_next_accepted'] = 'Réinscrire dans la liste des étudiants acceptés';
-$string['move_to_next_deleted'] = 'Réinscrire dans la liste des étudiants désinscrits';
-$string['move_to_next_main'] = 'Réinscrire dans la liste principale';
-$string['move_to_next_wait'] = 'Réinscrire dans la liste complémentaire';
-$string['move_to_wait'] = 'Déplacer dans la liste complémentaire';
-$string['move_to_deleted'] = 'Déplacer dans la liste des étudiants désinscrits';
+$string['move_on_listname_X'] = 'Déplacer dans la liste {$a}';
+$string['move_next_on_listname_X'] = 'Réinscrire dans la liste {$a}';
+
+// Supp. (refactor).
+// $string['move_to_accepted'] = 'Déplacer dans la liste des étudiants acceptés';
+// $string['move_to_main'] = 'Déplacer dans la liste principale';
+// $string['move_to_next_accepted'] = 'Réinscrire dans la liste des étudiants acceptés';
+// $string['move_to_next_deleted'] = 'Réinscrire dans la liste des étudiants désinscrits';
+// $string['move_to_next_main'] = 'Réinscrire dans la liste principale';
+// $string['move_to_next_wait'] = 'Réinscrire dans la liste complémentaire';
+// $string['move_to_wait'] = 'Déplacer dans la liste complémentaire';
+// $string['move_to_deleted'] = 'Déplacer dans la liste des étudiants désinscrits';
+// Fin supp.
 
 $string['notify'] = 'Notifier par email';
 $string['editenroltype'] = 'Modifier le type d’inscription';
 
 $string['send_message'] = 'Envoyer un message';
 
+$string['message_greetings'] = 'Bonjour,' . PHP_EOL . PHP_EOL . '{$a}' . PHP_EOL . PHP_EOL . 'Cordialement,';
+
 $string['goto'] = 'Déplacer de la liste {$a->from} vers la liste {$a->to}';
-$string['list_accepted'] = '"accepté"';
-$string['list_main'] = 'principale';
-$string['list_next_accepted'] = '"accepté" du prochain semestre';
-$string['list_next_main'] = 'principale du prochain semestre';
-$string['list_next_wait'] = 'complémentaire du prochain semestre';
-$string['list_next_deleted'] = '"désinscrit" du prochain semestre';
-$string['list_wait'] = 'complémentaire';
-$string['list_deleted'] = '"désinscrit"';
+$string['next_on_listname_X'] = '{$a} du prochain semestre';
+$string['previous_on_listname_X'] = '{$a} du semestre précédent';
+$string['message_moved_on_list'] = 'Vous avez été déplacé de la liste {$a->from} à la liste {$a->to}.';
+$string['message_moved_to_accepted'] = 'Votre pré-inscription a été confirmée.';
+$string['message_moved_to_next_accepted'] = 'Votre ré-inscription a été confirmée.';
+$string['message_moved_from_deleted'] = 'Vous avez été déplacé dans la liste {$a}.';
 
-$string['message_accepted_to_main'] = 'Bonjour,
 
-Vous avez été déplacé de la liste des inscrits à la liste principale.
+// Supp ***** // (refactor).
+// $string['list_accepted'] = '« accepté »';
+// $string['list_main'] = 'principale';
+// $string['list_next_accepted'] = '« accepté » du prochain semestre';
+// $string['list_next_main'] = 'principale du prochain semestre';
+// $string['list_next_wait'] = 'complémentaire du prochain semestre';
+// $string['list_next_deleted'] = '« désinscrit » du prochain semestre';
+// $string['list_wait'] = 'complémentaire';
+// $string['list_deleted'] = '« désinscrit »';
 
-Cordialement,';
-$string['message_accepted_to_wait'] = str_replace('principale', 'complémentaire', $string['message_accepted_to_main']);
-$string['message_accepted_to_deleted'] = str_replace('principale', 'désinscrits', $string['message_accepted_to_main']);
+// $string['message_accepted_to_main'] = 'Bonjour,
 
-$string['message_main_to_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits à la liste principale', 'Votre pré-inscription a été confirmée', $string['message_accepted_to_main']);
-$string['message_main_to_wait'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_wait']);
-$string['message_main_to_deleted'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_deleted']);
+// Vous avez été déplacé de la liste des inscrits à la liste principale.
 
-$string['message_accepted_to_next_main'] = 'Bonjour,
+// Cordialement,';
 
-Vous avez été déplacé de la liste des inscrits du semestre précédent à la liste principale du prochain semestre.
+// $string['message_accepted_to_wait'] = str_replace('principale', 'complémentaire', $string['message_accepted_to_main']);
+// $string['message_accepted_to_deleted'] = str_replace('principale', 'désinscrits', $string['message_accepted_to_main']);
 
-Cordialement,';
-$string['message_accepted_to_next_accepted'] = str_replace('principale', 'des inscrits', $string['message_accepted_to_next_main']);
-$string['message_main_to_next_main'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_next_main']);
-$string['message_accepted_to_next_wait'] = str_replace('principale', 'complémentaire', $string['message_accepted_to_next_main']);
-$string['message_accepted_to_next_deleted'] = str_replace('principale', 'désinscrits', $string['message_accepted_to_next_main']);
+// $string['message_main_to_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits à la liste principale', 'Votre pré-inscription a été confirmée', $string['message_accepted_to_main']);
+// $string['message_main_to_wait'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_wait']);
+// $string['message_main_to_deleted'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_deleted']);
 
-$string['message_main_to_next_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits du semestre précédent à la liste principale du prochain semestre', 'Votre ré-inscription a été confirmée', $string['message_accepted_to_next_main']);
-$string['message_main_to_next_wait'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_next_wait']);
-$string['message_main_to_next_deleted'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_next_deleted']);
+// $string['message_accepted_to_next_main'] = 'Bonjour,
 
-$string['message_wait_to_next_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits du semestre précédent à la liste principale du prochain semestre', 'Votre ré-inscription a été confirmée', $string['message_accepted_to_next_main']);
-$string['message_wait_to_next_main'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_next_main']);
-$string['message_wait_to_next_deleted'] = str_replace('des inscrits', 'complémentaire', $string['message_accepted_to_next_deleted']);
+// Vous avez été déplacé de la liste des inscrits du semestre précédent à la liste principale du prochain semestre.
 
-$string['message_deleted_to_next_accepted'] = str_replace('de la liste des inscrits du semestre précédent à la liste principale', 'dans la liste des inscrits', $string['message_accepted_to_next_main']);
-$string['message_deleted_to_next_main'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste principale', $string['message_accepted_to_next_main']);
-$string['message_deleted_to_next_wait'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste complémentaire', $string['message_accepted_to_next_main']);
+// Cordialement,';
+// $string['message_accepted_to_next_accepted'] = str_replace('principale', 'des inscrits', $string['message_accepted_to_next_main']);
+// $string['message_main_to_next_main'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_next_main']);
+// $string['message_accepted_to_next_wait'] = str_replace('principale', 'complémentaire', $string['message_accepted_to_next_main']);
+// $string['message_accepted_to_next_deleted'] = str_replace('principale', 'désinscrits', $string['message_accepted_to_next_main']);
 
-$string['message_wait_to_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits à la liste principale', 'Votre pré-inscription a été confirmée', $string['message_accepted_to_main']);
-$string['message_wait_to_main'] = str_replace('des inscrits', 'complémentaire', $string['message_accepted_to_main']);
-$string['message_wait_to_deleted'] = str_replace('des inscrits', 'complémentaire', $string['message_accepted_to_deleted']);
+// $string['message_main_to_next_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits du semestre précédent à la liste principale du prochain semestre', 'Votre ré-inscription a été confirmée', $string['message_accepted_to_next_main']);
+// $string['message_main_to_next_wait'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_next_wait']);
+// $string['message_main_to_next_deleted'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_next_deleted']);
 
-$string['message_deleted_to_accepted'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste des inscrits', $string['message_accepted_to_main']);
-$string['message_deleted_to_main'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste principale', $string['message_accepted_to_main']);
-$string['message_deleted_to_wait'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste complémentaire', $string['message_accepted_to_main']);
+// $string['message_wait_to_next_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits du semestre précédent à la liste principale du prochain semestre', 'Votre ré-inscription a été confirmée', $string['message_accepted_to_next_main']);
+// $string['message_wait_to_next_main'] = str_replace('des inscrits', 'principale', $string['message_accepted_to_next_main']);
+// $string['message_wait_to_next_deleted'] = str_replace('des inscrits', 'complémentaire', $string['message_accepted_to_next_deleted']);
 
-$string['message_promote'] = 'Bonjour,
+// $string['message_deleted_to_next_accepted'] = str_replace('de la liste des inscrits du semestre précédent à la liste principale', 'dans la liste des inscrits', $string['message_accepted_to_next_main']);
+// $string['message_deleted_to_next_main'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste principale', $string['message_accepted_to_next_main']);
+// $string['message_deleted_to_next_wait'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste complémentaire', $string['message_accepted_to_next_main']);
 
-Suite à un désistement, vous avez été placé sur liste principale.
+// $string['message_wait_to_accepted'] = str_replace('Vous avez été déplacé de la liste des inscrits à la liste principale', 'Votre pré-inscription a été confirmée', $string['message_accepted_to_main']);
+// $string['message_wait_to_main'] = str_replace('des inscrits', 'complémentaire', $string['message_accepted_to_main']);
+// $string['message_wait_to_deleted'] = str_replace('des inscrits', 'complémentaire', $string['message_accepted_to_deleted']);
 
-Cordialement,';
+// $string['message_deleted_to_accepted'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste des inscrits', $string['message_accepted_to_main']);
+// $string['message_deleted_to_main'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste principale', $string['message_accepted_to_main']);
+// $string['message_deleted_to_wait'] = str_replace('de la liste des inscrits à la liste principale', 'dans la liste complémentaire', $string['message_accepted_to_main']);
+
+// FIN SUPP **** //.
+
+$string['message_promote'] = 'Suite à un désistement, vous avez été placé sur la liste {$a}.';
 
 $string['notifystudents'] = 'Notifier les étudiants';
 $string['message'] = 'Message';
@@ -389,7 +460,7 @@ $string['reenrolmentnotificationsubject'] = 'Récapitulatif de vos réinscriptio
 $string['reenrolmentnotification'] = 'Bonjour,' . PHP_EOL . PHP_EOL .
     'Vous avez choisi de :' . PHP_EOL .
     '{$a->choices}' . PHP_EOL . PHP_EOL .
-    'En cas de demande de réinscription, il vous appartient maintenant de vous présenter (avec votre tenue) sur le lieu et à l’heure du cours lors de la semaine de rentrée au SIUAPS - voir "mes rendez-vous à venir"' . PHP_EOL . PHP_EOL .
+    'En cas de demande de réinscription, il vous appartient maintenant de vous présenter (avec votre tenue) sur le lieu et à l’heure du cours lors de la semaine de rentrée au SIUAPS - voir « mes rendez-vous à venir »' . PHP_EOL . PHP_EOL .
     'À bientôt,' . PHP_EOL . PHP_EOL .
     'L’équipe du SIUAPS';
 $string['reenrolmentcontinue'] = 'poursuivre le cours {$a->fullname}';

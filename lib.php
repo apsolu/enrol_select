@@ -17,9 +17,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 use local_apsolu\core\federation\course as FederationCourse;
+use html_writer;
 
 require_once($CFG->dirroot . '/enrol/select/locallib.php');
-require_once($CFG->dirroot . '/local/apsolu/locallib.php');
 
 /**
  * Classe principale du module enrol_select.
@@ -75,28 +75,99 @@ class enrol_select_plugin extends enrol_plugin {
         self::DELETED => 'deleted',
     ];
 
-    /**
-     * Retourne la chaine de caractères correspondant à une constante.
-     *
-     * @param int|string  $status Valeur correspondant à une des constantes de classe (ACCEPTED, MAIN, WAIT et DELETED).
-     * @param null|string $type   Valeur pouvant être null, abbr ou short.
-     *
-     * @return string|false Retourne false si le $status n'est pas correct.
+    /** @var array Tableau indexé avec les différents champs paramétrables pour le statut de l'inscription
+     * et leurs correspondances avec les clés du fichier de langue et de la table de configuration du plugin.
+     * Dans la chaîne qui représente la clé, "%s" correspondra au statut ("accepted", "main" etc.).
      */
-    public static function get_enrolment_list_name($status, $type = null) {
-        if ($type !== null) {
-            $type = '_' . $type;
-        }
+    public static $listformats = [
+        'status' => 'list_%s',
+        'statusabbr' => '%s_list_abbr',
+        'statusshort' => '%s_list_short',
+        'listname' => '%s_list',
+        'description' => '%s_description',
+    ];
 
-        switch ($status) {
+    /**
+     * Retourne la liste des différents champs paramétrables pour décrire le statut de l'inscription.
+     *
+     * @return array les différents champs utilisables pour évoquer le statut de l'inscription
+     * (nom de la liste, statut de l'inscription, version abbrégée..).
+     */
+    public static function get_listformats(): array {
+        return array_keys(self::$listformats);
+    }
+
+    /**
+     * Renvoie le statut qui correspond au code numérique parmi les constantes de la classe.
+     *
+     * @param string|int $code la valeur numérique du statut défini par les constantes de la classe.
+     * @return string|false renvoie le statut sous forme de texte ('accepted', 'deleted'..),
+     *                          ou false si le $code n'est pas trouvé parmi les constantes de la classe.
+     */
+    public static function get_state_from_code($code) {
+        switch ($code) {
             case self::ACCEPTED:
             case self::MAIN:
             case self::WAIT:
             case self::DELETED:
-                return get_string(self::$states[$status] . '_list' . $type, 'enrol_select');
+                return self::$states[$code];
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Retourne la clé permettant de définir et de charger les chaînes de caractères (fichier de langue et table de configuration
+     *  du plugin) correspondant à un format du statut d'inscription.
+     *
+     * @param string|null $listformat le format à utiliser (valeur parmi les clés du tableau $listformats).
+     * @return string|null la clé à utiliser pour charger la chaîne de caractères.
+     *                          Renvoie null si $listformat n'est pas une clé du tableau $listformats.
+     */
+    public static function get_settingname($listformat): string|null {
+        if (isset(self::$listformats[$listformat])) {
+            return self::$listformats[$listformat];
+        }
+        return null;
+    }
+
+
+    /**
+     * Enregistre les modifications apportées aux chaînes de caractères custom pour le plugin enrol select.
+     *
+     * @param integer|string $state le code correspondant au statut dans les constantes de la classe.
+     * @param array $new liste des valeurs envoyées pour les différents champs.
+     * @param array $old liste des valeurs de départ pour les différents champs.
+     * @param array $defaults liste des valeurs par défaut pour les différents champs.
+     * @return boolean true s'il y a eu au moins une modification (ajout, update ou suppression) dans la configuration du plugin
+     */
+    public static function save_state_custom_strings(int|string $state, array $new, array $old, array $defaults): bool {
+
+        $haschanged = false; // Témoin de la modification effective du tableau des chaînes définies pour les différentes listes.
+        foreach ($old as $strtype => $strold) {
+            $strname = get_enrolment_strname($state, $strtype);
+            // On vérifie que la valeur a été modifiée.
+            if ($new[$strtype] != $strold) {
+                // Un champ vide entraine la suppression de la valeur custom (configuration du plugin).
+                // Idem si la valeur soumise est identique à la valeur par défaut.
+                if (empty($new[$strtype]) == true || $new[$strtype] == $defaults[$strtype]) {
+                    // Un champ vide entraine la suppression de la valeur custom (configuration du plugin).
+                    // Idem si la valeur soumise est identique à la valeur par défaut.
+                    unset_config($strname, 'enrol_select');
+
+                    $haschanged = true;
+                } else { // La valeur est ni vide ni identique à la valeur par défaut.
+                    $newconfig = unformatstr($new[$strtype], $strtype);
+                    $oldconfig = unformatstr($strold, $strtype);
+                    if ($newconfig != false && set_config($strname, $newconfig, 'enrol_select')) {
+                        add_to_config_log($strname, $oldconfig, $newconfig, 'enrol_select');
+                        $haschanged = true;
+                    }
+                }
+            }
         }
 
-        return false;
+        return $haschanged;
     }
 
     /**
@@ -1024,7 +1095,11 @@ class enrol_select_plugin extends enrol_plugin {
             $eventdata->userfrom = core_user::get_noreply_user();
             $eventdata->userto = $DB->get_record('user', ['id' => $user->userid]);
             $eventdata->subject = get_string('enrolcoursesubject', 'enrol_select', $course);
-            $eventdata->fullmessage = get_string('message_promote', 'enrol_select');
+            $eventdata->fullmessage = get_string(
+                'message_greetings',
+                'enrol_select',
+                get_string_on_list_x(self::ACCEPTED, 'message_promote', 'listname')
+            );
             $eventdata->fullmessageformat = FORMAT_PLAIN;
             $eventdata->fullmessagehtml = '';
             $eventdata->smallmessage = '';

@@ -104,9 +104,9 @@ foreach ($instances as $instance) {
         $otheroptions  = [];
 
         foreach (enrol_select_plugin::$states as $scode => $sstate) {
-            $mainoptions[$scode] = get_string('move_to_' . $sstate, 'enrol_select');
+            $mainoptions[$scode] = get_string_on_list_x($scode, 'move_on_listname_X');
             if ($nextinstance !== false) {
-                $suboptions['99' . $scode] = get_string('move_to_next_' . $sstate, 'enrol_select');
+                $suboptions['99' . $scode] = get_string_on_list_x($scode, 'move_next_on_listname_X');
             }
         }
 
@@ -138,8 +138,8 @@ foreach ($instances as $instance) {
 
         $list = new stdClass();
         $list->mastercheckbox = $OUTPUT->render($mastercheckbox);
-        $list->name = get_string($state . '_list', 'enrol_select');
-        $list->description = get_string($state . '_description', 'enrol_select');
+        $list->name = get_enrolment_fieldvalue($code, 'listname', false);
+        $list->description = get_status_description($code);
         $list->status = $code;
         $list->form_action = $CFG->wwwroot . '/enrol/select/manage_handler.php?enrolid=' . $instance->id;
         $list->enrol_user_link = $CFG->wwwroot . '/enrol/select/add.php?enrolid=' . $instance->id . '&status=' . $code;
@@ -282,7 +282,6 @@ foreach ($users as $user) {
     $enrolments = $user->accepted_enrolments + $user->other_enrolments;
     $user->accepted_enrolments = array_values($user->accepted_enrolments);
     $user->other_enrolments = array_values($user->other_enrolments);
-
     foreach ($enrolments as $enrolid => $enrolment) {
         if (isset($enrols[$enrolid]) === false) {
             continue;
@@ -318,7 +317,9 @@ foreach ($enrols as $enrolid => $enrol) {
 }
 
 $data->enrols = array_values($enrols);
-
+$customstr = new stdClass();
+$customstr->x_enrolments_on_status_accepted = get_string_on_list_x(enrol_select_plugin::ACCEPTED, 'x_enrolments_on_status_X');
+$data->customstr = $customstr;
 $PAGE->set_url('/enrol/select/manage.php', ['enrolid' => $instance->id]);
 $PAGE->set_pagelayout('base');
 $PAGE->set_title(get_string('manage_select_enrolments', 'enrol_select'));
