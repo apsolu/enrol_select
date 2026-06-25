@@ -215,10 +215,10 @@ $data->main_list = ucfirst(get_main_listname());
 $data->wait_list = ucfirst(get_wait_listname());
 $data->deleted_list = ucfirst(get_deleted_listname());
 
-$data->accepted_list_abbr = get_enrolment_fieldvalue(enrol_select_plugin::ACCEPTED, 'statusabbr', false);
-$data->main_list_abbr = get_enrolment_fieldvalue(enrol_select_plugin::MAIN, 'statusabbr', false);
-$data->wait_list_abbr = get_enrolment_fieldvalue(enrol_select_plugin::WAIT, 'statusabbr', false);
-$data->deleted_list_abbr = get_enrolment_fieldvalue(enrol_select_plugin::DELETED, 'statusabbr', false);
+$data->accepted_list_abbr = get_enrol_list_fieldvalue(enrol_select_plugin::ACCEPTED, 'statusabbr');
+$data->main_list_abbr = get_enrol_list_fieldvalue(enrol_select_plugin::MAIN, 'statusabbr');
+$data->wait_list_abbr = get_enrol_list_fieldvalue(enrol_select_plugin::WAIT, 'statusabbr');
+$data->deleted_list_abbr = get_enrol_list_fieldvalue(enrol_select_plugin::DELETED, 'statusabbr');
 
 // Définit les entêtes du tableau d'export (csv et excel).
 $headers = [];

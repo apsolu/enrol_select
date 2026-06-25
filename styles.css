@@ -187,7 +187,7 @@ input[type="radio"][name^="renew"] {
         }
     }
 
-    & form {
+    & #region-main form {
         margin-top: 2rem;
 
         & .col-form-label {

@@ -120,9 +120,9 @@ class enrol_select_edit_form extends moodleform {
         // Activer la remontée de liste automatique.
         $mform->addElement('selectyesno', 'customchar2', get_string('enable_automatic_list_filling', 'enrol_select'));
         $a = new stdClass();
-        $a->accepted = get_enrolment_fieldvalue(enrol_select_plugin::ACCEPTED, 'listname', false);
-        $a->main = get_enrolment_fieldvalue(enrol_select_plugin::MAIN, 'listname', false);
-        $a->wait = get_enrolment_fieldvalue(enrol_select_plugin::WAIT, 'listname', false);
+        $a->accepted = get_accepted_listname();
+        $a->main = get_main_listname();
+        $a->wait = get_wait_listname();
         $mform->addHelpButton('customchar2', 'enable_automatic_list_filling', 'enrol_select', '', false, $a);
         $mform->setType('customchar2', PARAM_INT);
         $mform->disabledIf('customchar2', 'customint3', 'eq', 0);

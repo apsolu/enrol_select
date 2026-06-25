@@ -145,20 +145,28 @@ class enrol_select_plugin extends enrol_plugin {
 
         $haschanged = false; // Témoin de la modification effective du tableau des chaînes définies pour les différentes listes.
         foreach ($old as $strtype => $strold) {
-            $strname = get_enrolment_strname($state, $strtype);
+            $strname = get_enrol_list_strname($state, $strtype);
+            // On enregistre la chaîne en minuscules sauf pour la version "abbrégée".
+            $newconfig = $strtype != 'statusabbr' && $strtype != 'statusshort' ? strtolower($new[$strtype]) : $new[$strtype];
+            $oldconfig = $strold;
+
             // On vérifie que la valeur a été modifiée.
-            if ($new[$strtype] != $strold) {
+            if ($newconfig != $strold) {
                 // Un champ vide entraine la suppression de la valeur custom (configuration du plugin).
                 // Idem si la valeur soumise est identique à la valeur par défaut.
-                if (empty($new[$strtype]) == true || $new[$strtype] == $defaults[$strtype]) {
+                if (empty($newconfig) == true || $newconfig == $defaults[$strtype]) {
                     // Un champ vide entraine la suppression de la valeur custom (configuration du plugin).
                     // Idem si la valeur soumise est identique à la valeur par défaut.
                     unset_config($strname, 'enrol_select');
 
                     $haschanged = true;
                 } else { // La valeur est ni vide ni identique à la valeur par défaut.
-                    $newconfig = unformatstr($new[$strtype], $strtype);
-                    $oldconfig = unformatstr($strold, $strtype);
+                    // Dans le cas du nom de la liste et de sa description, il y a un formatage qui est appliqué
+                    // en amont, il faut donc extraire la chaîne non formatée.
+                    if ($strtype == 'listname' || $strtype == 'description') {
+                        $newconfig = unformatstr($newconfig, $strtype);
+                        $oldconfig = unformatstr($oldconfig, $strtype);
+                    }
                     if ($newconfig != false && set_config($strname, $newconfig, 'enrol_select')) {
                         add_to_config_log($strname, $oldconfig, $newconfig, 'enrol_select');
                         $haschanged = true;

@@ -45,7 +45,7 @@ $recordset = $DB->get_recordset_sql($sql);
 
 $options = [];
 foreach (enrol_select_plugin::$states as $code => $state) {
-    $options[$code] = get_enrolment_fieldvalue($code, 'listname', false); // Nom de la liste.
+    $options[$code] = get_enrol_list_fieldvalue($code, 'listname'); // Nom de la liste.
 }
 
 if ($recordset->valid()) {

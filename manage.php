@@ -138,7 +138,7 @@ foreach ($instances as $instance) {
 
         $list = new stdClass();
         $list->mastercheckbox = $OUTPUT->render($mastercheckbox);
-        $list->name = get_enrolment_fieldvalue($code, 'listname', false);
+        $list->name = get_enrol_list_fieldvalue($code, 'listname');
         $list->description = get_status_description($code);
         $list->status = $code;
         $list->form_action = $CFG->wwwroot . '/enrol/select/manage_handler.php?enrolid=' . $instance->id;
@@ -256,7 +256,7 @@ foreach ($recordset as $record) {
         $enrolment->enrolname = $record->enrolname;
     }
 
-    $enrolment->state = get_string(enrol_select_plugin::$states[$record->status] . '_list_abbr', 'enrol_select');
+    $enrolment->state = get_enrol_list_fieldvalue($record->status, 'statusabbr');
     $enrolment->status = $record->status;
     $enrolment->timecreated = userdate($record->timecreated, '%a %d %b à %T');
     $enrolment->datecreated_sortable = userdate($record->timecreated, '%F');
@@ -318,7 +318,12 @@ foreach ($enrols as $enrolid => $enrol) {
 
 $data->enrols = array_values($enrols);
 $customstr = new stdClass();
-$customstr->x_enrolments_on_status_accepted = get_string_on_list_x(enrol_select_plugin::ACCEPTED, 'x_enrolments_on_status_X');
+$customstr->x_enrolments_on_status_accepted = get_string_on_list_x(
+    enrol_select_plugin::ACCEPTED,
+    'x_enrolments_on_status_X',
+    'status',
+    'true'
+);
 $data->customstr = $customstr;
 $PAGE->set_url('/enrol/select/manage.php', ['enrolid' => $instance->id]);
 $PAGE->set_pagelayout('base');

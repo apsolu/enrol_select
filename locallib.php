@@ -968,17 +968,17 @@ function enrol_select_generate_filters($courses = []) {
  *
  * @param int|string  $status Code numérique d'une des constantes de classe (ACCEPTED, MAIN, WAIT et DELETED).
  * @param string $listformat Valeur pour préciser la partie générique (format) du nom de la chaîne de caractère attendue.
- * @param bool $default valeur à retourner : valeur par défaut ou valeur custom (si définie dans la configuration du plugin) ?
+ * @param bool $usedefault valeur à retourner : valeur par défaut ou valeur custom (si définie dans la configuration du plugin) ?
  * @param bool $strformat appliquer une chaîne de formatage si disponible ?
  *
  * @return string|false la valeur par défaut ou la valeur custom, renvoie false si le $status n'est pas correct.
  */
-function get_enrolment_fieldvalue(int|string $status, string $listformat, bool $default = true, bool $strformat = true) {
+function get_enrol_list_fieldvalue(int|string $status, string $listformat, bool $usedefault = false, bool $strformat = true) {
     // Nom de la chaîne pour ce statut d'inscription.
-    $strname = get_enrolment_strname((int) $status, $listformat);
+    $strname = get_enrol_list_strname((int) $status, $listformat);
     if ($strname !== false) {
         // Valeur de la chaîne : par défaut ou définie dans la configuration du plugin.
-        $strvalue = get_enrolment_strvalue($strname, $default);
+        $strvalue = get_enrol_config($strname, $usedefault);
         // On applique un formatage à la chaîne (si définit dans le fichier de langue) ?
         if ($strformat) {
             $strvalue = formatstr($strvalue, $listformat);
@@ -992,12 +992,13 @@ function get_enrolment_fieldvalue(int|string $status, string $listformat, bool $
 
 /**
  * Retourne la clé permettant de charger la chaine de caractères correspondant au statut d'inscription avec le format donné.
+ * Ex. "accepted_list_short"
  *
  * @param integer $status le code du statut dans les constantes de la classe.
  * @param string $listformat Valeur pour préciser le format attendu.
  * @return string|false renvoie le nom complet de la chaîne, false si $status ou $listformat n'est pas trouvé.
  */
-function get_enrolment_strname(int $status, string $listformat): string|false {
+function get_enrol_list_strname(int $status, string $listformat): string|false {
     // Le statut correspond bien à une des constantes de classes ?
     $state = enrol_select_plugin::get_state_from_code($status);
     if ($state != false) {
@@ -1012,17 +1013,18 @@ function get_enrolment_strname(int $status, string $listformat): string|false {
 }
 
 /**
- * Retourne la chaîne de caractère définie pour un format et un statut d'inscription, soit dans le fichier de langues (valeur
- *  par défaut) soit dans la configuration du plugin si la valeur a été modifiée.
+ * Teste si un paramètre, dont la valeur par défaut est une entrée dans le fichier de langues, a été surchargé
+ *  dans la table de configuration du plugin. Retourne la valeur du paramètre par défaut s'il n'est pas dans la
+ *  configuration ou si le témoin $usedefault est true.
  *
- * @param string $strname le nom de la chaîne à retourner.
- * @param bool $default permet de forcer l'utilisation de la valeur par défaut.
- * @return string la valeur par défaut si $default est true ou si la variable n'est pas redéfinie dans la configuration
+ * @param string $strname la clé de la chaîne / du paramètre à retourner.
+ * @param bool $usedefault permet de forcer l'utilisation de la valeur par défaut.
+ * @return string la valeur par défaut si $usedefault est true ou si la variable n'est pas redéfinie dans la configuration,
  *                  la valeur "custom" (définie dans la configuration) sinon.
  */
-function get_enrolment_strvalue(string $strname, bool $default = true): string {
+function get_enrol_config(string $strname, bool $usedefault = false): string {
     $defaultstr = get_string($strname, 'enrol_select');
-    if ($default === true || get_config('enrol_select', $strname) == false) {
+    if ($usedefault === true || get_config('enrol_select', $strname) == false) {
         return $defaultstr;
     }
 
@@ -1116,11 +1118,13 @@ function get_string_on_list_x(array|int $status, string $getstring, ?string $lis
         $reg = '/.*_on_(.*)_X/i'; // Ex. welcome_on_listname_X : la chaîne de caractères sera chargée avec le format listname.
         preg_match($reg, $getstring, $matches);
 
-        if (empty($matches[0] != true)) { // L'un des formats a été identifié dans le pattern ?
+        if (empty($matches[0]) != true) { // L'un des formats a été identifié dans le pattern ?
             $listformat = $matches[1];
         }
-    } else if (in_array($listformat, $listformats) == false) {
-        return $strlist; // L'argument $listformat soumis ne correspond pas à un des formats pris en charge.
+    }
+
+    if (in_array($listformat, $listformats) == false) {
+        return $strlist; // L'argument $listformat soumis ou extrait du pattern ne correspond pas à un des formats pris en charge.
     }
 
     if (is_array($status)) {
@@ -1132,7 +1136,7 @@ function get_string_on_list_x(array|int $status, string $getstring, ?string $lis
             $target = '{$a->' . $state . '}';
             if ($state != false && str_contains($str, $target)) {
                 $search[]  = $target;
-                $replace[] = get_enrolment_fieldvalue($code, $listformat, false, $strformat);
+                $replace[] = get_enrol_list_fieldvalue($code, $listformat, false, $strformat);
             }
         }
 
@@ -1142,7 +1146,7 @@ function get_string_on_list_x(array|int $status, string $getstring, ?string $lis
     } else {
         // On récupère le libellé de la liste au format souhaité, avec la valeur appropriée
         // (valeur par défaut ou valeur custom si définie dans la configuratino du plugin).
-        $replace = get_enrolment_fieldvalue($status, $listformat, false, $strformat);
+        $replace = get_enrol_list_fieldvalue($status, $listformat, false, $strformat);
 
         // La variable $replace est à false si le code du statut n'est pas dans les constantes de la classe.
         if (empty($replace) != true) {
@@ -1169,10 +1173,10 @@ function get_goto_list_customstr(int $stateto, int $statefrom, bool $isnext = fa
     // Nom de la liste d'arrivée selon la configuration du plugin.
     $lists->to = $isnext ?
         get_string_on_list_x($stateto, 'next_on_listname_X') : // On précise s'il s'agit de celle du prochain semestre.
-        get_enrolment_fieldvalue($stateto, 'listname', false, false);
+        get_enrol_list_fieldvalue($stateto, 'listname', false, false);
 
     // Nom de la liste de départ selon la configuration du plugin.
-    $lists->from = get_enrolment_fieldvalue($statefrom, 'listname', false, false);
+    $lists->from = get_enrol_list_fieldvalue($statefrom, 'listname', false, false);
 
     return get_string('goto', 'enrol_select', $lists);
 }
@@ -1185,13 +1189,13 @@ function get_goto_list_customstr(int $stateto, int $statefrom, bool $isnext = fa
  * @param boolean $isnext true si la liste d'arrivée correspond au prochain semestre par rapport à la liste de départ.
  * @return string le message par défaut.
  */
-function get_moved_to_message(int $stateto, int $statefrom, bool $isnext = false): string {
+function get_moved_to_list_message(int $stateto, int $statefrom, bool $isnext = false): string {
     // Si la liste de départ est DELETED, cela n'est pas explicité : on évoque seulement la liste d'arrivée.
     if ($statefrom == enrol_select_plugin::DELETED) {
         // Nom de la liste d'arrivée selon la configuration du plugin.
         $tolist = $isnext ?
             get_string_on_list_x($stateto, 'next_on_listname_X') : // On précise s'il s'agit de celle du prochain semestre.
-            get_enrolment_fieldvalue($stateto, 'listname', false, false);
+            get_enrol_list_fieldvalue($stateto, 'listname', false, false);
         // Corps du message.
         $movedtostr = get_string('message_moved_from_deleted', 'enrol_select', $tolist);
     } else if ($stateto == enrol_select_plugin::ACCEPTED) {
@@ -1204,11 +1208,11 @@ function get_moved_to_message(int $stateto, int $statefrom, bool $isnext = false
         // Nom de la liste d'arrivée selon la configuration du plugin.
         $lists->to = $isnext ?
             get_string_on_list_x($stateto, 'next_on_listname_X') : // On précise s'il s'agit de celle du prochain semestre.
-            get_enrolment_fieldvalue($stateto, 'listname', false, false);
+            get_enrol_list_fieldvalue($stateto, 'listname', false, false);
         // Nom de la liste de départ selon la configuration du plugin.
         $lists->from = $isnext ?
             get_string_on_list_x($statefrom, 'previous_on_listname_X') : // On précise lorsqu'il s'agit de celle semestre précédent.
-            get_enrolment_fieldvalue($statefrom, 'listname', false, false);
+            get_enrol_list_fieldvalue($statefrom, 'listname', false, false);
         // Corps du message.
         $movedtostr = get_string('message_moved_on_list', 'enrol_select', $lists);
     }
@@ -1223,7 +1227,7 @@ function get_moved_to_message(int $stateto, int $statefrom, bool $isnext = false
  * @return string nom de la liste (format liste {nom de la liste}) pour le statut accepted.
  */
 function get_accepted_listname(): string {
-    return get_enrolment_fieldvalue(enrol_select_plugin::ACCEPTED, 'listname', false, true);
+    return get_enrol_list_fieldvalue(enrol_select_plugin::ACCEPTED, 'listname', false, true);
 }
 
 /**
@@ -1232,7 +1236,7 @@ function get_accepted_listname(): string {
  * @return string nom de la liste (format liste {nom de la liste}) pour le statut main.
  */
 function get_main_listname(): string {
-    return get_enrolment_fieldvalue(enrol_select_plugin::MAIN, 'listname', false, true);
+    return get_enrol_list_fieldvalue(enrol_select_plugin::MAIN, 'listname', false, true);
 }
 
 /**
@@ -1241,7 +1245,7 @@ function get_main_listname(): string {
  * @return string nom de la liste (format liste {nom de la liste}) pour le statut wait.
  */
 function get_wait_listname(): string {
-    return get_enrolment_fieldvalue(enrol_select_plugin::WAIT, 'listname', false, true);
+    return get_enrol_list_fieldvalue(enrol_select_plugin::WAIT, 'listname', false, true);
 }
 
 /**
@@ -1250,19 +1254,19 @@ function get_wait_listname(): string {
  * @return string nom de la liste (format liste {nom de la liste}) pour le statut deleted.
  */
 function get_deleted_listname(): string {
-    return get_enrolment_fieldvalue(enrol_select_plugin::DELETED, 'listname', false, true);
+    return get_enrol_list_fieldvalue(enrol_select_plugin::DELETED, 'listname', false, true);
 }
 
 /**
- * Retourne la description du statut de la liste d'inscription
- * Nom de la liste correspondant au statut, accès aux contenus, visibilité des sessions.
+ * Retourne la description du statut de la liste d'inscription :
+ * nom de la liste correspondant au statut, accès aux contenus, visibilité des sessions.
  *
  * @param int|string $status Code numérique d'une des constantes de classe (ACCEPTED, MAIN, WAIT et DELETED).
  * @return string description.
  */
 function get_status_description(int|string $status): string {
     // Description du statut pour cette liste.
-    $statusstr = mb_ucfirst(get_enrolment_fieldvalue($status, 'description', false));
+    $statusstr = mb_ucfirst(get_enrol_list_fieldvalue($status, 'description', false));
     if (empty($statusstr) == false) {
         // Description des droits associés en termes d'accès au contenu du cours et de visibilité des sessions (tableau de bord).
 

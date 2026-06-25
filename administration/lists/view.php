@@ -37,7 +37,7 @@ $tab = required_param('tab', PARAM_ALPHANUM);
 $listformats = enrol_select_plugin::get_listformats();
 // Edition des chaînes de caractère pour l'un des statuts d'inscription.
 if (isset($editstate) && enrol_select_plugin::get_state_from_code($editstate) != false) {
-    $statusname = get_enrolment_fieldvalue($editstate, 'status');
+    $statusname = get_enrol_list_fieldvalue($editstate, 'status', true);
 
     $returnurl = new moodle_url($PAGE->url->out(false, ['tab' => $tab]));
 
@@ -46,8 +46,21 @@ if (isset($editstate) && enrol_select_plugin::get_state_from_code($editstate) !=
 
     // On récupère les valeurs des différents formats de chaîne de caractère pour la liste à modifier.
     foreach ($listformats as $listformat) {
-        $formvalues[$listformat] = get_enrolment_fieldvalue($editstate, $listformat, false); // Valeurs pour les champs du formulaire.
-        $defaults[$listformat] = get_enrolment_fieldvalue($editstate, $listformat); // Valeurs par défaut.
+        // Valeurs pour les champs du formulaire.
+        $formvalues[$listformat] = get_enrol_list_fieldvalue(
+            $editstate,
+            $listformat,
+            false,
+            $listformat == 'listname' || $listformat == 'description'
+        );
+
+        // Valeurs par défaut.
+        $defaults[$listformat] = get_enrol_list_fieldvalue(
+            $editstate,
+            $listformat,
+            true,
+            $listformat == 'listname' || $listformat == 'description'
+        );
     }
 
     $customdata = [$formvalues, $defaults, $editstate];
@@ -72,7 +85,8 @@ if (isset($editstate) && enrol_select_plugin::get_state_from_code($editstate) !=
                 $message = get_string('savingvalues_ok', 'enrol_select', $statusname);
                 redirect($returnurl, $message, $delay = null, \core\output\notification::NOTIFY_SUCCESS);
             } else {
-                redirect($returnurl);
+                $message = get_string('savingvalues_notok', 'enrol_select', $statusname);
+                redirect($returnurl, $message, $delay = null, \core\output\notification::NOTIFY_WARNING);
             }
         }
     }
@@ -87,7 +101,12 @@ if (isset($editstate) && enrol_select_plugin::get_state_from_code($editstate) !=
         $list = [];
 
         foreach ($listformats as $listformat) {
-            $list[$listformat] = get_enrolment_fieldvalue($stateid, $listformat, false);
+            $list[$listformat] = get_enrol_list_fieldvalue(
+                $stateid,
+                $listformat,
+                false,
+                $listformat == 'listname' || $listformat == 'description'
+            );
         }
         $list['editurl'] = new moodle_url($PAGE->url->out(false, ['tab' => $tab, 'editstate' => $stateid]));
         $lists[] = $list;
