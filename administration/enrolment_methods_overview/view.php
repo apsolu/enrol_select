@@ -32,7 +32,7 @@ require_once($CFG->dirroot . '/enrol/select/administration/enrolment_methods_ove
 $PAGE->requires->js_call_amd('enrol_select/administration_overview', 'initialise');
 
 // Récupère la liste des enseignants.
-$sql = "SELECT u.*" .
+$sql = "SELECT u.*, ctx.instanceid" .
     " FROM {user} u" .
     " JOIN {role_assignments} ra ON u.id = ra.userid AND ra.roleid = 3" . // Teacher.
     " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50" . // Course context.
@@ -41,8 +41,18 @@ $sql = "SELECT u.*" .
 $recordset = $DB->get_recordset_sql($sql);
 
 $teachers = [0 => get_string('choosedots')];
+$courseteachers = [];
 foreach ($recordset as $teacher) {
-    $teachers[$teacher->id] = fullname($teacher);
+    // Collecte les enseignants.
+    if (isset($teachers[$teacher->id]) === false) {
+        $teachers[$teacher->id] = fullname($teacher);
+    }
+
+    // Collecte les enseignants indexés par cours.
+    if (isset($courseteachers[$teacher->instanceid]) === false) {
+        $courseteachers[$teacher->instanceid] = [];
+    }
+    $courseteachers[$teacher->instanceid][] = $teachers[$teacher->id];
 }
 $recordset->close();
 
@@ -213,6 +223,7 @@ if (isset($mdata->exportcsv) === true || isset($mdata->exportexcel) === true) {
     // Définit les entêtes.
     $headers = [];
     $headers[] = get_string('courses', 'local_apsolu');
+    $headers[] = get_string('teachers', 'local_apsolu');
     $headers[] = get_string('locations', 'local_apsolu');
     $headers[] = get_string('enrolname', 'enrol_select');
     $headers[] = get_string('calendars', 'local_apsolu');
@@ -239,9 +250,14 @@ if (isset($mdata->exportcsv) === true) {
 
     // Définit le contenu principal.
     foreach ($data->courses as $course) {
+        if (isset($courseteachers[$course->id]) === false) {
+            $courseteachers[$course->id] = [];
+        }
+
         foreach ($course->enrols as $enrol) {
             $row = [];
             $row[] = $course->fullname;
+            $row[] = implode(', ', $courseteachers[$course->id]);
             $row[] = sprintf('%s, %s, %s', $course->location, $course->area, $course->city);
             $row[] = $enrol->name;
             $row[] = $enrol->calendar;
@@ -268,6 +284,7 @@ if (isset($mdata->exportcsv) === true) {
         if (empty($course->count_enrols) === true) {
             $row = [];
             $row[] = $course->fullname;
+            $row[] = implode(', ', $courseteachers[$course->id]);
             $row[] = sprintf('%s, %s, %s', $course->location, $course->area, $course->city);
             $row[] = '';
             $row[] = '';
@@ -313,9 +330,14 @@ if (isset($mdata->exportexcel) === true) {
     // Définit le contenu principal.
     $line = 1;
     foreach ($data->courses as $course) {
+        if (isset($courseteachers[$course->id]) === false) {
+            $courseteachers[$course->id] = [];
+        }
+
         foreach ($course->enrols as $enrol) {
             $n = 0;
             $myxls->write_string($line, $n++, $course->fullname, $excelformat);
+            $myxls->write_string($line, $n++, implode(', ', $courseteachers[$course->id]), $excelformat);
             $myxls->write_string($line, $n++, sprintf('%s, %s, %s', $course->location, $course->area, $course->city), $excelformat);
             $myxls->write_string($line, $n++, $enrol->name, $excelformat);
             $myxls->write_string($line, $n++, $enrol->calendar, $excelformat);
@@ -342,6 +364,7 @@ if (isset($mdata->exportexcel) === true) {
         if (empty($course->count_enrols) === true) {
             $n = 0;
             $myxls->write_string($line, $n++, $course->fullname, $excelformat);
+            $myxls->write_string($line, $n++, implode(', ', $courseteachers[$course->id]), $excelformat);
             $myxls->write_string($line, $n++, sprintf('%s, %s, %s', $course->location, $course->area, $course->city), $excelformat);
             $myxls->write_string($line, $n++, '', $excelformat);
             $myxls->write_string($line, $n++, '', $excelformat);
