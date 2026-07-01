@@ -209,15 +209,7 @@ foreach ($courses as $course) {
     }
 }
 
-if (isset($mdata->exportcsv) === true) {
-    // Exporte les données au format CSV.
-    require_once($CFG->libdir . '/csvlib.class.php');
-
-    $filename = 'extraction_des_methodes_d_inscription';
-
-    $csvexport = new csv_export_writer();
-    $csvexport->set_filename($filename);
-
+if (isset($mdata->exportcsv) === true || isset($mdata->exportexcel) === true) {
     // Définit les entêtes.
     $headers = [];
     $headers[] = get_string('courses', 'local_apsolu');
@@ -231,6 +223,17 @@ if (isset($mdata->exportcsv) === true) {
     $headers[] = get_string('wait_list', 'enrol_select');
     $headers[] = get_string('max_waiting_places', 'enrol_select');
     $headers[] = get_string('deleted_list', 'enrol_select');
+}
+
+if (isset($mdata->exportcsv) === true) {
+    // Exporte les données au format CSV.
+    require_once($CFG->libdir . '/csvlib.class.php');
+
+    $filename = 'extraction_des_methodes_d_inscription';
+
+    $csvexport = new csv_export_writer();
+    $csvexport->set_filename($filename);
+
     $csvexport->add_data($headers);
 
     // Définit le contenu principal.
@@ -300,19 +303,6 @@ if (isset($mdata->exportexcel) === true) {
 
     $excelformat = new MoodleExcelFormat($properties);
 
-    // Définit les entêtes.
-    $headers = [];
-    $headers[] = get_string('courses', 'local_apsolu');
-    $headers[] = get_string('enrolname', 'enrol_select');
-    $headers[] = get_string('calendars', 'local_apsolu');
-    $headers[] = get_string('enrolstartdate', 'enrol_select');
-    $headers[] = get_string('enrolenddate', 'enrol_select');
-    $headers[] = get_string('accepted_list', 'enrol_select');
-    $headers[] = get_string('main_list', 'enrol_select');
-    $headers[] = get_string('max_places', 'enrol_select');
-    $headers[] = get_string('wait_list', 'enrol_select');
-    $headers[] = get_string('max_waiting_places', 'enrol_select');
-    $headers[] = get_string('deleted_list', 'enrol_select');
     foreach ($headers as $position => $value) {
         $myxls->write_string(0, $position, $value, $excelformat);
     }
