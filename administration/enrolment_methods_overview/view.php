@@ -311,41 +311,43 @@ if (isset($mdata->exportexcel) === true) {
     $line = 1;
     foreach ($data->courses as $course) {
         foreach ($course->enrols as $enrol) {
-            $myxls->write_string($line, 0, $course->fullname, $excelformat);
-            $myxls->write_string($line, 1, $enrol->name, $excelformat);
-            $myxls->write_string($line, 2, $enrol->calendar, $excelformat);
-            $myxls->write_date($line, 3, $enrol->enrolstartdate, $excelformat);
-            $myxls->write_date($line, 4, $enrol->enrolenddate, $excelformat);
-            $myxls->write_string($line, 5, $enrol->count_accepted_list, $excelformat);
-            $myxls->write_string($line, 6, $enrol->count_main_list, $excelformat);
+            $n = 0;
+            $myxls->write_string($line, $n++, $course->fullname, $excelformat);
+            $myxls->write_string($line, $n++, $enrol->name, $excelformat);
+            $myxls->write_string($line, $n++, $enrol->calendar, $excelformat);
+            $myxls->write_date($line, $n++, $enrol->enrolstartdate, $excelformat);
+            $myxls->write_date($line, $n++, $enrol->enrolenddate, $excelformat);
+            $myxls->write_string($line, $n++, $enrol->count_accepted_list, $excelformat);
+            $myxls->write_string($line, $n++, $enrol->count_main_list, $excelformat);
             if (empty($enrol->quota) === true) {
-                $myxls->write_string($line, 7, get_string('no_quotas', 'enrol_select'), $excelformat);
+                $myxls->write_string($line, $n++, get_string('no_quotas', 'enrol_select'), $excelformat);
             } else {
-                $myxls->write_string($line, 7, $enrol->customint1, $excelformat);
+                $myxls->write_string($line, $n++, $enrol->customint1, $excelformat);
             }
-            $myxls->write_string($line, 8, $enrol->count_wait_list, $excelformat);
+            $myxls->write_string($line, $n++, $enrol->count_wait_list, $excelformat);
             if (empty($enrol->quota) === true) {
-                $myxls->write_string($line, 9, get_string('no_quotas', 'enrol_select'), $excelformat);
+                $myxls->write_string($line, $n++, get_string('no_quotas', 'enrol_select'), $excelformat);
             } else {
-                $myxls->write_string($line, 9, $enrol->customint2, $excelformat);
+                $myxls->write_string($line, $n++, $enrol->customint2, $excelformat);
             }
-            $myxls->write_string($line, 10, $enrol->count_deleted_list, $excelformat);
+            $myxls->write_string($line, $n++, $enrol->count_deleted_list, $excelformat);
 
             $line++;
         }
 
         if (empty($course->count_enrols) === true) {
-            $myxls->write_string($line, 0, $course->fullname, $excelformat);
-            $myxls->write_string($line, 1, '', $excelformat);
-            $myxls->write_string($line, 2, '', $excelformat);
-            $myxls->write_string($line, 3, '', $excelformat);
-            $myxls->write_string($line, 4, '', $excelformat);
-            $myxls->write_string($line, 5, '', $excelformat);
-            $myxls->write_string($line, 6, '', $excelformat);
-            $myxls->write_string($line, 7, '', $excelformat);
-            $myxls->write_string($line, 8, '', $excelformat);
-            $myxls->write_string($line, 9, '', $excelformat);
-            $myxls->write_string($line, 10, '', $excelformat);
+            $n = 0;
+            $myxls->write_string($line, $n++, $course->fullname, $excelformat);
+            $myxls->write_string($line, $n++, '', $excelformat);
+            $myxls->write_string($line, $n++, '', $excelformat);
+            $myxls->write_string($line, $n++, '', $excelformat);
+            $myxls->write_string($line, $n++, '', $excelformat);
+            $myxls->write_string($line, $n++, '', $excelformat);
+            $myxls->write_string($line, $n++, '', $excelformat);
+            $myxls->write_string($line, $n++, '', $excelformat);
+            $myxls->write_string($line, $n++, '', $excelformat);
+            $myxls->write_string($line, $n++, '', $excelformat);
+            $myxls->write_string($line, $n++, '', $excelformat);
 
             $line++;
         }
