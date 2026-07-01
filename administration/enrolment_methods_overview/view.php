@@ -53,7 +53,7 @@ $mform = new apsolu_overview_filter_form($PAGE->url->out(false), [$calendars, $t
 $mdata = $mform->get_data();
 
 // Liste des cours.
-$sql = "SELECT c.id, c.fullname, '0' AS count_enrols, '1' AS anomalies, aa.name AS area, city.name AS city" .
+$sql = "SELECT c.id, c.fullname, '0' AS count_enrols, '1' AS anomalies, l.name AS location, aa.name AS area, city.name AS city" .
     " FROM {course} c" .
     " JOIN {apsolu_courses} ac ON ac.id = c.id" .
     " JOIN {apsolu_locations} l ON l.id = ac.locationid" .
@@ -213,6 +213,7 @@ if (isset($mdata->exportcsv) === true || isset($mdata->exportexcel) === true) {
     // Définit les entêtes.
     $headers = [];
     $headers[] = get_string('courses', 'local_apsolu');
+    $headers[] = get_string('locations', 'local_apsolu');
     $headers[] = get_string('enrolname', 'enrol_select');
     $headers[] = get_string('calendars', 'local_apsolu');
     $headers[] = get_string('enrolstartdate', 'enrol_select');
@@ -241,6 +242,7 @@ if (isset($mdata->exportcsv) === true) {
         foreach ($course->enrols as $enrol) {
             $row = [];
             $row[] = $course->fullname;
+            $row[] = sprintf('%s, %s, %s', $course->location, $course->area, $course->city);
             $row[] = $enrol->name;
             $row[] = $enrol->calendar;
             $row[] = userdate($enrol->enrolstartdate, get_string('strftimedatetime'));
@@ -266,6 +268,7 @@ if (isset($mdata->exportcsv) === true) {
         if (empty($course->count_enrols) === true) {
             $row = [];
             $row[] = $course->fullname;
+            $row[] = sprintf('%s, %s, %s', $course->location, $course->area, $course->city);
             $row[] = '';
             $row[] = '';
             $row[] = '';
@@ -313,6 +316,7 @@ if (isset($mdata->exportexcel) === true) {
         foreach ($course->enrols as $enrol) {
             $n = 0;
             $myxls->write_string($line, $n++, $course->fullname, $excelformat);
+            $myxls->write_string($line, $n++, sprintf('%s, %s, %s', $course->location, $course->area, $course->city), $excelformat);
             $myxls->write_string($line, $n++, $enrol->name, $excelformat);
             $myxls->write_string($line, $n++, $enrol->calendar, $excelformat);
             $myxls->write_date($line, $n++, $enrol->enrolstartdate, $excelformat);
@@ -338,6 +342,7 @@ if (isset($mdata->exportexcel) === true) {
         if (empty($course->count_enrols) === true) {
             $n = 0;
             $myxls->write_string($line, $n++, $course->fullname, $excelformat);
+            $myxls->write_string($line, $n++, sprintf('%s, %s, %s', $course->location, $course->area, $course->city), $excelformat);
             $myxls->write_string($line, $n++, '', $excelformat);
             $myxls->write_string($line, $n++, '', $excelformat);
             $myxls->write_string($line, $n++, '', $excelformat);
