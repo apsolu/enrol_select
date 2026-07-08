@@ -339,13 +339,13 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 case enrol_select_plugin::MAIN:
                     $style = 'success';
                     $list = strtolower(get_string('main_list', 'enrol_select'));
-                    $message2 = get_string('you_are_on_X_list', 'enrol_select', $list);
+                    $message2 = get_string_on_list_x(enrol_select_plugin::MAIN, 'you_are_on_listname_X');
                     $message = sprintf('<p>%s <strong>%s</strong></p>', $message1, $message2);
                     break;
                 case enrol_select_plugin::WAIT:
                     $style = 'warning';
                     $list = strtolower(get_string('wait_list', 'enrol_select'));
-                    $message2 = get_string('you_are_on_X_list', 'enrol_select', $list);
+                    $message2 = get_string_on_list_x(enrol_select_plugin::WAIT, 'you_are_on_listname_X');
                     $message = sprintf('<p>%s <strong>%s</strong></p>', $message1, $message2);
                     break;
                 case enrol_select_plugin::ACCEPTED:

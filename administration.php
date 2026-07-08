@@ -32,6 +32,7 @@ $tabslist = [];
 $tabslist['default_settings'] = 'settings';
 $tabslist['batch_settings'] = 'batch_settings';
 $tabslist['colleges'] = 'colleges';
+$tabslist['lists'] = 'lists';
 $tabslist['renewals'] = 'renewals';
 $tabslist['enrolments_overview'] = 'enrolments_overview';
 $tabslist['enrolment_methods_overview'] = 'enrolment_methods_overview';

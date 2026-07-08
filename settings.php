@@ -65,6 +65,12 @@ if ($hassiteconfig || has_any_capability($capabilities, context_system::instance
         $page = new admin_externalpage('enrol_select_colleges', $label, $url, $capabilities);
         $ADMIN->add('enrol_select', $page);
 
+        // Inscriptions > Population.
+        $label = get_string('lists', 'enrol_select');
+        $url = new moodle_url('/enrol/select/administration.php?tab=lists');
+        $page = new admin_externalpage('enrol_select_lists', $label, $url, $capabilities);
+        $ADMIN->add('enrol_select', $page);
+
         // Inscriptions > Réinscription en masse.
         $label = get_string('renewals', 'enrol_select');
         $url = new moodle_url('/enrol/select/administration.php?tab=renewals');

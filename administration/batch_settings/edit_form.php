@@ -16,6 +16,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_select_plugin as plugin;
+
 require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->dirroot . '/enrol/select/lib.php');
 
@@ -50,39 +52,39 @@ class enrol_select_batch_settings_form extends moodleform {
         $mform->addRule('calendar', get_string('required'), 'required', null, 'client');
 
         // Messages de bienvenue.
-        $attributes = ['cols' => '60', 'rows' => '16'];
+        $attributes = ['cols' => '60', 'rows' => '8'];
         $options = ['autosave' => false];
         $mform->addElement('header', 'header2', get_string('welcome_messages', 'enrol_select'));
 
         // Message pour les inscrits sur la liste des acceptés.
-        $label = get_string('edit_field_X', 'enrol_select', get_string('custom_welcome_message_on_accepted_list', 'enrol_select'));
-        $mform->addElement('checkbox', 'batch_customtext1switch', $label);
+        $label = get_string_on_list_x(plugin::ACCEPTED, 'send_welcome_message_to_users_on_listname_X');
+        $mform->addElement('selectyesno', 'batch_customtext1switch', $label);
+        $mform->addHelpButton('batch_customtext1switch', 'custom_welcome_message', 'enrol_select');
 
-        $label = get_string('custom_welcome_message_on_accepted_list', 'enrol_select');
+        $label = get_string('custom_welcome_message', 'enrol_select');
         $mform->addElement('editor', 'batch_customtext1', $label, $attributes, $options);
         $mform->setType('batch_customtext1', PARAM_RAW);
-        $mform->addHelpButton('batch_customtext1', 'custom_welcome_message', 'enrol_select');
-        $mform->disabledIf('batch_customtext1', 'batch_customtext1switch');
+        $mform->disabledIf('batch_customtext1', 'batch_customtext1switch', 'eq', 0);
 
         // Message pour les inscrits sur la liste principale.
-        $label = get_string('edit_field_X', 'enrol_select', get_string('custom_welcome_message_on_main_list', 'enrol_select'));
-        $mform->addElement('checkbox', 'batch_customtext2switch', $label);
+        $label = get_string_on_list_x(plugin::MAIN, 'send_welcome_message_to_users_on_listname_X');
+        $mform->addElement('selectyesno', 'batch_customtext2switch', $label);
+        $mform->addHelpButton('batch_customtext2switch', 'custom_welcome_message', 'enrol_select');
 
-        $label = get_string('custom_welcome_message_on_main_list', 'enrol_select');
+        $label = get_string('custom_welcome_message', 'enrol_select');
         $mform->addElement('editor', 'batch_customtext2', $label, $attributes, $options);
         $mform->setType('batch_customtext2', PARAM_RAW);
-        $mform->addHelpButton('batch_customtext2', 'custom_welcome_message', 'enrol_select');
-        $mform->disabledIf('batch_customtext2', 'batch_customtext2switch');
+        $mform->disabledIf('batch_customtext2', 'batch_customtext2switch', 'eq', 0);
 
         // Message pour les inscrits sur la liste complémentaire.
-        $label = get_string('edit_field_X', 'enrol_select', get_string('custom_welcome_message_on_wait_list', 'enrol_select'));
-        $mform->addElement('checkbox', 'batch_customtext3switch', $label);
+        $label = get_string_on_list_x(plugin::WAIT, 'send_welcome_message_to_users_on_listname_X');
+        $mform->addElement('selectyesno', 'batch_customtext3switch', $label);
+        $mform->addHelpButton('batch_customtext3switch', 'custom_welcome_message', 'enrol_select');
 
-        $label = get_string('custom_welcome_message_on_wait_list', 'enrol_select');
+        $label = get_string('custom_welcome_message', 'enrol_select');
         $mform->addElement('editor', 'batch_customtext3', $label, $attributes, $options);
         $mform->setType('batch_customtext3', PARAM_RAW);
-        $mform->addHelpButton('batch_customtext3', 'custom_welcome_message', 'enrol_select');
-        $mform->disabledIf('batch_customtext3', 'batch_customtext3switch');
+        $mform->disabledIf('batch_customtext3', 'batch_customtext3switch', 'eq', 0);
 
         // Submit buttons.
         $buttonarray[] = &$mform->createElement('submit', 'submitbutton', get_string('savechanges'));

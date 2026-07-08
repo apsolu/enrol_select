@@ -79,16 +79,16 @@
                 "institution": "Université",
                 "apsolucycle": "L1",
                 "department": "Anglais",
-                "count_enrolments": 1,
+                "count_accepted_enrolments": 1,
                 "enrolments": [
                     {
                         "fullname": "Tennis mardi 18h00",
                         "sport": "Tennis",
                         "course_url": "https://apsolu.fr/course",
-                        "enrolname": "Inscription S1",
-                        "state": "1",
+                        "enrolname": "S1",
+                        "state": "L.C.",
                         "checkbox": "",
-                        "role": "5",
+                        "role": "Évalué (bonification)",
                         "timecreated": "Lundi 18 mai à 12h05",
                         "datecreated_sortable": "2020-05-18",
                         "timecreated_sortable": "12:05:47"
@@ -146,7 +146,7 @@
                             {{! Affiche toutes les inscriptions acceptées de l'étudiant. }}
                             {{#count_accepted_enrolments}}
                             <details>
-                                <summary>{{#str}}x_accepted_enrolment_s, enrol_select, {{count_accepted_enrolments}}{{/str}}</summary>
+                                <summary>{{count_accepted_enrolments}}{{#customstr}}{{x_enrolments_on_status_accepted}}{{/customstr}}</summary>
                                 <ul class="list-unstyledx">
                                     {{#accepted_enrolments}}
                                     <li><abbr title="{{fullname}}">{{sport}}</abbr>{{#course_url}} <a href="{{course_url}}">{{#pix}}i/course, core, {{#str}}course{{/str}}{{/pix}}</a>{{/course_url}} ({{enrolname}}/{{role}})</li>

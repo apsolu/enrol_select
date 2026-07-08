@@ -108,7 +108,7 @@ foreach ($recordset as $record) {
     $users[$record->userid]->$fieldname = $roles[$record->roleid]->name;
 
     $fieldname = sprintf('otherenrolmentstatus%s', $users[$record->userid]->countotherenrolments);
-    $users[$record->userid]->$fieldname = enrol_select_plugin::get_enrolment_list_name($record->status);
+    $users[$record->userid]->$fieldname = get_enrol_list_fieldvalue($record->status, 'listname');
 
     if ($users[$record->userid]->countotherenrolments > $maxotherenrolments) {
         $maxotherenrolments = $users[$record->userid]->countotherenrolments;
@@ -161,7 +161,7 @@ foreach ($users as $user) {
     // Custom fields (note: passse $onlyinuserobject = false pour récupérer le champ textarea 'apsoluothertrainings'.
     $customfields = profile_user_record($user->id, $onlyinuserobject = false);
 
-    $user->list = enrol_select_plugin::get_enrolment_list_name($user->status);
+    $user->list = get_enrol_list_fieldvalue($user->status, 'listname');
     $user->registertype = $roles[$user->roleid]->localname;
     $user->registerdate = userdate($user->timecreated);
 
