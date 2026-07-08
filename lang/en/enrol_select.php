@@ -94,6 +94,7 @@ $string['pluginname_desc'] = 'Le plugin d’inscription par voeux permet aux uti
 $string['policyagree'] = 'J’atteste avoir pris connaissances de <a href="{$a}" target="blank_">ces recommandations médicales</a>.';
 $string['reenrolment_disabled'] = 'Réinscription désactivée';
 $string['selection_criteria'] = 'Critères de sélection';
+$string['send_welcome_message_to_users_on_listname_X'] = 'Envoyer un message aux utilisateurs sur la liste {$a}';
 $string['settings'] = 'Paramètres';
 $string['the_delay_cannot_be_combined_with_the_automatic_list_filling'] = 'L’option « délai de paiement » ne peut pas être combinée avec l’option de « remontée de liste automatique ».';
 $string['the_delay_cannot_be_set_to_a_value_of_less_than_20_minutes'] = 'L’option « délai de paiement » ne peut pas être définie à une valeur inférieure à 20 minutes.';
