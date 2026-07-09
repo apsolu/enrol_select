@@ -134,10 +134,11 @@ class enrol_select_plugin extends enrol_plugin {
     /**
      * Enregistre les modifications apportées aux chaînes de caractères custom pour le plugin enrol select.
      *
-     * @param integer|string $state le code correspondant au statut dans les constantes de la classe.
+     * @param int|string $state le code correspondant au statut dans les constantes de la classe.
      * @param array $new liste des valeurs envoyées pour les différents champs.
      * @param array $old liste des valeurs de départ pour les différents champs.
      * @param array $defaults liste des valeurs par défaut pour les différents champs.
+     *
      * @return boolean true s'il y a eu au moins une modification (ajout, update ou suppression) dans la configuration du plugin
      */
     public static function save_state_custom_strings(int|string $state, array $new, array $old, array $defaults): bool {

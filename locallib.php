@@ -994,8 +994,9 @@ function get_enrol_list_fieldvalue(int|string $status, string $listformat, bool 
  * Retourne la clé permettant de charger la chaine de caractères correspondant au statut d'inscription avec le format donné.
  * Ex. "accepted_list_short"
  *
- * @param integer $status le code du statut dans les constantes de la classe.
+ * @param int $status le code du statut dans les constantes de la classe.
  * @param string $listformat Valeur pour préciser le format attendu.
+ *
  * @return string|false renvoie le nom complet de la chaîne, false si $status ou $listformat n'est pas trouvé.
  */
 function get_enrol_list_strname(int $status, string $listformat): string|false {
@@ -1035,8 +1036,9 @@ function get_enrol_config(string $strname, bool $usedefault = false): string {
  * Retourne l'étiquette du champ, sous titrée par la mention de la valeur par défaut
  * (formulaire de gestion des statuts d'inscription).
  *
- * @param string $label la chaîne de caractère à afficher dans le label.
+ * @param string $labelname la chaîne de caractère à afficher dans le label.
  * @param string $defaultvalue la valeur par défaut.
+ *
  * @return string $label la balise html de l'étiquette du champ.
  */
 function get_custom_label(string $labelname, string $defaultvalue) {
@@ -1161,9 +1163,10 @@ function get_string_on_list_x(array|int $status, string $getstring, ?string $lis
 /**
  * Retourne la chaîne de caractères correspondant à l'action de déplacer des étudiants depuis une liste vers une autre liste.
  *
- * @param integer $stateto le code de la liste sur laquelle sont actuellement les étudiants.
- * @param integer $statefrom le code de la liste sur laquelle les étudiants vont être déplacés.
- * @param boolean $isnext true si la liste d'arrivée correspond au prochain semestre par rapport à la liste de départ.
+ * @param int $stateto le code de la liste sur laquelle sont actuellement les étudiants.
+ * @param int $statefrom le code de la liste sur laquelle les étudiants vont être déplacés.
+ * @param bool $isnext true si la liste d'arrivée correspond au prochain semestre par rapport à la liste de départ.
+ *
  * @return string la chaîne de caractères correspondant à l'action de déplacer des étudiants depuis une liste vers une autre liste.
  */
 function get_goto_list_customstr(int $stateto, int $statefrom, bool $isnext = false): string {
@@ -1184,9 +1187,10 @@ function get_goto_list_customstr(int $stateto, int $statefrom, bool $isnext = fa
 /**
  * Retourne le message par défaut proposé lors du déplacement des étudiants depuis une liste vers une autre liste.
  *
- * @param integer $stateto le code de la liste sur laquelle sont actuellement les étudiants.
- * @param integer $statefrom le code de la liste sur laquelle les étudiants vont être déplacés.
- * @param boolean $isnext true si la liste d'arrivée correspond au prochain semestre par rapport à la liste de départ.
+ * @param int $stateto le code de la liste sur laquelle sont actuellement les étudiants.
+ * @param int $statefrom le code de la liste sur laquelle les étudiants vont être déplacés.
+ * @param bool $isnext true si la liste d'arrivée correspond au prochain semestre par rapport à la liste de départ.
+ *
  * @return string le message par défaut.
  */
 function get_moved_to_list_message(int $stateto, int $statefrom, bool $isnext = false): string {
