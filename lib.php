@@ -17,7 +17,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 use local_apsolu\core\federation\course as FederationCourse;
-use html_writer;
 
 require_once($CFG->dirroot . '/enrol/select/locallib.php');
 
