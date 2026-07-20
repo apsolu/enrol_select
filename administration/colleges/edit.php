@@ -41,8 +41,10 @@ if (!$instance) {
     $instance->name = '';
     $instance->roleid = '';
     $instance->cohorts = [];
+    $notificationstr = 'population_created';
 } else {
     $instance->cohorts = array_keys($DB->get_records('apsolu_colleges_members', ['collegeid' => $id], '', 'cohortid'));
+     $notificationstr = 'population_updated';
 }
 
 $mform = new apsolu_colleges_form($PAGE->url->out(false), [$instance, $roles, $cohorts]);
@@ -54,16 +56,30 @@ if ($data = $mform->get_data()) {
         $DB->update_record('apsolu_colleges', $data);
     }
 
-    $DB->delete_records('apsolu_colleges_members', ['collegeid' => $data->id]);
+    // Met à jour la liste des cohortes.
+    $newcohorts = $data->cohorts;
 
-    if (isset($data->cohorts)) {
-        foreach ($data->cohorts as $cohortid) {
-            $sql = "INSERT INTO {apsolu_colleges_members}(collegeid, cohortid) VALUES(?, ?)";
-            $DB->execute($sql, [$data->id, $cohortid]);
-        }
+    // Population qui possède déjà des cohortes : supprimer les cohortes désélectionnées et insérer les nouvelles cohortes choisies.
+    if (empty($instance->cohorts) == false) {
+        $removecohorts = array_diff($instance->cohorts, $newcohorts);
+        $DB->delete_records_list('apsolu_colleges_members', 'cohortid', $removecohorts);
+
+        $newcohorts = array_diff($newcohorts, $instance->cohorts);
     }
 
-    require(__DIR__ . '/view.php');
+    foreach ($newcohorts as $cohortid) {
+        $sql = "INSERT INTO {apsolu_colleges_members}(collegeid, cohortid) VALUES(?, ?)";
+        $DB->execute($sql, [$data->id, $cohortid]);
+    }
+
+    // Rediriger permet de clore la requête POST et éviter des resoumissions notamment
+    // avec le formulaire d'ajout d'une règle programmée ou en cas d'actualisation après la soumission.
+    redirect(
+        $PAGE->url,
+        get_string($notificationstr, 'enrol_select', $data->name),
+        null,
+        \core\output\notification::NOTIFY_SUCCESS
+    );
 } else {
     $mform->display();
 }

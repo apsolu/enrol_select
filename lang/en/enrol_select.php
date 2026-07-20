@@ -34,7 +34,7 @@ $string['cachedef_enrols'] = 'Liste des méthodes d’inscription par voeux';
 $string['cachedef_users'] = 'Liste des inscriptions et des populations d’appartenance des utilisateurs';
 $string['check_enrolment_payment'] = 'Contrôle le paiement d’une inscription';
 $string['cohort_X_is_already_used_with_role_Y_by_college_Z'] = 'La cohorte « {$a->cohort} » est déjà utilisée avec le rôle « {$a->role} » par la population « {$a->college} ».';
-$string['college_unused_cohorts'] = '<details class="alert alert-info"><summary class="mb-3">Information</summary><p>Ces cohortes ne sont actuellement pas utilisées dans les populations :</p><ul>{$a}</ul></details>';
+$string['college_deleted'] = 'La population <strong>« {$a} »</strong> a été supprimée.';
 $string['continue_my_enrolments'] = 'Continuer mes inscriptions';
 $string['copy_users_on_X_to'] = 'Copier les utilisateurs actuellement sur la {$a} vers';
 $string['custom_welcome_message'] = 'Message de bienvenue personnalisé';
@@ -62,12 +62,15 @@ $string['lists'] = 'Listes';
 $string['main_sport'] = 'Sport principal';
 $string['manage_select_enrolments'] = 'Gérer les inscriptions par voeux';
 $string['maximum_enrolments'] = 'Nombre d’inscriptions maximum';
+$string['maximum_enrolments_help'] = 'Nombre d’inscriptions maximum autorisées pour un utilisateur rattaché à la population.  Ce quota peut être modifié à une date donnée par la création d’une règle programmée.';
 $string['maximum_enrolments_must_be_greater_than_or_equal_to_minimum_enrolments'] = 'Le nombre d’inscriptions maximum doit être égal ou supérieur au nombre d’inscriptions minimum.';
 $string['maximum_wishes'] = 'Nombre de voeux maximum';
+$string['maximum_wishes_help'] = 'Nombre de voeux maximum par défaut attribué à un utilisateur rattaché à la population. Ce quota peut être modifié à une date donnée par la création d’une règle programmée.';
 $string['maximum_wishes_must_be_greater_than_or_equal_to_maximum_enrolments'] = 'Le nombre de voeux maximum doit être égal ou supérieur au nombre d’inscriptions maximum.';
 $string['messageprovider:select_notification'] = 'Notifications en relation avec les inscriptions';
 
 $string['minimum_enrolments'] = 'Nombre d’inscriptions minimum';
+$string['minimum_enrolments_help'] = 'Nombre minimum d’inscriptions requis pour un utilisateur rattaché à la population. Ce quota peut être modifié à une date donnée par la création d’une règle programmée.';
 $string['no_available_cohorts'] = 'Aucune cohorte disponible';
 $string['no_available_enrol_methods_desc'] = 'Pour utiliser cette fonctionnalité, une deuxième méthode d’inscription par voeux est nécessaire dans ce cours.';
 $string['no_available_prices'] = 'Aucun tarif défini';
@@ -268,13 +271,20 @@ $string['event_user_moved'] = 'Utilisateur déplacé';
 $string['event_user_notified'] = 'Utilisateur notifié';
 $string['full_registration'] = 'Inscription complète';
 
-$string['maxwishes'] = 'Nombre de voeux maximum';
-$string['maxwishes_help'] = 'Nombre de voeux maximum par défaut attribué à un utilisateur n’étant pas clairement identifié dans le système d’information ; n’appartenant à aucune population définie.';
-
 // Gestion des voeux et des listes.
+$string['add_rule'] = 'Ajouter une règle';
+$string['create_new_college'] = 'Créer une nouvelle population';
+$string['delete_ovewritten_college_rule_task'] = 'Une tâche adhoc a été supprimée car elle faisait doublon avec une autre (tâche de plannification des quotas d’inscription par population)';
+$string['delete_past_college_rule_task'] = 'Une tâche adhoc passée et non exécutée a été supprimée (tâche de plannification des quotas d’inscription par population)';
+$string['delete_rule'] = 'Souhaitez-vous supprimer la règle programmée ?';
+$string['delete_rule_successful'] = 'La règle de gestion des inscriptions, programmée le <strong>{$a->strfdate}</strong> pour la population <strong>« {$a->collegename} »</strong>, a bien été supprimée.';
+$string['edit_rule'] = 'Modifier une règle';
 $string['editenroltype'] = 'Modifier le type d’inscription';
 $string['enrolcoursesubject'] = '[{$a->fullname}] Situation de votre inscription';
 $string['goto'] = 'Déplacer de la liste {$a->from} vers la liste {$a->to}';
+$string['has_rule_info'] = 'Quotas en vigueur jusqu’au {$a} (voir ci-dessous pour plus d’informations)';
+$string['invalid_dateval'] = 'Sélection invalide : une règle a déjà été programmée à cette date pour cette population.';
+$string['no_changes_detected'] = 'Aucun changement détecté : veuillez modifier au moins l’une des valeurs ou cliquer sur « Annuler ».';
 $string['message'] = 'Message';
 $string['message_greetings'] = 'Bonjour,' . PHP_EOL . PHP_EOL . '{$a}' . PHP_EOL . PHP_EOL . 'Cordialement,';
 $string['message_moved_from_deleted'] = 'Vous avez été déplacé dans la liste {$a}.';
@@ -285,12 +295,24 @@ $string['message_promote'] = 'Suite à un désistement, vous avez été placé s
 $string['move_next_on_listname_X'] = 'Réinscrire dans la liste {$a}';
 $string['move_on_listname_X'] = 'Déplacer dans la liste {$a}';
 $string['move_to'] = 'Déplacer';
+$string['next_change'] = 'Prochain changement';
+$string['next_changes'] = 'Prochains changements';
 $string['next_on_listname_X'] = '{$a} du prochain semestre';
+$string['no_planned_changes'] = 'Aucun changement programmé pour cette population';
 $string['notify'] = 'Notifier par email';
 $string['notifystudents'] = 'Notifier les étudiants';
+$string['other_planned_changes'] = 'Autres changements planifiés';
+$string['planned_college_rule'] = '<strong>{$a->population}</strong> : {$a->maxwish} voeu{$a->plural1} max - {$a->minregister} à {$a->maxregister} inscription{$a->plural2}';
+$string['population_created'] = 'La population <strong>« {$a} »</strong> a été ajoutée.';
+$string['population_updated'] = 'La population <strong>« {$a} »</strong> a été modifiée.';
 $string['previous_on_listname_X'] = '{$a} du semestre précédent';
+$string['program_date'] = 'Définir la date du changement';
+$string['program_date_error'] = 'Veuillez sélectionner une date et un horaire situés au delà de la date et horaire actuels.';
+$string['program_rule_successful'] = 'Une nouvelle règle de gestion des inscriptions a été ajoutée pour la population <strong>« {$a->collegename} »</strong>, celle-ci sera effective le <strong>{$a->strfdate}</strong>.';
+$string['program_rule_unsuccessful'] = 'Aucune modification n’a été apportée aux règles de gestion des inscriptions.';
 $string['send_message'] = 'Envoyer un message';
-
+$string['target_population'] = 'Population concernée : <strong>{$a}</strong>';
+$string['update_rule_successful'] = 'La règle de gestion des inscriptions, programmée le <strong>{$a->strfdate}</strong> pour la population <strong>« {$a->collegename} »</strong>, a bien été modifiée.';
 
 $string['eula'] = 'Certificat d’aptitude au sport';
 $string['eula_help'] = 'Texte présenté à tous les étudiants avant toute inscription à une activité sportive et nécessitant une acceptation de leur part.';

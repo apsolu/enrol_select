@@ -24,13 +24,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_select\administration\college;
+
 $id = required_param('id', PARAM_INT);
 $confirm = optional_param('confirm', '', PARAM_ALPHANUM); // Confirmation hash.
 
 $url = new moodle_url('/enrol/select/administration.php', ['tab' => 'colleges', 'action' => 'delete', 'id' => $id]);
 $returnurl = new moodle_url('/enrol/select/administration.php', ['tab' => 'colleges']);
 
-$instance = $DB->get_record('apsolu_colleges', ['id' => $id], '*', MUST_EXIST);
+$instance = college::get_record(['id' => $id], '*', MUST_EXIST);
 $deletehash = md5($calendar->id);
 
 if ($confirm === $deletehash) {
@@ -44,6 +46,9 @@ if ($confirm === $deletehash) {
         $sql = "DELETE FROM {apsolu_colleges_members} WHERE collegeid = :collegeid";
         $DB->execute($sql, ['collegeid' => $instance->id]);
 
+        // Supprime les règles (tâches adhoc) de gestion des quotas de la population.
+        $instance->delete_college_wishes_rules();
+
         // Supprime la population.
         $DB->delete_records('apsolu_colleges', ['id' => $instance->id]);
 
@@ -54,7 +59,7 @@ if ($confirm === $deletehash) {
         redirect($returnurl, $message, null, \core\output\notification::NOTIFY_ERROR);
     }
 
-    $message = get_string('college_deleted', 'local_apsolu');
+    $message = get_string('college_deleted', 'enrol_select', $instance->name);
     redirect($returnurl, $message, null, \core\output\notification::NOTIFY_SUCCESS);
 }
 

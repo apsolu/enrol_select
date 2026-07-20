@@ -207,5 +207,87 @@ input[type="radio"][name^="renew"] {
         text-transform: capitalize;
     }
 
+    /* Interface de gestion de populations */
+    .college-info[open] summary {
+        margin-bottom: .5rem;
+    }
 
+    details.alert-custom-3 {
+        filter: brightness(0.7);
+        --bs-alert-color: var(--apsolu-color-custom-3);
+        --bs-alert-bg: rgba(var(--apsolu-color-custom-3-rgb), 0.1);
+        --bs-alert-border-color: var(--apsolu-color-custom-3);
+        --bs-alert-link-color: var(--apsolu-color-custom-3);
+    }
+
+    details.college-rules ul,
+    details.college-info p,
+    details.college-info ul {
+        margin-bottom: .15rem;
+    }
+
+    td.col-0,
+    th.col-0 {
+        width: 5% !important; /* stylelint-disable-line declaration-no-important */
+    }
+
+    .td-icon {
+        cursor: help;
+
+        & img {
+            width: 24px;
+            height: 20px;
+        }
+    }
+
+    .edit_rule {
+        cursor: pointer;
+        & .fa-gear {
+            margin-left: .5rem;
+        }
+    }
+
+    .edit_rule:hover {
+        text-decoration-line: underline;
+        filter: brightness(1.4);
+    }
+
+    #modal-college-programmation {
+        & .modal-header h5 {
+            color: var(--bs-primary);
+        }
+
+        & .modal-body h5 {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        & div[data-groupname="nextdatetime"] .col-form-label p {
+            font-weight: 700;
+        }
+
+        & div.row:not([data-groupname="nextdatetime"]) {
+
+            & div.col-md-3 {
+                width: 40%;
+            }
+
+            & div.col-md-9 {
+                width: 60%;
+            }
+        }
+
+        & .btn-danger {
+            position: absolute;
+            left: 0;
+            margin-left: 1.5rem;
+        }
+
+        & div[id*='globalerror'] {
+            position: absolute;
+            top: 85%;
+            width: 80%;
+        }
+
+    }
 }

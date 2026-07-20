@@ -35,44 +35,70 @@
         * minregister
         * maxregister
         * members
+        * daterule
+        * hasrule
+        * dateruledate
     * count_colleges
-    * unusedcohorts
+    * count_unused_cohorts
+    * unused_cohorts
+    * count_rules
+    * college_rules
+        * isfirst
+        * date
+        * collegelist
+            * taskid
+            * changes
 
     Example context (json):
     {
         "wwwroot": "",
         "colleges": [],
         "count_colleges": 0,
-        "unusedcohorts" : ""
+        "count_unused_cohorts": 0,
+        "unused_cohorts" : [],
+        "count_rules": 0,
+        "college_rules" : []
     }
 }}
 
-<p class="text-end"><a href="{{ wwwroot }}/enrol/select/administration.php?tab=colleges&action=edit&id=0" class="btn btn-primary">Créer une nouvelle population</a></p>
+<p class="text-end"><a href="{{ wwwroot }}/enrol/select/administration.php?tab=colleges&action=edit&id=0" class="btn btn-primary">{{#str}}create_new_college, enrol_select{{/str}}</a></p>
 
-{{{ unusedcohorts }}}
+{{#count_unused_cohorts}}
+<details class="alert alert-info college-info">
+    <summary>Informations supplémentaires</summary>
+    <p>Ces cohortes ne sont actuellement pas utilisées dans les populations :</p>
+    <ul>
+        {{#unused_cohorts}}
+        <li>{{ name }}</li>
+        {{/unused_cohorts}}
+    </ul>
+</details>
+{{/count_unused_cohorts}}
 
 {{#count_colleges}}
 <table class="table table-striped">
     <tr>
-        <th>Nom de la population</th>
-        <th>{{#str}}roles{{/str}}</th>
-        <th>{{#str}}maximum_wishes, enrol_select{{/str}}</th>
-        <th>{{#str}}minimum_enrolments, enrol_select{{/str}}</th>
-        <th>{{#str}}maximum_enrolments, enrol_select{{/str}}</th>
-        <th>{{#str}}cohorts, cohort{{/str}}</th>
-        <th>{{#str}}actions{{/str}}</th>
+        <th class='col-2'>Nom de la population</th>
+        <th class='col-2'>{{#str}}roles{{/str}}</th>
+        {{#count_rules}}<th class='col-0'>{{#str}}next_change, enrol_select{{/str}}</th>{{/count_rules}}
+        <th class='col-1'>{{#str}}maximum_wishes, enrol_select{{/str}}</th>
+        <th class='col-1'>{{#str}}minimum_enrolments, enrol_select{{/str}}</th>
+        <th class='col-1'>{{#str}}maximum_enrolments, enrol_select{{/str}}</th>
+        <th class='col-2'>{{#str}}cohorts, cohort{{/str}}</th>
+        <th class='col-2'>{{#str}}actions{{/str}}</th>
     </tr>
     {{#colleges}}
     <tr>
         <td>{{ name }}</td>
         <td>{{ rolename }}</td>
+        {{#count_rules}}<td class="td-icon" title="{{{daterule}}}"">{{#hasrule}}<span>{{#pix}}i/timer,core{{/pix}}</span>{{dateruledate}}{{/hasrule}}</td>{{/count_rules}}
         <td>{{ maxwish }}</td>
         <td>{{ minregister }}</td>
         <td>{{ maxregister }}</td>
         <td>{{{ members }}}</td>
         <td>
 			<ul class="list-inline">
-				<li class="list-inline-item"><a href="{{wwwroot}}/enrol/select/administration.php?tab=colleges&action=edit&id={{id}}">{{#pix}}t/edit,core,{{#str}}edit{{/str}}{{/pix}}</a></li>
+				<li class="list-inline-item"><a href="{{wwwroot}}/enrol/select/administration.php?tab=colleges&action=edit&id={{id}}">{{#pix}}t/edit,core,{{#str}}edit{{/str}}{{/pix}}</a></li>    
 				<li class="list-inline-item"><a href="{{wwwroot}}/enrol/select/administration.php?tab=colleges&action=delete&id={{id}}">{{#pix}}t/delete,core,{{#str}}delete{{/str}}{{/pix}}</a></li>
 			</ul>
         </td>
@@ -80,3 +106,29 @@
     {{/colleges}}
 </table>
 {{/count_colleges}}
+
+{{#count_rules}}
+    {{#college_rules}}
+    <details class="alert alert-custom-3 college-rules">
+        
+        {{#isfirst}}
+            <summary>{{#str}}next_changes, enrol_select{{/str}} : <strong>{{date}}</strong></summary>
+        {{/isfirst}}
+        {{^isfirst}}
+            <summary>{{#str}}other_planned_changes, enrol_select{{/str}} : <strong>{{date}}</strong></summary>
+        {{/isfirst}}
+
+        <ul>
+            {{#collegelist}}
+                <li class="edit_rule" data-taskid={{ taskid }} >{{{ changes }}}<i class="fa fa-regular fa-gear"></i></li>
+            {{/collegelist}}
+        </ul>
+       
+    </details>
+     {{/college_rules}}
+{{/count_rules}}
+
+<p class="text-end"><a href="" id="add_rule" class="btn btn-custom-3">{{#pix}}e/restore_last_draft,core{{/pix}}{{#str}}add_rule, enrol_select{{/str}}</a></p>
+
+
+
