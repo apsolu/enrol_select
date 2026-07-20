@@ -74,7 +74,8 @@ class change_wishes extends \core\task\adhoc_task {
     /**
      * Retourne la représentation de la tâche adhoc correspondant à l'identifiant.
      *
-     * @param integer $id identifiant de la tâche.
+     * @param int $taskid identifiant de la tâche.
+     *
      * @return stdClass retourne false si l'id ne correspond pas à une tâche adhoc "change_wishes".
      */
     public static function get_task(int $taskid): stdClass {
@@ -97,8 +98,9 @@ class change_wishes extends \core\task\adhoc_task {
     /**
      * Création d'une nouvelle tâche.
      *
-     * @param \stdClass $customdata
-     * @param integer $nextruntime
+     * @param stdClass $customdata
+     * @param int $nextruntime
+     *
      * @return void
      */
     public static function create_task(stdClass $customdata, int $nextruntime): void {
@@ -112,9 +114,10 @@ class change_wishes extends \core\task\adhoc_task {
     /**
      * Mise à jour d'une tâche existante.
      *
-     * @param integer $taskid tâche à mettre à jour.
-     * @param \stdClass $customdata
-     * @param integer $nextruntime
+     * @param int $taskid tâche à mettre à jour.
+     * @param stdClass $customdata
+     * @param int $nextruntime
+     *
      * @return void
      */
     public static function update_task(int $taskid, stdClass $customdata, int $nextruntime): void {
@@ -132,7 +135,8 @@ class change_wishes extends \core\task\adhoc_task {
      * Recherche et renvoie une tâche adhoc qui correspond à la date d'exécution et à la population, avec ou non
      * comparaison du contenu des autres variables (nombre de voeux etc.).
      *
-     * @param integer $collegeid l'id de la population.
+     * @param int $collegeid l'id de la population.
+     *
      * @return array<int, stdClass> la liste des tâches pour cette population.
      */
     public static function get_college_tasks(int $collegeid): array {

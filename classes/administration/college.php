@@ -106,9 +106,9 @@ class college extends record {
      * on supprime les tâches en trop pour ne conserver que la règle créée en dernier.
      * On supprime également une tâche dont la date d'exécution serait passée.
      *
-     * @param integer|null $collegeid si fourni, on filtre les résultat par population.
-     * @return array <int, array> la liste des règles, groupées et triées par date d'exécution de la tâche.
+     * @param ?int $collegeid si fourni, on filtre les résultat par population.
      *
+     * @return array <int, array> la liste des règles, groupées et triées par date d'exécution de la tâche.
      */
     public static function get_college_wish_rules(?int $collegeid = null): array {
         global $DB;
