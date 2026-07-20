@@ -38,13 +38,16 @@ class enrol_select_lists_form extends moodleform {
 
         [$formvalues, $defaults, $status] = $this->_customdata;
 
+        $mform->addElement('html', html_writer::tag(
+            'p',
+            get_string_on_list_x($status, 'edit_list_on_description_X'),
+            ["class" => "list-description"]
+        ));
+
         // L'étiquette du champ est sous-titrée par l'affichage de la valeur par défaut.
         $label = get_custom_label('edit_status', $defaults['status']);
         $mform->addElement('text', 'status', $label);
         $mform->addHelpButton('status', 'edit_status', 'enrol_select', '', false, get_string('status_strexample', 'enrol_select'));
-
-        $label = get_custom_label('edit_statusabbr', $defaults['statusabbr']);
-        $mform->addElement('text', 'statusabbr', $label);
 
         $label = get_custom_label('edit_statusshort', $defaults['statusshort']);
         $mform->addElement('text', 'statusshort', $label);
@@ -54,13 +57,6 @@ class enrol_select_lists_form extends moodleform {
         $mform->addHelpButton('listname', 'edit_listname', 'enrol_select', '', false, self::get_validation_example(
             'listname',
             get_string('listname_strexample', 'enrol_select') // Précisions sur le format attendu.
-        ));
-
-        $label = get_custom_label('edit_description', $defaults['description']);
-        $mform->addElement('text', 'description', $label);
-        $mform->addHelpButton('description', 'edit_description', 'enrol_select', '', false, self::get_validation_example(
-            'description',
-            get_string('description_strexample', 'enrol_select')
         ));
 
         // Un bloc texte précise comment réinitialiser les valeurs sur les valeurs par défaut.
@@ -95,19 +91,6 @@ class enrol_select_lists_form extends moodleform {
             // Vérifier que le champs listname respecte le format souhaité.
             if (unformatstr($data['listname'], 'listname') == false) {
                 $errors['listname'] = self::get_validation_example('listname', get_string('listname_strexample', 'enrol_select'));
-            }
-        }
-
-        if (empty($data['description']) == false) { // Pas de test de validation sur une chaîne vide.
-            // Vérifier que le champs description respecte le format souhaité.
-            if (unformatstr($data['description'], 'description') == false) {
-                $errors['description'] = self::get_validation_example(
-                    'description',
-                    get_string(
-                        'description_strexample',
-                        'enrol_select'
-                    )
-                );
             }
         }
 

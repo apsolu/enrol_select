@@ -29,7 +29,6 @@
     * notification
     * lists
         * status
-        * statusabbr
         * statusshort
         * listname
         * description
@@ -41,10 +40,9 @@
         "lists": [
             {
                 "status": "accepté",
-                "statusabbr": "Acc.",
-                "statusshort": "Accept.",
-                "listname": "Liste des étudiants admis en cours",
-                "description": "Etudiants acceptés (inscriptions validée)",
+                "statusshort": "L. A.",
+                "listname": "Liste des acceptés",
+                "description": "Etudiants dont l’inscription est validée",
                 "editurl": "https://apsolu.fr/apsolu/enrol/select/administration.php?tab=lists&editstate=0"
             }
         ]
@@ -59,7 +57,6 @@
 <thead>
 	<tr>
 		<th>{{#str}}edit_status, enrol_select{{/str}}</th>
-		<th>{{#str}}edit_statusabbr, enrol_select{{/str}}</th>
 		<th>{{#str}}edit_statusshort, enrol_select{{/str}}</th>
         <th>{{#str}}edit_listname, enrol_select{{/str}}</th>
         <th>{{#str}}edit_description, enrol_select{{/str}}</th>
@@ -70,7 +67,6 @@
 	{{#lists}}
 	<tr>
 		<td class="capitalize">{{status}}</td>
-		<td>{{{statusabbr}}}</td>
         <td>{{{statusshort}}}</td>
         <td  class="capitalize">{{{listname}}}</td>
         <td  class="capitalize">{{{description}}}</td>

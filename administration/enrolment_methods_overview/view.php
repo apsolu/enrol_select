@@ -226,15 +226,15 @@ foreach ($courses as $course) {
 }
 
 // Définit les noms des listes pour la section 'Gestion des listes'.
-$data->accepted_list = ucfirst(get_accepted_listname());
-$data->main_list = ucfirst(get_main_listname());
-$data->wait_list = ucfirst(get_wait_listname());
-$data->deleted_list = ucfirst(get_deleted_listname());
+$data->accepted_list = get_enrol_list_fieldvalue(enrol_select_plugin::ACCEPTED, 'description', false, true);
+$data->main_list = get_enrol_list_fieldvalue(enrol_select_plugin::MAIN, 'description', false, true);
+$data->wait_list = get_enrol_list_fieldvalue(enrol_select_plugin::WAIT, 'description', false, true);
+$data->deleted_list = get_enrol_list_fieldvalue(enrol_select_plugin::DELETED, 'description', false, true);
 
-$data->accepted_list_abbr = get_enrol_list_fieldvalue(enrol_select_plugin::ACCEPTED, 'statusabbr');
-$data->main_list_abbr = get_enrol_list_fieldvalue(enrol_select_plugin::MAIN, 'statusabbr');
-$data->wait_list_abbr = get_enrol_list_fieldvalue(enrol_select_plugin::WAIT, 'statusabbr');
-$data->deleted_list_abbr = get_enrol_list_fieldvalue(enrol_select_plugin::DELETED, 'statusabbr');
+$data->accepted_list_short = get_enrol_list_fieldvalue(enrol_select_plugin::ACCEPTED, 'statusshort');
+$data->main_list_short = get_enrol_list_fieldvalue(enrol_select_plugin::MAIN, 'statusshort');
+$data->wait_list_short = get_enrol_list_fieldvalue(enrol_select_plugin::WAIT, 'statusshort');
+$data->deleted_list_short = get_enrol_list_fieldvalue(enrol_select_plugin::DELETED, 'statusshort');
 
 if (isset($mdata->exportcsv) === true || isset($mdata->exportexcel) === true) {
     // Définit les entêtes du tableau d'export (csv et excel).

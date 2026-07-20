@@ -168,27 +168,8 @@ input[type="radio"][name^="renew"] {
 }
 
 #page-admin-enrol-select-administration {
-    & input[type='text'] {
-        width: 20ch;
-        max-width: 100%;
-    }
-
-
-    & input[type='text'][name*='description'],
-    input[type='text'][name*='listname'] {
-        width: 50ch;
-    }
-
-    & span[class*='in-label default'] {
-        font-weight: 500;
-
-        & span {
-            font-weight: 700;
-        }
-    }
-
     & #region-main form {
-        margin-top: 2rem;
+        margin-top: .5rem;
 
         & .col-form-label {
             padding-top: 0;
@@ -201,6 +182,33 @@ input[type="radio"][name^="renew"] {
         & .info {
             margin: 1rem .5rem 1.5rem;
         }
+
+        & input[type='text'] {
+            width: 20ch;
+            max-width: 100%;
+        }
+
+        & input[type='text'][name*='listname'] {
+            width: 50ch;
+        }
+
+        & span[class*='in-label default'] {
+            font-weight: 500;
+        }
+
+        & .text-muted span,
+        .text-muted strong {
+            font-weight: 700;
+            color: var(--apsolu-color-custom-3);
+            filter: brightness(0.8);
+        }
+
+        & .list-description {
+            color: var(--bs-primary);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
     }
 
     .capitalize:first-letter {

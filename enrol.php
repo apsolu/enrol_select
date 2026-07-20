@@ -112,9 +112,9 @@ if ($enroldata->roles === []) {
 rsort($enroldata->roles);
 
 $enroldata->status = [];
-$enroldata->status[] = (object) ['id' => enrol_select_plugin::ACCEPTED, 'name' => get_accepted_listname()];
-$enroldata->status[] = (object) ['id' => enrol_select_plugin::MAIN, 'name' => get_main_listname()];
-$enroldata->status[] = (object) ['id' => enrol_select_plugin::WAIT, 'name' => get_wait_listname()];
+$enroldata->status[] = (object) ['id' => enrol_select_plugin::ACCEPTED, 'name' => ucfirst(get_accepted_listname())];
+$enroldata->status[] = (object) ['id' => enrol_select_plugin::MAIN, 'name' => ucfirst(get_main_listname())];
+$enroldata->status[] = (object) ['id' => enrol_select_plugin::WAIT, 'name' => ucfirst(get_wait_listname())];
 $enroldata->potential_users_selector = $userselector;
 $enroldata->cancel = new moodle_url('/enrol/select/manage.php', ['enrolid' => $instance->id]);
 

@@ -1098,7 +1098,7 @@ function unformatstr(string $str, string $listformat): string|false {
 
 /**
  * Retourne la chaîne de caractères du fichier de langues en complétant avec le(s)
- * statut(s) d'inscription formatés(s) selon la variante souhaitée (status, abbr, short...).
+ * statut(s) d'inscription formatés(s) selon la variante souhaitée (status, listname, statusshort...).
  *
  * @param array|int $status code(s) correspondant à un statut d'inscription selon les constantes de la classe.
  * @param string $getstring la clé de la chaîne dans le fichier de langues.

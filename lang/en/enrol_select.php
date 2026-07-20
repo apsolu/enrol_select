@@ -136,33 +136,35 @@ $string['select:unenrol'] = 'Désinscrire du cours les utilisateurs';
 // Valeurs par défaut pour les libellés des noms de liste.
 // Format "status".
 $string['list_accepted'] = 'accepté';
-$string['list_main'] = 'admissible';
-$string['list_wait'] = 'complémentaire';
-$string['list_deleted'] = 'refusé';
+$string['list_main'] = 'à valider';
+$string['list_wait'] = 'en attente';
+$string['list_deleted'] = 'désinscrit';
 
-// Format "status abbr.".
-$string['accepted_list_abbr'] = 'L.I.';
-$string['main_list_abbr'] = 'L.P.';
-$string['wait_list_abbr'] = 'L.C.';
-$string['deleted_list_abbr'] = 'L.R.';
+$string['status_strformat'] = '« {$a} »';
 
 // Format "status short".
-$string['accepted_list_short'] = 'Accep.';
-$string['main_list_short'] = 'Admis.';
-$string['wait_list_short'] = 'Compl.';
-$string['deleted_list_short'] = 'Refus';
+$string['accepted_list_short'] = 'L. A.';
+$string['main_list_short'] = 'L. ÀV.';
+$string['wait_list_short'] = 'L. EA.';
+$string['deleted_list_short'] = 'L. D.';
+
+$string['statusshort_strformat'] = '{$a}';
 
 // Format "listname".
-$string['accepted_list'] = 'des inscrits';
+$string['accepted_list'] = 'des acceptés';
 $string['main_list'] = 'principale';
 $string['wait_list'] = 'complémentaire';
-$string['deleted_list'] = 'de désinscription';
+$string['deleted_list'] = 'des désinscrits';
+
+$string['listname_strformat'] = 'liste {$a}';
 
 // Format "description".
-$string['accepted_description'] = 'acceptés (inscription validée)';
-$string['main_description'] = 'admissibles (en attente de validation)';
-$string['wait_description'] = 'non admis (en attente d’un désistement)';
-$string['deleted_description'] = 'désinscrits (inscription supprimée)';
+$string['accepted_description'] = 'dont l’inscription est validée';
+$string['main_description'] = 'en attente de validation';
+$string['wait_description'] = 'en attente d’un désistement';
+$string['deleted_description'] = 'dont l’inscription est supprimée';
+
+$string['description_strformat'] = 'étudiants {$a}';
 
 $string['description_accessgranted_true'] = 'Ils ont accès aux forums et aux documents du cours';
 $string['description_accessgranted_false'] = 'Ils n’ont accès ni aux forums, ni aux documents du cours';
@@ -192,24 +194,20 @@ $string['registertype'] = 'Type d’inscription';
 // Edit list form.
 $string['default_reset_values'] = '<strong>Valeurs par défaut : </strong>laissez le champ vide lors de l’enregistrement pour réinitialiser la chaîne à sa valeur par défaut';
 $string['description_strexample'] = 'état de l’inscription';
-$string['description_strformat'] = 'étudiants {$a}';
 $string['edit_description'] = 'Description';
 $string['edit_description_help'] = 'Chaîne servant à redéfinir la description du statut de l’inscription. {$a}.';
 $string['description_student'] = 'étudiants {$a}';
-$string['edit_list_title'] = 'Modifier les chaînes pour la liste « {$a} »';
+$string['edit_list_on_description_X'] = 'Modifier les chaînes pour la liste des étudiants {$a}';
 $string['edit_listname'] = 'Nom de la liste';
 $string['edit_listname_help'] = 'Chaîne servant à renommer l’intitulé de la liste. {$a}.';
 $string['edit_status'] = 'Statut d’inscription';
 $string['edit_status_help'] = 'Chaîne servant à renommer le statut de l’inscription. {$a}.';
-$string['edit_statusabbr'] = 'Acronyme';
 $string['edit_statusshort'] = 'Version courte';
 $string['formaterror'] = 'La valeur saisie doit respecter la formulation suivante : « {$a} »';
 $string['listname_strexample'] = 'nom de la liste';
-$string['listname_strformat'] = 'liste {$a}';
 $string['reset_defaultvalues_ok'] = 'Les champs de la liste ont été repositionnés sur leurs valeurs par défaut.';
 $string['savingvalues_ok'] = 'Les valeur associés à la liste {$a} ont été modifiées.';
 $string['savingvalues_notok'] = 'Les valeur associés à cette liste n’ont pas été modifiées.';
-$string['status_strformat'] = '« {$a} »';
 $string['status_strexample'] = 'La valeur saisie doit être sous la forme suivante : « statut »';
 
 $string['enrolenddateerror'] = 'La date de fin des inscriptions ne peut être antérieure à celle du début';

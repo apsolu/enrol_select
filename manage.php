@@ -256,7 +256,7 @@ foreach ($recordset as $record) {
         $enrolment->enrolname = $record->enrolname;
     }
 
-    $enrolment->state = get_enrol_list_fieldvalue($record->status, 'statusabbr');
+    $enrolment->state = get_enrol_list_fieldvalue($record->status, 'statusshort');
     $enrolment->status = $record->status;
     $enrolment->timecreated = userdate($record->timecreated, '%a %d %b à %T');
     $enrolment->datecreated_sortable = userdate($record->timecreated, '%F');

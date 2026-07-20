@@ -80,7 +80,6 @@ class enrol_select_plugin extends enrol_plugin {
      */
     public static $listformats = [
         'status' => 'list_%s',
-        'statusabbr' => '%s_list_abbr',
         'statusshort' => '%s_list_short',
         'listname' => '%s_list',
         'description' => '%s_description',
@@ -90,7 +89,7 @@ class enrol_select_plugin extends enrol_plugin {
      * Retourne la liste des différents champs paramétrables pour décrire le statut de l'inscription.
      *
      * @return array les différents champs utilisables pour évoquer le statut de l'inscription
-     * (nom de la liste, statut de l'inscription, version abbrégée..).
+     * (nom de la liste, statut de l'inscription, version courte..).
      */
     public static function get_listformats(): array {
         return array_keys(self::$listformats);
@@ -146,8 +145,8 @@ class enrol_select_plugin extends enrol_plugin {
         $haschanged = false; // Témoin de la modification effective du tableau des chaînes définies pour les différentes listes.
         foreach ($old as $strtype => $strold) {
             $strname = get_enrol_list_strname($state, $strtype);
-            // On enregistre la chaîne en minuscules sauf pour la version "abbrégée".
-            $newconfig = $strtype != 'statusabbr' && $strtype != 'statusshort' ? strtolower($new[$strtype]) : $new[$strtype];
+            // On enregistre la chaîne en minuscules sauf pour la "version courte".
+            $newconfig = $strtype != 'statusshort' ? strtolower($new[$strtype]) : $new[$strtype];
             $oldconfig = $strold;
 
             // On vérifie que la valeur a été modifiée.

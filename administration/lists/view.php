@@ -46,12 +46,21 @@ if (isset($editstate) && enrol_select_plugin::get_state_from_code($editstate) !=
 
     // On récupère les valeurs des différents formats de chaîne de caractère pour la liste à modifier.
     foreach ($listformats as $listformat) {
+        // Description de la liste (ne peut pas être configuré).
+        if ($listformat == 'description') {
+            $defaults[$listformat] = get_enrol_list_fieldvalue($editstate, 'description', true, false);
+            continue;
+        }
+
+        // On applique la chaîne de formatage pour ce champ (ex. "Liste {valeur du champ}" ) ?
+        $needstrformat = $listformat == 'listname';
+
         // Valeurs pour les champs du formulaire.
         $formvalues[$listformat] = get_enrol_list_fieldvalue(
             $editstate,
             $listformat,
             false,
-            $listformat == 'listname' || $listformat == 'description'
+            $needstrformat
         );
 
         // Valeurs par défaut.
@@ -59,14 +68,14 @@ if (isset($editstate) && enrol_select_plugin::get_state_from_code($editstate) !=
             $editstate,
             $listformat,
             true,
-            $listformat == 'listname' || $listformat == 'description'
+            $needstrformat
         );
     }
 
     $customdata = [$formvalues, $defaults, $editstate];
     $mform = new enrol_select_lists_form($PAGE->url->out(false, ['tab' => $tab, 'editstate' => $editstate]), $customdata);
 
-    $title = get_string('edit_list_title', 'enrol_select', $statusname);
+    $title = get_string('lists', 'enrol_select');
 
     echo $OUTPUT->heading($title);
 
