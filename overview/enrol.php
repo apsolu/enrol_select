@@ -399,7 +399,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 $content = file_rewrite_pluginfile_urls($text, 'pluginfile.php', $context->id, $component, $filearea, $course->id);
 
                 $title = get_string('additional_information', 'local_apsolu');
-                echo sprintf('<p class="font-weight-bold">%s</p><div>%s</div>', $title, $content);
+                echo sprintf('<p class="ft-weight-bold">%s</p><div>%s</div>', $title, $content);
             }
 
             echo '<p class="text-center">';
