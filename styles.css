@@ -2,10 +2,6 @@ span.select2-container {
     margin: 0 .2em;
 }
 
-#apsolu-activities-table td {
-    vertical-align: middle;
-}
-
 .filters {
     width: 90%;
 }
@@ -84,17 +80,28 @@ input[type="radio"][name^="renew"] {
     text-align: justify;
 }
 
-#apsolu-activities-table dt {
+/* Solution temporaire en attendant la résolution du bug MDL-85523. */
+.apsolu-activities-table tbody th,
+.apsolu-activities-table tbody td {
+    background-color: var(--bs-table-bg) !important; /* stylelint-disable-line declaration-no-important */
+}
+/* Fin de la solution temporaire en attendant la résolution du bug MDL-85523. */
+
+.apsolu-activities-table td {
+    vertical-align: middle;
+}
+
+.apsolu-activities-table dt {
     font-weight: normal;
     text-align: left;
     width: auto;
 }
 
-#apsolu-activities-table dt:after {
+.apsolu-activities-table dt:after {
     content: ' : ';
 }
 
-#apsolu-activities-table dd {
+.apsolu-activities-table dd {
     margin-left: 0;
 }
 
