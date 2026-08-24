@@ -106,14 +106,6 @@ if (isset($time, $cohorts) === true) {
     $overviewactivitiesdata->filters = '&time=' . $time . '&cohorts=' . implode(',', $cohorts);
 }
 
-// Complements : get all visible complement courses for current user.
-$overviewcomplementsdata = new stdClass();
-$overviewcomplementsdata->complements = array_values(enrol_select_get_potential_user_complements());
-$overviewcomplementsdata->count_complements = count($overviewcomplementsdata->complements);
-$overviewcomplementsdata->www_url = $CFG->wwwroot;
-$overviewcomplementsdata->is_siuaps_rennes = isset($CFG->is_siuaps_rennes);
-$overviewcomplementsdata->is_courses_creator = has_capability('moodle/course:create', context_system::instance());
-
 // Set remaining choices block.
 $PAGE->blocks->add_fake_block(enrol_select_get_remaining_choices_block(), BLOCK_POS_LEFT);
 
@@ -140,7 +132,6 @@ $PAGE->navbar->add(get_string('enrolment', 'enrol_select'));
 
 echo $OUTPUT->header();
 echo $managersfilters;
-echo $OUTPUT->render_from_template('enrol_select/overview_complements', $overviewcomplementsdata);
 echo $OUTPUT->render_from_template('enrol_select/overview_activities', $overviewactivitiesdata);
 echo $debugging;
 echo $OUTPUT->footer();

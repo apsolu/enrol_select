@@ -322,39 +322,6 @@ function enrol_select_get_recordset_user_activity_enrolments($userid = null, $on
 }
 
 /**
- * Renvoie toutes les activités complémentaires dans lesquelles un utilisateur est inscrit et validé.
- *
- * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
- *
- * @return array Un tableau contenant la liste des inscriptions.
- */
-function enrol_select_get_user_complement_enrolments($userid = null) {
-    global $DB, $USER;
-
-    if ($userid === null) {
-        $userid = $USER->id;
-    }
-
-    $sql = "SELECT DISTINCT c.*, FORMAT(ac.price, 2) AS price, ac.federation, '1' AS paymentcenterid, e.id AS enrolid, ue.status" .
-        " FROM {course} c" .
-        " JOIN {apsolu_complements} ac ON c.id=ac.id" .
-        // Check cohorts.
-        " JOIN {enrol} e ON c.id = e.courseid" .
-        " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid" .
-        " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid" .
-        " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = cm.userid" .
-        " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.userid = cm.userid AND ra.itemid = e.id" .
-        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50 AND ctx.instanceid=c.id" .
-        " WHERE e.enrol = 'select'" .
-        " AND e.status = 0" . // Active.
-        " AND cm.userid=?" .
-        " AND c.visible=1" .
-        " ORDER BY c.fullname";
-
-    return $DB->get_records_sql($sql, [$userid]);
-}
-
-/**
  * Renvoie tous les collèges auxquels appartient l'utilisateur (nombre de voeux possibles, roles, prix, etc).
  *
  * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
@@ -811,53 +778,6 @@ function enrol_select_get_potential_user_activities($time = null, $cohorts = nul
             $course->longitude = $locations[$course->locationid]->longitude;
             $course->latitude = $locations[$course->locationid]->latitude;
         }
-    }
-
-    return $courses;
-}
-
-/**
- * Une fonction à documenter (TODO).
- *
- * @return array
- */
-function enrol_select_get_potential_user_complements() {
-    global $CFG, $DB, $USER;
-
-    if (isset($CFG->is_siuaps_rennes) === false) {
-        return [];
-    }
-
-    $usercomplementenrolments = enrol_select_get_user_complement_enrolments();
-
-    $now = time();
-
-    $sql = "SELECT DISTINCT c.*, ac.*, format(ac.price, 2, 'fr_FR') AS price" .
-        " FROM {course} c" .
-        " JOIN {apsolu_complements} ac ON c.id = ac.id" .
-        // Check cohorts.
-        " JOIN {enrol} e ON c.id = e.courseid" .
-        " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid" .
-        " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid" .
-        " WHERE e.enrol = 'select'" .
-        " AND e.status = 0" . // Active.
-        " AND (e.enrolstartdate = 0 OR e.enrolstartdate < ?)" .
-        " AND (e.enrolenddate = 0 OR e.enrolenddate > ?)" .
-        " AND cm.userid=?" .
-        " AND c.visible=1" .
-        " ORDER BY c.fullname";
-    $courses = $DB->get_records_sql($sql, [$now, $now, $USER->id]);
-
-    foreach ($courses as $index => $course) {
-        $enrol = $DB->get_record('enrol', ['enrol' => 'select', 'status' => 0, 'courseid' => $course->id]);
-        if ($enrol === false || (isset($CFG->is_siuaps_rennes) === true && $course->id === '249')) {
-            unset($courses[$index]);
-            continue;
-        }
-
-        $course->enrolid = $enrol->id;
-        $course->enrolname = $enrol->name;
-        $course->enroled = isset($usercomplementenrolments[$course->id]);
     }
 
     return $courses;

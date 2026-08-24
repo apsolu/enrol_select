@@ -151,8 +151,6 @@ function enrol_select_get_enrolments_block() {
         $overviewenrolmentsdata->activity_enrolments[] = $enrolment;
     }
     $overviewenrolmentsdata->count_activity_enrolments = count($overviewenrolmentsdata->activity_enrolments);
-    $overviewenrolmentsdata->complement_enrolments = array_values(enrol_select_get_user_complement_enrolments());
-    $overviewenrolmentsdata->count_complement_enrolments = count($overviewenrolmentsdata->complement_enrolments);
 
     $block = new block_contents();
     $block->title = 'Je souhaite m\'inscrire à...';

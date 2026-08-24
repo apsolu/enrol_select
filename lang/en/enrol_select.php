@@ -231,10 +231,6 @@ $string['activities_list'] = 'Liste des créneaux par activité';
 $string['activities'] = 'Activités sportives';
 $string['no_activities'] = 'Aucune activité ouverte aux inscriptions.';
 
-$string['complements_list'] = 'Liste des activités complémentaires';
-$string['complements'] = 'Activités complémentaires';
-$string['no_complements'] = 'Aucune activité complémentaire ouverte aux inscriptions.';
-
 $string['max_places_on_listname_X'] = 'Nombre de places sur la liste {$a}';
 $string['role'] = 'Rôle attribué par défaut';
 

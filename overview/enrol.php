@@ -105,19 +105,8 @@ foreach (enrol_select_get_potential_user_roles($userid = null, $enrol->courseid)
 
 $federations = [];
 $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_FALSE;
-$complement = false;
-if (isset($CFG->is_siuaps_rennes) === true) {
-    $complement = $DB->get_record('apsolu_complements', ['id' => $enrol->courseid]);
-}
 
 // Vérifie que le cours est ouvert à cet utilisateur.
-if ($complement !== false) {
-    // Pour la musculation sur l'instance de Rennes.
-    $instance->complement = true;
-    $roles = [11 => 'Libre accès'];
-} else {
-    $instance->complement = false;
-
     // TODO: vérifier que les inscriptions sont en cours...
 
     // L'utilisateur n'est pas inscrit à ce cours...
@@ -219,7 +208,6 @@ if ($complement !== false) {
             $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_OPTIONAL;
         }
     }
-}
 
 if (isset($edit)) {
     $instance->edit = true;
