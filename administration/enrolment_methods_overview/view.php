@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_apsolu\core\course;
+
 defined('MOODLE_INTERNAL') || die;
 
 // Fichier chargé automatiquement pour les administrateurs, mais pas pour les gestionnaires visiblement.
@@ -32,29 +34,23 @@ require_once($CFG->dirroot . '/enrol/select/administration/enrolment_methods_ove
 $PAGE->requires->js_call_amd('enrol_select/administration_overview', 'initialise');
 
 // Récupère la liste des enseignants.
-$sql = "SELECT u.*, ctx.instanceid" .
-    " FROM {user} u" .
-    " JOIN {role_assignments} ra ON u.id = ra.userid AND ra.roleid = 3" . // Teacher.
-    " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50" . // Course context.
-    " JOIN {apsolu_courses} ac ON ac.id = ctx.instanceid" .
-    " ORDER BY u.lastname, u.firstname";
-$recordset = $DB->get_recordset_sql($sql);
-
 $teachers = [0 => get_string('choosedots')];
-$courseteachers = [];
-foreach ($recordset as $teacher) {
-    // Collecte les enseignants.
-    if (isset($teachers[$teacher->id]) === false) {
-        $teachers[$teacher->id] = fullname($teacher);
-    }
 
-    // Collecte les enseignants indexés par cours.
-    if (isset($courseteachers[$teacher->instanceid]) === false) {
-        $courseteachers[$teacher->instanceid] = [];
+$courseteachers = [];
+foreach (enrol_select_get_activities_teachers() as $courseid => $teacherusers) {
+    foreach ($teacherusers as $teacheruser) {
+        // Collecte les enseignants.
+        if (isset($teachers[$teacheruser->id]) === false) {
+            $teachers[$teacheruser->id] = fullname($teacheruser);
+        }
+
+        // Collecte les enseignants indexés par cours.
+        if (isset($courseteachers[$courseid]) === false) {
+            $courseteachers[$courseid] = [];
+        }
+        $courseteachers[$courseid][$teacheruser->id] = $teachers[$teacheruser->id];
     }
-    $courseteachers[$teacher->instanceid][] = $teachers[$teacher->id];
 }
-$recordset->close();
 
 // Récupère la liste des calendriers.
 $calendars = $DB->get_records('apsolu_calendars');
@@ -62,18 +58,16 @@ $calendars = $DB->get_records('apsolu_calendars');
 $mform = new apsolu_overview_filter_form($PAGE->url->out(false), [$calendars, $teachers]);
 $mdata = $mform->get_data();
 
-// Liste des cours.
-$sql = "SELECT c.id, c.fullname, c.idnumber, '0' AS count_enrols, '1' AS anomalies,
-               l.name AS location, aa.name AS area, city.name AS city
-          FROM {course} c
-          JOIN {apsolu_courses} ac ON ac.id = c.id
-          JOIN {apsolu_locations} l ON l.id = ac.locationid
+// Liste des lieux.
+$sql = "SELECT l.id AS locationid, l.name AS location, aa.id AS areaid, aa.name AS area, city.id AS cityid, city.name AS city
+          FROM {apsolu_locations} l
           JOIN {apsolu_areas} aa ON aa.id = l.areaid
-          JOIN {apsolu_cities} city ON city.id = aa.cityid
-          JOIN {course_categories} cc ON cc.id = c.category
-         WHERE c.visible = 1
-      ORDER BY cc.sortorder, ac.numweekday, ac.starttime";
-$courses = $DB->get_records_sql($sql);
+          JOIN {apsolu_cities} city ON city.id = aa.cityid";
+$locations = $DB->get_records_sql($sql);
+
+// Liste des cours.
+$courses = [];
+$apsolucourses = Course::get_records(['visible' => 1]);
 
 // Liste des inscriptions.
 $sql = "SELECT CONCAT(enrolid, '-', status), COUNT(*) AS count" .
@@ -93,12 +87,22 @@ $sql = "SELECT e.id, e.name, e.courseid, e.enrolstartdate, e.enrolenddate, e.cus
 $enrols = $DB->get_records_sql($sql);
 
 foreach ($enrols as $enrol) {
-    if (isset($courses[$enrol->courseid]) === false) {
+    if (isset($apsolucourses[$enrol->courseid]) === false) {
         // Le cours n'existe pas ou n'est pas une activité APSOLU.
         continue;
     }
 
     if (isset($courses[$enrol->courseid]->enrols) === false) {
+        $courses[$enrol->courseid] = new stdClass();
+        $courses[$enrol->courseid]->id = $apsolucourses[$enrol->courseid]->id;
+        $courses[$enrol->courseid]->fullname = $apsolucourses[$enrol->courseid]->fullname;
+        $courses[$enrol->courseid]->idnumber = $apsolucourses[$enrol->courseid]->idnumber;
+
+        $locationid = $apsolucourses[$enrol->courseid]->customfields['location']->get_value();
+        $courses[$enrol->courseid]->location = $locations[$locationid]->location;
+        $courses[$enrol->courseid]->area = $locations[$locationid]->area;
+        $courses[$enrol->courseid]->city = $locations[$locationid]->city;
+
         $courses[$enrol->courseid]->enrols = [];
         $courses[$enrol->courseid]->count_enrols = 0;
         $courses[$enrol->courseid]->anomalies = 0;
@@ -142,8 +146,6 @@ foreach ($enrols as $enrol) {
     $courses[$enrol->courseid]->count_enrols++;
 }
 
-$teachers = enrol_select_get_activities_teachers();
-
 $data = new stdClass();
 $data->wwwroot = $CFG->wwwroot;
 $data->courses = [];
@@ -172,7 +174,7 @@ foreach ($courses as $course) {
     }
 
     // Filtre par enseignant.
-    if (empty($mdata->teacherid) === false && isset($teachers[$course->id][$mdata->teacherid]) === false) {
+    if (empty($mdata->teacherid) === false && isset($courseteachers[$course->id][$mdata->teacherid]) === false) {
         // Le filtre ne correspond pas à l'enseignant sélectionné.
         continue;
     }

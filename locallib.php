@@ -161,24 +161,21 @@ function enrol_select_get_activities_teachers() {
 
     $teachers = [];
 
-    $sql = "SELECT u.id AS userid, u.firstname, u.lastname, u.email, ac.id AS courseid" .
-        " FROM {user} u" .
-        " JOIN {role_assignments} ra ON u.id = ra.userid AND ra.roleid = 3" . // Teacher.
-        " JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50" . // Course context.
-        " JOIN {apsolu_courses} ac ON ac.id = ctx.instanceid" .
-        " ORDER BY u.lastname, u.firstname";
+    $sql = "SELECT u.*, ctx.instanceid AS courseid
+              FROM {user} u
+              JOIN {role_assignments} ra ON u.id = ra.userid AND ra.roleid = 3 -- Teacher.
+              JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50  -- Course context.
+          ORDER BY u.lastname, u.firstname";
     $recordset = $DB->get_recordset_sql($sql);
     foreach ($recordset as $record) {
-        if (isset($teachers[$record->courseid]) === false) {
-            $teachers[$record->courseid] = [];
+        $courseid = $record->courseid;
+
+        if (isset($teachers[$courseid]) === false) {
+            $teachers[$courseid] = [];
         }
 
-        $user = new \stdClass();
-        $user->id = $record->userid;
-        $user->firstname = $record->firstname;
-        $user->lastname = $record->lastname;
-        $user->email = $record->email;
-        $teachers[$record->courseid][$record->userid] = $user;
+        unset($record->courseid);
+        $teachers[$courseid][$record->id] = $record;
     }
     $recordset->close();
 
