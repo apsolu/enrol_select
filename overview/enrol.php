@@ -76,25 +76,12 @@ $enrol = $DB->get_record('enrol', ['enrol' => 'select', 'status' => 0, 'id' => $
 $federation = new FederationCourse();
 $federationcourseid = $federation->get_courseid();
 
-if (isset($CFG->is_siuaps_rennes) === true && in_array($enrol->courseid, ['250'], $strict = true) === true) {
-    // TODO: correction temporaire. À supprimer lorsque la gestion des activités complémentaires sera implémentée.
-    $course = $DB->get_record('course', ['id' => $enrol->courseid], '*', MUST_EXIST);
-    $course->license = '0';
-    $course->information = '';
-    $course->showpolicy = '0';
-} else {
-    $sql = "SELECT c.*, ac.license, ac.information, ac.showpolicy" .
-        " FROM {course} c" .
-        " JOIN {apsolu_courses} ac ON c.id = ac.id" .
-        " WHERE c.id = :courseid";
-    $params = ['courseid' => $enrol->courseid];
-    $course = $DB->get_record_sql($sql, $params, $strictness = MUST_EXIST);
-}
+$course = Course::get_record(['id' => $enrol->courseid], $fields = '*', $strictness = MUST_EXIST);
 
 $instance = new stdClass();
 $instance->fullname = $course->fullname;
 $instance->enrolid = $enrol->id;
-$instance->showpolicy = $course->showpolicy;
+$instance->showpolicy = $course->customfields['show_policy']->export_value();
 
 // Détermine si l'utilisateur courant est déjà inscrit à ce cours.
 // TODO: à modifer...
@@ -110,9 +97,8 @@ $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_FALSE;
 // TODO: vérifier que les inscriptions sont en cours...
 
 // L'utilisateur n'est pas inscrit à ce cours...
+$enrolselectplugin = new enrol_select_plugin();
 if ($instance->role === '') {
-    $enrolselectplugin = new enrol_select_plugin(); // TODO: factoriser, et ne déclarer qu'une seule fois cette variable.
-
     // Est-ce que le cours est plein ?
     $status = $enrolselectplugin->get_available_status($enrol, $USER);
     if ($status === false) {
@@ -173,28 +159,20 @@ if ($instance->role === '') {
     }
 } else {
     // Si l'utilisateur est déjà inscrit à ce cours.
-    $enrolselectplugin = new enrol_select_plugin(); // TODO: factoriser, et ne déclarer qu'une seule fois cette variable.
     $roles = $enrolselectplugin->get_available_user_roles($enrol, $USER->id);
 
     foreach ($roles as $roleid => $role) {
-        $enrolselectplugin = new enrol_select_plugin(); // TODO: à sortir de la boucle.
-
-        if ($enrolselectplugin->can_enrol($enrol, $USER, $roleid) === false) {
-            // TODO: factoriser pour rendre la lecture plus facile...
-            if ($roleid != $instance->role) {
-                unset($roles[$roleid]);
-            } else {
-                // Affiche le rôle déjà affecté, même si l'étudiant n'est pas autorisé à avoir ce rôle.
-                $roles[$roleid] = $role->localname;
-            }
-        } else {
-            $roles[$roleid] = $role->localname;
+        if ($enrolselectplugin->can_enrol($enrol, $USER, $roleid) === false && $roleid != $instance->role) {
+            unset($roles[$roleid]);
+            continue;
         }
+
+        $roles[$roleid] = $role->localname;
     }
 }
 
 // Détermine si il possible/obligatoire de s'inscrire à la FFSU.
-if ($course->license === '1') {
+if (isset($course->customfields['federation']) === true && $course->customfields['federation']->get_value() === 1) {
     // FFSU obligatoire.
     $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_TRUE;
     $instance->federation = 1;
@@ -226,7 +204,6 @@ echo $OUTPUT->header();
 if (($data = $mform->get_data()) && !isset($instance->edit)) {
     // Save data.
     $instance = $enrol;
-    $enrolselectplugin = new enrol_select_plugin();
 
     if (isset($data->unenrolbutton)) {
         // Unenrol.

@@ -51,9 +51,10 @@ define(['jquery'], function($) {
                     }
 
                     // Affiche ou masque toutes les lignes du tableau des activités.
-                    var rows = document.querySelectorAll('#apsolu-activities-table .apsolu-sports-tr-course');
+                    var rows = document.querySelectorAll('.apsolu-activities-table .apsolu-sports-tr-course');
                     for (i = 0; i < rows.length; i++) {
                         rows[i].style.display = display;
+                        rows[i].classList.remove('d-none');
                     }
 
                     // Change le pictogramme représentant une flèche vers le bas ou vers la droite.

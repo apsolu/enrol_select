@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+// phpcs:disable moodle.Commenting.TodoComment.MissingInfoInline
+
+use local_apsolu\customfields\course as CustomfieldsCourse;
+
 /**
  * Fonctions pour le module enrol_select.
  *
@@ -35,7 +39,19 @@
 function enrol_select_get_activities($siteid = 0, $categoryid = 0, $categoryname = '', $onhomepage = true) {
     global $DB;
 
-    $params = [];
+    $coursecustomfields = CustomfieldsCourse::get_apsolu_courses_custom_fields();
+    $weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+    $params = [
+        'customfieldtypeid' => $coursecustomfields['type']->id,
+        'customfieldskillid' => $coursecustomfields['skill']->id,
+        'customfieldperiodid' => $coursecustomfields['period']->id,
+        'customfieldtimerange' => $coursecustomfields['timerange']->id,
+        'customfieldweekday' => $coursecustomfields['weekday']->id,
+        'customfieldcategory' => $coursecustomfields['category']->id,
+        'customfieldlocationid' => $coursecustomfields['location']->id,
+        'customfieldonhomepage' => $coursecustomfields['on_homepage']->id,
+        ];
     $conditions = [];
 
     if (empty($siteid) === false) {
@@ -54,30 +70,50 @@ function enrol_select_get_activities($siteid = 0, $categoryid = 0, $categoryname
     }
 
     if ($onhomepage !== null) {
-        $params['on_homepage'] = intval($onhomepage);
-        $conditions[] = " AND ac.on_homepage = :on_homepage";
+        if ($onhomepage === true) {
+            $conditions[] = " AND cd8.intvalue = 1";
+        } else {
+            $conditions[] = " AND cd8.intvalue != 1";
+        }
     }
 
-    $sql = "SELECT c.id, c.fullname, ac.event, ac.weekday, ac.starttime, ac.endtime," .
-        " cc0.id AS domainid, cc0.name AS domain, cc.id AS sportid, cc.name AS sport, acc.url, cc.description," .
-        " ac.skillid, ask.name AS skill, ac.locationid, al.name AS location, aa.name AS area," .
-        " aci.name AS site, ac.periodid, ap.generic_name" .
-        " FROM {course} c" .
-        " JOIN {apsolu_courses} ac ON c.id = ac.id" .
-        " JOIN {course_categories} cc ON cc.id = c.category" .
-        " JOIN {apsolu_courses_categories} acc ON acc.id = cc.id" .
-        " JOIN {course_categories} cc0 ON cc0.id = cc.parent" .
-        " JOIN {apsolu_skills} ask ON ask.id = ac.skillid" .
-        " JOIN {apsolu_locations} al ON al.id = ac.locationid" .
-        " JOIN {apsolu_areas} aa ON aa.id = al.areaid" .
-        " JOIN {apsolu_cities} aci ON aci.id = aa.cityid" .
-        " JOIN {apsolu_periods} ap ON ap.id = ac.periodid" .
-        " WHERE cc0.visible = 1" .
-        " AND cc.visible = 1" .
-        " AND c.visible = 1" .
-        implode(' ', $conditions) .
-        " ORDER BY domain, sport, numweekday, starttime, event";
-    return $DB->get_records_sql($sql, $params);
+    $sql = "SELECT c.id, c.fullname, cd6.charvalue AS event, cd5.intvalue AS numweekday, cd4.shortcharvalue AS timerange,
+                   cc0.id AS domainid, cc0.name AS domain, cc.id AS sportid, cc.name AS sport, acc.url, cc.description,
+                   ask.id AS skillid, ask.name AS skill, al.id AS locationid, al.name AS location, aa.name AS area,
+                   aci.name AS site, ap.id AS periodid, ap.generic_name
+              FROM {course} c
+              JOIN {course_categories} cc ON cc.id = c.category
+              JOIN {apsolu_courses_categories} acc ON acc.id = cc.id
+              JOIN {course_categories} cc0 ON cc0.id = cc.parent
+              JOIN {customfield_data} cd1 ON c.id = cd1.instanceid AND cd1.intvalue = 1 AND cd1.fieldid = :customfieldtypeid
+              JOIN {customfield_data} cd2 ON c.id = cd2.instanceid AND cd2.fieldid = :customfieldskillid
+              JOIN {apsolu_skills} ask ON ask.id = cd2.intvalue
+              JOIN {customfield_data} cd3 ON c.id = cd3.instanceid AND cd3.fieldid = :customfieldperiodid
+              JOIN {apsolu_periods} ap ON ap.id = cd3.intvalue
+              JOIN {customfield_data} cd4 ON c.id = cd4.instanceid AND cd4.fieldid = :customfieldtimerange
+              JOIN {customfield_data} cd5 ON c.id = cd5.instanceid AND cd5.fieldid = :customfieldweekday
+              JOIN {customfield_data} cd6 ON c.id = cd6.instanceid AND cd6.fieldid = :customfieldcategory
+              JOIN {customfield_data} cd7 ON c.id = cd7.instanceid AND cd7.fieldid = :customfieldlocationid
+              JOIN {apsolu_locations} al ON al.id = cd7.intvalue
+              JOIN {apsolu_areas} aa ON aa.id = al.areaid
+              JOIN {apsolu_cities} aci ON aci.id = aa.cityid
+              JOIN {customfield_data} cd8 ON c.id = cd8.instanceid AND cd8.fieldid = :customfieldonhomepage
+             WHERE cc0.visible = 1
+               AND cc.visible = 1
+               AND c.visible = 1 " . implode(' ', $conditions) . "
+          ORDER BY domain, sport, numweekday, cd4.intvalue, event";
+    $courses = [];
+    foreach ($DB->get_records_sql($sql, $params) as $course) {
+        $timerange = json_decode($course->timerange, $associative = true);
+
+        $course->weekday = $weekdays[$course->numweekday];
+        $course->starttime = sprintf('%s:%s', $timerange['start']['hour'], $timerange['start']['minute']);
+        $course->endtime = sprintf('%s:%s', $timerange['end']['hour'], $timerange['end']['minute']);
+
+        $courses[$course->id] = $course;
+    }
+
+    return $courses;
 }
 
 /**
@@ -96,10 +132,9 @@ function enrol_select_get_activities_roles() {
 
     $activities = [];
 
-    $sql = "SELECT e.courseid, esr.roleid" .
-        " FROM {enrol} e" .
-        " JOIN {apsolu_courses} ac ON ac.id = e.courseid" .
-        " JOIN {enrol_select_roles} esr ON e.id = esr.enrolid";
+    $sql = "SELECT e.courseid, esr.roleid
+              FROM {enrol} e
+              JOIN {enrol_select_roles} esr ON e.id = esr.enrolid";
     $recordset = $DB->get_recordset_sql($sql);
     foreach ($recordset as $record) {
         if (isset($roles[$record->roleid]) === false) {
@@ -221,7 +256,6 @@ function enrol_select_get_user_activity_enrolments($userid = null) {
         " e.id AS enrolid, ue.status, ra.roleid" .
         " FROM {course} c" .
         " JOIN {course_categories} cc ON cc.id = c.category" .
-        " JOIN {apsolu_courses} ac ON c.id=ac.id" .
         // Check cohorts.
         " JOIN {enrol} e ON c.id = e.courseid" .
         " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid" .
@@ -260,7 +294,6 @@ function enrol_select_get_real_user_activity_enrolments($userid = null) {
     $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, '1' AS paymentcenterid" .
         " FROM {course} c" .
         " JOIN {course_categories} cc ON cc.id = c.category" .
-        " JOIN {apsolu_courses} ac ON c.id = ac.id" .
         " JOIN {enrol} e ON c.id = e.courseid" .
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid" .
         " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.itemid = e.id" .
@@ -299,7 +332,6 @@ function enrol_select_get_recordset_user_activity_enrolments($userid = null, $on
         " ue.status, ra.roleid, '1' AS paymentcenterid" .
         " FROM {course} c" .
         " JOIN {course_categories} cc ON cc.id = c.category" .
-        " JOIN {apsolu_courses} ac ON c.id = ac.id" .
         " JOIN {enrol} e ON c.id = e.courseid" .
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid" .
         " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.itemid = e.id" .
@@ -421,7 +453,6 @@ function enrol_select_get_count_user_role_assignments($userid = null) {
         " FROM {role_assignments} ra" .
         " JOIN {context} ctx ON ctx.id = ra.contextid" .
         " JOIN {course} c ON c.id = ctx.instanceid AND ctx.contextlevel = 50" .
-        " JOIN {apsolu_courses} ac ON ac.id = c.id" .
         " JOIN {enrol} e ON c.id = e.courseid AND ra.itemid = e.id" .
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid" .
         " WHERE e.enrol = 'select'" .
@@ -485,305 +516,6 @@ function enrol_select_get_potential_user_roles($userid = null, $courseid = null)
 }
 
 /**
- * Retourne la liste des cours dans lesquels l'utilisateur peut s'inscrire ; même si toutes les places sont prises.
- *
- * @param int|null   $time    Timestamp unix permettant aux gestionnaires de simuler une date d'inscription.
- * @param array|null $cohorts Tableau de cohortes permettant aux gestionnaires de simuler une appartenance à des cohortes.
- *
- * @return void
- */
-function enrol_select_get_potential_user_activities($time = null, $cohorts = null) {
-    global $DB, $USER;
-
-    $groupings = enrol_select_get_visible_activities_domains();
-    $categories = enrol_select_get_visible_sports();
-    $skills = $DB->get_records('apsolu_skills');
-    $locations = $DB->get_records('apsolu_locations');
-    $areas = $DB->get_records('apsolu_areas');
-    $cities = $DB->get_records('apsolu_cities');
-    $useractivityenrolments = enrol_select_get_user_activity_enrolments();
-    $roles = enrol_select_get_custom_student_roles();
-
-    if ($cohorts === null) {
-        // Pour un étudiant.
-        $availableuserroles = enrol_select_get_potential_user_roles();
-        $usercolleges = enrol_select_get_sum_user_choices($userid = null, $count = true);
-
-        $unavailableuserroles = [];
-        foreach ($usercolleges as $college) {
-            if ($college->maxwish > 0 && $college->count >= $college->maxwish) {
-                $unavailableuserroles[$college->roleid] = $college->roleid;
-            }
-        }
-    } else {
-        // Lorsqu'on utilise les filtres pour gestionnaires, on prend tous les rôles.
-        $sql = "SELECT DISTINCT r.*" .
-            " FROM {role} r" .
-            " JOIN {apsolu_colleges} ac ON r.id = ac.roleid" .
-            " JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid" .
-            " WHERE acm.cohortid IN (" . substr(str_repeat('?,', count($cohorts)), 0, -1) . ")";
-        $availableuserroles = role_fix_names($DB->get_records_sql($sql, $cohorts));
-
-        // Collèges.
-        $unavailableuserroles = $roles;
-        foreach ($availableuserroles as $role) {
-            unset($unavailableuserroles[$role->id]);
-        }
-    }
-
-    $currentactivity = null;
-
-    $now = $time;
-    if ($now === null) {
-        $now = time();
-    }
-
-    // Récupère toutes les activités.
-    $sql = "SELECT DISTINCT c.*, ac.*, cc.id AS sportid, cc.description, grp.id AS groupingid" .
-        " FROM {course} c" .
-        " JOIN {apsolu_courses} ac ON c.id=ac.id" .
-        " JOIN {course_categories} cc ON cc.id=c.category" . // Sport category.
-        " JOIN {course_categories} grp ON grp.id=cc.parent" . // Parent category.
-        // Check cohorts.
-        " AND c.visible=1" .
-        " AND cc.visible=1" .
-        " ORDER BY cc.name, ac.numweekday, ac.starttime, ac.endtime";
-    $courses = $DB->get_records_sql($sql);
-
-    // Récupère toutes les méthodes d'inscription valides concernant l'utilisateur courant.
-    $sql = "SELECT DISTINCT e.*" .
-        " FROM {enrol} e" .
-        " JOIN {enrol_select_cohorts} ewc ON e.id = ewc.enrolid" .
-        " JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid" .
-        " WHERE e.enrol = 'select'" .
-        " AND e.status = 0" .
-        " AND (e.enrolstartdate = 0 OR e.enrolstartdate < :enrolstartdate)" .
-        " AND (e.enrolenddate = 0 OR e.enrolenddate > :enrolenddate)";
-    $params = ['enrolstartdate' => $now, 'enrolenddate' => $now];
-
-    if ($cohorts === null) {
-        $sql .= " AND cm.userid = :userid";
-        $params['userid'] = $USER->id;
-    } else {
-        $insql = [];
-        foreach ($cohorts as $index => $cohortid) {
-            $insql[] = ":cohort" . $index;
-            $params['cohort' . $index] = $cohortid;
-        }
-
-        $sql .= ' AND ewc.cohortid IN (' . implode(',', $insql) . ')';
-        $sql = str_replace('JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid', '', $sql);
-    }
-
-    $enrols = $DB->get_records_sql($sql, $params);
-    foreach ($enrols as $enrol) {
-        if (!isset($courses[$enrol->courseid])) {
-            $params = (object) ['courseid' => $enrol->courseid, 'enrolid' => $enrol->id];
-            if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging(get_string('debug_enrol_invalid_enrolment', 'enrol_select', $params), $level = DEBUG_DEVELOPER);
-            }
-            continue;
-        }
-
-        if (!isset($courses[$enrol->courseid]->enrols)) {
-            $courses[$enrol->courseid]->enrols = [];
-        }
-
-        $courses[$enrol->courseid]->enrols[] = $enrol;
-    }
-
-    // Calcule le nombre d'inscrits sur les listes d'inscription.
-    $availability = [];
-
-    $sql = "SELECT ue.enrolid, ue.status, COUNT(userid) AS count
-             FROM {enrol} e
-             JOIN {user_enrolments} ue ON e.id = ue.enrolid
-            WHERE e.enrol = 'select'
-           GROUP BY ue.enrolid, ue.status";
-    $recordset = $DB->get_recordset_sql($sql);
-    foreach ($recordset as $record) {
-        if (isset($availability[$record->enrolid]) === false) {
-            $availability[$record->enrolid] = new stdClass();
-            $availability[$record->enrolid]->main = 0;
-            $availability[$record->enrolid]->wait = 0;
-        }
-
-        switch ($record->status) {
-            case enrol_select_plugin::ACCEPTED:
-            case enrol_select_plugin::MAIN:
-                $availability[$record->enrolid]->main += $record->count;
-                break;
-            case enrol_select_plugin::WAIT:
-                $availability[$record->enrolid]->wait += $record->count;
-        }
-    }
-    $recordset->close();
-
-    // Récupère tous les rôles acceptés par cours.
-    $selectroles = [];
-
-    $recordset = $DB->get_recordset('enrol_select_roles');
-    foreach ($recordset as $record) {
-        if (isset($selectroles[$record->enrolid]) === false) {
-            $selectroles[$record->enrolid] = [];
-        }
-
-        $selectroles[$record->enrolid][] = $record->roleid;
-    }
-    $recordset->close();
-
-    // Parcourt chaque créneau horaire.
-    foreach ($courses as $courseid => $course) {
-        if (!isset($categories[$course->category])) {
-            $params = (object) ['courseid' => $course->id, 'categoryid' => $course->category];
-            if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging(get_string('debug_enrol_invalid_category', 'enrol_select', $params), $level = DEBUG_DEVELOPER);
-            }
-            unset($courses[$courseid]);
-            continue;
-        }
-
-        // L'utilisateur ne semble pas avoir le droit de s'inscrire à ce cours.
-        if (!isset($courses[$courseid]->enrols)) {
-            $params = (object) ['courseid' => $course->id, 'userid' => $USER->id];
-            if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging(get_string('debug_enrol_no_enrolments', 'enrol_select', $params), $level = DEBUG_DEVELOPER);
-            }
-            unset($courses[$courseid]);
-            continue;
-        }
-
-        // Il y a trop de méthodes !
-        if (isset($courses[$courseid]->enrols[1])) {
-            $params = (object) ['courseid' => $courseid, 'userid' => $USER->id];
-            if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging(get_string('debug_enrol_too_many_enrolments', 'enrol_select', $params), $level = DEBUG_DEVELOPER);
-            }
-            unset($courses[$courseid]);
-            continue;
-        }
-
-        $enrol = $courses[$courseid]->enrols[0];
-        $course->enrolid = $enrol->id;
-        $course->enrolname = $enrol->name;
-
-        $time = time();
-
-        if ($enrol->customint3 == 1) {
-            // Les quotas sont activés.
-            // TODO: refactoriser cette partie avec le script ajax/reload_column_left_places.php.
-            // Récupère le nombre d'inscrits sur la liste des acceptés et sur la liste principale.
-            $course->count_main_list = $availability[$enrol->id]->main ?? 0;
-
-            // Récupère le quota de la liste principale.
-            $course->max_main_list = $enrol->customint1;
-
-            // Récupère le nombre d'inscrits sur la liste complémentaire.
-            $course->count_wait_list = $availability[$enrol->id]->wait ?? 0;
-
-            // Récupère le quota de la liste complémentaire.
-            $course->max_wait_list = $enrol->customint2;
-
-            if ($course->max_main_list > $course->count_main_list && $course->count_wait_list === 0) {
-                // Si la liste principale n'est pas complète et que la liste d'attente est vide.
-                $count = $course->max_main_list - $course->count_main_list;
-                $course->left_places_str = $count . ' ' . get_string_on_list_x(
-                    enrol_select_plugin::MAIN,
-                    $count > 1 ? 'places_remaining_on_listname_X' : 'place_remaining_on_listname_X'
-                );
-                $course->left_places_style = 'success';
-                $course->full_registration = false;
-            } else if ($course->max_wait_list > $course->count_wait_list) {
-                // Si la liste complémentaire n'est pas complète.
-                // TODO: faire une option afin de laisser le choix entre afficher le nombre
-                // de places restantes sur liste complémentaire
-                // ou afficher un message générique indiquant qu'il reste des places sur liste complémentaire.
-                $course->left_places_str = get_string_on_list_x(enrol_select_plugin::WAIT, 'there_are_still_places_on_listname_X');
-                $course->left_places_style = 'warning';
-                $course->full_registration = false;
-            } else {
-                // Si il ne reste plus de place.
-                $course->left_places_str = get_string('no_places_available', 'enrol_select');
-                $course->left_places_style = 'danger';
-                $course->full_registration = true;
-            }
-        } else {
-            // Les quotas sont désactivés.
-            $course->left_places_str = get_string('no_seat_restrictions', 'enrol_select');
-            $course->left_places_style = 'success';
-            $course->full_registration = false;
-        }
-
-        // TODO: est-ce que l'utilisateur peut accéder à tous les types ?
-
-        // Récupère tous les rôles acceptés par ce cours.
-        $course->role_options = [];
-        if (isset($selectroles[$enrol->id]) === true) {
-            foreach ($selectroles[$enrol->id] as $roleid) {
-                if (isset($roles[$roleid])) {
-                    $course->role_options[$roleid] = $roles[$roleid];
-                }
-            }
-        }
-
-        if ($course->role_options === []) {
-            if (defined('BEHAT_SITE_RUNNING') === false) {
-                debugging('Course #' . $course->id . ': no role for enrol #' . $enrol->id, $level = DEBUG_DEVELOPER);
-            }
-            unset($courses[$courseid]);
-            continue;
-        } else {
-            if (isset($useractivityenrolments[$course->id])) {
-                // L'utilisateur est déjà inscrit à ce cours...
-                $course->allow_enrolment = true;
-                $course->enroled = true;
-            } else if ($course->full_registration) {
-                // Le cours est plein...
-                $course->allow_enrolment = false;
-                $course->enroled = false;
-            } else {
-                $availableuserrolescopy = $availableuserroles;
-                foreach ($availableuserroles as $roleid => $rolename) {
-                    if (!isset($course->role_options[$roleid])) {
-                        // Le cours ne propose pas ce rôle. L'utilisateur ne peut pas choisir ce rôle.
-                        unset($availableuserrolescopy[$roleid]);
-                    } else if (isset($unavailableuserroles[$roleid])) {
-                        // L'utilisateur a déjà atteint le quota pour ce type d'inscription.
-                        unset($availableuserrolescopy[$roleid]);
-                    }
-                }
-
-                $course->allow_enrolment = (count($availableuserrolescopy) !== 0);
-                $course->enroled = false;
-            }
-        }
-
-        // Note : ne pas utiliser uasort() pour préserver les index, car mustache ne sait pas parcourir les tableaux associatifs.
-        usort($course->role_options, function ($a, $b) {
-            return ($a->sortorder < $b->sortorder) ? -1 : 1;
-        });
-
-        $course->grouping = $groupings[$categories[$course->category]->parent]->name;
-        $course->sport = $categories[$course->category]->name;
-        $course->weekday_locale = get_string(strtolower($course->weekday), 'local_apsolu');
-        $course->skill = $skills[$course->skillid]->name;
-        $location = $locations[$course->locationid];
-        $course->location = $location->name;
-        $area = $areas[$location->areaid];
-        $course->areaid = $areas[$location->areaid]->id;
-        $course->area = $areas[$location->areaid]->name;
-        $course->cityid = $cities[$area->cityid]->id;
-        $course->city = $cities[$area->cityid]->name;
-        if (isset($locations[$course->locationid]->longitude, $locations[$course->locationid]->latitude)) {
-            $course->longitude = $locations[$course->locationid]->longitude;
-            $course->latitude = $locations[$course->locationid]->latitude;
-        }
-    }
-
-    return $courses;
-}
-
-/**
  * Retourne les activités pour lesquelles l'utilisateur peut potentiellement se réinscrire.
  *
  * @param int|null $userid Identifiant d'un utilisateur. Si NULL, on prend l'id de l'utilisateur courant.
@@ -802,7 +534,6 @@ function enrol_select_get_user_reenrolments($userid = null) {
     $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, '1' AS paymentcenterid" .
         " FROM {course} c" .
         " JOIN {course_categories} cc ON cc.id = c.category" .
-        " JOIN {apsolu_courses} ac ON c.id = ac.id" .
         " JOIN {enrol} e ON c.id = e.courseid" .
         " JOIN {user_enrolments} ue ON e.id = ue.enrolid" .
         " JOIN {role_assignments} ra ON ra.userid = ue.userid AND ra.itemid = e.id" .

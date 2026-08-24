@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+// phpcs:disable moodle.Commenting.TodoComment.MissingInfoInline
+
 /**
  * Page pour afficher la vue d'ensemble du module enrol_select.
  *
@@ -22,21 +24,22 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_apsolu\core\federation\course as FederationCourse;
+use enrol_select\enrol;
+use enrol_select\output\overview;
+use local_apsolu\core\course;
 
 require('../../config.php');
 require_once(__DIR__ . '/locallib.php');
 require_once($CFG->dirroot . '/enrol/select/blocklib.php');
 
 $courseid = optional_param('courseid', 0, PARAM_INT);
-$roleid = optional_param('roleid', 0, PARAM_INT);
 
 require_login($courseorid = null, $autologinguest = false);
 
 $context = context_user::instance($USER->id);
 
 $PAGE->set_url('/enrol/select/overview.php');
-$PAGE->set_pagelayout('admin');
+$PAGE->set_pagelayout('base');
 
 $PAGE->set_context($context);
 
@@ -54,6 +57,7 @@ $time = null;
 $cohorts = null;
 $managersfilters = '';
 if (has_any_capability($capabilities, context_system::instance()) === true) {
+    // TODO: déplacer cette page dans le répertoire classes/form.
     require_once(__DIR__ . '/overview_managers_filters_form.php');
 
     $mform = new overview_managers_filters_form();
@@ -73,49 +77,63 @@ if (has_any_capability($capabilities, context_system::instance()) === true) {
 }
 
 // Activities : get all visible courses for current user.
-ob_start();
-$courses = enrol_select_get_potential_user_activities($time, $cohorts);
-$debugging = ob_get_clean();
+$courses = [];
+foreach ($DB->get_records('apsolu_courses_types', [], $sort = 'sortorder') as $coursetype) {
+    $courses[$coursetype->id] = [];
+}
 
-$overviewactivitiesdata = (object) ['activities' => [], 'count_activities' => 0];
-
-$currentactivity = null;
-foreach ($courses as $course) {
-    $course->debug = ($CFG->debugdisplay == 1);
-    if ($currentactivity !== $course->sport) {
-        $currentactivity = $course->sport;
-
-        $overviewactivitiesdata->activities[$overviewactivitiesdata->count_activities] = new stdClass();
-        $overviewactivitiesdata->activities[$overviewactivitiesdata->count_activities]->sportid = $course->sportid;
-        $overviewactivitiesdata->activities[$overviewactivitiesdata->count_activities]->name = $course->sport;
-        $overviewactivitiesdata->activities[$overviewactivitiesdata->count_activities]->description = $course->description;
-        $overviewactivitiesdata->activities[$overviewactivitiesdata->count_activities]->courses = [];
-        $overviewactivitiesdata->count_activities++;
+foreach (Course::get_records(['visible' => 1]) as $course) {
+    if (isset($course->customfields['type']) === false) {
+        // Le champ "type" n'est pas défini.
+        continue;
     }
 
-    $overviewactivitiesdata->activities[$overviewactivitiesdata->count_activities - 1]->courses[] = $course;
+    $coursetypeid = $course->customfields['type']->get('fieldid');
+
+    if (isset($courses[$coursetypeid]) === false) {
+        continue;
+    }
+
+    $courses[$coursetypeid][$course->id] = $course;
 }
 
-$overviewactivitiesdata->roles = array_values(enrol_select_get_custom_student_roles());
-$overviewactivitiesdata->info_pix_url = $OUTPUT->image_url('help');
-$overviewactivitiesdata->marker_pix_url = $OUTPUT->image_url('a/marker', 'enrol_select');
-$overviewactivitiesdata->www_url = $CFG->wwwroot;
-$overviewactivitiesdata->is_courses_creator = has_capability('moodle/course:create', context_system::instance());
-$overviewactivitiesdata->filters = '';
-if (isset($time, $cohorts) === true) {
-    $overviewactivitiesdata->filters = '&time=' . $time . '&cohorts=' . implode(',', $cohorts);
+$enrols = [];
+$invalidcourses = []; // Permet de stocker les cours qui proprosent 2 méthodes d'inscription à la fois.
+
+$recordset = Enrol::get_available_enrol_methods($time, $cohorts);
+foreach ($recordset as $enrol) {
+    if (isset($invalidcourses[$enrol->courseid]) === true) {
+        // Ce courseid a été marqué comme invalide.
+        continue;
+    }
+
+    $course = false;
+    foreach ($courses as $coursetypeid => $coursesbytype) {
+        if (isset($coursesbytype[$enrol->courseid]) === false) {
+            continue;
+        }
+
+        $course = $coursesbytype[$enrol->courseid];
+        break;
+    }
+
+    if ($course === false) {
+        // Ce cours n'existe pas ou n'est pas visible. Il est noté invalide.
+        $invalidcourses[$enrol->courseid] = $enrol->courseid;
+        continue;
+    }
+
+    if (isset($enrols[$enrol->courseid]) === true) {
+        // Ce cours possède plusieurs méthodes d'inscription valident en même temps. Ce cas ne peut pas être traité actuellement.
+        unset($courses[$coursetypeid][$enrol->courseid]);
+        $invalidcourses[$enrol->courseid] = $enrol->courseid;
+        continue;
+    }
+
+    $courses[$coursetypeid][$enrol->courseid] = $course;
+    $enrols[$enrol->courseid] = $enrol;
 }
-
-// Set remaining choices block.
-$PAGE->blocks->add_fake_block(enrol_select_get_remaining_choices_block(), BLOCK_POS_LEFT);
-
-// Set enrolments block.
-$PAGE->blocks->add_fake_block(enrol_select_get_enrolments_block(), BLOCK_POS_LEFT);
-
-// Set filters block.
-$filters = enrol_select_get_filters_block($courses);
-$overviewactivitiesdata->more_than_one_site = $filters['more_than_one_site'];
-$PAGE->blocks->add_fake_block($filters['block'], BLOCK_POS_LEFT);
+$recordset->close();
 
 // CSS.
 $PAGE->requires->css('/enrol/select/styles/select2.min.css');
@@ -130,8 +148,10 @@ $PAGE->requires->js_call_amd('enrol_select/select_enrol', 'initialise', ['url' =
 // Navigation.
 $PAGE->navbar->add(get_string('enrolment', 'enrol_select'));
 
+$renderable = new Overview($courses, $enrols);
+$output = $PAGE->get_renderer('enrol_select');
+
 echo $OUTPUT->header();
 echo $managersfilters;
-echo $OUTPUT->render_from_template('enrol_select/overview_activities', $overviewactivitiesdata);
-echo $debugging;
+echo $output->render($renderable);
 echo $OUTPUT->footer();

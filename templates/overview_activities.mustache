@@ -72,131 +72,98 @@
         "activities": []
     }
 }}
-<div id="apsolu-location-map"></div>
-<div><img style="display: none;" class="icon" id="apsolu-location-marker-img" alt="carte" src="{{marker_pix_url}}"></div>
 
-<div id="apsolu-activities-div">
-    <h3>{{#str}}activities_list, enrol_select{{/str}}</h3>
+<h3 class="mt-4" style="border-bottom: {{ color }} solid 2px;">{{ name }}</h3>
 
-    {{^activities}}
-    <p class="alert alert-info text-center">{{#str}}no_activities, enrol_select{{/str}}</p>
-    {{/activities}}
+{{! Roles. }}
+<div id="apsolu-activities-content-legend-div">
+    <h4 class="visually-hidden">Rôles</h4>
+    <ul class="list list-inline text-end">
+    {{#roles}}
+        <li class="apsolu-roles-list-li list-inline-item">
+            <i aria-hidden="true" class="fa fa-{{fontawesomeid}}{{^fontawesomeid}}check{{/fontawesomeid}} me-1" style="color: {{color}}{{^color}}gray{{/color}};"></i><span>{{localname}}</span>
+        </li>
+    {{/roles}}
+    </ul>
+</div>
 
-    {{#count_activities}}
-    <div aria-hidden="true"><button class="btn btn-sm btn-primary" data-action="show" id="apsolu-toggle-activities">Déplier/replier toutes les activités</button></div>
+<div class="table-responsive">
+    <table class="apsolu-activities-table table tablesorted">
+        <caption class="visually-hidden">{{#str}}activities_list, enrol_select{{/str}}</caption>
+        <thead>
+            <tr>
+                <th>{{#str}}actions{{/str}}</th>
+                <th data-column="category" class="apsolu-categories-col">{{#str}}category, local_apsolu{{/str}}</th>
+                <th data-column="sport">{{#str}}sport, local_apsolu{{/str}}</th>
+                {{#headers}}
+                <th data-column="{{ shortname }}">{{ label }}</th>
+                {{/headers}}
+                <th data-column="role">{{#str}}register_type, enrol_select{{/str}}</th>
+                <th>{{#str}}free_places, enrol_select{{/str}}</th>
+                {{#is_courses_creator}}
+                <th>{{#str}}editsettings{{/str}}</th>
+                {{/is_courses_creator}}
+            </tr>
+        </thead>
+        <tbody>
+            {{#activities}}
+                <tr class="apsolu-sports-tr apsolu-sports-tr-activity">
+                    <th class="apsolu-sports-th" colspan="12">
+                        {{^ description}}
+                            <span class="apsolu-sports-th-span apsolu-expandable">{{name}}</span>
+                        {{/description}}
+                        {{#description}}
+                            <span class="apsolu-sports-th-span apsolu-expandable" aria-describedby="apsolu-sports-id-{{sportid}}">{{name}}</span>
+                            <img class="apsolu-sports-description-info-img icon" data-popup="apsolu-sports-id-{{sportid}}" role="button" src="{{info_pix_url}}" alt="aide">
+                            <div id="apsolu-sports-id-{{sportid}}" class="apsolu-sports-description" aria-hidden="true">{{{description}}}</div>
+                        {{/description}}
+                    </th>
+                </tr>
 
-    {{! Roles. }}
-    <div id="apsolu-activities-content-legend-div">
-        <h4 class="visually-hidden">Rôles</h4>
-        <ul class="list list-inline text-end">
-        {{#roles}}
-            <li class="apsolu-roles-list-li list-inline-item">
-                <i aria-hidden="true" class="fa fa-{{fontawesomeid}}{{^fontawesomeid}}check{{/fontawesomeid}} me-1" style="color: {{color}}{{^color}}gray{{/color}};"></i><span>{{localname}}</span>
-            </li>
-        {{/roles}}
-        </ul>
-    </div>
+                {{#courses}}
+                <tr class="apsolu-sports-tr apsolu-sports-tr-course{{#enroled}} info{{/enroled}} d-none">
+                    <td class="text-center">
+                        {{#enroled}}
+                        <a class="apsolu-enrol-a apsolu-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}{{filters}}">
+                            {{#pix}}i/completion-manual-y,core,{{#str}}edit{{/str}}{{/pix}}
+                        </a>
+                        {{/enroled}}
+                        {{^enroled}}
+                            {{#allow_enrolment}}
+                                <a class="apsolu-enrol-a apsolu-not-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}{{filters}}">
+                                    {{#pix}}i/completion-manual-n,core,{{#str}}enrol,enrol_select{{/str}}{{/pix}}
+                                </a>
+                            {{/allow_enrolment}}
+                            {{^allow_enrolment}}{{#debug}}<a class="apsolu-enrol-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">Debug</a>{{/debug}}{{/allow_enrolment}}
+                        {{/enroled}}
+                    </td>
+                    <td class="apsolu-categories-col">{{grouping}}</td>
+                    <td>
+                        <div>{{sport}}</div>
+                        {{#event}}<div><i>{{event}}</i></div>{{/event}}
+                    </td>
+                    {{#fields}}
+                        <td>{{ . }}</td>
+                    {{/fields}}
+                    {{! Types d'inscription. }}
+                    <td>
+                        <ul class="list list-inline text-center">
+                        {{#role_options}}
+                            <li class="apsolu-roles-list-li list-inline-item">
+                                <i aria-hidden="true" class="fa fa-{{fontawesomeid}}{{^fontawesomeid}}check{{/fontawesomeid}} me-1" style="color: {{color}}{{^color}}gray{{/color}};"></i><span class="visually-hidden">{{localname}}</span>
+                            </li>
+                        {{/role_options}}
+                        </ul>
+                    </td>
+                    {{! Places disponibles. }}
+                    <td id="apsolu-select-left-places-{{enrolid}}-ajax" class="table-{{left_places_style}}">{{left_places_str}}</td>
 
-    <div class="table-responsive">
-        <table id="apsolu-activities-table" class="table tablesorted">
-            <caption class="visually-hidden">{{#str}}activities_list, enrol_select{{/str}}</caption>
-            <thead>
-                <tr>
-                    <th>{{#str}}actions{{/str}}</th>
-                    <th data-column="category" class="apsolu-categories-col">{{#str}}category, local_apsolu{{/str}}</th>
-                    <th data-column="sport">{{#str}}sport, local_apsolu{{/str}}</th>
-                    <th data-column="weekday">{{#str}}weekday, local_apsolu{{/str}}</th>
-                    <th data-column="starttime">{{#str}}starttime, local_apsolu{{/str}}</th>
-                    <th data-column="endtime">{{#str}}endtime, local_apsolu{{/str}}</th>
-                    <th data-column="skill">{{#str}}skill, local_apsolu{{/str}}</th>
-                    <th class="d-none hidden" data-column="area">{{#str}}area, local_apsolu{{/str}}</th>
-                    <th data-column="location">{{#str}}location, local_apsolu{{/str}}</th>
-                    <th{{^more_than_one_site}} class="d-none hidden"{{/more_than_one_site}} data-column="city">{{#str}}city, local_apsolu{{/str}}</th>
-                    <th data-column="role">{{#str}}register_type, enrol_select{{/str}}</th>
-                    <th>{{#str}}free_places, enrol_select{{/str}}</th>
                     {{#is_courses_creator}}
-                    <th>{{#str}}editsettings{{/str}}</th>
+                    <td><a href="{{www_url}}/enrol/instances.php?id={{id}}">{{#pix}} t/edit,core,{{#str}}editenrolment,enrol{{/str}}{{/pix}}</a></td>
                     {{/is_courses_creator}}
                 </tr>
-            </thead>
-            <tbody>
-                {{#activities}}
-                    <tr class="apsolu-sports-tr apsolu-sports-tr-activity">
-                        <th class="apsolu-sports-th" colspan="12">
-                            {{^ description}}
-                                <span class="apsolu-sports-th-span apsolu-expandable">{{name}}</span>
-                            {{/description}}
-                            {{#description}}
-                                <span class="apsolu-sports-th-span apsolu-expandable" aria-describedby="apsolu-sports-id-{{sportid}}">{{name}}</span>
-                                <img class="apsolu-sports-description-info-img icon" data-popup="apsolu-sports-id-{{sportid}}" role="button" src="{{info_pix_url}}" alt="aide">
-                                <div id="apsolu-sports-id-{{sportid}}" class="apsolu-sports-description" aria-hidden="true">{{{description}}}</div>
-                            {{/description}}
-                        </th>
-                    </tr>
-
-                    {{#courses}}
-                    <tr class="apsolu-sports-tr apsolu-sports-tr-course{{#enroled}} info{{/enroled}}">
-                        <td class="text-center">
-                            {{#enroled}}
-                            <a class="apsolu-enrol-a apsolu-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}{{filters}}">
-                                {{#pix}}i/completion-manual-y,core,{{#str}}edit{{/str}}{{/pix}}
-                            </a>
-                            {{/enroled}}
-                            {{^enroled}}
-                                {{#allow_enrolment}}
-                                    <a class="apsolu-enrol-a apsolu-not-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}{{filters}}">
-                                        {{#pix}}i/completion-manual-n,core,{{#str}}enrol,enrol_select{{/str}}{{/pix}}
-                                    </a>
-                                {{/allow_enrolment}}
-                                {{^allow_enrolment}}{{#debug}}<a class="apsolu-enrol-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}">Debug</a>{{/debug}}{{/allow_enrolment}}
-                            {{/enroled}}
-                        </td>
-                        <td class="apsolu-categories-col">{{grouping}}</td>
-                        <td>
-                            <div>{{sport}}</div>
-                            {{#event}}<div><i>{{event}}</i></div>{{/event}}
-                        </td>
-                        <td>{{weekday_locale}}</td>
-                        <td>{{starttime}}</td>
-                        <td>{{endtime}}</td>
-                        <td>{{skill}}</td>
-                        {{! Zone géographique. }}
-                        <td class="d-none hidden">{{area}}</td>
-                        <td>
-                            {{^ longitude}}
-                            <span>{{location}}</span>
-                            {{/longitude}}
-                            {{#longitude}}
-                            <span>{{location}}</span>
-                            <a target="_blank" href="https://www.openstreetmap.org/?mlat={{latitude}}&mlon={{longitude}}#map=15/{{latitude}}/{{longitude}}" class="apsolu-location-markers-a" data-longitude="{{longitude}}" data-latitude="{{latitude}}">
-                                <img class="apsolu-location-markers-img" alt="carte géographique" src="{{marker_pix_url}}" width="15px" height="20px">
-                            </a>
-                            {{/longitude}}
-                        </td>
-                        <td{{^more_than_one_site}} class="d-none hidden"{{/more_than_one_site}}>{{city}}</td>
-                        {{! Types d'inscription. }}
-                        <td>
-                            <ul class="list list-inline text-center">
-                            {{#role_options}}
-                                <li class="apsolu-roles-list-li list-inline-item">
-                                    <i aria-hidden="true" class="fa fa-{{fontawesomeid}}{{^fontawesomeid}}check{{/fontawesomeid}} me-1" style="color: {{color}}{{^color}}gray{{/color}};"></i><span class="visually-hidden">{{localname}}</span>
-                                </li>
-                            {{/role_options}}
-                            </ul>
-                        </td>
-                        {{! Places disponibles. }}
-                        <td id="apsolu-select-left-places-{{enrolid}}-ajax" class="table-{{left_places_style}}">{{left_places_str}}</td>
-
-                        {{#is_courses_creator}}
-                        <td><a href="{{www_url}}/enrol/instances.php?id={{id}}">{{#pix}} t/edit,core,{{#str}}editenrolment,enrol{{/str}}{{/pix}}</a></td>
-                        {{/is_courses_creator}}
-                    </tr>
-                    {{/courses}}
-                {{/activities}}
-            </tbody>
-        </table>
-
-        <p class="mt-4 text-end"><a class="btn btn-primary" href="{{www_url}}/my/">{{#str}}back_to_dashboard, enrol_select{{/str}}</a></p>
-    </div>
-    {{/count_activities}}
+                {{/courses}}
+            {{/activities}}
+        </tbody>
+    </table>
 </div>

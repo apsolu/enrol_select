@@ -28,7 +28,9 @@ define(["jquery", "enrol_select/jquery.popupoverlay"], function($) {
         initialise: function() {
             // Action exécutée à chaque clic sur les flèches à gauche du nom de l'activité.
             $(".apsolu-sports-th-span").click(function() {
-                $(this).parent().parent().nextUntil(".apsolu-sports-tr-activity").toggle("slow", "swing");
+                let rows = $(this).parent().parent().nextUntil(".apsolu-sports-tr-activity");
+                rows.toggle("slow", "swing");
+                rows.removeClass("d-none");
                 if ($(this).hasClass("apsolu-expandable")) {
                     $(this).attr("class", "apsolu-sports-th-span apsolu-collapsible");
                 } else if ($(this).hasClass("apsolu-collapsible")) {

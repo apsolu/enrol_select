@@ -83,7 +83,6 @@ foreach ($users as $userid => $user) {
 // Ne pas faire de jointure sur ra.itemid et e.id.
 $sql = "SELECT e.id, e.name, c.id AS courseid, c.fullname" .
     " FROM {course} c" .
-    " JOIN {apsolu_courses} apc ON apc.id = c.id" .
     " JOIN {context} ctx ON c.id = ctx.instanceid AND ctx.contextlevel = 50" .
     " JOIN {role_assignments} ra ON ctx.id = ra.contextid AND ra.roleid = 3" .
     " JOIN {enrol} e ON c.id = e.courseid AND e.status = 0 AND e.enrol = 'select'" .
