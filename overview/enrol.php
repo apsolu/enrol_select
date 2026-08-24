@@ -239,7 +239,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 // Récupère la liste des activités FFSU.
                 $federations = [];
                 foreach (Activity::get_records() as $federation) {
-                    $federations[$federation->id] = $federation->repositoryname;
+                    $federations[$federation->id] = $federation->name;
                 }
 
                 $federationinstance = false;
