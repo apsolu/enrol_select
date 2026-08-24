@@ -107,107 +107,107 @@ $federations = [];
 $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_FALSE;
 
 // Vérifie que le cours est ouvert à cet utilisateur.
-    // TODO: vérifier que les inscriptions sont en cours...
+// TODO: vérifier que les inscriptions sont en cours...
 
-    // L'utilisateur n'est pas inscrit à ce cours...
-    if ($instance->role === '') {
-        $enrolselectplugin = new enrol_select_plugin(); // TODO: factoriser, et ne déclarer qu'une seule fois cette variable.
+// L'utilisateur n'est pas inscrit à ce cours...
+if ($instance->role === '') {
+    $enrolselectplugin = new enrol_select_plugin(); // TODO: factoriser, et ne déclarer qu'une seule fois cette variable.
 
-        // Est-ce que le cours est plein ?
-        $status = $enrolselectplugin->get_available_status($enrol, $USER);
-        if ($status === false) {
-            // Le cours est plein...
-            throw new moodle_exception('error_no_left_slot', 'enrol_select');
+    // Est-ce que le cours est plein ?
+    $status = $enrolselectplugin->get_available_status($enrol, $USER);
+    if ($status === false) {
+        // Le cours est plein...
+        throw new moodle_exception('error_no_left_slot', 'enrol_select');
+    }
+
+    // Est-ce que l'utilisateur n'a pas dépassé son quota de voeux...
+    $userchoices = enrol_select_get_sum_user_choices($userid = null, $count = true);
+    $unavailableuserroles = [];
+    foreach ($userchoices as $choice) {
+        if ($choice->maxwish > 0 && $choice->count >= $choice->maxwish) {
+            $unavailableuserroles[$choice->roleid] = $choice->roleid;
         }
+    }
 
-        // Est-ce que l'utilisateur n'a pas dépassé son quota de voeux...
-        $userchoices = enrol_select_get_sum_user_choices($userid = null, $count = true);
-        $unavailableuserroles = [];
-        foreach ($userchoices as $choice) {
-            if ($choice->maxwish > 0 && $choice->count >= $choice->maxwish) {
-                $unavailableuserroles[$choice->roleid] = $choice->roleid;
-            }
-        }
-
-        if (isset($filtertime, $filtercohorts) === false) {
-            // Pour un étudiant.
-            $availableuserroles = $enrolselectplugin->get_available_user_roles($enrol, $USER->id);
-        } else {
-            // Pour un gestionnaire qui utiliserait les filtres.
-            $sql = "SELECT DISTINCT r.*
-                      FROM {role} r
-                      JOIN {apsolu_colleges} ac ON r.id = ac.roleid
-                      JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid
-                     WHERE acm.cohortid IN (" . substr(str_repeat('?,', count($filtercohorts)), 0, -1) . ")
-                  ORDER BY r.sortorder";
-            $availableuserroles = role_fix_names($DB->get_records_sql($sql, $filtercohorts));
-
-            // Collèges.
-            $unavailableuserroles = enrol_select_get_custom_student_roles();
-            foreach ($availableuserroles as $role) {
-                unset($unavailableuserroles[$role->id]);
-            }
-        }
-
-        $courseroles = $DB->get_records('enrol_select_roles', ['enrolid' => $enrol->id], '', 'roleid');
-        $roles = [];
-        foreach ($availableuserroles as $roleid => $rolename) {
-            if (!isset($courseroles[$roleid])) {
-                // L'utilisateur peut s'inscrire à un type d'inscription qui n'est pas proposé dans ce cours.
-                unset($availableuserroles[$roleid]);
-            } else if (isset($unavailableuserroles[$roleid])) {
-                // L'utilisateur a déjà atteint le quota pour ce type d'inscription.
-                unset($availableuserroles[$roleid]);
-            } else {
-                $roles[$roleid] = $rolename->name;
-            }
-        }
-
-        if (count($availableuserroles) === 0) {
-            if (empty($instance->role) === false) {
-                $role = $DB->get_record('role', ['id' => $instance->role]);
-                throw new moodle_exception('error_reach_wishes_role_limit', 'enrol_select', '', $role->name);
-            } else {
-                throw new moodle_exception('error_reach_wishes_limit', 'enrol_select');
-            }
-        }
+    if (isset($filtertime, $filtercohorts) === false) {
+        // Pour un étudiant.
+        $availableuserroles = $enrolselectplugin->get_available_user_roles($enrol, $USER->id);
     } else {
-        // Si l'utilisateur est déjà inscrit à ce cours.
-        $enrolselectplugin = new enrol_select_plugin(); // TODO: factoriser, et ne déclarer qu'une seule fois cette variable.
-        $roles = $enrolselectplugin->get_available_user_roles($enrol, $USER->id);
+        // Pour un gestionnaire qui utiliserait les filtres.
+        $sql = "SELECT DISTINCT r.*
+                  FROM {role} r
+                  JOIN {apsolu_colleges} ac ON r.id = ac.roleid
+                  JOIN {apsolu_colleges_members} acm ON ac.id = acm.collegeid
+                 WHERE acm.cohortid IN (" . substr(str_repeat('?,', count($filtercohorts)), 0, -1) . ")
+              ORDER BY r.sortorder";
+        $availableuserroles = role_fix_names($DB->get_records_sql($sql, $filtercohorts));
 
-        foreach ($roles as $roleid => $role) {
-            $enrolselectplugin = new enrol_select_plugin(); // TODO: à sortir de la boucle.
+        // Collèges.
+        $unavailableuserroles = enrol_select_get_custom_student_roles();
+        foreach ($availableuserroles as $role) {
+            unset($unavailableuserroles[$role->id]);
+        }
+    }
 
-            if ($enrolselectplugin->can_enrol($enrol, $USER, $roleid) === false) {
-                // TODO: factoriser pour rendre la lecture plus facile...
-                if ($roleid != $instance->role) {
-                    unset($roles[$roleid]);
-                } else {
-                    // Affiche le rôle déjà affecté, même si l'étudiant n'est pas autorisé à avoir ce rôle.
-                    $roles[$roleid] = $role->localname;
-                }
+    $courseroles = $DB->get_records('enrol_select_roles', ['enrolid' => $enrol->id], '', 'roleid');
+    $roles = [];
+    foreach ($availableuserroles as $roleid => $rolename) {
+        if (!isset($courseroles[$roleid])) {
+            // L'utilisateur peut s'inscrire à un type d'inscription qui n'est pas proposé dans ce cours.
+            unset($availableuserroles[$roleid]);
+        } else if (isset($unavailableuserroles[$roleid])) {
+            // L'utilisateur a déjà atteint le quota pour ce type d'inscription.
+            unset($availableuserroles[$roleid]);
+        } else {
+            $roles[$roleid] = $rolename->name;
+        }
+    }
+
+    if (count($availableuserroles) === 0) {
+        if (empty($instance->role) === false) {
+            $role = $DB->get_record('role', ['id' => $instance->role]);
+            throw new moodle_exception('error_reach_wishes_role_limit', 'enrol_select', '', $role->name);
+        } else {
+            throw new moodle_exception('error_reach_wishes_limit', 'enrol_select');
+        }
+    }
+} else {
+    // Si l'utilisateur est déjà inscrit à ce cours.
+    $enrolselectplugin = new enrol_select_plugin(); // TODO: factoriser, et ne déclarer qu'une seule fois cette variable.
+    $roles = $enrolselectplugin->get_available_user_roles($enrol, $USER->id);
+
+    foreach ($roles as $roleid => $role) {
+        $enrolselectplugin = new enrol_select_plugin(); // TODO: à sortir de la boucle.
+
+        if ($enrolselectplugin->can_enrol($enrol, $USER, $roleid) === false) {
+            // TODO: factoriser pour rendre la lecture plus facile...
+            if ($roleid != $instance->role) {
+                unset($roles[$roleid]);
             } else {
+                // Affiche le rôle déjà affecté, même si l'étudiant n'est pas autorisé à avoir ce rôle.
                 $roles[$roleid] = $role->localname;
             }
-        }
-    }
-
-    // Détermine si il possible/obligatoire de s'inscrire à la FFSU.
-    if ($course->license === '1') {
-        // FFSU obligatoire.
-        $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_TRUE;
-        $instance->federation = 1;
-    } else {
-        $category = $DB->get_record('apsolu_federation_activities', ['categoryid' => $course->category]);
-        if ($category === false) {
-            // FFSU non disponible.
-            $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_FALSE;
         } else {
-            // FFSU facultatif.
-            $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_OPTIONAL;
+            $roles[$roleid] = $role->localname;
         }
     }
+}
+
+// Détermine si il possible/obligatoire de s'inscrire à la FFSU.
+if ($course->license === '1') {
+    // FFSU obligatoire.
+    $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_TRUE;
+    $instance->federation = 1;
+} else {
+    $category = $DB->get_record('apsolu_federation_activities', ['categoryid' => $course->category]);
+    if ($category === false) {
+        // FFSU non disponible.
+        $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_FALSE;
+    } else {
+        // FFSU facultatif.
+        $federationrequirement = APSOLU_FEDERATION_REQUIREMENT_OPTIONAL;
+    }
+}
 
 if (isset($edit)) {
     $instance->edit = true;
