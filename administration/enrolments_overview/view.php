@@ -60,7 +60,6 @@ if ($mdata = $mform->get_data()) {
               JOIN {role_assignments} ra ON u.id = ra.userid AND ra.component = 'enrol_select'
               JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50
               JOIN {course} c ON c.id = ctx.instanceid
-              JOIN {apsolu_courses} ac ON ac.id = c.id
               JOIN {enrol} e ON c.id = e.courseid AND ra.itemid = e.id
               JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid AND u.id = ue.userid
              WHERE e.enrol = 'select'
@@ -113,7 +112,6 @@ if ($mdata = $mform->get_data()) {
               JOIN {role_assignments} ra ON u.id = ra.userid AND ra.component = 'enrol_select'
               JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50
               JOIN {course} c ON c.id = ctx.instanceid
-              JOIN {apsolu_courses} ac ON ac.id = c.id
               JOIN {enrol} e ON c.id = e.courseid AND ra.itemid = e.id
               JOIN {user_enrolments} ue ON e.id = ue.enrolid AND ue.userid = ra.userid AND u.id = ue.userid
          LEFT JOIN {apsolu_calendars} cal ON cal.id = e.customchar1
