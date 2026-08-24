@@ -193,11 +193,11 @@ if ($mdata = $mform->get_data()) {
             }
 
             $row->count_warnings = 0;
-            if ($college->minregister > $row->count_courses) {
+            if ($minregister > $row->count_courses) {
                 $row->count_warnings++;
             }
 
-            if ($college->maxregister < $row->count_courses) {
+            if ($maxregister < $row->count_courses) {
                 $row->count_warnings++;
             }
 
