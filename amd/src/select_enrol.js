@@ -251,18 +251,6 @@ define(['jquery'], function($) {
                     // TODO.
                 });
 
-                // On rafraichit le bloc "Je souhaite m'inscrire à...".
-                $.ajax({
-                    url: wwwroot + "/enrol/select/ajax/reload_block_enrolments.php",
-                    dataType: 'html'
-                })
-                .done(function(result) {
-                    $('#apsolu-select-enrolments-ajax').html(result);
-                })
-                .fail(function() {
-                    // TODO.
-                });
-
                 // On rafraichit la ligne "Places disponibles".
                 $.ajax({
                     url: wwwroot + "/enrol/select/ajax/reload_column_left_places.php",

@@ -118,49 +118,6 @@ function enrol_select_get_remaining_choices_block() {
 }
 
 /**
- * Retourne le rendu HTML du bloc affichant les inscriptions de l'étudiant sur la page des inscriptions.
- *
- * @return string Retourne le rendu HTML du bloc.
- */
-function enrol_select_get_enrolments_block() {
-    global $DB, $CFG, $OUTPUT;
-
-    require_once(__DIR__ . '/lib.php');
-
-    $roles = role_fix_names($DB->get_records('role'));
-
-    $instance = new enrol_select_plugin();
-
-    $overviewenrolmentsdata = new stdClass();
-    $overviewenrolmentsdata->wwwroot = $CFG->wwwroot;
-    $overviewenrolmentsdata->activity_enrolments = [];
-    foreach (enrol_select_get_real_user_activity_enrolments() as $enrolment) {
-        if ($enrolment->status === enrol_select_plugin::DELETED) {
-            continue;
-        }
-
-        $enrolment->role = $roles[$enrolment->roleid]->localname;
-
-        $enrol = $DB->get_record('enrol', ['id' => $enrolment->enrolid]);
-        if ($enrol) {
-            $enrolment->is_enrol_period_active = $instance->is_enrol_period_active($enrol);
-        } else {
-            $enrolment->is_enrol_period_active = false;
-        }
-
-        $overviewenrolmentsdata->activity_enrolments[] = $enrolment;
-    }
-    $overviewenrolmentsdata->count_activity_enrolments = count($overviewenrolmentsdata->activity_enrolments);
-
-    $block = new block_contents();
-    $block->title = 'Je souhaite m\'inscrire à...';
-    $block->attributes['class'] = 'block block_overview_enrolments';
-    $block->content = $OUTPUT->render_from_template('enrol_select/overview_enrolments', $overviewenrolmentsdata);
-
-    return $block;
-}
-
-/**
  * Retourne le rendu HTML du bloc permettant de filter les activités sur la page des inscriptions.
  *
  * @param array $courses Liste des cours affichés sur la page des inscriptions.

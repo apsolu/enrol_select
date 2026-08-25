@@ -63,18 +63,6 @@ input[type="radio"][name^="renew"] {
     margin-left: 2em;
 }
 
-.block_overview_enrolments ul {
-    margin: 0;
-}
-
-.block_overview_enrolments.block .list li {
-    padding: 0 .5em;
-}
-
-.block_overview_enrolments li:nth-child(even) {
-    background-color: #f0f0ff;
-}
-
 .block_overview_remaining_choices ul {
     margin: 0;
     text-align: justify;
@@ -120,7 +108,6 @@ input[type="radio"][name^="renew"] {
 }
 
 #apsolu-activities-div,
-#apsolu-select-enrolments-ajax,
 #apsolu-select-remaining-ajax,
 #apsolu-wishes-filters {
     animation: 0.4s ease-in-out 0s normal none 1 running fadeIn;
