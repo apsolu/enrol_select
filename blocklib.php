@@ -116,27 +116,3 @@ function enrol_select_get_remaining_choices_block() {
 
     return $block;
 }
-
-/**
- * Retourne le rendu HTML du bloc permettant de filter les activités sur la page des inscriptions.
- *
- * @param array $courses Liste des cours affichés sur la page des inscriptions.
- *
- * @return array L'index "block" retourne le code HTML du bloc, l'index "more_than_one_site" indique si l'instance a plus d'un site.
- */
-function enrol_select_get_filters_block($courses) {
-    global $CFG, $OUTPUT;
-
-    $filters = enrol_select_generate_filters($courses);
-
-    $overviewfiltersdata = new stdClass();
-    $overviewfiltersdata->form = (object) ['action' => $CFG->wwwroot . '/enrol/select/overview.php'];
-    $overviewfiltersdata->filters = array_values($filters);
-
-    $block = new block_contents();
-    $block->title = get_string('filters', 'admin');
-    $block->attributes['class'] = 'block block_book_toc';
-    $block->content = $OUTPUT->render_from_template('enrol_select/overview_filters', $overviewfiltersdata);
-
-    return ['block' => $block, 'more_than_one_site' => isset($filters['city'])];
-}

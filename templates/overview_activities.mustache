@@ -75,33 +75,40 @@
 
 <h3 class="mt-4" style="border-bottom: {{ color }} solid 2px;">{{ name }}</h3>
 
-{{! Roles. }}
-<div id="apsolu-activities-content-legend-div">
-    <h4 class="visually-hidden">Rôles</h4>
-    <ul class="list list-inline text-end">
-    {{#roles}}
-        <li class="apsolu-roles-list-li list-inline-item">
-            <i aria-hidden="true" class="fa fa-{{fontawesomeid}}{{^fontawesomeid}}check{{/fontawesomeid}} me-1" style="color: {{color}}{{^color}}gray{{/color}};"></i><span>{{localname}}</span>
-        </li>
-    {{/roles}}
-    </ul>
+{{! Barre d'outils au dessus de la liste des activités. }}
+<div id="apsolu-activities-content-legend-div" class="alert alert-secondary">
+    <div class="d-flex">
+        {{! Bouton de réinitialisation des filtres. }}
+        <p class="flex-shrink-1"><button class="apsolu-reset-table-filters btn btn-secondary btn-sm">{{#str}}clearfilters{{/str}}</button></p>
+        {{! Liste des rôles disponibles. }}
+        <div class="flex-fill">
+            <h4 class="visually-hidden">Rôles</h4>
+            <ul class="list list-inline text-end">
+            {{#roles}}
+                <li class="apsolu-roles-list-li list-inline-item">
+                    <i aria-hidden="true" class="fa fa-{{fontawesomeid}}{{^fontawesomeid}}check{{/fontawesomeid}} me-1" style="color: {{color}}{{^color}}gray{{/color}};"></i><span>{{localname}}</span>
+                </li>
+            {{/roles}}
+            </ul>
+        </div>
+    </div>
 </div>
 
 <div class="table-responsive">
-    <table class="apsolu-activities-table table tablesorted">
+    <table class="apsolu-activities-table table table-sortable tablesorted" id="apsolu-activities-typeid-{{ id }}">
         <caption class="visually-hidden">{{#str}}activities_list, enrol_select{{/str}}</caption>
         <thead>
             <tr>
-                <th>{{#str}}actions{{/str}}</th>
-                <th data-column="category" class="apsolu-categories-col">{{#str}}category, local_apsolu{{/str}}</th>
-                <th data-column="sport">{{#str}}sport, local_apsolu{{/str}}</th>
+                <th class="filter-false sorter-false">{{#str}}actions{{/str}}</th>
+                <th data-column="category" class="apsolu-categories-col sorter-false">{{#str}}category, local_apsolu{{/str}}</th>
+                <th data-column="sport" class="sorter-false">{{#str}}sport, local_apsolu{{/str}}</th>
                 {{#headers}}
-                <th data-column="{{ shortname }}">{{ label }}</th>
+                <th data-column="{{ shortname }}" class="sorter-false">{{ label }}</th>
                 {{/headers}}
-                <th data-column="role">{{#str}}register_type, enrol_select{{/str}}</th>
-                <th>{{#str}}free_places, enrol_select{{/str}}</th>
+                <th data-column="role" class="sorter-false">{{#str}}register_type, enrol_select{{/str}}</th>
+                <th class="sorter-false">{{#str}}free_places, enrol_select{{/str}}</th>
                 {{#is_courses_creator}}
-                <th>{{#str}}editsettings{{/str}}</th>
+                <th class="filter-false sorter-false">{{#str}}editsettings{{/str}}</th>
                 {{/is_courses_creator}}
             </tr>
         </thead>

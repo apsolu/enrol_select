@@ -68,6 +68,36 @@ define(['jquery'], function($) {
                 });
             }
 
+            // Traitements sur les filtres de recherche des tableaux des activités.
+            document.querySelectorAll('.apsolu-activities-table .tablesorter-filter-row').forEach(function(filterrow) {
+                // Déplie toutes les entrées du tableau lorsqu'un filtre est restauré via un cookie de TableSorter.
+                filterrow.querySelectorAll('input').forEach(function(input) {
+                    if (input.value === '') {
+                        return;
+                    }
+
+                    document.querySelectorAll('.apsolu-activities-table .apsolu-sports-tr-course').forEach(function(tablerow) {
+                        tablerow.classList.remove('d-none');
+                    });
+                });
+
+                // Ajoute un évènement pour déplier toutes les entrées du tableau lorsqu'on clique sur un élément de filtrage.
+                filterrow.addEventListener('click', function() {
+                    document.querySelectorAll('.apsolu-activities-table .apsolu-sports-tr-course').forEach(function(tablerow) {
+                        tablerow.classList.remove('d-none');
+                    });
+                });
+            });
+
+            // Ajoute un évènement pour masquer toutes les activités quand on clique sur "réinitialiser les filtres".
+            document.querySelectorAll('.apsolu-reset-table-filters').forEach(function(resetfilterbtn) {
+                resetfilterbtn.addEventListener('click', function() {
+                    document.querySelectorAll('.apsolu-activities-table .apsolu-sports-tr-course').forEach(function(tablerow) {
+                        tablerow.classList.add('d-none');
+                    });
+                });
+            });
+
             // Lorsqu'on clique sur le lien "s'inscrire/modifier"...
             $('.apsolu-enrol-a').click(function(event) {
                 event.preventDefault();
