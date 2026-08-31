@@ -78,6 +78,7 @@ if (has_any_capability($capabilities, context_system::instance()) === true) {
 
 // Activities : get all visible courses for current user.
 $courses = [];
+$coursesid = [];
 foreach ($DB->get_records('apsolu_courses_types', [], $sort = 'sortorder') as $coursetype) {
     $courses[$coursetype->id] = [];
 }
@@ -95,6 +96,7 @@ foreach (Course::get_records(['visible' => 1]) as $course) {
     }
 
     $courses[$coursetypeid][$course->id] = $course;
+    $coursesid[$course->id] = $coursetypeid;
 }
 
 $enrols = [];
@@ -134,6 +136,15 @@ foreach ($recordset as $enrol) {
     $enrols[$enrol->courseid] = $enrol;
 }
 $recordset->close();
+
+// Elimine les cours n'offrant aucune inscription actuellement.
+foreach ($coursesid as $courseid => $coursetypeid) {
+    if (isset($enrols[$courseid]) === true) {
+        continue;
+    }
+
+    unset($courses[$coursetypeid][$courseid]);
+}
 
 // CSS.
 $PAGE->requires->css('/enrol/select/styles/select2.min.css');
