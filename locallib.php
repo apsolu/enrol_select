@@ -107,8 +107,8 @@ function enrol_select_get_activities($siteid = 0, $categoryid = 0, $categoryname
         $timerange = json_decode($course->timerange, $associative = true);
 
         $course->weekday = $weekdays[$course->numweekday];
-        $course->starttime = sprintf('%s:%s', $timerange['start']['hour'], $timerange['start']['minute']);
-        $course->endtime = sprintf('%s:%s', $timerange['end']['hour'], $timerange['end']['minute']);
+        $course->starttime = sprintf('%02d:%02d', $timerange['start']['hour'], $timerange['start']['minute']);
+        $course->endtime = sprintf('%02d:%02d', $timerange['end']['hour'], $timerange['end']['minute']);
 
         $courses[$course->id] = $course;
     }
