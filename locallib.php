@@ -247,7 +247,7 @@ function enrol_select_get_user_activity_enrolments($userid = null) {
         $userid = $USER->id;
     }
 
-    $time = time();
+    $time = time() - date('s'); // Calcule l'heure sans les secondes (HH:MM:00) pour bénéficier du cache SQL.
 
     $sql = "SELECT DISTINCT c.*, cc.name AS sport, FORMAT(acol.userprice, 2) AS price, '1' AS paymentcenterid," .
         " e.id AS enrolid, ue.status, ra.roleid" .
@@ -286,7 +286,7 @@ function enrol_select_get_real_user_activity_enrolments($userid = null) {
         $userid = $USER->id;
     }
 
-    $time = time();
+    $time = time() - date('s'); // Calcule l'heure sans les secondes (HH:MM:00) pour bénéficier du cache SQL.
 
     $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, '1' AS paymentcenterid" .
         " FROM {course} c" .
@@ -321,7 +321,7 @@ function enrol_select_get_recordset_user_activity_enrolments($userid = null, $on
     }
 
     if ($onlyactive === true) {
-        $time = time();
+        $time = time() - date('s'); // Calcule l'heure sans les secondes (HH:MM:00) pour bénéficier du cache SQL.
     }
 
     $params = ['userid' => $userid];
@@ -444,7 +444,7 @@ function enrol_select_get_count_user_role_assignments($userid = null) {
         $userid = $USER->id;
     }
 
-    $time = time();
+    $time = time() - date('s'); // Calcule l'heure sans les secondes (HH:MM:00) pour bénéficier du cache SQL.
 
     $sql = "SELECT ra.roleid, COUNT(c.id) AS count" .
         " FROM {role_assignments} ra" .
@@ -487,7 +487,7 @@ function enrol_select_get_potential_user_roles($userid = null, $courseid = null)
               ORDER BY r.sortorder";
         $params = ['userid' => $userid];
     } else {
-        $time = time();
+        $time = time() - date('s'); // Calcule l'heure sans les secondes (HH:MM:00) pour bénéficier du cache SQL.
 
         $sql = "SELECT r.*
                   FROM {role} r
@@ -526,7 +526,7 @@ function enrol_select_get_user_reenrolments($userid = null) {
         $userid = $USER->id;
     }
 
-    $time = time();
+    $time = time() - date('s'); // Calcule l'heure sans les secondes (HH:MM:00) pour bénéficier du cache SQL.
 
     $sql = "SELECT DISTINCT c.*, cc.name AS sport, e.id AS enrolid, ue.status, ra.roleid, '1' AS paymentcenterid" .
         " FROM {course} c" .

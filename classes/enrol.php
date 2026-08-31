@@ -43,7 +43,7 @@ class enrol {
 
         if ($time === null && $cohorts === null) {
             // Traite le cas par défaut, lorsqu'un utilisateur visite la page des inscriptions.
-            $time = time();
+            $time = time() - date('s'); // Calcule l'heure sans les secondes (HH:MM:00) pour bénéficier du cache SQL.
 
             $joins[] = 'JOIN {cohort_members} cm ON cm.cohortid = ewc.cohortid';
             $wheres[] = 'AND cm.userid = :userid';
