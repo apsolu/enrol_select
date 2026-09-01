@@ -89,7 +89,7 @@ foreach (Course::get_records(['visible' => 1]) as $course) {
         continue;
     }
 
-    $coursetypeid = $course->customfields['type']->get('fieldid');
+    $coursetypeid = $course->customfields['type']->get('intvalue');
 
     if (isset($courses[$coursetypeid]) === false) {
         continue;
