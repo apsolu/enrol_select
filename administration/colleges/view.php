@@ -68,9 +68,6 @@ foreach ($tasks as $date => $rules) {
         if (isset($colleges[$id])) { // On vérifie que la population décrite dans la règle existe.
             // Description de la règle.
             $rule->population = $colleges[$id]->name;
-            $rule->plural1 = $rule->maxwish > 1 ? 'x' : '';
-            $rule->plural2 = $rule->maxregister > 1 ? 's' : '';
-            $rule->changes = get_string('planned_college_rule', 'enrol_select', $rule);
             $collegelist[] = $rule;
         }
     }

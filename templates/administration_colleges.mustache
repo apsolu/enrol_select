@@ -47,7 +47,10 @@
         * date
         * collegelist
             * taskid
-            * changes
+            * population
+            * maxwish
+            * minregister
+            * maxregister
 
     Example context (json):
     {
@@ -110,20 +113,13 @@
 {{#count_rules}}
     {{#college_rules}}
     <details class="alert alert-custom-3 college-rules">
-        
         {{#isfirst}}
             <summary>{{#str}}next_changes, enrol_select{{/str}} : <strong>{{date}}</strong></summary>
         {{/isfirst}}
         {{^isfirst}}
             <summary>{{#str}}other_planned_changes, enrol_select{{/str}} : <strong>{{date}}</strong></summary>
         {{/isfirst}}
-
-        <ul>
-            {{#collegelist}}
-                <li class="edit_rule" data-taskid={{ taskid }} >{{{ changes }}}<i class="fa fa-regular fa-gear"></i></li>
-            {{/collegelist}}
-        </ul>
-       
+        {{> enrol_select/administration_college_rule }}
     </details>
      {{/college_rules}}
 {{/count_rules}}
