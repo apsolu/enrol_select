@@ -85,7 +85,7 @@ function enrol_select_get_activities($siteid = 0, $categoryid = 0, $categoryname
               JOIN {course_categories} cc ON cc.id = c.category
               JOIN {apsolu_courses_categories} acc ON acc.id = cc.id
               JOIN {course_categories} cc0 ON cc0.id = cc.parent
-              JOIN {customfield_data} cd1 ON c.id = cd1.instanceid AND cd1.intvalue = 1 AND cd1.fieldid = :customfieldtypeid
+              JOIN {customfield_data} cd1 ON c.id = cd1.instanceid AND cd1.fieldid = :customfieldtypeid
               JOIN {customfield_data} cd2 ON c.id = cd2.instanceid AND cd2.fieldid = :customfieldskillid
               JOIN {apsolu_skills} ask ON ask.id = cd2.intvalue
               JOIN {customfield_data} cd3 ON c.id = cd3.instanceid AND cd3.fieldid = :customfieldperiodid
