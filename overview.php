@@ -83,7 +83,7 @@ foreach ($DB->get_records('apsolu_courses_types', [], $sort = 'sortorder') as $c
     $courses[$coursetype->id] = [];
 }
 
-foreach (Course::sort(Course::get_records(['visible' => 1]), ['category']) as $course) {
+foreach (Course::get_records(['visible' => 1], $sort = 'category') as $course) {
     if (isset($course->customfields['type']) === false) {
         // Le champ "type" n'est pas défini.
         continue;
