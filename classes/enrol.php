@@ -62,8 +62,8 @@ class enrol {
                   FROM {enrol} e " . implode(' ', $joins) . "
                  WHERE e.enrol = 'select'
                    AND e.status = 0
-                   AND (e.enrolstartdate = 0 OR e.enrolstartdate < :enrolstartdate)
-                   AND (e.enrolenddate = 0 OR e.enrolenddate > :enrolenddate) " . implode(' ', $wheres);
+                   AND (e.enrolstartdate = 0 OR e.enrolstartdate <= :enrolstartdate)
+                   AND (e.enrolenddate = 0 OR e.enrolenddate >= :enrolenddate) " . implode(' ', $wheres);
         $params['enrolstartdate'] = $time;
         $params['enrolenddate'] = $time;
 
