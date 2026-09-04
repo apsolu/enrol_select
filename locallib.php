@@ -266,10 +266,10 @@ function enrol_select_get_user_activity_enrolments($userid = null) {
         " AND e.status = 0" . // Active.
         " AND cm.userid = :userid" .
         " AND c.visible = 1" .
-        " AND (ue.timestart = 0 OR ue.timestart <= :timestart)" .
         " AND (ue.timeend = 0 OR ue.timeend >= :timeend)" .
         " ORDER BY c.fullname";
-    return $DB->get_records_sql($sql, ['userid' => $userid, 'timestart' => $time, 'timeend' => $time]);
+
+    return $DB->get_records_sql($sql, ['userid' => $userid, 'timeend' => $time]);
 }
 
 /**
@@ -499,12 +499,11 @@ function enrol_select_get_potential_user_roles($userid = null, $courseid = null)
                  WHERE e.enrol = 'select'
                    AND e.status = 0
                    AND ue.userid = :userid
-                   AND (ue.timestart = 0 OR ue.timestart <= :timestart)
                    AND (ue.timeend = 0 OR ue.timeend >= :timeend)
                    AND c.id = :courseid
                    AND ctx.contextlevel = 50
               ORDER BY r.sortorder";
-        $params = ['userid' => $userid, 'timestart' => $time, 'timeend' => $time, 'courseid' => $courseid];
+        $params = ['userid' => $userid, 'timeend' => $time, 'courseid' => $courseid];
     }
 
     $roles = role_fix_names($DB->get_records_sql($sql, $params));
