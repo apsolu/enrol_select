@@ -81,7 +81,7 @@ $course = Course::get_record(['id' => $enrol->courseid], $fields = '*', $strictn
 $instance = new stdClass();
 $instance->fullname = $course->fullname;
 $instance->enrolid = $enrol->id;
-$instance->showpolicy = $course->customfields['show_policy']->export_value();
+$instance->showpolicy = ($course->customfields['show_policy']->get_value() === 1);
 
 // Détermine si l'utilisateur courant est déjà inscrit à ce cours.
 // TODO: à modifer...
