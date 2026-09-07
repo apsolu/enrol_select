@@ -57,8 +57,10 @@ class overview implements renderable, templatable {
         $this->courses = $courses;
         $this->enrols = $enrols;
 
-        // Formate les méthodes d'inscription pour récupérer les textes des places disponibles à afficher.
-        $this->format_enrols();
+        if ($this->enrols !== []) {
+            // Formate les méthodes d'inscription pour récupérer les textes des places disponibles à afficher.
+            $this->format_enrols();
+        }
     }
 
     /**
@@ -150,7 +152,10 @@ class overview implements renderable, templatable {
             $data->course_formats = array_values($data->course_formats);
         }
 
-        $data->roles = array_values(enrol_select_get_custom_student_roles());
+        $data->roles = [];
+        if ($data->course_formats !== []) {
+            $data->roles = array_values(enrol_select_get_custom_student_roles());
+        }
         $data->show_tabs = count($data->course_formats) > 1;
 
         $data->filters = '';
