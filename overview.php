@@ -181,7 +181,34 @@ $PAGE->navbar->add(get_string('enrolment', 'enrol_select'));
 $renderable = new Overview($courses, $enrols);
 $output = $PAGE->get_renderer('enrol_select');
 
+$headeractive = get_config('local_apsolu', 'apsoluoverviewheaderactive');
+
+if ($headeractive !== false) {
+    $headerdata = new StdClass();
+
+    $headerdata->headercontent = get_config('local_apsolu', 'apsoluoverviewheadercontent');
+
+    $style = get_config('local_apsolu', 'apsoluoverviewheaderstyle');
+    $alertclass = empty($style) == false && $style != 'none' ? "alert-" . $style : "";
+
+    $alertdismiss = "";
+    if (get_config('local_apsolu', 'apsoluoverviewheaderdismiss') != false) {
+        $headerdata->headerdismiss = true;
+        $alertdismiss = 'alert-dismissible';
+    }
+
+    $headerdata->headerclass = sprintf(
+        'alert alert-block fade in %s %s role="alert" data-aria-autofocus="true"',
+        $alertclass,
+        $alertdismiss
+    );
+}
+
+
 echo $OUTPUT->header();
 echo $managersfilters;
+if ($headeractive !== false) {
+    echo $OUTPUT->render_from_template('enrol_select/overview_header', $headerdata);
+}
 echo $output->render($renderable);
 echo $OUTPUT->footer();
