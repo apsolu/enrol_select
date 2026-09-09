@@ -126,7 +126,11 @@ class overview implements renderable, templatable {
                     $data->course_formats[$formatindex]->activities[$category->id] = new stdClass();
                     $data->course_formats[$formatindex]->activities[$category->id]->sportid = $category->id;
                     $data->course_formats[$formatindex]->activities[$category->id]->name = $category->name;
-                    $data->course_formats[$formatindex]->activities[$category->id]->description = $category->description;
+                    if ($category->descriptionformat == FORMAT_HTML) {
+                        $data->course_formats[$formatindex]->activities[$category->id]->description = $category->description;
+                    } else {
+                        $data->course_formats[$formatindex]->activities[$category->id]->description = nl2br($category->description);
+                    }
                     $data->course_formats[$formatindex]->activities[$category->id]->courses = [];
                     $data->count_activities++;
                 }
