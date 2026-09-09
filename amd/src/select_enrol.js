@@ -139,7 +139,7 @@ define(['jquery'], function($) {
              */
             function set_edit_actions() {
                 $('#apsolu-enrol-form #id_enrolbutton, #apsolu-enrol-form #id_unenrolbutton, #apsolu-enrol-form #id_editenrol').
-                    click(function(event) {
+                click(function(event) {
                     event.preventDefault();
 
                     var role = $('#apsolu-enrol-form form select[name=role] option:selected').val();
@@ -153,7 +153,7 @@ define(['jquery'], function($) {
                     if ($(this).attr('id') == 'id_unenrolbutton') {
                         actions = {_qf__enrol_select_form: 1, sesskey: sesskey, enrolid: enrolid, unenrolbutton: 1};
                     } else if ($(this).attr('id') == 'id_editenrol') {
-                        actions = {_qf__enrol_select_form: 1, sesskey: sesskey, enrolid: enrolid, editenrol: 1, policy: 1};
+                        actions = {_qf__enrol_select_form: 1, sesskey: sesskey, enrolid: enrolid, editenrol: 1, policy: 0};
                     } else {
                         var fullname = $('#apsolu-enrol-form form input[name=fullname]').val();
                         var federation = $('#apsolu-enrol-form form select[name=federation] option:selected').val();
@@ -166,7 +166,7 @@ define(['jquery'], function($) {
                                 enrolbutton: 1,
                                 _qf__enrol_select_form: 1,
                                 sesskey: sesskey,
-                                policy: 1
+                                policy: 0
                             };
                         } else {
                             actions = {
@@ -176,7 +176,7 @@ define(['jquery'], function($) {
                                 enrolbutton: 1,
                                 _qf__enrol_select_form: 1,
                                 sesskey: sesskey,
-                                policy: 1
+                                policy: 0
                             };
                         }
                     }

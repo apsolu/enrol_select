@@ -52,6 +52,50 @@ span.select2-container {
 #apsolu-enrol-form {
     background-color: #fff;
     padding: 1.5em;
+    border-radius: .5rem;
+    min-width: 35%;
+
+    .enrol-popup-header {
+        padding: .2rem .5rem .7rem .5rem;
+        border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+        margin-bottom: 1rem;
+
+        & h5 {
+            color: var(--bs-primary);
+            margin-bottom: 0;
+            line-height: var(--bs-body-line-height);
+        }
+    }
+
+    & .form-text {
+        font-size: var(--bs-body-font-size);
+        color: var(--bs-body-color);
+
+        & div:has(fieldset) {
+            padding-top: calc(0.375rem + var(--bs-border-width));
+
+            & strong {
+                text-transform: uppercase;
+            }
+        }
+
+        & .col-form-label > p {
+            font-weight: bold;
+            color: var(--bs-body-color);
+            font-size: 16px;
+        }
+    }
+
+    & div:has(input[type="submit"]) {
+        margin-top: .25rem;
+    }
+
+    & .apsolu-custom-field {
+        background-color: var(--apsolu-color-custom-1);
+        border-radius: .5rem;
+        padding: 0.25rem 1rem;
+        font-weight: 600;
+    }
 }
 
 #page-enrol-select-overview .block_navigation,

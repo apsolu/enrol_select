@@ -83,6 +83,20 @@ $instance->fullname = $course->fullname;
 $instance->enrolid = $enrol->id;
 $instance->showpolicy = ($course->customfields['show_policy']->get_value() === 1);
 
+if (isset($course->customfields['location']) === true) {
+    $location = $course->customfields['location']->export_value();
+
+    preg_match('/^(\[.*\])(.+)/', $location, $matches);
+    // Many cities : location + area.
+    if (isset($matches[1]) === true) {
+        $instance->site = $matches[1];
+        $instance->location = $matches[2];
+    } else {
+        $instance->location = $location;
+    }
+}
+
+
 // Détermine si l'utilisateur courant est déjà inscrit à ce cours.
 // TODO: à modifer...
 $instance->role = '';

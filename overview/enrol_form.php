@@ -16,6 +16,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+use html_writer;
+
 require_once($CFG->libdir . '/formslib.php');
 
 /**
@@ -37,40 +39,56 @@ class enrol_select_form extends moodleform {
         $mform = $this->_form;
         [$instance, $roles, $federationrequirement] = $this->_customdata;
 
+        $title = html_writer::tag('div', html_writer::tag('h5', 'Inscription'), ['class' => 'enrol-popup-header']);
+        $mform->addElement('html', $title);
+
         // Course field.
-        $mform->addElement('text', 'fullname', get_string('course'), ['readonly' => 1, 'size' => '48']);
+        $attr = ['name' => 'fakefullname', 'class' => 'apsolu-custom-field' ];
+        $fullname = html_writer::tag('div', $instance->fullname, $attr);
+        $fullnamearr[] = &$mform->createElement('html', $fullname);
+        $mform->addGroup($fullnamearr, 'fullnamearr', get_string('course'), [' '], false, ['class' => 'form-text mb-4']);
+
+        $mform->addElement('hidden', 'fullname', null);
         $mform->setType('fullname', PARAM_TEXT);
+
+        // Location field.
+        if (isset($instance->location)) {
+            $attr = ['name' => 'fakelocation'];
+            if (isset($instance->site)) {
+                $location = html_writer::tag(
+                    'div',
+                    html_writer::tag('strong', $instance->site) . ' - ' . $instance->location,
+                    $attr
+                );
+                $locationlabel = get_string('site_and_location', 'local_apsolu');
+            } else {
+                $location = html_writer::tag('div', $instance->location, $attr);
+                $locationlabel = get_string('location', 'local_apsolu');
+            }
+
+            $locationarr[] = &$mform->createElement('html', $location);
+
+            $mform->addGroup($locationarr, 'locationarr', $locationlabel, [' '], false, ['class' => 'form-text mb-4']);
+        }
 
         // Roles field.
         if (empty($instance->role) || isset($instance->edit)) {
             // Inscription ou modification d'inscription.
-            if (count($roles) === 1) {
-                $attributes = ['disabled' => 1, 'size' => '48'];
-                $mform->addElement('text', 'fakerole', get_string('role', 'local_apsolu'), $attributes);
-                $mform->setType('fakerole', PARAM_TEXT);
-                $mform->setDefault('fakerole', current($roles));
-
-                unset($instance->role);
-                $mform->addElement('hidden', 'role', key($roles));
-            } else {
-                $mform->addElement('select', 'role', get_string('role', 'local_apsolu'), $roles);
-                $mform->addRule('role', get_string('required'), 'required', null, 'client');
-            }
+            $attributes = count($roles) === 1 ? ['disabled' => 1] : [];
+            $mform->addElement('select', 'role', get_string('role', 'local_apsolu'), $roles, $attributes);
             $mform->setType('role', PARAM_INT);
 
             // Federations fields.
-            if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_TRUE) {
-                $attributes = ['disabled' => 1, 'size' => '48'];
-                $mform->addElement('text', 'fakefederation', get_string('federation_required', 'enrol_select'), $attributes);
-                $mform->addHelpButton('fakefederation', 'federation_required', 'enrol_select');
-                $mform->setType('fakefederation', PARAM_TEXT);
-                $mform->setDefault('fakefederation', get_string('yes'));
-
-                $mform->addElement('hidden', 'federation', '1');
-                $mform->setType('federation', PARAM_INT);
-            } else if ($federationrequirement === APSOLU_FEDERATION_REQUIREMENT_OPTIONAL) {
-                $mform->addElement('selectyesno', 'federation', get_string('federation_optional', 'enrol_select'));
-                $mform->addHelpButton('federation', 'federation_optional', 'enrol_select');
+            if ($federationrequirement !== APSOLU_FEDERATION_REQUIREMENT_FALSE) {
+                $isrequired = $federationrequirement === APSOLU_FEDERATION_REQUIREMENT_TRUE;
+                $attributes = $isrequired ? ['disabled' => 1] : [];
+                $federationvalue = $isrequired ? 1 : $instance->federation;
+                $mform->addElement('selectyesno', 'federation', get_string(
+                    $isrequired ? 'federation_required' : 'federation_optional',
+                    'enrol_select'
+                ), $attributes);
+                $mform->addHelpButton('federation', $isrequired ? 'federation_required' : 'federation_optional', 'enrol_select');
+                $mform->setDefault('federation', $federationvalue);
                 $mform->setType('federation', PARAM_INT);
             }
 
@@ -83,14 +101,21 @@ class enrol_select_form extends moodleform {
                 if (empty($url) === true) {
                     $url = $CFG->wwwroot . '/policy.html';
                 }
-                $mform->addElement('checkbox', 'policy', get_string('policyagree', 'enrol_select', $url));
-                $mform->addRule('policy', get_string('required'), 'required', null, 'client');
+                $policy[] = &$mform->createElement('checkbox', 'policy', get_string('policyagree', 'enrol_select', $url));
+                $mform->setDefault('policy', 0);
+                $mform->setType('policy', PARAM_INT);
+                $mform->addGroup($policy, 'policies', '', [' '], false);
+                $mform->addRule('policies', get_string('required'), 'required', null, 'client');
             }
         } else {
-            // Désinscription.
-            $mform->addElement('text', 'role', get_string('role', 'local_apsolu'), ['readonly' => 1, 'size' => '48']);
+            // Utilisateur déjà inscrit : on propose la désinscription ou la modification de l'inscription.
+            $attr = ['class' => 'col-md-9 d-flex flex-wrap pb-0 pe-md-0 felement', 'name' => 'fakerole' ];
+            $role = html_writer::tag('div', $roles[$instance->role], $attr);
+            $rolearr[] = &$mform->createElement('html', $role);
+            $mform->addGroup($rolearr, 'rolearr', get_string('role', 'local_apsolu'), [' '], false, ['class' => 'form-text mb-4']);
+
+            $mform->addElement('hidden', 'role', null);
             $mform->setType('role', PARAM_TEXT);
-            $instance->role = $roles[$instance->role];
         }
 
         // Submit buttons.
