@@ -198,7 +198,7 @@ if ($headeractive !== false) {
     }
 
     $headerdata->headerclass = sprintf(
-        'alert alert-block fade in %s %s role="alert" data-aria-autofocus="true"',
+        'alert alert-block fade in %s %s',
         $alertclass,
         $alertdismiss
     );
