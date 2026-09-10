@@ -194,12 +194,14 @@ input[type="radio"][name^="renew"] {
     cursor: not-allowed;
 }
 
-#page-enrol-select-overview #id_unenrolbutton {
+#page-enrol-select-overview #id_unenrolbutton,
+#page-enrol-select-overview-enrol #id_unenrolbutton {
     background-color: #d9534f;
     border-color: #d9534f;
 }
 
-#page-enrol-select-overview #id_unenrolbutton:hover {
+#page-enrol-select-overview #id_unenrolbutton:hover,
+#page-enrol-select-overview-enrol #id_unenrolbutton:hover {
     background-color: #d23430;
     border-color: #c9302c;
 }
