@@ -39,7 +39,11 @@ require_login($courseorid = null, $autologinguest = false);
 
 $context = context_user::instance($USER->id);
 
-$PAGE->set_url('/enrol/select/overview.php');
+if ($location === null) {
+    $PAGE->set_url('/enrol/select/overview.php');
+} else {
+    $PAGE->set_url('/enrol/select/overview.php', ['site' => $location]);
+}
 $PAGE->set_pagelayout('base');
 
 $PAGE->set_context($context);
@@ -61,7 +65,7 @@ if (has_any_capability($capabilities, context_system::instance()) === true) {
     // TODO: déplacer cette page dans le répertoire classes/form.
     require_once(__DIR__ . '/overview_managers_filters_form.php');
 
-    $mform = new overview_managers_filters_form();
+    $mform = new overview_managers_filters_form($PAGE->url->out(false));
     if ($data = $mform->get_data()) {
         $time = $data->now;
         $cohorts = $data->cohorts;
