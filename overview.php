@@ -33,6 +33,7 @@ require_once(__DIR__ . '/locallib.php');
 require_once($CFG->dirroot . '/enrol/select/blocklib.php');
 
 $courseid = optional_param('courseid', 0, PARAM_INT);
+$location = optional_param('site', null, PARAM_TEXT);
 
 require_login($courseorid = null, $autologinguest = false);
 
@@ -92,6 +93,14 @@ foreach (Course::get_records(['visible' => 1], $sort = 'category') as $course) {
     $coursetypeid = $course->customfields['type']->get('intvalue');
 
     if (isset($courses[$coursetypeid]) === false) {
+        continue;
+    }
+
+    if (
+        isset($location, $course->customfields['location']) === true &&
+        str_starts_with($course->customfields['location']->export_value(), sprintf('[%s]', $location)) === false
+    ) {
+        // Un filtre sur le lieu est défini, mais ne correspond pas à la ville de ce créneau.
         continue;
     }
 
