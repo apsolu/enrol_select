@@ -208,7 +208,7 @@ if ($headeractive !== false) {
 echo $OUTPUT->header();
 echo $managersfilters;
 if ($headeractive !== false) {
-    echo $OUTPUT->render_from_template('enrol_select/overview_header', $headerdata);
+    echo $OUTPUT->render_from_template('local_apsolu/custom_alert_header', $headerdata);
 }
 echo $output->render($renderable);
 echo $OUTPUT->footer();
