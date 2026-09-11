@@ -253,34 +253,6 @@ define(['jquery'], function($) {
             function reload_ui(enrolid) {
                 // TODO: modifier l'icone edit/add
 
-                // On rafraichit le bloc "Choix restants".
-                $.ajax({
-                    url: wwwroot + "/enrol/select/ajax/reload_block_remaining.php",
-                    dataType: 'html'
-                })
-                .done(function(result) {
-                    $('#apsolu-select-remaining-ajax').html(result);
-
-                    $('#apsolu-rules-summary').css('display', 'none');
-
-                    $('#apsolu-rules-summary_background, #apsolu-rules-summary_wrapper').remove();
-
-                    $('#apsolu-rules-summary-a').click(function(evt) {
-                        evt.preventDefault();
-
-                        $('#apsolu-rules-summary').css({
-                            backgroundColor: '#EEEEEE',
-                            padding: '.5em',
-                            cursor: 'default',
-                            maxWidth: '50%'
-                        });
-                        $('#apsolu-rules-summary').popup('show');
-                    });
-                })
-                .fail(function() {
-                    // TODO.
-                });
-
                 // On rafraichit la ligne "Places disponibles".
                 $.ajax({
                     url: wwwroot + "/enrol/select/ajax/reload_column_left_places.php",
