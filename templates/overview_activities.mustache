@@ -95,7 +95,7 @@
 </div>
 
 <div class="table-responsive">
-    <table class="apsolu-activities-table table table-sortable tablesorted" id="apsolu-activities-typeid-{{ id }}">
+    <table class="apsolu-activities-table table table-sortable tablesorted apsolu-table-loading" id="apsolu-activities-typeid-{{ id }}">
         <caption class="visually-hidden">{{#str}}activities_list, enrol_select{{/str}}</caption>
         <thead>
             <tr>
@@ -117,18 +117,18 @@
                 <tr class="apsolu-sports-tr apsolu-sports-tr-activity">
                     <th class="apsolu-sports-th" colspan="12">
                         {{^ description}}
-                            <span class="apsolu-sports-th-span apsolu-expandable">{{name}}</span>
+                            <span class="apsolu-sports-th-span apsolu-collapsible">{{name}}</span>
                         {{/description}}
                         {{#description}}
-                            <span class="apsolu-sports-th-span apsolu-expandable" aria-describedby="apsolu-sports-id-{{sportid}}">{{name}}</span>
+                            <span class="apsolu-sports-th-span apsolu-collapsible" aria-describedby="apsolu-sports-id-{{sportid}}">{{name}}</span>
                             <img class="apsolu-sports-description-info-img icon" data-popup="apsolu-sports-id-{{sportid}}" role="button" src="{{info_pix_url}}" alt="aide">
                             <div id="apsolu-sports-id-{{sportid}}" class="apsolu-sports-description" aria-hidden="true">{{{description}}}</div>
                         {{/description}}
                     </th>
                 </tr>
 
-                {{#courses}}
-                <tr class="apsolu-sports-tr apsolu-sports-tr-course{{#enroled}} info{{/enroled}} d-none">
+                {{#courses}}   
+                <tr class="apsolu-sports-tr apsolu-sports-tr-course{{#enroled}} info{{/enroled}}">
                     <td class="text-center">
                         {{#enroled}}
                         <a class="apsolu-enrol-a apsolu-enroled-a" data-enrolid="{{enrolid}}" href="{{www_url}}/enrol/select/overview/enrol.php?enrolid={{enrolid}}{{filters}}">
@@ -169,6 +169,7 @@
                     <td><a href="{{www_url}}/enrol/instances.php?id={{id}}">{{#pix}} t/edit,core,{{#str}}editenrolment,enrol{{/str}}{{/pix}}</a></td>
                     {{/is_courses_creator}}
                 </tr>
+            
                 {{/courses}}
             {{/activities}}
         </tbody>

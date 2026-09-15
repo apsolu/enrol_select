@@ -173,10 +173,11 @@ $options['widgetOptions']['filter_saveFilters'] = true;
 $options['widgetOptions']['filter_reset'] = '.apsolu-reset-table-filters';
 // On enregistre le filtre dans un cookie, car le filtre en localStorage était effacé au rechargement de la page.
 $options['widgetOptions']['storage_storageType'] = 'c';
+$options['widgetOptions']['filter_liveSearch'] = false;
+
 
 $PAGE->requires->js_call_amd('local_apsolu/sort', 'initialise', [$options]); // Note: il est important d'appeler ce script en 1er.
 $PAGE->requires->js_call_amd('enrol_select/select_mapping', 'initialise');
-$PAGE->requires->js_call_amd('enrol_select/select_overview', 'initialise');
 $PAGE->requires->js_call_amd('enrol_select/select_enrol', 'initialise', ['url' => $CFG->wwwroot]);
 
 // Navigation.
@@ -185,6 +186,8 @@ $PAGE->navbar->add(get_string('enrolment', 'enrol_select'));
 $renderable = new Overview($courses, $enrols);
 $output = $PAGE->get_renderer('enrol_select');
 
+
+// Bandeau alert personnalisé.
 $headeractive = get_config('local_apsolu', 'apsoluoverviewheaderactive');
 
 if ($headeractive !== false) {

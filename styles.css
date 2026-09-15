@@ -11,7 +11,8 @@ span.select2-container {
 }
 
 .apsolu-collapsible,
-.apsolu-expandable {
+.apsolu-expandable,
+.apsolu-collapse-all {
     background-position: left;
     background-repeat: no-repeat;
     cursor: pointer;
@@ -24,6 +25,58 @@ span.select2-container {
 
 .apsolu-collapsible {
     background-image: url([[pix:t/expanded]]);
+}
+
+.apsolu-collapse-all {
+    -webkit-mask-image: url([[pix:t/collapsedchevron_up]]);
+    mask-image: url([[pix:t/collapsedchevron_up]]);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: var(--apsolu-color-custom-1); /* ou une couleur fixe, ou une variable CSS */
+    height: 24px;
+    width: 30px;
+}
+
+.apsolu-expand-all {
+    -webkit-mask-image: url([[pix:t/expandedchevron]]);
+    mask-image: url([[pix:t/expandedchevron]]);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: var(--apsolu-color-custom-1); /* ou une couleur fixe, ou une variable CSS */
+    width: 30px;
+    height: 24px;
+}
+
+.apsolu-toggle-all:hover {
+    filter: brightness(0.8);
+}
+
+.apsolu-toggle-all {
+    display: inline;
+}
+
+.apsolu-toggle-all.apsolu-toggle-all-hidden {
+    display: none;
+}
+
+.tooltip.overview-tooltip {
+    --bs-tooltip-bg: var(--apsolu-color-custom-1);
+    --bs-tooltip-color: var(--apsolu-color-light);
+    --bs-tooltip-font-size: 0.85rem;
+    --bs-tooltip-max-width: 200px;
+    --bs-tooltip-padding-x: 10px;
+    --bs-tooltip-padding-y: 4px;
+    --bs-tooltip-border-radius: .5rem;
+    --bs-tooltip-opacity: 1;
+    font-weight: 600;
+
+    & .tooltip-arrow {
+        display: none;
+    }
 }
 
 .apsolu-loading {
@@ -119,6 +172,12 @@ input[type="radio"][name^="renew"] {
 }
 /* Fin de la solution temporaire en attendant la résolution du bug MDL-85523. */
 
+.apsolu-table-loading {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
 .apsolu-activities-table td {
     vertical-align: middle;
 }
@@ -135,6 +194,13 @@ input[type="radio"][name^="renew"] {
 
 .apsolu-activities-table dd {
     margin-left: 0;
+}
+
+.apsolu-activities-table {
+    /* Nom de l'activité précédé de l'icône expand / collapse */
+    & span.apsolu-sports-th-span {
+        padding-left: 1.5rem;
+    }
 }
 
 @keyframes fadeIn {

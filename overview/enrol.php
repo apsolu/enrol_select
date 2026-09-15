@@ -43,6 +43,7 @@ require_once($CFG->dirroot . '/local/apsolu/locallib.php');
 // Get params.
 $enrolid = required_param('enrolid', PARAM_INT);
 $edit = optional_param('editenrol', null, PARAM_TEXT);
+$ajax = optional_param('ajax', false, PARAM_BOOL);
 $filtertime = null;
 $filtercohorts = null;
 
@@ -210,25 +211,24 @@ $customdata = [$instance, $roles, $federationrequirement];
 $actionurl = $CFG->wwwroot . '/enrol/select/overview/enrol.php?enrolid=' . $enrolid;
 $mform = new enrol_select_form($actionurl, $customdata);
 
-$PAGE->navbar->add(get_string('enrolment', 'enrol_select'), new moodle_url('/enrol/select/overview.php'));
-$PAGE->navbar->add($instance->fullname);
-
-echo $OUTPUT->header();
+// Formulaire sur une page indépendante appelée directement via l'url.
+if (!$ajax) {
+    $PAGE->navbar->add(get_string('enrolment', 'enrol_select'), new moodle_url('/enrol/select/overview.php'));
+    $PAGE->navbar->add($instance->fullname);
+    echo $OUTPUT->header();
+}
 
 if (($data = $mform->get_data()) && !isset($instance->edit)) {
     // Save data.
     $instance = $enrol;
 
+    $result = new stdClass();
+    $result->wwwroot = $CFG->wwwroot;
+
     if (isset($data->unenrolbutton)) {
         // Unenrol.
         $enrolselectplugin->unenrol_user($instance, $USER->id);
-
-        echo '<div class="alert alert-success"><p>' . get_string('unenrolmentsaved', 'enrol_select') . '</p></div>';
-
-        $href = $CFG->wwwroot . '/enrol/select/overview.php';
-        echo '<p class="text-center">' .
-            '<a class="btn btn-default btn-secondary apsolu-cancel-a" href="' . $href . '">' . get_string('continue') . '</a>' .
-            '</p>';
+        $result->unenroled = true;
     } else {
         // Enrol.
         if (ctype_digit((string) $data->role) === false) {
@@ -240,6 +240,7 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
             if ($status === false) {
                 throw new moodle_exception('error_no_left_slot', 'enrol_select');
             }
+
             $recovergrades = null;
             $enrolselectplugin->enrol_user($instance, $USER->id, $data->role, $timestart, $timeend, $status, $recovergrades);
 
@@ -313,27 +314,22 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 }
             }
 
-            $message1 = get_string('your_wish_has_been_registered', 'enrol_select');
+            $result->enroled = true;
+            $result->enroledstyle = 'success';
+
+            $result->enroledmessage = get_string('your_wish_has_been_registered', 'enrol_select');
             switch ($status) {
                 case enrol_select_plugin::MAIN:
-                    $style = 'success';
-                    $list = strtolower(get_string('main_list', 'enrol_select'));
-                    $message2 = get_string_on_list_x(enrol_select_plugin::MAIN, 'you_are_on_listname_X');
-                    $message = sprintf('<p>%s <strong>%s</strong></p>', $message1, $message2);
+                    $result->enroledlist = get_string_on_list_x(enrol_select_plugin::MAIN, 'you_are_on_listname_X');
                     break;
                 case enrol_select_plugin::WAIT:
-                    $style = 'warning';
-                    $list = strtolower(get_string('wait_list', 'enrol_select'));
-                    $message2 = get_string_on_list_x(enrol_select_plugin::WAIT, 'you_are_on_listname_X');
-                    $message = sprintf('<p>%s <strong>%s</strong></p>', $message1, $message2);
+                    $result->enroledstyle = 'warning';
+                    $result->enroledlist = get_string_on_list_x(enrol_select_plugin::WAIT, 'you_are_on_listname_X');
                     break;
                 case enrol_select_plugin::ACCEPTED:
-                    $style = 'success';
-                    $message = sprintf('<p>%s</p>', get_string('your_enrolment_has_been_registered', 'enrol_select'));
+                    $result->enroledmessage = get_string('your_enrolment_has_been_registered', 'enrol_select');
                     break;
                 default:
-                    $style = 'success';
-                    $message = sprintf('<p>%s</p>', $message1);
             }
 
             if (
@@ -341,15 +337,12 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                 in_array($data->role, ['9', '10'], true) === true &&
                 in_array($status, [enrol_select_plugin::MAIN, enrol_select_plugin::ACCEPTED], true) === true
             ) {
-                $message .= '<p>' .
-                    '<strong>Attention il faut aussi faire votre inscription pédagogique dans votre scolarité.</strong>' .
-                    '</p>';
+                $result->complementaryinfo =
+                    'Attention il faut aussi faire votre inscription pédagogique dans votre scolarité';
             }
 
-            echo sprintf('<div class="alert alert-%s text-center">%s</div>', $style, $message);
-
             // Détermine si les délais sont activés sur la méthode d'inscription et que l'utilisateur est accepté.
-            $paymentbutton = false;
+            $result->countpayments = 0;
             $instance->customdec1 = intval($instance->customdec1);
             if (empty($instance->customdec1) === false && $status === enrol_select_plugin::ACCEPTED) {
                 // Calcule si au moins une carte est due et affiche un message d'avertissement.
@@ -358,46 +351,56 @@ if (($data = $mform->get_data()) && !isset($instance->edit)) {
                         continue;
                     }
 
-                    $paymentbutton = true;
-
                     $functionalcontact = get_config('local_apsolu', 'functional_contact');
                     $params = ['deadline' => format_time($instance->customdec1), 'contact' => $functionalcontact];
-                    $message = get_string('payment_deadline_warning', 'enrol_select', $params);
-                    echo sprintf('<div class="alert alert-danger text-center">%s</div>', $message);
+                    $result->paymentmessage = get_string('payment_deadline_warning', 'enrol_select', $params);
+
+                    $result->countpayments++;
                     break;
                 }
             }
 
             if (empty($course->information) === false) {
                 // Affiche une information complémentaire.
-                $component = 'local_apsolu';
-                $filearea = 'information';
                 $context = context_course::instance($course->id);
-                $text = $course->information;
-
-                $content = file_rewrite_pluginfile_urls($text, 'pluginfile.php', $context->id, $component, $filearea, $course->id);
-
-                $title = get_string('additional_information', 'local_apsolu');
-                echo sprintf('<p class="ft-weight-bold">%s</p><div>%s</div>', $title, $content);
+                $result->courseinformation = file_rewrite_pluginfile_urls(
+                    $course->information,
+                    'pluginfile.php',
+                    $context->id,
+                    'local_apsolu',
+                    'information',
+                    $course->id
+                );
             }
-
-            echo '<p class="text-center">';
-
-            if ($paymentbutton === true) {
-                $href = $CFG->wwwroot . '/local/apsolu/payment/index.php';
-                $label = get_string('pay', 'local_apsolu');
-                echo '<a class="btn btn-default btn-primary me-3" href="' . $href . '">' . $label . '</a>';
-            }
-
-            $href = $CFG->wwwroot . '/enrol/select/overview.php';
-            $label = get_string('continue_my_enrolments', 'enrol_select');
-            echo '<a class="btn btn-default btn-secondary apsolu-cancel-a" href="' . $href . '">' . $label . '</a>';
-            echo '</p>';
         } else {
             throw new moodle_exception('error_cannot_enrol', 'enrol_select');
         }
     }
+
+    // Générer le template du récapitulatif de l'inscription.
+    $html = $OUTPUT->render_from_template('enrol_select/overview_enrolment_result', $result);
+
+    if ($ajax) {
+        echo json_encode([
+            'success' => true,
+            'html'    => $html,
+            'error'   => null,
+            'unenrol' => isset($data->unenrolbutton),
+        ]);
+        exit;
+    }
+
+    echo $html;
 } else {
+    if ($ajax) {
+        echo json_encode([
+            'success' => true,
+            'html'    => $mform->render(),
+            'error'   => null,
+        ]);
+        exit;
+    }
+
     // Display form.
     $mform->display();
 }

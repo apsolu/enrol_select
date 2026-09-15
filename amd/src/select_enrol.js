@@ -23,114 +23,212 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery'], function($) {
+define(['jquery', 'core/notification', 'core/url', "enrol_select/jquery.popupoverlay" ], function($, Notification, Url) {
+    "use strict";
+
+    /**
+     * Affiche les catégories d'activités si au moins un de ses cours est visible (non filtré).
+     *
+     * @param {Object} table
+     * @return {void}
+     */
+    var toggleFilteredActivities = function(table) {
+        // Pour chaque activité (= catégorie de créneaux).
+        $(table).find('.apsolu-sports-tr-activity').each(function() {
+            // Chercher si au moins une ligne de données associée N'A PAS la classe .filtered
+            let hasVisibleCourses = $(this)
+                .nextUntil('.apsolu-sports-tr-activity', '.apsolu-sports-tr-course')
+                .not('.filtered').length > 0;
+
+            // On enlève ou on laisse la classe "filtered".
+            $(this).toggleClass('filtered', !hasVisibleCourses);
+        });
+    };
+
+     /**
+     * Déplie ou replie toutes les activités.
+     *
+     * @param {Event} event event.data.display : true pour déplier les créneaux, false pour les replier.
+     * @return {void}
+     */
+    var toggleAllActivities = function(event) {
+
+        let display = event.data.display;
+
+        // Pour chaque activité.
+        $(this).closest('.apsolu-activities-table').find('.apsolu-sports-tr-activity').each(function() {
+            $(this).nextUntil(".apsolu-sports-tr-activity", '.apsolu-sports-tr-course:not(.filtered)').toggle(display);
+
+            // On affiche l'icône "Replier" pour l'activité si on vient de tout déplier, et inversement.
+            $(this).find('.apsolu-sports-th-span')
+                .toggleClass('apsolu-collapsible', display)
+                .toggleClass('apsolu-expandable', !display);
+        });
+
+        // On masque l'icône actuelle et on affiche l'icône de l'action inverse.
+
+        // Action de déplier on ajoute la classe hidden sur le bouton déplier, action de replier on retire la classe hidden (si présente).
+        $(this).parent().find('.apsolu-expand-all').toggleClass('apsolu-toggle-all-hidden', display);
+        // Action de replier on ajoute la classe hidden sur le bouton replier, action de déplier on retire la classe hidden (si présente).
+        $(this).parent().find('.apsolu-collapse-all').toggleClass('apsolu-toggle-all-hidden', !display);
+
+    };
+
+    /**
+     * Affiche ou masque le contenu d'une activité au clic sur l'icône plier/déplier de l'activité.
+     *
+     * @return {void}
+     */
+    var toggleActivityCourses = function() {
+        // On change le symbole (déplier / replier).
+        $(this).toggleClass('apsolu-expandable');
+        $(this).toggleClass('apsolu-collapsible');
+
+        // Liste des créneaux qui sont situés sous le bandeau de l'activité.
+        $(this).closest('tr.apsolu-sports-tr-activity')
+            .nextUntil(".apsolu-sports-tr-activity", '.apsolu-sports-tr:not(".filtered")')
+            .toggle("slow", "swing").promise().done(() => { // Attendre la fin des animations.
+                // Est-ce que l'élément qui a été replié/déplié était le dernier élément repliable/dépliable visible ?
+                // Si oui, on déclenche l'action du bouton 'tout déplier / tout replier' de sorte qu'il s'accorde à l'état
+                // actuel des activités visibles, et que les autres activités non visibles soient également dans le même état.
+
+                // Si l'élément est replié, on cherche les éléments avec la classe inverse.
+                let opposite = $(this).hasClass('apsolu-collapsible') ? '.apsolu-expandable' : '.apsolu-collapsible';
+                let toggleAll = $(this).hasClass('apsolu-collapsible') ? '.apsolu-expand-all' : '.apsolu-collapse-all';
+  
+                let hasVisibleOpposite = $(this).closest('.apsolu-activities-table').find('.apsolu-sports-tr-activity:not(".filtered")').find(opposite).length > 0;
+                // Toutes les activités visibles sont dans le même état (déplié / replié).
+                if(!hasVisibleOpposite) {
+                    // Il y a des activités non visibles qui ne sont pas dans le même état (déplié / replié).
+                    let hasFilteredOpposite = $(this).closest('.apsolu-activities-table').find('.apsolu-sports-tr-activity').find(opposite).length > 0;
+                    if(hasFilteredOpposite) {
+                        $(this).closest('.apsolu-activities-table').find(toggleAll).trigger('click');
+                    }
+                }
+            
+            });
+
+    };
+
+    /**
+     * Ajoute un message d'erreur dans un bandeau et positionne le scroll sur la notification.
+     *
+     * @param {string} message
+     * @return {void}
+     */
+    var addErrorNotification = function(message) {
+        Notification.addNotification({
+            message: message,
+            type: 'error'
+        });
+        var $notifRegion = $('#user-notifications').first();
+        if ($notifRegion.length) {
+            $('html, body').animate({
+                scrollTop: 200 // Scroll en haut de la page pour afficher les notifications.
+            }, 300);
+        }
+    };
+
     return {
         initialise: function(wwwroot) {
             // Ajoute une div pour accueil les différents formulaires en overlay...
             $('body').append('<div id="apsolu-enrol-form"></div>');
 
-            // Permet de déplier/replier la liste des activités.
-            var tooglebutton = document.getElementById('apsolu-toggle-activities');
-            if (tooglebutton) {
-                tooglebutton.addEventListener('click', function(evt) {
-                    var i = 0;
-                    var display = '';
-                    var newclassname = '';
-                    var action = evt.currentTarget.getAttribute('data-action');
-                    switch (action) {
-                        case 'show':
-                            display = 'table-row';
-                            action = 'hide';
-                            newclassname = 'apsolu-collapsible';
-                            break;
-                        case 'hide':
-                            display = 'none';
-                            action = 'show';
-                            newclassname = 'apsolu-expandable';
-                            break;
-                    }
+            // Action exécutée à chaque clic sur les flèches à gauche du nom de l'activité.
+            $(".apsolu-sports-th-span").on('click', toggleActivityCourses);
 
-                    // Affiche ou masque toutes les lignes du tableau des activités.
-                    var rows = document.querySelectorAll('.apsolu-activities-table .apsolu-sports-tr-course');
-                    for (i = 0; i < rows.length; i++) {
-                        rows[i].style.display = display;
-                        rows[i].classList.remove('d-none');
-                    }
+            // Après l'initialisation de la table avec tablesorter.
+            $(".apsolu-activities-table").one('tablesorter-initialized', function() {
 
-                    // Change le pictogramme représentant une flèche vers le bas ou vers la droite.
-                    rows = document.getElementsByClassName('apsolu-sports-th-span');
-                    for (i = 0; i < rows.length; i++) {
-                        rows[i].className = "apsolu-sports-th-span " + newclassname;
-                    }
+                // On enlève le filtre dans la première cellule de l'en-tête (Actions).
+                $(this).find('.tablesorter-filter-row td[data-column="0"] input').remove();
 
-                    // Renseigne l'action à réaliser lors du prochain appel.
-                    evt.currentTarget.setAttribute('data-action', action);
-                });
-            }
+                // Ajouter un bouton Plier / Déplier dans la première cellule de la ligne de filtre (Actions).
+                let collapseAll = $('<button class="apsolu-collapse-all apsolu-toggle-all" title="Tout replier" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="overview-tooltip">').on('click', {display: false}, toggleAllActivities);
+                let expandAll = $('<button class="apsolu-expand-all apsolu-toggle-all apsolu-toggle-all-hidden" title="Tout déplier" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="overview-tooltip">').on('click', {display: true}, toggleAllActivities);
+                $(this).find('.tablesorter-filter-row td[data-column="0"]').append(collapseAll).append(expandAll);
 
-            // Traitements sur les filtres de recherche des tableaux des activités.
-            document.querySelectorAll('.apsolu-activities-table .tablesorter-filter-row').forEach(function(filterrow) {
-                // Déplie toutes les entrées du tableau lorsqu'un filtre est restauré via un cookie de TableSorter.
-                filterrow.querySelectorAll('input').forEach(function(input) {
-                    if (input.value === '') {
-                        return;
-                    }
-
-                    document.querySelectorAll('.apsolu-activities-table .apsolu-sports-tr-course').forEach(function(tablerow) {
-                        tablerow.classList.remove('d-none');
-                    });
+                // Certains filtres peuvent être préremplis par la librairie (via les cookies).
+                let filters = $(this).find('.tablesorter-filter').filter(function() {
+                    return $(this).val() != "";
                 });
 
-                // Ajoute un évènement pour déplier toutes les entrées du tableau lorsqu'on clique sur un élément de filtrage.
-                filterrow.addEventListener('click', function() {
-                    document.querySelectorAll('.apsolu-activities-table .apsolu-sports-tr-course').forEach(function(tablerow) {
-                        tablerow.classList.remove('d-none');
-                    });
+                // S'il n'y a aucun filtre déjà présent, on replie toutes les activités.
+                if(filters.length == 0) {
+                    $(collapseAll).trigger('click');
+                }
+
+                // Quand tout est fait seulement, on affiche le tableau.
+                $(this).removeClass('apsolu-table-loading').css({
+                    'visibility': 'visible',
+                    'opacity': 1
                 });
             });
 
-            // Ajoute un évènement pour masquer toutes les activités quand on clique sur "réinitialiser les filtres".
-            document.querySelectorAll('.apsolu-reset-table-filters').forEach(function(resetfilterbtn) {
-                resetfilterbtn.addEventListener('click', function() {
-                    document.querySelectorAll('.apsolu-activities-table .apsolu-sports-tr-course').forEach(function(tablerow) {
-                        tablerow.classList.add('d-none');
-                    });
+            // Après l'initialisation ainsi qu'après chaque filtrage : on rend visible les activités qui ont au moins 1 créneau non filtré.
+            $(".apsolu-activities-table").on('tablesorter-initialized filterEnd', function() {
+                toggleFilteredActivities(this);
+
+                // On déplie toutes les activités (même si aucune n'est visible en raison du filtre appliqué).
+                $(this).find('.apsolu-expand-all').trigger('click');
+
+            });
+
+            // Overlay : http://dev.vast.com/jquery-popup-overlay/.
+            // Affiche la description d'un sport.
+            $('.apsolu-sports-description-info-img').click(function() {
+                var id = $(this).data('popup');
+                var description = $('#' + id);
+
+                description.css({
+                    backgroundColor: '#EEEEEE',
+                    padding: '.5em',
+                    cursor: 'default',
+                    maxWidth: '50%',
+                    textAlign: 'justify'
                 });
+                description.popup('show');
+            });
+
+            // Masque le tableau récapitulatif des voeux.
+            $('#apsolu-rules-summary').css('display', 'none');
+
+            $('#apsolu-rules-summary-a').click(function(evt) {
+                evt.preventDefault();
+
+                $('#apsolu-rules-summary').css({backgroundColor: '#EEEEEE', padding: '.5em', cursor: 'default', maxWidth: '50%'});
+                $('#apsolu-rules-summary').popup('show');
             });
 
             // Lorsqu'on clique sur le lien "s'inscrire/modifier"...
             $('.apsolu-enrol-a').click(function(event) {
                 event.preventDefault();
 
-                var requesturl = $(this).attr('href');
-                requesturl = requesturl.replace('/enrol/select/overview/enrol.php', '/enrol/select/ajax/enrol.php');
-
                 // Affiche le formulaire.
                 $.ajax({
-                    url: requesturl,
+                    url: wwwroot + '/enrol/select/ajax/enrol.php',
+                    data: { enrolid: $(this).data('enrolid'), ajax: 1},
                     type: 'GET',
                     dataType: 'html'
                 })
                 .done(function(result) {
-                    try {
-                        var error = $.parseJSON(result);
-                        $('#apsolu-enrol-form').html('<div class="alert alert-danger"><p>' + error.error + '</p></div>');
-                    } catch (e) {
-                        $('#apsolu-enrol-form').html(result);
-                    }
-                })/*
-                .fail(function(result) {
-                    console.log('FAIL 1');
-                    var error = $.parseJSON(result);
-                    $('#apsolu-enrol-form').html('<div class="alert alert-danger"><p>'+error.error+'</p></div>');
-                })*/
-                .always(function() {
-                    set_edit_actions();
-                    set_cancel_actions();
-                    set_policy_actions();
+                    var data = JSON.parse(result);
+                    if(data.success) {
+                        $('#apsolu-enrol-form').html(data.html);
+                        set_edit_actions();
+                        set_cancel_actions();
+                        set_policy_actions();
 
-                    $('#apsolu-enrol-form').popup('show');
+                        $('#apsolu-enrol-form').popup('show');
+                    } else {
+                        addErrorNotification(data.error);
+                    }
+                })
+                .fail(function() {
+                    Notification.exception(new Error('Echec de l’appel à la ressource serveur.'));
                 });
+                // .always(function() {
+                // });
                 return false;
             });
 
@@ -151,61 +249,56 @@ define(['jquery'], function($) {
 
                     var actions;
                     if ($(this).attr('id') == 'id_unenrolbutton') {
-                        actions = {_qf__enrol_select_form: 1, sesskey: sesskey, enrolid: enrolid, unenrolbutton: 1};
+                        actions = {_qf__enrol_select_form: 1, sesskey: sesskey, enrolid: enrolid, unenrolbutton: 1, ajax: 1};
                     } else if ($(this).attr('id') == 'id_editenrol') {
-                        actions = {_qf__enrol_select_form: 1, sesskey: sesskey, enrolid: enrolid, editenrol: 1, policy: 0};
+                        actions = {_qf__enrol_select_form: 1, sesskey: sesskey, enrolid: enrolid, editenrol: 1, policy: 0, ajax: 1};
                     } else {
                         var fullname = $('#apsolu-enrol-form form input[name=fullname]').val();
+                        actions = {
+                                fullname: fullname,
+                                enrolid: enrolid,
+                                role: role,
+                                enrolbutton: 1,
+                                _qf__enrol_select_form: 1,
+                                sesskey: sesskey,
+                                policy: 0,
+                                ajax: 1
+                            };
+
                         var federation = $('#apsolu-enrol-form form select[name=federation] option:selected').val();
                         if (federation) {
-                            actions = {
-                                fullname: fullname,
-                                enrolid: enrolid,
-                                role: role,
-                                federation: federation,
-                                enrolbutton: 1,
-                                _qf__enrol_select_form: 1,
-                                sesskey: sesskey,
-                                policy: 0
-                            };
-                        } else {
-                            actions = {
-                                fullname: fullname,
-                                enrolid: enrolid,
-                                role: role,
-                                enrolbutton: 1,
-                                _qf__enrol_select_form: 1,
-                                sesskey: sesskey,
-                                policy: 0
-                            };
+                           actions.federation = federation;
                         }
                     }
 
                     $.ajax({
-                            url: wwwroot + "/enrol/select/ajax/enrol.php",
-                            type: 'POST',
-                            data: actions,
-                            dataType: 'html'
-                        })
-                        .done(function(result) {
-                            try {
-                                var error = $.parseJSON(result);
-                                $('#apsolu-enrol-form').html('<div class="alert alert-danger"><p>' + error.error + '</p></div>');
-                            } catch (e) {
-                                $('#apsolu-enrol-form').html(result);
-                            }
-                        })/*
-                        .fail(function(result) {
-                            console.log('FAIL');
-                            var error = $.parseJSON(result);
-                            $('#apsolu-enrol-form').html('<div class="alert alert-danger"><p>'+error.error+'</p></div>');
-                        })*/
-                        .always(function() {
+                        url: wwwroot + "/enrol/select/ajax/enrol.php",
+                        type: 'POST',
+                        data: actions,
+                        dataType: 'html'
+                    })
+                    .done(function(result) {
+                        var data = JSON.parse(result);
+                        if(data.success) {
+                            $('#apsolu-enrol-form').html(data.html);
                             set_edit_actions();
                             set_cancel_actions();
                             set_policy_actions();
-                            reload_ui(enrolid);
-                        });
+                            // Ne pas charger les modifications de l'ui lors du clic sur 'modifier son inscription'.
+                            if(!actions.editenrol) {
+                                reload_ui(enrolid, data.unenrol);
+                            }
+                        } else {
+                            addErrorNotification(data.error);
+                            $('#apsolu-enrol-form').popup('hide');
+                        }
+                    })
+                    .fail(function() {
+                        Notification.exception(new Error('Echec de l’appel à la ressource serveur.'));
+                    });
+                    // .always(function() {
+
+                    // });
 
                     return false;
                 });
@@ -249,8 +342,9 @@ define(['jquery'], function($) {
              * Fonction appelée pour recharger l'interace graphique.
              *
              * @param {string} enrolid Identifiant numérique de la méthode d'inscription.
+             * @param {bool} unenrol si l'utilisateur doit être désinscrit ou inscrit.
              */
-            function reload_ui(enrolid) {
+            function reload_ui(enrolid, unenrol) {
                 // TODO: modifier l'icone edit/add
 
                 // On rafraichit la ligne "Places disponibles".
@@ -268,20 +362,12 @@ define(['jquery'], function($) {
                 });
 
                 // On rafraichit l'icône "actions".
-                var img_src = $('.apsolu-enrol-a[data-enrolid=' + enrolid + '] img').attr('src');
-                if ($('.apsolu-enrol-a[data-enrolid=' + enrolid + ']').hasClass('apsolu-enroled-a')) {
-                    $('.apsolu-enrol-a[data-enrolid=' + enrolid + ']').removeClass('apsolu-enroled-a');
-                    $('.apsolu-enrol-a[data-enrolid=' + enrolid + ']').addClass('apsolu-not-enroled-a');
-                    $('.apsolu-enrol-a[data-enrolid=' + enrolid + ']').parent().parent().removeClass('info');
-                    $('.apsolu-enrol-a[data-enrolid=' + enrolid + '] img')
-                        .attr('src', img_src.replace('i/completion-manual-y', 'i/completion-manual-n'));
-                } else {
-                    $('.apsolu-enrol-a[data-enrolid=' + enrolid + ']').removeClass('apsolu-not-enroled-a');
-                    $('.apsolu-enrol-a[data-enrolid=' + enrolid + ']').addClass('apsolu-enroled-a');
-                    $('.apsolu-enrol-a[data-enrolid=' + enrolid + ']').parent().parent().addClass('info');
-                    $('.apsolu-enrol-a[data-enrolid=' + enrolid + '] img')
-                        .attr('src', img_src.replace('i/completion-manual-n', 'i/completion-manual-y'));
-                }
+                let icon = $('.apsolu-enrol-a[data-enrolid=' + enrolid + ']');
+                let img = unenrol ? 'completion-manual-n' : 'completion-manual-y';
+                $(icon).toggleClass('apsolu-enroled-a', !unenrol)
+                    .toggleClass('apsolu-not-enroled-a', unenrol)
+                    .find('img').attr('src', Url.imageUrl('i/' + img, 'core'))
+                    .closest('.apsolu-sports-tr-course').toggleClass('info', !unenrol);
             }
         }
     };
