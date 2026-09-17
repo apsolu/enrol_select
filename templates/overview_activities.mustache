@@ -93,12 +93,12 @@
 </div>
 {{! Bouton de réinitialisation des filtres. }}
 <div class="d-flex apsolu-filter-results">
-    <div class="apsolu-filter-info d-flex gap-3">
+    <div class="apsolu-filter-info d-flex gap-3 flex-wrap">
         <p class='filter-results filter-results-active d-none'><span class='filter-count-results'></span><span class='filter-count-available'>{{#str}}over_n_available, enrol_select, {{count_courses}}{{/str}}</span></p>
         <p class='filter-results filter-results-inactive'><span>{{#str}}no_active_filter, enrol_select{{/str}}</span></p>
-        <div class='filter-results-filters d-flex gap-3'></div>
+        <div class='filter-results-filters d-flex gap-3 flex-wrap'></div>
     </div>
-    <p class="flex-shrink-1 filter-reset"><button class="apsolu-reset-table-filters btn btn-custom-1 btn-sm">{{#str}}clearfilters{{/str}}</button></p>
+    <p class="filter-reset align-self-end"><button class="apsolu-reset-table-filters btn btn-custom-1 btn-sm">{{#str}}clearfilters{{/str}}</button></p>
 </div>
 <div class="table-responsive">
     <table class="apsolu-activities-table table table-sortable tablesorted apsolu-table-loading" id="apsolu-activities-typeid-{{ id }}">
