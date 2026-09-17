@@ -226,6 +226,9 @@ $string['back_to_dashboard'] = 'Revenir à mon tableau de bord';
 // Bloc filtres.
 $string['filters'] = 'Filtres';
 $string['reset_filters'] = 'Réinitialiser les filtres';
+$string['no_active_filter'] = 'Aucun filtre actif';
+$string['n_results'] = 'Résultats du filtre : {$a}';
+$string['over_n_available'] = 'sur {$a} créneaux disponibles';
 
 $string['activities_list'] = 'Liste des créneaux par activité';
 $string['activities'] = 'Activités sportives';

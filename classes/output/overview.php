@@ -144,6 +144,8 @@ class overview implements renderable, templatable {
                 continue;
             }
 
+            $data->course_formats[$formatindex]->count_courses = count($courses);
+
             // Trie les cours par nom, heure, niveau, etc au sein d'une activité.
             $this->format_courses($data->course_formats[$formatindex]->activities[$category->id]->courses, $headers);
 

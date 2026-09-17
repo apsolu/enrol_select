@@ -23,7 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'core/notification', 'core/url', "enrol_select/jquery.popupoverlay" ], function($, Notification, Url) {
+define(['jquery', 'core/notification', 'core/url', 'core/str', 'local_apsolu/sort', 'enrol_select/jquery.popupoverlay'],
+    function($, Notification, Url, Str, SortTable) {
     "use strict";
 
     /**
@@ -53,6 +54,7 @@ define(['jquery', 'core/notification', 'core/url', "enrol_select/jquery.popupove
      */
     var toggleAllActivities = function(event) {
 
+        // Paramètre display = true => déplier.
         let display = event.data.display;
 
         // Pour chaque activité.
@@ -66,10 +68,7 @@ define(['jquery', 'core/notification', 'core/url', "enrol_select/jquery.popupove
         });
 
         // On masque l'icône actuelle et on affiche l'icône de l'action inverse.
-
-        // Action de déplier on ajoute la classe hidden sur le bouton déplier, action de replier on retire la classe hidden (si présente).
         $(this).parent().find('.apsolu-expand-all').toggleClass('apsolu-toggle-all-hidden', display);
-        // Action de replier on ajoute la classe hidden sur le bouton replier, action de déplier on retire la classe hidden (si présente).
         $(this).parent().find('.apsolu-collapse-all').toggleClass('apsolu-toggle-all-hidden', !display);
 
     };
@@ -95,17 +94,16 @@ define(['jquery', 'core/notification', 'core/url', "enrol_select/jquery.popupove
                 // Si l'élément est replié, on cherche les éléments avec la classe inverse.
                 let opposite = $(this).hasClass('apsolu-collapsible') ? '.apsolu-expandable' : '.apsolu-collapsible';
                 let toggleAll = $(this).hasClass('apsolu-collapsible') ? '.apsolu-expand-all' : '.apsolu-collapse-all';
-  
-                let hasVisibleOpposite = $(this).closest('.apsolu-activities-table').find('.apsolu-sports-tr-activity:not(".filtered")').find(opposite).length > 0;
+
+                let hasVisibleOpposite = $(this).closest('.apsolu-activities-table')
+                    .find('.apsolu-sports-tr-activity:not(".filtered")').find(opposite).length > 0;
                 // Toutes les activités visibles sont dans le même état (déplié / replié).
                 if(!hasVisibleOpposite) {
-                    // Il y a des activités non visibles qui ne sont pas dans le même état (déplié / replié).
-                    let hasFilteredOpposite = $(this).closest('.apsolu-activities-table').find('.apsolu-sports-tr-activity').find(opposite).length > 0;
-                    if(hasFilteredOpposite) {
-                        $(this).closest('.apsolu-activities-table').find(toggleAll).trigger('click');
-                    }
+                    // On inverse le bouton tout déplier / tout replier, et on déclenche son action pour s'assurer que
+                    // toutes les activités sont dans le même état.
+                    $(this).closest('.apsolu-activities-table').find(toggleAll).trigger('click');
                 }
-            
+
             });
 
     };
@@ -130,7 +128,7 @@ define(['jquery', 'core/notification', 'core/url', "enrol_select/jquery.popupove
     };
 
     return {
-        initialise: function(wwwroot) {
+        initialise: function(wwwroot, options = {}) {
             // Ajoute une div pour accueil les différents formulaires en overlay...
             $('body').append('<div id="apsolu-enrol-form"></div>');
 
@@ -144,8 +142,12 @@ define(['jquery', 'core/notification', 'core/url', "enrol_select/jquery.popupove
                 $(this).find('.tablesorter-filter-row td[data-column="0"] input').remove();
 
                 // Ajouter un bouton Plier / Déplier dans la première cellule de la ligne de filtre (Actions).
-                let collapseAll = $('<button class="apsolu-collapse-all apsolu-toggle-all" title="Tout replier" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="overview-tooltip">').on('click', {display: false}, toggleAllActivities);
-                let expandAll = $('<button class="apsolu-expand-all apsolu-toggle-all apsolu-toggle-all-hidden" title="Tout déplier" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="overview-tooltip">').on('click', {display: true}, toggleAllActivities);
+                let collapseAll = $('<button class="apsolu-collapse-all apsolu-toggle-all" title="Tout replier" '
+                    + 'data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="overview-tooltip">')
+                    .on('click', {display: false}, toggleAllActivities);
+                let expandAll = $('<button class="apsolu-expand-all apsolu-toggle-all apsolu-toggle-all-hidden" '
+                    + 'title="Tout déplier" data-bs-toggle="tooltip" data-bs-placement="right" '
+                    +'data-bs-custom-class="overview-tooltip">').on('click', {display: true}, toggleAllActivities);
                 $(this).find('.tablesorter-filter-row td[data-column="0"]').append(collapseAll).append(expandAll);
 
                 // Certains filtres peuvent être préremplis par la librairie (via les cookies).
@@ -165,13 +167,63 @@ define(['jquery', 'core/notification', 'core/url', "enrol_select/jquery.popupove
                 });
             });
 
-            // Après l'initialisation ainsi qu'après chaque filtrage : on rend visible les activités qui ont au moins 1 créneau non filtré.
-            $(".apsolu-activities-table").on('tablesorter-initialized filterEnd', function() {
+            // Après chaque filtre, on rend visible les activités qui ont au moins 1 créneau non filtré.
+            $(".apsolu-activities-table").on('filterEnd', function() {
+                // Note : un premier filtre est effectué au chargement si des valeurs sont présentes dans les cookies.
+
                 toggleFilteredActivities(this);
 
                 // On déplie toutes les activités (même si aucune n'est visible en raison du filtre appliqué).
                 $(this).find('.apsolu-expand-all').trigger('click');
 
+                // On met à jour la section "Réinitialiser les filtres", avec la liste des filtres actifs.
+                let noActiveFilter = true;
+                var filterResults = $(this).closest('.apsolu-format-activities').find('.filter-results-filters');
+
+                $(this).find('.tablesorter-filter').each(function() {
+                    let filterid = $(this).parent().data('column');
+                    let filterActive = $(filterResults).find(".filter-active[data-filterid='" + filterid + "']");
+                    if($(this).val() != "") {
+                        noActiveFilter = false;
+                        let filtername = $(this).closest('thead').find('.tablesorter-headerRow .tablesorter-header[data-column="'
+                            + filterid + '"] .tablesorter-header-inner').html();
+                        let filtervalue = '« ' + $(this).val() + ' »';
+                        // Si le filtre n'existe pas encore on l'ajoute.
+                        if(filterActive.length == 0) {
+                            filterActive = $('<p class="filter-active" data-filterid="' + filterid + '">');
+                            $(filterActive).append('<span class="filter-active-name">' + filtername + '</span>')
+                                .append('<span class="filter-active-value">');
+                            $(filterResults).append(filterActive);
+                        }
+                        // La valeur du filtre a changé ?
+                        if($(filterActive).find('.filter-active-value').html() != filtervalue) {
+                            $(filterActive).find('.filter-active-value').text('« ' + $(this).val() + ' »');
+                        }
+                    } else if(filterActive.length != 0) {
+                        $(filterActive).remove();
+                    }
+                });
+
+                // On désactive le bouton Réinitialiser les filtres si aucun filtre actif,
+                $(this).closest('.apsolu-format-activities').find('.apsolu-reset-table-filters').prop('disabled', noActiveFilter);
+                // On affiche le texte correspondant au résultat du filtre.
+                $(this).closest('.apsolu-format-activities').find('.filter-results-active').toggleClass('d-none', noActiveFilter);
+                $(this).closest('.apsolu-format-activities').find('.filter-results-inactive')
+                    .toggleClass('d-none', !noActiveFilter);
+
+                // On met à jour le nombre de résultats affichés / résultats disponibles.
+                if(!noActiveFilter) {
+                    let countResults = $(this).find('.apsolu-sports-tr-course:not(".filtered")').length;
+                    Str.get_string('n_results','enrol_select', countResults).then(message => {
+                        $(this).closest('.apsolu-format-activities').find('.filter-count-results').text(message);
+                    }).fail(Notification.exception);
+
+                    // Animations pour mettre en évidence la prise en compte du filtre.
+                    let $a = $(this).closest('.apsolu-format-activities').find('.filter-results-active');
+                    $a.addClass('highlight'); // Le nombre de résultat filtrés est brièvement animé.
+                    void $a[0].offsetWidth; // force reflow pour que le retrait déclenche bien la transition.
+                    $a.removeClass('highlight');
+                }
             });
 
             // Overlay : http://dev.vast.com/jquery-popup-overlay/.
@@ -369,6 +421,8 @@ define(['jquery', 'core/notification', 'core/url', "enrol_select/jquery.popupove
                     .find('img').attr('src', Url.imageUrl('i/' + img, 'core'))
                     .closest('.apsolu-sports-tr-course').toggleClass('info', !unenrol);
             }
+
+            SortTable.initialise(options);
         }
     };
 });

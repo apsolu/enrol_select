@@ -175,10 +175,8 @@ $options['widgetOptions']['filter_reset'] = '.apsolu-reset-table-filters';
 $options['widgetOptions']['storage_storageType'] = 'c';
 $options['widgetOptions']['filter_liveSearch'] = false;
 
-
-$PAGE->requires->js_call_amd('local_apsolu/sort', 'initialise', [$options]); // Note: il est important d'appeler ce script en 1er.
 $PAGE->requires->js_call_amd('enrol_select/select_mapping', 'initialise');
-$PAGE->requires->js_call_amd('enrol_select/select_enrol', 'initialise', ['url' => $CFG->wwwroot]);
+$PAGE->requires->js_call_amd('enrol_select/select_enrol', 'initialise', ['url' => $CFG->wwwroot, 'options' => $options]);
 
 // Navigation.
 $PAGE->navbar->add(get_string('enrolment', 'enrol_select'));

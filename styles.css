@@ -203,6 +203,67 @@ input[type="radio"][name^="renew"] {
     }
 }
 
+.apsolu-format-activities .apsolu-filter-results {
+    justify-content: right;
+    width: 100%;
+    margin-bottom: 1rem;
+
+    .apsolu-filter-info {
+        align-items: center;
+        margin-right: .75rem;
+    }
+
+    & .filter-results-filters {
+        flex-direction: row;
+        margin: 0 1rem;
+
+        & p {
+            display: flex;
+            margin-bottom: 0;
+        }
+    }
+    & .filter-active-name {
+        color: var(--bs-gray-600);
+        font-weight: 600;
+    }
+
+    & .filter-results-active,
+    .filter-results-inactive,
+    .filter-reset {
+        margin-bottom: 0;
+    }
+
+    & .filter-active-value {
+        font-style: italic;
+        color: var(--apsolu-color-custom-1);
+    }
+
+    & .filter-active-name {
+        margin-right: .5rem;
+    }
+
+    & .filter-results {
+        color: var(--bs-gray-600);
+        font-style: italic;
+        padding: .25rem;
+        border-radius: .5rem;
+
+        & span {
+            margin-right: .25rem;
+        }
+    }
+
+    & .filter-results-active {
+        transition: background-color 1s ease;
+    }
+
+    & .filter-results-active.highlight {
+        background-color: rgba(var(--apsolu-color-custom-1-rgb), 0.5);
+        transition: none;
+    }
+
+}
+
 @keyframes fadeIn {
     0% {
         display: none;
