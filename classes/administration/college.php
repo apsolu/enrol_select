@@ -29,6 +29,7 @@ use core\task\manager as taskmanager;
  * @copyright  2026 Université Rennes 2
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+#[\AllowDynamicProperties]
 class college extends record {
     /**
      * Nom de la table de référence en base de données.
@@ -54,6 +55,9 @@ class college extends record {
 
     /** @var int Nombre d'inscriptions maximum autorisé par personne dans cette population. */
     public $maxregister = 0;
+
+    /** @var int $roleid Identifiant du rôle utilisé. */
+    public $roleid = 0;
 
     /**
      * Supprime une règle de programmation (tâches adhoc) pour gérer les voeux des populations.

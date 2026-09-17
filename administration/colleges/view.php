@@ -126,7 +126,6 @@ $data->unused_cohorts = $unusedcohorts;
 
 $data->count_rules = $countrules;
 $data->college_rules = $collegerules;
-$data->next_rules = $nextrules;
 
 $data->rulecolor = get_config('theme_apsolu', 'custom_brandcolor_links');
 
