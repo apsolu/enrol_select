@@ -62,7 +62,10 @@ if ($data = $mform->get_data()) {
     // Population qui possède déjà des cohortes : supprimer les cohortes désélectionnées et insérer les nouvelles cohortes choisies.
     if (empty($instance->cohorts) == false) {
         $removecohorts = array_diff($instance->cohorts, $newcohorts);
-        $DB->delete_records_list('apsolu_colleges_members', 'cohortid', $removecohorts);
+
+        foreach ($removecohorts as $removecohortid) {
+            $DB->delete_records('apsolu_colleges_members', ['collegeid' => $data->id, 'cohortid' => $removecohortid]);
+        }
 
         $newcohorts = array_diff($newcohorts, $instance->cohorts);
     }
