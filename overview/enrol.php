@@ -125,7 +125,7 @@ if ($instance->role === '') {
     $userchoices = enrol_select_get_sum_user_choices($userid = null, $count = true);
     $unavailableuserroles = [];
     foreach ($userchoices as $choice) {
-        if ($choice->maxwish > 0 && $choice->count >= $choice->maxwish) {
+        if ($choice->maxwish == 0 || $choice->count >= $choice->maxwish) {
             $unavailableuserroles[$choice->roleid] = $choice->roleid;
         }
     }
